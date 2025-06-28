@@ -371,9 +371,37 @@
             padding: 20px;
             margin: 20px 0;
         }
+		.home-btn {
+    position: fixed;
+    top: 30px;
+    left: 30px;
+    background: #667eea;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    padding: 12px 20px;
+    font-size: 1em;
+    font-weight: bold;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+    z-index: 1001;
+}
+
+.home-btn:hover {
+    background: #5a67d8;
+    transform: translateY(-2px);
+    box-shadow: 0 7px 20px rgba(102, 126, 234, 0.4);
+}
     </style>
 </head>
 <body>
+<a href="index.html" class="home-btn">
+    🏠 Voltar ao Índice
+</a>
     <div class="presentation">
         <div class="slide-counter">
             <span id="current-slide">1</span> / <span id="total-slides">16</span>
