@@ -343,673 +343,433 @@
             margin: 10px 0;
         }
 		.home-btn {
-    position: fixed;
-    top: 30px;
-    left: 30px;
-    background: #667eea;
-    color: white;
-    border: none;
-    border-radius: 25px;
-    padding: 12px 20px;
-    font-size: 1em;
-    font-weight: bold;
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    transition: all 0.3s ease;
-    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
-    z-index: 1001;
-}
+            position: fixed;
+            top: 30px;
+            left: 30px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            padding: 12px 20px;
+            font-size: 1em;
+            font-weight: bold;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+            z-index: 1001;
+        }
 
-.home-btn:hover {
-    background: #5a67d8;
-    transform: translateY(-2px);
-    box-shadow: 0 7px 20px rgba(102, 126, 234, 0.4);
-}
+        .home-btn:hover {
+            background: #5a67d8;
+            transform: translateY(-2px);
+            box-shadow: 0 7px 20px rgba(102, 126, 234, 0.4);
+        }
+		.reference {
+			font-family: 'Times New Roman', Times, serif;
+			font-size: 1.1em;
+			line-height: 1.6;
+			background: #f7f7f7;
+			padding: 20px;
+			border-radius: 10px;
+			border-left: 5px solid #4a5568;
+		}
     </style>
 </head>
 <body>
-<a href="index.html" class="home-btn">
-    🏠 Voltar ao Índice
+<a href="#" class="home-btn" onclick="showFirstSlide(); return false;">
+    🏠 Voltar ao Início
 </a>
     <div class="presentation">
         <div class="slide-counter">
-            <span id="current-slide">1</span> / <span id="total-slides">18</span>
+            <span id="current-slide">1</span> / <span id="total-slides">15</span>
         </div>
 
-        <!-- Slide 1: Título -->
         <div class="slide active">
             <div class="content center-text">
                 <h1>🌐 Sistema de Nomes de Domínios</h1>
-                <h2 style="border: none; color: #667eea;">DNS - Domain Name System</h2>
+                <h2 style="border: none; color: #667eea;">DNS - A "Lista Telefônica" da Internet</h2>
                 <div class="highlight-box large-text">
-                    <strong>Aula 07</strong><br>
-                    Transformando nomes em endereços IP<br>
-                    Como a Internet "lembra" onde tudo está
-                </div>
-                
-                <div class="example-box" style="margin-top: 40px;">
-                    <h3>👨‍🏫 Autor da Apresentação</h3>
-                    <p style="font-size: 1.3em; margin: 10px 0;">
-                        <strong>César Azevedo</strong><br>
-                        📧 cesar.augusto@ifrn.edu.br
-                    </p>
+                    <strong>Baseado no Capítulo 7 de "Redes de Computadores" de Tanenbaum</strong><br>
+                    Um mergulho no sistema que traduz nomes amigáveis em endereços de rede.
                 </div>
             </div>
         </div>
 
-        <!-- Slide 18: Referências -->
-        <div class="slide">
+		<div class="slide">
             <div class="content">
-                <h2>📚 Referências Bibliográficas</h2>
-                
-                <div class="highlight-box">
-                    <h3>📖 Fonte Principal:</h3>
-                    <div class="bullet-point"><strong>Capítulo 25 - Sistema de Nomes de Domínios</strong></div>
-                    <div class="bullet-point">Livro de Redes de Computadores</div>
-                    <div class="bullet-point">Páginas 797-813</div>
-                </div>
-
-                <div class="two-column">
-                    <div>
-                        <h3>🌐 Sites Recomendados:</h3>
-                        <div class="bullet-point">www.internic.net (Informações sobre registros)</div>
-                        <div class="bullet-point">www.ietf.org/rfc.html (RFCs relacionadas)</div>
-                        <div class="bullet-point">docs.anthropic.com (Documentação técnica)</div>
-                    </div>
-                    <div>
-                        <h3>📋 RFCs Principais:</h3>
-                        <div class="bullet-point">RFC 1034 - Domain Concepts</div>
-                        <div class="bullet-point">RFC 1035 - Implementation</div>
-                        <div class="bullet-point">RFC 2671 - Extension Mechanisms</div>
-                        <div class="bullet-point">RFC 2317 - Classless Delegation</div>
-                    </div>
-                </div>
-
-                <div class="example-box center-text">
-                    <h3>🤖 Metodologia de Criação</h3>
-                    <p>Apresentação desenvolvida com assistência de IA Claude Sonnet 4<br>
-                    Baseada integralmente no material didático fornecido<br>
-                    Adaptação pedagógica com foco em simplicidade e clareza</p>
-                </div>
-
-                <div class="highlight-box center-text">
-                    <h3>🎯 Objetivo Educacional</h3>
-                    <p>Facilitar o aprendizado do DNS através de<br>
-                    linguagem simples, analogias e exemplos práticos</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Slide 2: Tópicos da Aula -->
-        <div class="slide">
-            <div class="content">
-                <h2>📋 Tópicos da Aula</h2>
-                
+                <h2>📋 Tópicos da Apresentação</h2>
                 <div class="two-column">
                     <div>
                         <h3>🌟 Fundamentos</h3>
-                        <div class="bullet-point">O que é DNS e sua importância</div>
-                        <div class="bullet-point">Evolução: dos arquivos hosts ao DNS</div>
-                        <div class="bullet-point">Espaços de nomes (plano vs hierárquico)</div>
-                        <div class="bullet-point">Estrutura da árvore DNS</div>
-                        
-                        <h3>🏗️ Arquitetura</h3>
-                        <div class="bullet-point">Tipos de nomes (FQDN vs PQDN)</div>
-                        <div class="bullet-point">Domínios e zonas</div>
-                        <div class="bullet-point">Hierarquia de servidores</div>
-                        <div class="bullet-point">Servidores primários e secundários</div>
+                        <div class="bullet-point">O que é DNS e por que precisamos dele?</div>
+                        <div class="bullet-point">A evolução: do arquivo `hosts.txt` ao DNS</div>
+                        <div class="bullet-point">O ambiente de nomes: uma estrutura hierárquica</div>
+                        <div class="bullet-point">Domínios genéricos e de países</div>
                     </div>
                     <div>
-                        <h3>🌐 DNS na Internet</h3>
-                        <div class="bullet-point">Domínios genéricos (.com, .edu, .org)</div>
-                        <div class="bullet-point">Domínios de países (.br, .us, .uk)</div>
-                        <div class="bullet-point">Domínio reverso (.arpa)</div>
-                        
-                        <h3>⚙️ Funcionamento</h3>
-                        <div class="bullet-point">Processo de resolução de nomes</div>
-                        <div class="bullet-point">Resolução recursiva vs iterativa</div>
-                        <div class="bullet-point">Sistema de cache e TTL</div>
-                        <div class="bullet-point">Mensagens DNS (consulta/resposta)</div>
-                        <div class="bullet-point">DNS dinâmico (DDNS)</div>
-                        <div class="bullet-point">Protocolos UDP vs TCP</div>
+                        <h3>⚙️ Como Funciona</h3>
+                        <div class="bullet-point">Registros de Recursos (RRs): os dados do DNS</div>
+                        <div class="bullet-point">Servidores de Nomes e Zonas</div>
+                        <div class="bullet-point">Resolução de Nomes: Recursiva vs. Iterativa</div>
+                        <div class="bullet-point">O papel do Cache e do TTL</div>
                     </div>
                 </div>
-
-                <div class="highlight-box center-text">
-                    <h3>🎯 Objetivo Final</h3>
-                    <p>Compreender como o DNS transforma nomes amigáveis<br>
-                    em endereços IP, possibilitando a navegação na Internet</p>
-                </div>
-
                 <div class="example-box center-text">
                     <h3>🧠 + Quiz Interativo</h3>
-                    <p>Teste seus conhecimentos com 4 questões práticas!</p>
+                    <p>Teste seus conhecimentos ao final da apresentação!</p>
                 </div>
             </div>
         </div>
 
-        <!-- Slide 3: O que é DNS -->
         <div class="slide">
             <div class="content">
-                <h2>🤔 O que é DNS?</h2>
-                <div class="bullet-point">Sistema cliente/servidor que traduz nomes em endereços IP</div>
-                <div class="bullet-point">Como uma "agenda telefônica" da Internet</div>
-                <div class="bullet-point">Programa de suporte para outras aplicações (e-mail, web, etc.)</div>
-                
-                <div class="example-box">
-                    <h3>💡 Exemplo Prático:</h3>
-                    <div class="diagram">
-                        Usuário digita: aperson@wonderful.com<br>
-                        ⬇️<br>
-                        DNS traduz: wonderful.com → 200.200.200.5<br>
-                        ⬇️<br>
-                        E-mail é enviado para o IP correto
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Slide 4: Por que precisamos do DNS -->
-        <div class="slide">
-            <div class="content">
-                <h2>❓ Por que o DNS é necessário?</h2>
-                
+                <h2>❓ O Problema: Nomes vs. Números</h2>
                 <div class="two-column">
                     <div>
-                        <h3>🧠 Pessoas preferem:</h3>
-                        <div class="bullet-point">Nomes fáceis de lembrar</div>
-                        <div class="bullet-point">google.com</div>
-                        <div class="bullet-point">facebook.com</div>
-                        <div class="bullet-point">youtube.com</div>
+                        <h3>🧠 Humanos Preferem Nomes</h3>
+                        <div class="bullet-point">Nomes como `www.google.com` são fáceis de lembrar.</div>
+                        <div class="bullet-point">Um endereço IP (ex: `142.250.218.100`) é difícil de memorizar.</div>
                     </div>
                     <div>
-                        <h3>🤖 Computadores precisam:</h3>
-                        <div class="bullet-point">Endereços IP numéricos</div>
-                        <div class="bullet-point">142.250.191.14</div>
-                        <div class="bullet-point">157.240.15.35</div>
-                        <div class="bullet-point">142.251.129.90</div>
+                        <h3>🤖 Redes Usam Endereços</h3>
+                        <div class="bullet-point">A rede só entende endereços numéricos para se comunicar.</div>
+                        <div class="bullet-point">É preciso um mecanismo para converter nomes em endereços IP.</div>
                     </div>
                 </div>
+                <div class="highlight-box large-text center-text">
+                    <strong>🎯 A Solução é o DNS:</strong><br>
+                    Um sistema de banco de dados distribuído que mapeia nomes de host em endereços IP.
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="content">
+                <h2>📜 A Evolução: De um Arquivo a um Sistema Global</h2>
+                <h3>Antigamente: O arquivo `hosts.txt`</h3>
+                <div class="bullet-point">Na ARPANET, um único arquivo chamado `hosts.txt` listava todos os computadores e seus IPs.</div>
+                <div class="bullet-point">Toda noite, cada host na rede baixava uma cópia atualizada deste arquivo.</div>
 
                 <div class="highlight-box">
-                    <strong>🎯 Solução:</strong> DNS faz a ponte entre o mundo humano e o mundo das máquinas!
+                    <h3>⚠️ Os Problemas do `hosts.txt`</h3>
+                    <div class="bullet-point"><strong>Tamanho:</strong> O arquivo se tornaria grande demais para ser gerenciado.</div>
+                    <div class="bullet-point"><strong>Conflitos de Nomes:</strong> Sem um gerenciamento central, nomes poderiam ser duplicados.</div>
+                    <div class="bullet-point"><strong>Carga e Latência:</strong> A centralização era inviável para uma rede mundial.</div>
+                </div>
+				<div class="example-box large-text center-text">
+                    Em 1983, o <strong>Domain Name System (DNS)</strong> foi criado para resolver esses problemas, introduzindo uma arquitetura hierárquica e distribuída.
                 </div>
             </div>
         </div>
 
-        <!-- Slide 5: Evolução - Arquivo de Hosts -->
         <div class="slide">
             <div class="content">
-                <h2>📜 Era dos Arquivos de Hosts</h2>
-                
-                <div class="bullet-point">Antigamente: arquivo simples com duas colunas</div>
-                <div class="bullet-point">Nome ↔ Endereço IP</div>
-                <div class="bullet-point">Cada computador tinha sua cópia</div>
-                <div class="bullet-point">Atualização manual e periódica</div>
-
-                <div class="example-box">
-                    <h3>📄 Exemplo de arquivo hosts:</h3>
-                    <div class="diagram">
-                        google.com&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;142.250.191.14<br>
-                        facebook.com&nbsp;&nbsp;&nbsp;&nbsp;157.240.15.35<br>
-                        youtube.com&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;142.251.129.90
-                    </div>
-                </div>
-
-                <div class="highlight-box">
-                    <strong>⚠️ Problemas:</strong><br>
-                    • Arquivo muito grande para a Internet atual<br>
-                    • Impossível atualizar milhões de computadores<br>
-                    • Criar gargalo com servidor centralizado
-                </div>
-            </div>
-        </div>
-
-        <!-- Slide 6: Espaços de Nomes -->
-        <div class="slide">
-            <div class="content">
-                <h2>🏗️ Espaços de Nomes</h2>
-                
-                <div class="two-column">
-                    <div>
-                        <h3>📏 Espaço Plano</h3>
-                        <div class="bullet-point">Nomes sem estrutura</div>
-                        <div class="bullet-point">Sequência simples de caracteres</div>
-                        <div class="bullet-point">Controle centralizado necessário</div>
-                        <div class="bullet-point">❌ Não funciona para grandes redes</div>
-                    </div>
-                    <div>
-                        <h3>🌳 Espaço Hierárquico</h3>
-                        <div class="bullet-point">Nomes com múltiplas partes</div>
-                        <div class="bullet-point">Estrutura organizacional</div>
-                        <div class="bullet-point">Controle descentralizado</div>
-                        <div class="bullet-point">✅ Perfeito para a Internet</div>
-                    </div>
-                </div>
-
-                <div class="example-box">
-                    <h3>🏫 Exemplo Hierárquico:</h3>
-                    <div class="bullet-point">challenger.atc.fhda.edu</div>
-                    <div class="bullet-point">challenger.berkeley.edu</div>
-                    <div class="bullet-point">challenger.smart.com</div>
-                    <p><strong>Mesmo nome "challenger", mas endereços únicos!</strong></p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Slide 7: Estrutura da Árvore DNS -->
-        <div class="slide">
-            <div class="content">
-                <h2>🌳 Estrutura da Árvore DNS</h2>
-                
-                <div class="bullet-point">Árvore invertida com raiz no topo</div>
-                <div class="bullet-point">Até 128 níveis (0 a 127)</div>
-                <div class="bullet-point">Cada nó tem um rótulo (label)</div>
-                <div class="bullet-point">Labels de filhos devem ser únicos</div>
+                <h2>🌳 O Ambiente de Nomes do DNS</h2>
+                <div class="bullet-point">O DNS usa um esquema de nomes hierárquico, similar a um sistema de endereçamento postal, para evitar ambiguidades.</div>
+                <div class="bullet-point">A Internet é dividida em mais de 250 <strong>domínios de nível superior (Top-Level Domains - TLDs)</strong>.</div>
+                <div class="bullet-point">Esses domínios são organizados em uma árvore, onde cada nó representa um domínio.</div>
 
                 <div class="diagram">
-                    <strong>Estrutura da Árvore:</strong><br><br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;. (raiz)<br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\<br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;com&nbsp;&nbsp;&nbsp;&nbsp;edu&nbsp;&nbsp;&nbsp;&nbsp;org<br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;google&nbsp;&nbsp;fhda&nbsp;&nbsp;&nbsp;apache<br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;atc<br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;challenger
+                    <strong>Estrutura da Árvore (Exemplo):</strong><br><br>
+                                . (raiz)<br>
+                             /     |     \<br>
+                           com    edu     nl (Países Baixos)<br>
+                            |        |<br>
+                         cisco  washington   vu<br>
+                           |          |<br>
+					    eng          cs
                 </div>
+				<p style="font-size: 1.2em; text-align: center; margin-top: 15px;">Um nome de domínio é definido pelo caminho da raiz até ele, com os componentes separados por pontos (ex: <strong>cs.washington.edu</strong>).</p>
             </div>
         </div>
 
-        <!-- Slide 8: Tipos de Nomes de Domínio -->
-        <div class="slide">
+		<div class="slide">
             <div class="content">
-                <h2>🏷️ Tipos de Nomes de Domínio</h2>
-                
+                <h2>🌍 Tipos de Domínios de Nível Superior</h2>
+                <div class="bullet-point">Existem dois tipos principais de domínios de nível superior (TLDs).</div>
                 <div class="two-column">
                     <div>
-                        <h3>✅ FQDN (Totalmente Qualificado)</h3>
-                        <div class="bullet-point">Termina com ponto (.)</div>
-                        <div class="bullet-point">Nome completo até a raiz</div>
-                        <div class="bullet-point">Única forma aceita pelo DNS</div>
-                        
-                        <div class="example-box">
-                            <strong>Exemplos:</strong><br>
-                            challenger.atc.fhda.edu.<br>
-                            www.google.com.<br>
-                            mail.yahoo.com.
-                        </div>
+                        <h3>🏢 Domínios Genéricos (gTLDs)</h3>
+                        <div class="bullet-point"><strong>.com:</strong> Para fins comerciais.</div>
+                        <div class="bullet-point"><strong>.org:</strong> Para organizações não lucrativas.</div>
+                        <div class="bullet-point"><strong>.net:</strong> Para provedores de rede.</div>
+                        <div class="bullet-point"><strong>.edu:</strong> Para instituições educacionais (restrito).</div>
+                        <div class="bullet-point"><strong>.gov:</strong> Para o governo (restrito).</div>
                     </div>
                     <div>
-                        <h3>⚠️ PQDN (Parcialmente Qualificado)</h3>
-                        <div class="bullet-point">Não termina com ponto</div>
-                        <div class="bullet-point">Nome incompleto</div>
-                        <div class="bullet-point">Cliente adiciona sufixo</div>
-                        
-                        <div class="example-box">
-                            <strong>Exemplos:</strong><br>
-                            challenger<br>
-                            www<br>
-                            mail<br><br>
-                            <em>Resolvedor adiciona domínio local</em>
-                        </div>
+                        <h3>🏳️ Domínios de Países (ccTLDs)</h3>
+                        <div class="bullet-point">Usam códigos de duas letras definidos pela ISO 3166.</div>
+                        <div class="bullet-point"><strong>.br</strong> (Brasil)</div>
+                        <div class="bullet-point"><strong>.jp</strong> (Japão)</div>
+                        <div class="bullet-point"><strong>.uk</strong> (Reino Unido)</div>
+                        <div class="bullet-point"><strong>.nl</strong> (Países Baixos)</div>
                     </div>
+                </div>
+                 <div class="highlight-box">
+                    <h3>🏛️ Governança</h3>
+                    <p style="font-size: 1.2em;">O topo da hierarquia, incluindo a criação de novos domínios, é controlado pela <strong>ICANN (Internet Corporation for Assigned Names and Numbers)</strong>.</p>
                 </div>
             </div>
         </div>
 
-        <!-- Slide 9: Distribuição e Hierarquia -->
+		<div class="slide">
+            <div class="content">
+                <h2>📂 Registros de Recursos (RRs)</h2>
+                <div class="bullet-point">A principal função do DNS é mapear nomes de domínio para <strong>Registros de Recursos</strong>.</div>
+                <div class="bullet-point">Esses registros formam o banco de dados do DNS. Cada domínio possui um conjunto de RRs associado a ele.</div>
+                <h3>Tipos de Registros Mais Comuns:</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Tipo</th>
+                            <th>Significado</th>
+                            <th>Exemplo de Valor</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>A</strong></td>
+                            <td>Endereço IPv4 de um host.</td>
+                            <td><code>130.37.56.205</code></td>
+                        </tr>
+                        <tr>
+                            <td><strong>AAAA</strong></td>
+                            <td>Endereço IPv6 de um host.</td>
+                            <td><code>2001:0db8:85a3::8a2e:0370:7334</code></td>
+                        </tr>
+                        <tr>
+                            <td><strong>MX</strong></td>
+                            <td>Servidor de e-mail (Mail eXchanger) para o domínio.</td>
+                            <td><code>10 mail.example.com</code></td>
+                        </tr>
+                        <tr>
+                            <td><strong>NS</strong></td>
+                            <td>Servidor de Nomes (Name Server) autoritativo para o domínio.</td>
+                            <td><code>ns1.example.com</code></td>
+                        </tr>
+                        <tr>
+                            <td><strong>CNAME</strong></td>
+                            <td>Nome Canônico, usado para criar um apelido (alias) para um nome.</td>
+                            <td><code>www.example.com</code></td>
+                        </tr>
+						<tr>
+                            <td><strong>SOA</strong></td>
+                            <td>Início de Autoridade (Start of Authority), contém informações administrativas sobre a zona.</td>
+                            <td>Parâmetros da zona</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
         <div class="slide">
             <div class="content">
-                <h2>🌐 Distribuição do Sistema</h2>
-                
-                <div class="bullet-point">Informações divididas entre múltiplos servidores</div>
-                <div class="bullet-point">Hierarquia de servidores espelha hierarquia de nomes</div>
-                <div class="bullet-point">Cada servidor responsável por uma "zona"</div>
-
+                <h2>🖥️ Servidores de Nomes e Zonas</h2>
+                <div class="bullet-point">Ter um único servidor para todo o DNS seria inviável devido à sobrecarga e ao risco de falha.</div>
+                <div class="bullet-point">Para resolver isso, o espaço de nomes é dividido em <strong>zonas</strong> não superpostas.</div>
+                <div class="bullet-point">Uma <strong>zona</strong> é uma parte da árvore de nomes gerenciada por um servidor de nomes específico.</div>
                 <div class="highlight-box">
-                    <h3>🎯 Zona vs Domínio:</h3>
-                    <div class="bullet-point"><strong>Domínio:</strong> Parte da árvore de nomes</div>
-                    <div class="bullet-point"><strong>Zona:</strong> Parte que um servidor gerencia</div>
-                    <div class="bullet-point">Zona ≤ Domínio (pode ser igual ou menor)</div>
+                    <h3>Tipos de Servidores de Nomes</h3>
+                    <div class="bullet-point"><strong>Servidor Primário:</strong> Obtém os dados da zona a partir de um arquivo em seu disco. É a fonte autoritativa.</div>
+                    <div class="bullet-point"><strong>Servidor Secundário:</strong> Obtém os dados transferindo-os do servidor primário, servindo como backup e para redundância.</div>
                 </div>
-
-                <div class="two-column">
-                    <div>
-                        <h3>🏆 Servidor Primário:</h3>
-                        <div class="bullet-point">Controla e mantém dados originais</div>
-                        <div class="bullet-point">Autoridade sobre a zona</div>
-                        <div class="bullet-point">Fonte das atualizações</div>
-                    </div>
-                    <div>
-                        <h3>🔄 Servidor Secundário:</h3>
-                        <div class="bullet-point">Cópia dos dados do primário</div>
-                        <div class="bullet-point">Backup e redundância</div>
-                        <div class="bullet-point">Transferência de zona</div>
-                    </div>
+				<div class="example-box">
+                    <h3>Exemplo de Zona</h3>
+                    <p>O domínio `washington.edu` pode ser uma zona. No entanto, o administrador pode decidir que `cs.washington.edu` seja uma zona separada, com seus próprios servidores, para delegar o gerenciamento ao departamento de Ciência da Computação.</p>
                 </div>
             </div>
         </div>
 
-        <!-- Slide 10: DNS na Internet -->
-        <div class="slide">
+		<div class="slide">
+			<div class="content">
+				<h2>🔍 Processo de Resolução de Nomes</h2>
+				<div class="bullet-point">O processo de encontrar um endereço IP para um nome é chamado de <strong>resolução</strong>. Tudo começa quando uma aplicação chama um <strong>resolvedor</strong> local.</div>
+
+				<div class="two-column">
+					<div>
+						<h3>🔄 Consulta Recursiva</h3>
+						<div class="bullet-point">O cliente (host) pergunta a um servidor de nomes local.</div>
+						<div class="bullet-point">O servidor local se encarrega de encontrar a resposta final, consultando outros servidores em nome do cliente.</div>
+						<div class="bullet-point">"Por favor, me dê a resposta completa."</div>
+						<div class="bullet-point">É um serviço completo oferecido pelo servidor local ao seu cliente.</div>
+					</div>
+					<div>
+						<h3>➡️ Consulta Iterativa</h3>
+						<div class="bullet-point">O servidor consultado não busca a resposta final.</div>
+						<div class="bullet-point">Ele fornece a melhor referência que possui (ex: "não sei, mas pergunte a este outro servidor").</div>
+						<div class="bullet-point">O servidor local precisa então "iterar", fazendo novas consultas.</div>
+						<div class="bullet-point">Usado entre servidores DNS para evitar sobrecarga.</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="slide">
             <div class="content">
-                <h2>🌍 DNS na Internet</h2>
-                
-                <div class="bullet-point">Três seções principais no espaço de nomes</div>
-
-                <div class="two-column">
-                    <div>
-                        <h3>🏢 Domínios Genéricos</h3>
-                        <div class="bullet-point">.com (comercial)</div>
-                        <div class="bullet-point">.edu (educacional)</div>
-                        <div class="bullet-point">.org (organizações)</div>
-                        <div class="bullet-point">.gov (governo)</div>
-                        <div class="bullet-point">.mil (militar)</div>
-                        <div class="bullet-point">.net (redes)</div>
-                    </div>
-                    <div>
-                        <h3>🌎 Domínios de Países</h3>
-                        <div class="bullet-point">.br (Brasil)</div>
-                        <div class="bullet-point">.us (Estados Unidos)</div>
-                        <div class="bullet-point">.uk (Reino Unido)</div>
-                        <div class="bullet-point">.jp (Japão)</div>
-                        <div class="bullet-point">.ca (Canadá)</div>
-                        <div class="bullet-point">.fr (França)</div>
-                    </div>
-                </div>
-
-                <div class="highlight-box">
-                    <h3>🔄 Domínio Reverso (.arpa)</h3>
-                    <div class="bullet-point">Traduz IP → Nome</div>
-                    <div class="bullet-point">132.34.45.121 → 121.45.34.132.in-addr.arpa</div>
-                </div>
+                <h2>🗺️ Exemplo de Resolução (Iterativa)</h2>
+				<p style="font-size: 1.3em; margin-bottom: 20px;">Um host em `cs.vu.nl` quer o IP de `robot.cs.washington.edu`.</p>
+                <div class="process-step">1. <strong>Servidor Local (`cs.vu.nl`):</strong> Recebe a consulta. Não conhece a resposta.</div>
+                <div class="process-step">2. <strong>Consulta Servidor Raiz (`.`):</strong> "Onde encontro `.edu`?" O Raiz responde com o endereço do servidor TLD de `.edu`.</div>
+                <div class="process-step">3. <strong>Consulta Servidor `.edu`:</strong> "Onde encontro `washington.edu`?" O servidor `.edu` responde com o endereço do servidor de `washington.edu`.</div>
+                <div class="process-step">4. <strong>Consulta Servidor `washington.edu`:</strong> "Onde encontro `cs.washington.edu`?" O servidor de `washington.edu` responde com o endereço do servidor de nomes do departamento de CS.</div>
+                <div class="process-step">5. <strong>Consulta Servidor `cs.washington.edu`:</strong> "Qual o IP de `robot`?" Este servidor é autoritativo para a zona e retorna o endereço IP final.</div>
+                <div class="process-step">6. <strong>Servidor Local:</strong> Envia a resposta final para o host original.</div>
             </div>
         </div>
 
-        <!-- Slide 11: Processo de Resolução -->
-        <div class="slide">
+		<div class="slide">
             <div class="content">
-                <h2>🔍 Como Funciona a Resolução</h2>
-                
-                <div class="bullet-point">Cliente (resolvedor) faz solicitação</div>
-                <div class="bullet-point">Servidor DNS procura resposta</div>
-                <div class="bullet-point">Se não tem, consulta outros servidores</div>
-
-                <div class="two-column">
-                    <div>
-                        <h3>🔄 Resolução Recursiva</h3>
-                        <div class="bullet-point">Cliente espera resposta final</div>
-                        <div class="bullet-point">Servidor faz todo o trabalho</div>
-                        <div class="bullet-point">Consulta múltiplos servidores</div>
-                        <div class="bullet-point">Retorna resposta completa</div>
-                    </div>
-                    <div>
-                        <h3>⚡ Resolução Iterativa</h3>
-                        <div class="bullet-point">Cliente faz múltiplas consultas</div>
-                        <div class="bullet-point">Cada servidor dá uma "dica"</div>
-                        <div class="bullet-point">Cliente segue as referências</div>
-                        <div class="bullet-point">Mais trabalho para o cliente</div>
-                    </div>
-                </div>
-
-                <div class="example-box">
-                    <h3>📝 Exemplo de Resolução:</h3>
-                    <div class="process-step">1. Cliente quer: www.fhda.edu</div>
-                    <div class="process-step">2. Servidor local consulta servidor raiz</div>
-                    <div class="process-step">3. Servidor raiz indica servidor .edu</div>
-                    <div class="process-step">4. Servidor .edu indica servidor fhda.edu</div>
-                    <div class="process-step">5. Servidor fhda.edu retorna IP de www</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Slide 12: Cache DNS -->
-        <div class="slide">
-            <div class="content">
-                <h2>💾 Sistema de Cache</h2>
-                
-                <div class="bullet-point">Servidores guardam respostas na memória</div>
-                <div class="bullet-point">Acelera consultas futuras</div>
-                <div class="bullet-point">Reduz tráfego na Internet</div>
+                <h2>💾 Cache DNS para Melhorar o Desempenho</h2>
+                <div class="bullet-point">Para evitar repetir essa longa busca sempre, os servidores de nomes armazenam as respostas que recebem em um <strong>cache</strong>.</div>
+                <div class="bullet-point">Se outra consulta para o mesmo domínio (ou um domínio próximo) for feita, o servidor pode usar a resposta em cache, acelerando o processo.</div>
 
                 <div class="highlight-box">
                     <h3>⏰ TTL (Time to Live)</h3>
-                    <div class="bullet-point">Define quanto tempo manter no cache</div>
-                    <div class="bullet-point">Previne informações desatualizadas</div>
-                    <div class="bullet-point">Balanceia velocidade vs. precisão</div>
-                </div>
-
-                <div class="example-box">
-                    <h3>🔄 Funcionamento do Cache:</h3>
-                    <div class="process-step">1. Primeira consulta: busca nos servidores</div>
-                    <div class="process-step">2. Resposta salva no cache com TTL</div>
-                    <div class="process-step">3. Consultas seguintes: resposta do cache</div>
-                    <div class="process-step">4. TTL expira: cache é renovado</div>
+                    <div class="bullet-point">Respostas em cache podem ficar desatualizadas se a informação original mudar.</div>
+                    <div class="bullet-point">Cada registro de recurso inclui um campo <strong>Tempo_de_vida (TTL)</strong>.</div>
+                    <div class="bullet-point">O TTL informa aos servidores remotos por quanto tempo eles podem manter aquele registro em cache antes de descartá-lo.</div>
+                    <div class="bullet-point">É um balanço entre desempenho (TTL longo) e consistência (TTL curto).</div>
                 </div>
             </div>
         </div>
 
-        <!-- Slide 13: Mensagens DNS -->
-        <div class="slide">
+		<div class="slide">
             <div class="content">
-                <h2>📨 Mensagens DNS</h2>
-                
-                <div class="two-column">
-                    <div>
-                        <h3>❓ Mensagem de Consulta</h3>
-                        <div class="bullet-point">Cabeçalho (12 bytes)</div>
-                        <div class="bullet-point">Seção de perguntas</div>
-                        <div class="bullet-point">Cliente → Servidor</div>
-                    </div>
-                    <div>
-                        <h3>✅ Mensagem de Resposta</h3>
-                        <div class="bullet-point">Cabeçalho (12 bytes)</div>
-                        <div class="bullet-point">Seção de perguntas</div>
-                        <div class="bullet-point">Seção de respostas</div>
-                        <div class="bullet-point">Seção de autoridades</div>
-                        <div class="bullet-point">Seção de informações adicionais</div>
-                    </div>
-                </div>
-
-                <div class="highlight-box">
-                    <h3>🎯 Campos do Cabeçalho:</h3>
-                    <div class="bullet-point">Identificação (para relacionar pergunta/resposta)</div>
-                    <div class="bullet-point">Flags (tipo de mensagem e configurações)</div>
-                    <div class="bullet-point">Contadores (número de registros em cada seção)</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Slide 14: DNS Dinâmico (DDNS) -->
-        <div class="slide">
-            <div class="content">
-                <h2>🔄 DNS Dinâmico (DDNS)</h2>
-                
-                <div class="bullet-point">Atualização automática dos registros</div>
-                <div class="bullet-point">Integração com DHCP</div>
-                <div class="bullet-point">Elimina configuração manual</div>
-
-                <div class="example-box">
-                    <h3>⚡ Processo DDNS:</h3>
-                    <div class="process-step">1. Novo host conecta na rede</div>
-                    <div class="process-step">2. DHCP atribui IP dinamicamente</div>
-                    <div class="process-step">3. DHCP informa DNS sobre nova ligação</div>
-                    <div class="process-step">4. Servidor primário atualiza zona</div>
-                    <div class="process-step">5. Servidores secundários são notificados</div>
-                </div>
-
-                <div class="highlight-box">
-                    <h3>🔐 Segurança:</h3>
-                    <div class="bullet-point">Mecanismos de autenticação</div>
-                    <div class="bullet-point">Previne alterações não autorizadas</div>
-                    <div class="bullet-point">Controle de acesso aos registros</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Slide 15: Protocolos de Transporte -->
-        <div class="slide">
-            <div class="content">
-                <h2>🚚 Transporte das Mensagens</h2>
-                
-                <div class="bullet-point">Porta padrão: 53 (TCP e UDP)</div>
+                <h2>🚚 Protocolo de Transporte: UDP ou TCP?</h2>
+                 <div class="bullet-point">O DNS usa a porta 53 para ambos os protocolos, mas a escolha depende da situação.</div>
 
                 <div class="two-column">
                     <div>
-                        <h3>⚡ UDP (Mais Comum)</h3>
-                        <div class="bullet-point">Mensagens até 512 bytes</div>
-                        <div class="bullet-point">Consultas simples</div>
-                        <div class="bullet-point">Mais rápido</div>
-                        <div class="bullet-point">Menos confiável</div>
+                        <h3>⚡ UDP (User Datagram Protocol)</h3>
+                        <div class="bullet-point">É o protocolo <strong>preferencial e mais comum</strong> para consultas e respostas.</div>
+                        <div class="bullet-point"><strong>Motivo:</strong> É mais rápido e leve. Uma consulta DNS geralmente é pequena e cabe em um único pacote UDP.</div>
+						<div class="bullet-point">Se um pacote se perde, o cliente simplesmente repete a consulta.</div>
                     </div>
                     <div>
-                        <h3>🔒 TCP (Quando Necessário)</h3>
-                        <div class="bullet-point">Mensagens > 512 bytes</div>
-                        <div class="bullet-point">Transferência de zona</div>
-                        <div class="bullet-point">Mais lento</div>
-                        <div class="bullet-point">Mais confiável</div>
+                        <h3>🔒 TCP (Transmission Control Protocol)</h3>
+                        <div class="bullet-point">Usado em situações específicas.</div>
+                        <div class="bullet-point"><strong>Transferência de Zona:</strong> Quando um servidor secundário precisa copiar todos os registros de um primário.</div>
+						<div class="bullet-point"><strong>Respostas Grandes:</strong> Se uma resposta exceder o limite de tamanho do UDP (historicamente 512 bytes), a consulta precisa ser refeita via TCP.</div>
                     </div>
-                </div>
-
-                <div class="example-box">
-                    <h3>🔄 Mudança de Protocolo:</h3>
-                    <div class="process-step">1. Cliente tenta UDP primeiro</div>
-                    <div class="process-step">2. Se resposta > 512 bytes, servidor trunca</div>
-                    <div class="process-step">3. Servidor ativa bit TC (truncated)</div>
-                    <div class="process-step">4. Cliente refaz consulta via TCP</div>
                 </div>
             </div>
         </div>
 
-        <!-- Slide 16: Resumo e Importância -->
         <div class="slide">
             <div class="content">
                 <h2>🎯 Resumo Final</h2>
-                
                 <div class="highlight-box large-text center-text">
-                    <strong>DNS é a "agenda telefônica" da Internet</strong>
+                    <strong>O DNS é um pilar fundamental da Internet, um sistema distribuído, hierárquico e resiliente.</strong>
                 </div>
-
                 <div class="two-column">
                     <div>
                         <h3>✅ Características Principais:</h3>
-                        <div class="bullet-point">Sistema hierárquico</div>
-                        <div class="bullet-point">Distribuído globalmente</div>
-                        <div class="bullet-point">Cache para eficiência</div>
-                        <div class="bullet-point">Redundância e confiabilidade</div>
-                        <div class="bullet-point">Atualizações dinâmicas</div>
+                        <div class="bullet-point">Esquema de nomes hierárquico</div>
+                        <div class="bullet-point">Banco de dados distribuído globalmente</div>
+                        <div class="bullet-point">Uso de cache para eficiência</div>
+                        <div class="bullet-point">Replicação para confiabilidade (servidores secundários)</div>
                     </div>
                     <div>
                         <h3>🎯 Benefícios:</h3>
-                        <div class="bullet-point">Nomes fáceis de lembrar</div>
-                        <div class="bullet-point">Escalabilidade global</div>
-                        <div class="bullet-point">Descentralização</div>
-                        <div class="bullet-point">Tolerância a falhas</div>
-                        <div class="bullet-point">Base da Internet moderna</div>
+                        <div class="bullet-point">Permite o uso de nomes fáceis de lembrar</div>
+                        <div class="bullet-point">Desassocia o nome do serviço de um endereço IP específico</div>
+                        <div class="bullet-point">Altamente escalável e robusto</div>
+                        <div class="bullet-point">Base para muitas outras aplicações, como e-mail e a Web</div>
                     </div>
                 </div>
-
                 <div class="example-box center-text">
-                    <h3>🌐 Sem DNS, a Internet seria apenas números!</h3>
-                    <p>Imaginem ter que decorar 142.250.191.14 em vez de google.com</p>
+                    <h3>🌐 Sem o DNS, teríamos que navegar na web usando apenas sequências de números!</h3>
                 </div>
             </div>
         </div>
 
-        <!-- Slide 17: Quiz -->
         <div class="slide">
             <div class="content">
                 <h2>🧠 Quiz - Teste seus conhecimentos!</h2>
-                
                 <div class="quiz-container">
-                    <!-- Questão 1 -->
                     <div class="quiz-question" id="question1">
                         <h3>📝 Questão 1</h3>
-                        <p><strong>Qual é a principal função do DNS?</strong></p>
+                        <p><strong>Para que serve um registro do tipo CNAME?</strong></p>
                         <div class="quiz-options">
                             <div class="quiz-option" onclick="selectOption(1, 'a', false)">
-                                <span class="option-letter">A)</span> Proteger a rede contra vírus
+                                <span class="option-letter">A)</span> Para apontar para um servidor de e-mail (MX)
                             </div>
                             <div class="quiz-option" onclick="selectOption(1, 'b', true)">
-                                <span class="option-letter">B)</span> Traduzir nomes de domínio em endereços IP
+                                <span class="option-letter">B)</span> Para criar um apelido (alias) para outro nome de domínio
                             </div>
                             <div class="quiz-option" onclick="selectOption(1, 'c', false)">
-                                <span class="option-letter">C)</span> Gerenciar o tráfego de dados na Internet
+                                <span class="option-letter">C)</span> Para armazenar o endereço IPv6 de um host
                             </div>
                             <div class="quiz-option" onclick="selectOption(1, 'd', false)">
-                                <span class="option-letter">D)</span> Criptografar mensagens de e-mail
+                                <span class="option-letter">D)</span> Para indicar qual é o servidor de nomes (NS) autoritativo
                             </div>
                         </div>
                         <div class="quiz-feedback" id="feedback1"></div>
                     </div>
 
-                    <!-- Questão 2 -->
                     <div class="quiz-question" id="question2" style="display: none;">
                         <h3>📝 Questão 2</h3>
-                        <p><strong>Qual a diferença entre FQDN e PQDN?</strong></p>
+                        <p><strong>Qual protocolo é predominantemente usado para consultas DNS e por quê?</strong></p>
                         <div class="quiz-options">
                             <div class="quiz-option" onclick="selectOption(2, 'a', false)">
-                                <span class="option-letter">A)</span> FQDN é mais rápido que PQDN
+                                <span class="option-letter">A)</span> TCP, porque é mais confiável para evitar perdas
                             </div>
                             <div class="quiz-option" onclick="selectOption(2, 'b', false)">
-                                <span class="option-letter">B)</span> PQDN é usado apenas para e-mails
+                                <span class="option-letter">B)</span> HTTP, porque o DNS faz parte da web
                             </div>
                             <div class="quiz-option" onclick="selectOption(2, 'c', true)">
-                                <span class="option-letter">C)</span> FQDN termina com ponto (.), PQDN não
+                                <span class="option-letter">C)</span> UDP, porque é mais rápido e as consultas são pequenas
                             </div>
                             <div class="quiz-option" onclick="selectOption(2, 'd', false)">
-                                <span class="option-letter">D)</span> Não há diferença entre eles
+                                <span class="option-letter">D)</span> SMTP, para consultas relacionadas a e-mail
                             </div>
                         </div>
                         <div class="quiz-feedback" id="feedback2"></div>
                     </div>
 
-                    <!-- Questão 3 -->
                     <div class="quiz-question" id="question3" style="display: none;">
                         <h3>📝 Questão 3</h3>
-                        <p><strong>Na resolução recursiva, quem faz o trabalho de consultar múltiplos servidores?</strong></p>
+                        <p><strong>O que é uma "zona" no contexto do DNS?</strong></p>
                         <div class="quiz-options">
-                            <div class="quiz-option" onclick="selectOption(3, 'a', false)">
-                                <span class="option-letter">A)</span> O cliente (resolvedor)
+                            <div class="quiz-option" onclick="selectOption(3, 'a', true)">
+                                <span class="option-letter">A)</span> Uma parte do espaço de nomes gerenciada por um servidor específico
                             </div>
-                            <div class="quiz-option" onclick="selectOption(3, 'b', true)">
-                                <span class="option-letter">B)</span> O servidor DNS
+                            <div class="quiz-option" onclick="selectOption(3, 'b', false)">
+                                <span class="option-letter">B)</span> Uma região geográfica onde os servidores estão localizados
                             </div>
                             <div class="quiz-option" onclick="selectOption(3, 'c', false)">
-                                <span class="option-letter">C)</span> O servidor raiz
+                                <span class="option-letter">C)</span> Um tipo especial de domínio, como .com ou .org
                             </div>
-                            <div class="quiz-option" onclick="selectOption(3, 'd', false)">
-                                <span class="option-letter">D)</span> Todos os servidores juntos
+                             <div class="quiz-option" onclick="selectOption(3, 'd', false)">
+                                <span class="option-letter">D)</span> O tempo que um registro pode ficar no cache
                             </div>
                         </div>
                         <div class="quiz-feedback" id="feedback3"></div>
                     </div>
 
-                    <!-- Questão 4 -->
                     <div class="quiz-question" id="question4" style="display: none;">
                         <h3>📝 Questão 4</h3>
-                        <p><strong>Quando o DNS usa TCP em vez de UDP?</strong></p>
+                        <p><strong>Qual a finalidade do campo TTL (Time-To-Live) em um registro de recurso?</strong></p>
                         <div class="quiz-options">
-                            <div class="quiz-option" onclick="selectOption(4, 'a', false)">
-                                <span class="option-letter">A)</span> Sempre que possível
+                             <div class="quiz-option" onclick="selectOption(4, 'a', false)">
+                                <span class="option-letter">A)</span> Indicar a idade do servidor de nomes
                             </div>
-                            <div class="quiz-option" onclick="selectOption(4, 'b', true)">
-                                <span class="option-letter">B)</span> Quando a mensagem é maior que 512 bytes
+                            <div class="quiz-option" onclick="selectOption(4, 'b', false)">
+                                <span class="option-letter">B)</span> Definir a prioridade do registro MX
                             </div>
-                            <div class="quiz-option" onclick="selectOption(4, 'c', false)">
-                                <span class="option-letter">C)</span> Apenas para consultas de e-mail
+                            <div class="quiz-option" onclick="selectOption(4, 'c', true)">
+                                <span class="option-letter">C)</span> Dizer por quanto tempo um registro pode ser mantido em cache
                             </div>
-                            <div class="quiz-option" onclick="selectOption(4, 'd', false)">
-                                <span class="option-letter">D)</span> Nunca, sempre usa UDP
+							<div class="quiz-option" onclick="selectOption(4, 'd', false)">
+                                <span class="option-letter">D)</span> Contar quantas vezes o registro foi consultado
                             </div>
                         </div>
                         <div class="quiz-feedback" id="feedback4"></div>
                     </div>
 
-                    <!-- Resultado Final -->
                     <div class="quiz-result" id="quizResult" style="display: none;">
                         <h3>🎉 Parabéns! Quiz Concluído!</h3>
                         <div class="result-box">
@@ -1024,6 +784,20 @@
                     <button class="nav-btn" id="nextQuizBtn" onclick="nextQuestion()" style="display: none;">
                         Próxima Questão ➡️
                     </button>
+                </div>
+            </div>
+        </div>
+
+		<div class="slide">
+            <div class="content">
+                <h2>📚 Referência Bibliográfica</h2>
+				<div class="reference">
+					<p>TANENBAUM, Andrew S.; WETHERALL, David J. <strong>Redes de Computadores</strong>. 5. ed. São Paulo: Pearson Education do Brasil, 2011. Cap. 7, p. 384-391.</p>
+				</div>
+                <div class="example-box center-text">
+                    <h3>🤖 Metodologia de Criação</h3>
+                    <p>Esta apresentação foi gerada por uma IA, com base no conteúdo do PDF fornecido.<br>
+                    O estilo visual, a estrutura e a interatividade do arquivo HTML original foram preservados.</p>
                 </div>
             </div>
         </div>
@@ -1046,6 +820,11 @@
         let score = 0;
         let quizAnswered = [false, false, false, false];
 
+        function showFirstSlide() {
+            currentSlide = 0;
+            showSlide(currentSlide);
+        }
+
         function showSlide(index) {
             slides.forEach((slide, i) => {
                 slide.classList.toggle('active', i === index);
@@ -1066,12 +845,11 @@
 
         // Quiz Functions
         function selectOption(questionNum, option, isCorrect) {
-            if (quizAnswered[questionNum - 1]) return; // Já respondida
+            if (quizAnswered[questionNum - 1]) return;
             
             const options = document.querySelectorAll(`#question${questionNum} .quiz-option`);
             const feedback = document.getElementById(`feedback${questionNum}`);
             
-            // Marcar todas as opções
             options.forEach(opt => {
                 opt.style.pointerEvents = 'none';
                 if (opt.onclick.toString().includes('true')) {
@@ -1081,23 +859,20 @@
                 }
             });
             
-            // Mostrar feedback
             if (isCorrect) {
-                feedback.innerHTML = '✅ Correto! Muito bem!';
+                feedback.innerHTML = '✅ Correto! Excelente!';
                 feedback.className = 'quiz-feedback correct';
                 score++;
             } else {
-                feedback.innerHTML = '❌ Incorreto. A resposta correta está destacada em verde.';
+                feedback.innerHTML = '❌ Incorreto. A resposta certa está em verde.';
                 feedback.className = 'quiz-feedback incorrect';
             }
             
             quizAnswered[questionNum - 1] = true;
             
-            // Mostrar botão para próxima questão
             if (questionNum < 4) {
                 document.getElementById('nextQuizBtn').style.display = 'inline-block';
             } else {
-                // Última questão - mostrar resultado
                 setTimeout(() => {
                     showQuizResult();
                 }, 2000);
@@ -1112,94 +887,61 @@
         }
 
         function showQuizResult() {
-            // Esconder última questão
-            document.getElementById('question4').style.display = 'none';
-            
-            // Mostrar resultado
+            document.getElementById(`question${currentQuestion}`).style.display = 'none';
             document.getElementById('quizResult').style.display = 'block';
             document.getElementById('finalScore').textContent = score;
             
             const resultMessage = document.getElementById('resultMessage');
             if (score === 4) {
-                resultMessage.innerHTML = '🏆 Excelente! Você domina o DNS!';
-            } else if (score === 3) {
-                resultMessage.innerHTML = '👏 Muito bom! Quase perfeito!';
-            } else if (score === 2) {
-                resultMessage.innerHTML = '👍 Bom trabalho! Continue estudando!';
-            } else if (score === 1) {
-                resultMessage.innerHTML = '📚 Estude um pouco mais sobre DNS!';
+                resultMessage.innerHTML = '🏆 Excelente! Você é um mestre do DNS!';
+            } else if (score >= 2) {
+                resultMessage.innerHTML = '👏 Muito bom! Você entende bem o assunto.';
             } else {
-                resultMessage.innerHTML = '📖 Recomendo revisar o conteúdo!';
+                resultMessage.innerHTML = '📖 Continue estudando para aprimorar seus conhecimentos!';
             }
         }
 
         function restartQuiz() {
-            // Reset variables
             currentQuestion = 1;
             score = 0;
             quizAnswered = [false, false, false, false];
             
-            // Reset interface
             for (let i = 1; i <= 4; i++) {
                 const question = document.getElementById(`question${i}`);
                 const options = question.querySelectorAll('.quiz-option');
                 const feedback = document.getElementById(`feedback${i}`);
                 
-                // Reset options
                 options.forEach(opt => {
                     opt.className = 'quiz-option';
                     opt.style.pointerEvents = 'auto';
                 });
                 
-                // Hide feedback
                 feedback.style.display = 'none';
+                feedback.innerHTML = '';
+				feedback.className = 'quiz-feedback';
                 
-                // Hide all questions except first
                 question.style.display = i === 1 ? 'block' : 'none';
             }
             
-            // Hide result and buttons
             document.getElementById('quizResult').style.display = 'none';
             document.getElementById('nextQuizBtn').style.display = 'none';
         }
 
-        function showSlide(index) {
-            slides.forEach((slide, i) => {
-                slide.classList.toggle('active', i === index);
-            });
-            
-            document.getElementById('current-slide').textContent = index + 1;
-            document.getElementById('prevBtn').disabled = index === 0;
-            document.getElementById('nextBtn').disabled = index === totalSlides - 1;
-        }
-
-        function changeSlide(direction) {
-            const newSlide = currentSlide + direction;
-            if (newSlide >= 0 && newSlide < totalSlides) {
-                currentSlide = newSlide;
-                showSlide(currentSlide);
-            }
-        }
-
-        // Navegação por teclado
+        // Keyboard navigation
         document.addEventListener('keydown', (e) => {
+            if (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA') return;
             if (e.key === 'ArrowLeft') changeSlide(-1);
             if (e.key === 'ArrowRight') changeSlide(1);
-            if (e.key === 'Home') {
-                currentSlide = 0;
-                showSlide(currentSlide);
-            }
+            if (e.key === 'Home') showFirstSlide();
             if (e.key === 'End') {
                 currentSlide = totalSlides - 1;
                 showSlide(currentSlide);
             }
         });
 
-        // Inicializar
+        // Initialize
         showSlide(0);
         
-        // Inicializar quiz no slide 16
-        document.getElementById('question1').style.display = 'block';
     </script>
 </body>
 </html>
