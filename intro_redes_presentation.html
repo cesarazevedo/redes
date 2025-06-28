@@ -77,6 +77,13 @@
             align-items: start;
         }
 
+        .three-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 30px;
+            align-items: start;
+        }
+
         .bullet-point {
             display: flex;
             align-items: flex-start;
@@ -105,6 +112,31 @@
             border-radius: 15px;
             margin: 20px 0;
             border-left: 5px solid #20b2aa;
+        }
+
+        .security-box {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fab1a0 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #e17055;
+        }
+
+        .future-box {
+            background: linear-gradient(135deg, #a29bfe 0%, #6c5ce7 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #5f3dc4;
+        }
+
+        .speed-comparison {
+            background: linear-gradient(135deg, #00b894 0%, #55efc4 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #00a085;
         }
 
         .navigation {
@@ -174,6 +206,16 @@
             font-size: 1.2em;
         }
 
+        .visual-diagram {
+            background: #f8f9fa;
+            border: 2px solid #e2e8f0;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 20px 0;
+            text-align: center;
+            font-size: 1.4em;
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
@@ -220,6 +262,21 @@
             color: #1e3c72;
             margin-bottom: 15px;
             font-size: 1.4em;
+        }
+
+        .device-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            border: 2px solid #e2e8f0;
+            text-align: center;
+            margin: 15px 0;
+        }
+
+        .device-card h4 {
+            color: #1e3c72;
+            margin-bottom: 10px;
+            font-size: 1.3em;
         }
 
         .network-type {
@@ -402,31 +459,51 @@
             margin: 20px 0;
             border-left: 5px solid #c44569;
         }
-		.home-btn {
-    position: fixed;
-    top: 30px;
-    left: 30px;
-    background: #667eea;
-    color: white;
-    border: none;
-    border-radius: 25px;
-    padding: 12px 20px;
-    font-size: 1em;
-    font-weight: bold;
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    transition: all 0.3s ease;
-    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
-    z-index: 1001;
-}
 
-.home-btn:hover {
-    background: #5a67d8;
-    transform: translateY(-2px);
-    box-shadow: 0 7px 20px rgba(102, 126, 234, 0.4);
-}
+        .home-btn {
+            position: fixed;
+            top: 30px;
+            left: 30px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            padding: 12px 20px;
+            font-size: 1em;
+            font-weight: bold;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+            z-index: 1001;
+        }
+
+        .home-btn:hover {
+            background: #5a67d8;
+            transform: translateY(-2px);
+            box-shadow: 0 7px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .speed-bar {
+            background: #e2e8f0;
+            height: 20px;
+            border-radius: 10px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+
+        .speed-fill {
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+
+        .speed-bluetooth { background: #74b9ff; width: 2%; }
+        .speed-wifi { background: #00b894; width: 20%; }
+        .speed-fiber { background: #fdcb6e; width: 100%; }
+        .speed-enterprise { background: #e17055; width: 100%; }
     </style>
 </head>
 <body>
@@ -435,7 +512,7 @@
 </a>
     <div class="presentation">
         <div class="slide-counter">
-            <span id="current-slide">1</span> / <span id="total-slides">18</span>
+            <span id="current-slide">1</span> / <span id="total-slides">23</span>
         </div>
 
         <!-- Slide 1: Título -->
@@ -468,14 +545,14 @@
                     <div>
                         <h3>🌟 Conceitos Fundamentais</h3>
                         <div class="bullet-point">O que é uma rede de computadores</div>
-                        <div class="bullet-point">Componentes essenciais</div>
+                        <div class="bullet-point">Componentes essenciais e dispositivos</div>
                         <div class="bullet-point">Finalidades e aplicações</div>
                         <div class="bullet-point">Importância no mundo moderno</div>
                         
                         <h3>📚 História</h3>
                         <div class="bullet-point">Evolução das redes</div>
                         <div class="bullet-point">ARPANET: o início da Internet</div>
-                        <div class="bullet-point">Expansão global</div>
+                        <div class="bullet-point">Expansão global e era comercial</div>
                     </div>
                     <div>
                         <h3>🏗️ Arquiteturas</h3>
@@ -483,10 +560,13 @@
                         <div class="bullet-point">Ponto-a-Ponto (P2P)</div>
                         <div class="bullet-point">Vantagens e desvantagens</div>
                         
-                        <h3>📐 Topologias</h3>
+                        <h3>📐 Topologias e Classificação</h3>
                         <div class="bullet-point">Topologia física vs lógica</div>
                         <div class="bullet-point">Tipos: estrela, anel, barramento</div>
                         <div class="bullet-point">Classificação: LAN, MAN, WAN</div>
+                        
+                        <h3>🚀 Tendências Atuais</h3>
+                        <div class="bullet-point">IoT, 5G e segurança</div>
                     </div>
                 </div>
 
@@ -528,7 +608,7 @@
             </div>
         </div>
 
-        <!-- Slide 4: Componentes de uma Rede -->
+        <!-- Slide 4: Componentes de uma Rede (EXPANDIDO) -->
         <div class="slide">
             <div class="content">
                 <h2>🧩 Componentes de uma Rede</h2>
@@ -540,16 +620,16 @@
                         <div class="bullet-point">Servidores</div>
                         <div class="bullet-point">Roteadores</div>
                         <div class="bullet-point">Switches</div>
-                        <div class="bullet-point">Hubs</div>
+                        <div class="bullet-point">Hubs (tecnologia antiga)</div>
                         <div class="bullet-point">Access Points (WiFi)</div>
                     </div>
                     <div>
                         <h3>🔗 Meios de Comunicação</h3>
-                        <div class="bullet-point">Cabos de par trançado</div>
-                        <div class="bullet-point">Fibra óptica</div>
-                        <div class="bullet-point">Sinais sem fio (WiFi)</div>
-                        <div class="bullet-point">Bluetooth</div>
-                        <div class="bullet-point">Satélite</div>
+                        <div class="bullet-point">📶 <strong>WiFi:</strong> Rápido e prático, limitado por paredes</div>
+                        <div class="bullet-point">🔌 <strong>Cabo Ethernet:</strong> Mais rápido e estável</div>
+                        <div class="bullet-point">🌟 <strong>Fibra Óptica:</strong> Velocidade da luz, longas distâncias</div>
+                        <div class="bullet-point">📱 <strong>Bluetooth:</strong> Curta distância, baixo consumo</div>
+                        <div class="bullet-point">🛰️ <strong>Satélite:</strong> Cobertura global</div>
                     </div>
                 </div>
 
@@ -568,7 +648,59 @@
             </div>
         </div>
 
-        <!-- Slide 5: Finalidades das Redes -->
+        <!-- Slide 5: NOVO - Dispositivos de Rede Detalhados -->
+        <div class="slide">
+            <div class="content">
+                <h2>🔧 Dispositivos de Rede Explicados</h2>
+                
+                <div class="three-column">
+                    <div class="device-card">
+                        <h4>🔀 Switch</h4>
+                        <div class="bullet-point">"Semáforo inteligente"</div>
+                        <div class="bullet-point">Direciona dados apenas para o destino</div>
+                        <div class="bullet-point">Cria uma "conversa privada"</div>
+                        <div class="bullet-point">Mais eficiente e seguro</div>
+                    </div>
+                    
+                    <div class="device-card">
+                        <h4>📡 Roteador</h4>
+                        <div class="bullet-point">"GPS da rede"</div>
+                        <div class="bullet-point">Encontra melhor caminho entre redes</div>
+                        <div class="bullet-point">Conecta sua casa à Internet</div>
+                        <div class="bullet-point">Possui firewall integrado</div>
+                    </div>
+                    
+                    <div class="device-card">
+                        <h4>🔄 Hub</h4>
+                        <div class="bullet-point">"Megafone da rede"</div>
+                        <div class="bullet-point">Repete tudo para todos</div>
+                        <div class="bullet-point">Tecnologia antiga</div>
+                        <div class="bullet-point">Substituído por switches</div>
+                    </div>
+                </div>
+
+                <div class="highlight-box">
+                    <h3>🏠 Na Sua Casa:</h3>
+                    <div class="bullet-point"><strong>Modem:</strong> Converte sinal da operadora para sua rede</div>
+                    <div class="bullet-point"><strong>Roteador WiFi:</strong> Distribui Internet para seus dispositivos</div>
+                    <div class="bullet-point"><strong>Access Point:</strong> Estende o sinal WiFi para áreas distantes</div>
+                </div>
+
+                <div class="diagram">
+                    Internet → Modem → Roteador WiFi → Dispositivos<br>
+                    (Cada dispositivo tem sua "conversa" privada)
+                </div>
+
+                <div class="example-box center-text">
+                    <h3>💡 Analogia: Sistema de Correspondência</h3>
+                    <p><strong>Hub:</strong> Carteiro grita a carta na praça<br>
+                    <strong>Switch:</strong> Carteiro entrega direto na casa certa<br>
+                    <strong>Roteador:</strong> Central dos Correios que escolhe a melhor rota</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: Finalidades das Redes -->
         <div class="slide">
             <div class="content">
                 <h2>🎯 Finalidade das Redes</h2>
@@ -612,7 +744,7 @@
             </div>
         </div>
 
-        <!-- Slide 6: Histórico - ARPANET -->
+        <!-- Slide 7: Histórico - ARPANET (ATUALIZADO) -->
         <div class="slide">
             <div class="content">
                 <h2>🕰️ Breve Histórico das Redes</h2>
@@ -641,19 +773,69 @@
                     <div>
                         <h3>🌐 Década de 90 em diante</h3>
                         <div class="bullet-point">World Wide Web (WWW)</div>
-                        <div class="bullet-point">Internet comercial</div>
+                        <div class="bullet-point"><strong>Internet comercial (anos 90)</strong></div>
+                        <div class="bullet-point">Internet se torna pública</div>
                         <div class="bullet-point">Explosão de usuários</div>
                         <div class="bullet-point">Era da informação</div>
                     </div>
                 </div>
 
                 <div class="diagram">
-                    ARPANET (1969) → Internet (1980s) → WWW (1990s) → Internet Moderna
+                    ARPANET (1969) → Internet Acadêmica (1980s) → Internet Pública/Comercial (1990s) → Internet Moderna
                 </div>
             </div>
         </div>
 
-        <!-- Slide 7: Importância das Redes -->
+        <!-- Slide 8: NOVO - Segurança Básica em Redes -->
+        <div class="slide">
+            <div class="content">
+                <h2>🛡️ Segurança Básica em Redes</h2>
+                
+                <div class="security-box">
+                    <h3>⚠️ Por que a Segurança é Importante?</h3>
+                    <div class="bullet-point">Redes conectam você ao mundo... incluindo pessoas mal-intencionadas</div>
+                    <div class="bullet-point">Seus dados pessoais, fotos e senhas podem ser roubados</div>
+                    <div class="bullet-point">Vírus podem danificar seus dispositivos</div>
+                </div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>🔐 Proteções Básicas</h3>
+                        <div class="bullet-point">🔑 <strong>Senhas fortes:</strong> 8+ caracteres, números, símbolos</div>
+                        <div class="bullet-point">📶 <strong>WiFi protegido:</strong> WPA2/WPA3, não deixar aberto</div>
+                        <div class="bullet-point">🦠 <strong>Antivírus:</strong> Proteção contra malware</div>
+                        <div class="bullet-point">🧱 <strong>Firewall:</strong> "Porteiro" da sua rede</div>
+                        <div class="bullet-point">🔄 <strong>Atualizações:</strong> Sempre manter sistemas atualizados</div>
+                    </div>
+                    <div>
+                        <h3>⚠️ Cuidados Especiais</h3>
+                        <div class="bullet-point">🏪 <strong>WiFi público:</strong> Evitar dados sensíveis</div>
+                        <div class="bullet-point">💾 <strong>Backup:</strong> Cópia de segurança dos dados</div>
+                        <div class="bullet-point">📧 <strong>E-mails suspeitos:</strong> Não clicar em links estranhos</div>
+                        <div class="bullet-point">👥 <strong>Redes sociais:</strong> Configurar privacidade</div>
+                        <div class="bullet-point">🛒 <strong>Compras online:</strong> Sites seguros (https://)</div>
+                    </div>
+                </div>
+
+                <div class="highlight-box center-text">
+                    <h3>🏠 Analogia: Segurança da Casa</h3>
+                    <p><strong>Senha WiFi</strong> = Trancar a porta de casa<br>
+                    <strong>Firewall</strong> = Porteiro do prédio<br>
+                    <strong>Antivírus</strong> = Sistema de alarme<br>
+                    <strong>Backup</strong> = Cofre com documentos importantes</p>
+                </div>
+
+                <div class="example-box">
+                    <h3>🎯 Dicas Práticas</h3>
+                    <div class="bullet-point">Use gerenciadores de senha (1Password, Bitwarden)</div>
+                    <div class="bullet-point">Ative autenticação em duas etapas (2FA)</div>
+                    <div class="bullet-point">Desconfie de ofertas "boas demais para ser verdade"</div>
+                    <div class="bullet-point">Mantenha sistemas operacionais sempre atualizados</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 9: Importância das Redes -->
         <div class="slide">
             <div class="content">
                 <h2>🌍 Importância das Redes no Mundo Moderno</h2>
@@ -696,7 +878,69 @@
             </div>
         </div>
 
-        <!-- Slide 8: Arquitetura Cliente-Servidor -->
+        <!-- Slide 10: NOVO - Velocidades Comparativas -->
+        <div class="slide">
+            <div class="content">
+                <h2>⚡ Velocidades de Rede - Comparação</h2>
+                
+                <div class="speed-comparison">
+                    <h3>📊 Velocidades Típicas (Mbps = Megabits por segundo)</h3>
+                    
+                    <div style="margin: 20px 0;">
+                        <strong>📱 Bluetooth: 2 Mbps</strong> - Enviar uma foto
+                        <div class="speed-bar"><div class="speed-fill speed-bluetooth"></div></div>
+                    </div>
+                    
+                    <div style="margin: 20px 0;">
+                        <strong>📶 WiFi doméstico: 100 Mbps</strong> - Streaming HD
+                        <div class="speed-bar"><div class="speed-fill speed-wifi"></div></div>
+                    </div>
+                    
+                    <div style="margin: 20px 0;">
+                        <strong>🏠 Fibra residencial: 500 Mbps</strong> - Múltiplos dispositivos
+                        <div class="speed-bar"><div class="speed-fill speed-fiber"></div></div>
+                    </div>
+                    
+                    <div style="margin: 20px 0;">
+                        <strong>🏢 Internet empresarial: 1000+ Mbps</strong> - Centenas de usuários
+                        <div class="speed-bar"><div class="speed-fill speed-enterprise"></div></div>
+                    </div>
+                </div>
+
+                <div class="highlight-box center-text">
+                    <h3>🕐 Analogia: Velocidades de Transporte</h3>
+                    <p><strong>Bluetooth</strong> = Andar a pé 🚶‍♂️<br>
+                    <strong>WiFi casa</strong> = Bicicleta 🚴‍♂️<br>
+                    <strong>Fibra</strong> = Carro 🚗<br>
+                    <strong>Empresarial</strong> = Avião ✈️</p>
+                </div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>⏰ Tempo para baixar um filme (2GB)</h3>
+                        <div class="bullet-point"><strong>Bluetooth:</strong> ~2 horas</div>
+                        <div class="bullet-point"><strong>WiFi 100 Mbps:</strong> ~3 minutos</div>
+                        <div class="bullet-point"><strong>Fibra 500 Mbps:</strong> ~40 segundos</div>
+                        <div class="bullet-point"><strong>Empresarial 1 Gbps:</strong> ~20 segundos</div>
+                    </div>
+                    <div>
+                        <h3>🎯 Para que Serve Cada Velocidade</h3>
+                        <div class="bullet-point"><strong>2-10 Mbps:</strong> E-mail, navegação básica</div>
+                        <div class="bullet-point"><strong>25-50 Mbps:</strong> Streaming HD</div>
+                        <div class="bullet-point"><strong>100+ Mbps:</strong> Múltiplos usuários</div>
+                        <div class="bullet-point"><strong>500+ Mbps:</strong> 4K, games, trabalho</div>
+                    </div>
+                </div>
+
+                <div class="example-box center-text">
+                    <h3>🏠 Dica: Escolhendo Internet Doméstica</h3>
+                    <p>Família de 4 pessoas: 200-300 Mbps é suficiente<br>
+                    Para trabalho home office: 100 Mbps por pessoa</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 11: Arquitetura Cliente-Servidor -->
         <div class="slide">
             <div class="content">
                 <h2>🏗️ Arquitetura Cliente-Servidor</h2>
@@ -740,7 +984,7 @@
             </div>
         </div>
 
-        <!-- Slide 9: Arquitetura P2P -->
+        <!-- Slide 12: Arquitetura P2P -->
         <div class="slide">
             <div class="content">
                 <h2>🔄 Arquitetura Ponto-a-Ponto (P2P)</h2>
@@ -786,7 +1030,7 @@
             </div>
         </div>
 
-        <!-- Slide 10: Topologia Física - Conceitos -->
+        <!-- Slide 13: Topologia Física vs Lógica -->
         <div class="slide">
             <div class="content">
                 <h2>🔌 Topologia Física vs Lógica</h2>
@@ -823,7 +1067,7 @@
             </div>
         </div>
 
-        <!-- Slide 11: Tipos de Topologia Física -->
+        <!-- Slide 14: Tipos de Topologia Física -->
         <div class="slide">
             <div class="content">
                 <h2>📐 Tipos de Topologia Física</h2>
@@ -870,24 +1114,24 @@
             </div>
         </div>
 
-        <!-- Slide 12: Topologia Lógica -->
+        <!-- Slide 15: Topologia Lógica (ATUALIZADA) -->
         <div class="slide">
             <div class="content">
                 <h2>💡 Topologia Lógica - Como os Dados Trafegam</h2>
                 
                 <div class="two-column">
                     <div>
-                        <h3>📡 Ethernet (Broadcast)</h3>
-                        <div class="bullet-point">Dados enviados para todos</div>
-                        <div class="bullet-point">Só o destinatário processa</div>
-                        <div class="bullet-point">Outros ignoram a mensagem</div>
-                        <div class="bullet-point">Padrão mais comum hoje</div>
+                        <h3>📡 Ethernet Moderna (Comutada)</h3>
+                        <div class="bullet-point">Antigamente: dados para todos (broadcast)</div>
+                        <div class="bullet-point">Hoje: switch inteligente direciona dados</div>
+                        <div class="bullet-point">Só o destinatário recebe</div>
+                        <div class="bullet-point">Mais eficiente e segura</div>
                         
                         <div class="example-box">
-                            <strong>Analogia:</strong><br>
-                            Como gritar em uma sala:<br>
-                            todos ouvem, mas só quem<br>
-                            foi chamado responde
+                            <strong>Analogia Moderna:</strong><br>
+                            Como o WhatsApp:<br>
+                            você envia só para quem<br>
+                            quer receber a mensagem
                         </div>
                     </div>
                     <div>
@@ -907,22 +1151,22 @@
                 </div>
 
                 <div class="process-step">
-                    <strong>Exemplo Ethernet:</strong><br>
+                    <strong>Exemplo Ethernet Moderna:</strong><br>
                     Computador A quer enviar para B<br>
-                    → A envia para todos (A, B, C, D)<br>
-                    → Todos recebem, mas só B processa<br>
-                    → C e D ignoram a mensagem
+                    → Switch identifica onde está B<br>
+                    → Switch envia dados direto para B<br>
+                    → C e D nem sabem que houve transmissão!
                 </div>
 
                 <div class="highlight-box center-text">
                     <h3>🌐 Na Prática</h3>
-                    <p>Sua rede WiFi doméstica usa Ethernet (broadcast)<br>
-                    mesmo tendo topologia física em estrela!</p>
+                    <p>Sua rede WiFi doméstica usa Ethernet comutada<br>
+                    com topologia física em estrela (roteador no centro)!</p>
                 </div>
             </div>
         </div>
 
-        <!-- Slide 13: LAN - Rede Local -->
+        <!-- Slide 16: LAN - Rede Local -->
         <div class="slide">
             <div class="content">
                 <h2>🏠 LAN - Local Area Network</h2>
@@ -967,7 +1211,7 @@
             </div>
         </div>
 
-        <!-- Slide 14: MAN - Rede Metropolitana -->
+        <!-- Slide 17: MAN - Rede Metropolitana -->
         <div class="slide">
             <div class="content">
                 <h2>🏙️ MAN - Metropolitan Area Network</h2>
@@ -1012,7 +1256,7 @@
             </div>
         </div>
 
-        <!-- Slide 15: WAN - Rede de Longa Distância -->
+        <!-- Slide 18: WAN - Rede de Longa Distância -->
         <div class="slide">
             <div class="content">
                 <h2>🌍 WAN - Wide Area Network</h2>
@@ -1061,7 +1305,65 @@
             </div>
         </div>
 
-        <!-- Slide 16: Resumo Final -->
+        <!-- Slide 19: NOVO - Tendências e Futuro das Redes -->
+        <div class="slide">
+            <div class="content">
+                <h2>🚀 Tendências Atuais e Futuro das Redes</h2>
+                
+                <div class="future-box">
+                    <h3>🌟 O Mundo Está Cada Vez Mais Conectado</h3>
+                    <div class="bullet-point">Em 2024: mais de 5 bilhões de pessoas usam Internet</div>
+                    <div class="bullet-point">Mais de 50 bilhões de dispositivos conectados</div>
+                    <div class="bullet-point">Velocidades cada vez maiores e menor latência</div>
+                </div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>🏠 Internet das Coisas (IoT)</h3>
+                        <div class="bullet-point">📺 <strong>Smart TV:</strong> Netflix, YouTube, apps</div>
+                        <div class="bullet-point">🔊 <strong>Alexa/Google:</strong> Controle por voz</div>
+                        <div class="bullet-point">❄️ <strong>Geladeira inteligente:</strong> Lista de compras automática</div>
+                        <div class="bullet-point">🚗 <strong>Carros conectados:</strong> GPS, música, apps</div>
+                        <div class="bullet-point">⌚ <strong>Smartwatch:</strong> Saúde, exercícios, mensagens</div>
+                        
+                        <h3>📱 5G - Internet Móvel Super Rápida</h3>
+                        <div class="bullet-point">10x mais rápido que 4G</div>
+                        <div class="bullet-point">Latência quase zero</div>
+                        <div class="bullet-point">Carros autônomos</div>
+                        <div class="bullet-point">Cirurgias remotas</div>
+                    </div>
+                    <div>
+                        <h3>☁️ Computação na Nuvem</h3>
+                        <div class="bullet-point">💾 <strong>Google Drive:</strong> Arquivos na nuvem</div>
+                        <div class="bullet-point">🎬 <strong>Netflix:</strong> Filmes sem baixar</div>
+                        <div class="bullet-point">🎮 <strong>Xbox Cloud:</strong> Jogos na nuvem</div>
+                        <div class="bullet-point">💼 <strong>Office 365:</strong> Trabalho na nuvem</div>
+                        
+                        <h3>🏢 Trabalho Remoto</h3>
+                        <div class="bullet-point">🏠 <strong>Home office:</strong> Trabalhar de casa</div>
+                        <div class="bullet-point">📹 <strong>Videoconferências:</strong> Reuniões online</div>
+                        <div class="bullet-point">🤝 <strong>Colaboração:</strong> Times globais</div>
+                        <div class="bullet-point">⚖️ <strong>Work-life balance:</strong> Flexibilidade</div>
+                    </div>
+                </div>
+
+                <div class="highlight-box center-text">
+                    <h3>🔮 O Futuro Próximo (2025-2030)</h3>
+                    <p><strong>6G</strong> em desenvolvimento | <strong>Realidade Virtual</strong> no trabalho<br>
+                    <strong>IA em tudo</strong> | <strong>Cidades inteligentes</strong> | <strong>Internet Starlink</strong> global</p>
+                </div>
+
+                <div class="example-box">
+                    <h3>💡 Impacto na Sua Vida</h3>
+                    <div class="bullet-point">Casa totalmente conectada e automatizada</div>
+                    <div class="bullet-point">Trabalho mais flexível e global</div>
+                    <div class="bullet-point">Entretenimento mais imersivo</div>
+                    <div class="bullet-point">Saúde monitorada 24/7 pelos devices</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 20: Resumo Final -->
         <div class="slide">
             <div class="content">
                 <h2>🎯 Resumo Final</h2>
@@ -1077,6 +1379,11 @@
                         <div class="bullet-point">Comunicação via protocolos</div>
                         <div class="bullet-point">Compartilhamento de recursos</div>
                         <div class="bullet-point">Base da sociedade digital</div>
+                        
+                        <h3>🛡️ Segurança:</h3>
+                        <div class="bullet-point">Proteção essencial</div>
+                        <div class="bullet-point">Senhas fortes e WiFi seguro</div>
+                        <div class="bullet-point">Cuidados com dados pessoais</div>
                     </div>
                     <div>
                         <h3>🏗️ Arquiteturas:</h3>
@@ -1084,6 +1391,11 @@
                         <div class="bullet-point">P2P (descentralizado)</div>
                         <div class="bullet-point">Topologias físicas e lógicas</div>
                         <div class="bullet-point">LAN, MAN, WAN</div>
+                        
+                        <h3>🚀 Futuro:</h3>
+                        <div class="bullet-point">IoT, 5G, nuvem</div>
+                        <div class="bullet-point">Trabalho remoto</div>
+                        <div class="bullet-point">Mundo hiperconectado</div>
                     </div>
                 </div>
 
@@ -1101,7 +1413,7 @@
             </div>
         </div>
 
-        <!-- Slide 17: Quiz -->
+        <!-- Slide 21: Quiz (EXPANDIDO) -->
         <div class="slide">
             <div class="content">
                 <h2>🧠 Quiz - Teste seus conhecimentos!</h2>
@@ -1173,29 +1485,78 @@
                     <!-- Questão 4 -->
                     <div class="quiz-question" id="question4" style="display: none;">
                         <h3>📝 Questão 4</h3>
-                        <p><strong>Na topologia lógica Ethernet, como os dados são transmitidos?</strong></p>
+                        <p><strong>Qual dispositivo funciona como "GPS da rede"?</strong></p>
                         <div class="quiz-options">
-                            <div class="quiz-option" onclick="selectOption(4, 'a', true)">
-                                <span class="option-letter">A)</span> Broadcast - para todos os nós
+                            <div class="quiz-option" onclick="selectOption(4, 'a', false)">
+                                <span class="option-letter">A)</span> Switch
                             </div>
-                            <div class="quiz-option" onclick="selectOption(4, 'b', false)">
-                                <span class="option-letter">B)</span> Apenas para o destinatário
+                            <div class="quiz-option" onclick="selectOption(4, 'b', true)">
+                                <span class="option-letter">B)</span> Roteador
                             </div>
                             <div class="quiz-option" onclick="selectOption(4, 'c', false)">
-                                <span class="option-letter">C)</span> Usando token que circula
+                                <span class="option-letter">C)</span> Hub
                             </div>
                             <div class="quiz-option" onclick="selectOption(4, 'd', false)">
-                                <span class="option-letter">D)</span> Por ordem alfabética dos nós
+                                <span class="option-letter">D)</span> Modem
                             </div>
                         </div>
                         <div class="quiz-feedback" id="feedback4"></div>
+                    </div>
+
+                    <!-- Questão 5 - NOVA -->
+                    <div class="quiz-question" id="question5" style="display: none;">
+                        <h3>📝 Questão 5</h3>
+                        <p><strong>Identifique a topologia desta rede:</strong></p>
+                        <div class="visual-diagram">
+                            📱 💻<br>
+                            &nbsp;&nbsp;&nbsp;⬇️&nbsp;&nbsp;&nbsp;⬇️<br>
+                            📡 WiFi Router<br>
+                            &nbsp;&nbsp;&nbsp;⬇️<br>
+                            📺 Smart TV
+                        </div>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(5, 'a', false)">
+                                <span class="option-letter">A)</span> Barramento
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(5, 'b', false)">
+                                <span class="option-letter">B)</span> Anel
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(5, 'c', true)">
+                                <span class="option-letter">C)</span> Estrela
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(5, 'd', false)">
+                                <span class="option-letter">D)</span> Malha
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback5"></div>
+                    </div>
+
+                    <!-- Questão 6 - NOVA -->
+                    <div class="quiz-question" id="question6" style="display: none;">
+                        <h3>📝 Questão 6</h3>
+                        <p><strong>Qual é a principal diferença entre topologia física e lógica?</strong></p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(6, 'a', false)">
+                                <span class="option-letter">A)</span> Não há diferença, são iguais
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(6, 'b', true)">
+                                <span class="option-letter">B)</span> Física é como conectamos, lógica é como os dados trafegam
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(6, 'c', false)">
+                                <span class="option-letter">C)</span> Física é mais importante que lógica
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(6, 'd', false)">
+                                <span class="option-letter">D)</span> Lógica só existe em redes grandes
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback6"></div>
                     </div>
 
                     <!-- Resultado Final -->
                     <div class="quiz-result" id="quizResult" style="display: none;">
                         <h3>🎉 Parabéns! Quiz Concluído!</h3>
                         <div class="result-box">
-                            <p><strong>Sua pontuação: <span id="finalScore">0</span>/4</strong></p>
+                            <p><strong>Sua pontuação: <span id="finalScore">0</span>/6</strong></p>
                             <p id="resultMessage"></p>
                         </div>
                         <button class="nav-btn" onclick="restartQuiz()">🔄 Refazer Quiz</button>
@@ -1210,7 +1571,61 @@
             </div>
         </div>
 
-        <!-- Slide 18: Referências -->
+        <!-- Slide 22: NOVO - Exercício Prático -->
+        <div class="slide">
+            <div class="content">
+                <h2>🛠️ Exercício Prático - Montando uma Rede</h2>
+                
+                <div class="highlight-box center-text">
+                    <h3>🏠 Cenário: Casa Inteligente</h3>
+                    <p>Você foi contratado para montar a rede de uma casa com 4 pessoas<br>
+                    Cada pessoa tem smartphone, notebook. A casa tem smart TV e impressora.</p>
+                </div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>📋 Requisitos:</h3>
+                        <div class="bullet-point">4 smartphones simultâneos</div>
+                        <div class="bullet-point">4 notebooks para trabalho/estudo</div>
+                        <div class="bullet-point">1 smart TV para streaming 4K</div>
+                        <div class="bullet-point">1 impressora WiFi compartilhada</div>
+                        <div class="bullet-point">Jogos online ocasionais</div>
+                        <div class="bullet-point">Videoconferências de trabalho</div>
+                    </div>
+                    <div>
+                        <h3>💡 Suas Decisões:</h3>
+                        <div class="bullet-point">Qual velocidade de Internet contratar?</div>
+                        <div class="bullet-point">Que tipo de roteador escolher?</div>
+                        <div class="bullet-point">Quantos access points são necessários?</div>
+                        <div class="bullet-point">Que medidas de segurança implementar?</div>
+                        <div class="bullet-point">Como organizar a rede?</div>
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>🎯 Solução Sugerida:</h3>
+                    <div class="bullet-point"><strong>Internet:</strong> 300 Mbps (suficiente para todos os usos)</div>
+                    <div class="bullet-point"><strong>Roteador:</strong> WiFi 6 dual-band (5GHz + 2.4GHz)</div>
+                    <div class="bullet-point"><strong>Cobertura:</strong> 1 access point adicional se casa grande</div>
+                    <div class="bullet-point"><strong>Segurança:</strong> WPA3, senha forte, firewall ativo</div>
+                    <div class="bullet-point"><strong>Organização:</strong> Rede para convidados separada</div>
+                </div>
+
+                <div class="security-box center-text">
+                    <h3>🔒 Configurações de Segurança</h3>
+                    <p><strong>Nome da rede:</strong> "Casa_WiFi" (não expor informações pessoais)<br>
+                    <strong>Senha:</strong> Mínimo 12 caracteres com números e símbolos<br>
+                    <strong>Rede convidados:</strong> "Casa_Visitantes" com acesso limitado</p>
+                </div>
+
+                <div class="process-step center-text">
+                    <strong>🎓 Desafio:</strong> Pense em como você montaria a rede da sua casa!<br>
+                    Considere seus dispositivos, usos e necessidades de segurança.
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 23: Referências -->
         <div class="slide">
             <div class="content">
                 <h2>📚 Referências Bibliográficas</h2>
@@ -1243,13 +1658,15 @@
                     <h3>🤖 Metodologia de Criação</h3>
                     <p>Apresentação desenvolvida com assistência de IA Claude Sonnet 4<br>
                     Baseada integralmente no material didático fornecido<br>
-                    Adaptação pedagógica com foco em simplicidade e clareza</p>
+                    Adaptação pedagógica com foco em simplicidade e clareza<br>
+                    <strong>Versão melhorada:</strong> Segurança, tendências, exercícios práticos</p>
                 </div>
 
                 <div class="highlight-box center-text">
                     <h3>🎯 Objetivo Educacional</h3>
                     <p>Facilitar o aprendizado dos fundamentos de redes através de<br>
-                    linguagem simples, analogias práticas e exemplos do cotidiano</p>
+                    linguagem simples, analogias práticas e exemplos do cotidiano<br>
+                    Preparar estudantes para o mundo hiperconectado atual</p>
                 </div>
             </div>
         </div>
@@ -1270,7 +1687,7 @@
         // Quiz variables
         let currentQuestion = 1;
         let score = 0;
-        let quizAnswered = [false, false, false, false];
+        let quizAnswered = [false, false, false, false, false, false];
 
         function showSlide(index) {
             slides.forEach((slide, i) => {
@@ -1307,20 +1724,41 @@
                 }
             });
             
-            // Mostrar feedback
+            // Mostrar feedback detalhado
             if (isCorrect) {
                 feedback.innerHTML = '✅ Correto! Muito bem!';
                 feedback.className = 'quiz-feedback correct';
                 score++;
             } else {
-                feedback.innerHTML = '❌ Incorreto. A resposta correta está destacada em verde.';
+                let correctAnswer = '';
+                switch(questionNum) {
+                    case 1:
+                        correctAnswer = 'A ARPANET foi criada em 1969 e foi a primeira a usar TCP/IP.';
+                        break;
+                    case 2:
+                        correctAnswer = 'Em P2P, todos os dispositivos podem ser tanto clientes quanto servidores.';
+                        break;
+                    case 3:
+                        correctAnswer = 'MAN abrange uma cidade ou região metropolitana.';
+                        break;
+                    case 4:
+                        correctAnswer = 'O roteador encontra o melhor caminho entre diferentes redes, como um GPS.';
+                        break;
+                    case 5:
+                        correctAnswer = 'Dispositivos conectados a um ponto central (roteador) formam topologia estrela.';
+                        break;
+                    case 6:
+                        correctAnswer = 'Física é a conexão real dos cabos, lógica é como os dados circulam.';
+                        break;
+                }
+                feedback.innerHTML = `❌ Incorreto. ${correctAnswer}`;
                 feedback.className = 'quiz-feedback incorrect';
             }
             
             quizAnswered[questionNum - 1] = true;
             
             // Mostrar botão para próxima questão
-            if (questionNum < 4) {
+            if (questionNum < 6) {
                 document.getElementById('nextQuizBtn').style.display = 'inline-block';
             } else {
                 // Última questão - mostrar resultado
@@ -1339,23 +1777,27 @@
 
         function showQuizResult() {
             // Esconder última questão
-            document.getElementById('question4').style.display = 'none';
+            document.getElementById('question6').style.display = 'none';
             
             // Mostrar resultado
             document.getElementById('quizResult').style.display = 'block';
             document.getElementById('finalScore').textContent = score;
             
             const resultMessage = document.getElementById('resultMessage');
-            if (score === 4) {
-                resultMessage.innerHTML = '🏆 Excelente! Você domina os fundamentos de redes!';
+            if (score === 6) {
+                resultMessage.innerHTML = '🏆 Perfeito! Você domina completamente os fundamentos de redes!';
+            } else if (score === 5) {
+                resultMessage.innerHTML = '🌟 Excelente! Quase perfeito, continue assim!';
+            } else if (score === 4) {
+                resultMessage.innerHTML = '👏 Muito bom! Você entendeu bem os conceitos!';
             } else if (score === 3) {
-                resultMessage.innerHTML = '👏 Muito bom! Quase perfeito!';
+                resultMessage.innerHTML = '👍 Bom trabalho! Continue estudando para melhorar!';
             } else if (score === 2) {
-                resultMessage.innerHTML = '👍 Bom trabalho! Continue estudando!';
-            } else if (score === 1) {
                 resultMessage.innerHTML = '📚 Estude um pouco mais sobre redes!';
+            } else if (score === 1) {
+                resultMessage.innerHTML = '📖 Recomendo revisar o conteúdo da aula!';
             } else {
-                resultMessage.innerHTML = '📖 Recomendo revisar o conteúdo!';
+                resultMessage.innerHTML = '🔄 Que tal rever a apresentação e tentar novamente?';
             }
         }
 
@@ -1363,10 +1805,10 @@
             // Reset variables
             currentQuestion = 1;
             score = 0;
-            quizAnswered = [false, false, false, false];
+            quizAnswered = [false, false, false, false, false, false];
             
             // Reset interface
-            for (let i = 1; i <= 4; i++) {
+            for (let i = 1; i <= 6; i++) {
                 const question = document.getElementById(`question${i}`);
                 const options = question.querySelectorAll('.quiz-option');
                 const feedback = document.getElementById(`feedback${i}`);
@@ -1406,8 +1848,20 @@
         // Inicializar
         showSlide(0);
         
-        // Inicializar quiz no slide 17
+        // Inicializar quiz no slide 21
         document.getElementById('question1').style.display = 'block';
+
+        // Animação das barras de velocidade
+        window.addEventListener('load', () => {
+            const speedBars = document.querySelectorAll('.speed-fill');
+            speedBars.forEach(bar => {
+                const width = bar.style.width;
+                bar.style.width = '0%';
+                setTimeout(() => {
+                    bar.style.width = width;
+                }, 500);
+            });
+        });
     </script>
 </body>
 </html>
