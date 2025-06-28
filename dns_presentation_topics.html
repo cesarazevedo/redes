@@ -1,0 +1,1177 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DNS - Sistema de Nomes de Domínios</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        .presentation {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .slide {
+            min-height: 100vh;
+            padding: 60px 40px;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            background: white;
+            margin: 20px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        .slide.active {
+            display: flex;
+        }
+
+        .slide h1 {
+            font-size: 3.5em;
+            color: #4a5568;
+            text-align: center;
+            margin-bottom: 40px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .slide h2 {
+            font-size: 2.8em;
+            color: #2d3748;
+            margin-bottom: 30px;
+            border-bottom: 4px solid #667eea;
+            padding-bottom: 15px;
+        }
+
+        .slide h3 {
+            font-size: 2.2em;
+            color: #4a5568;
+            margin: 25px 0 15px 0;
+        }
+
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: start;
+        }
+
+        .bullet-point {
+            display: flex;
+            align-items: flex-start;
+            margin: 15px 0;
+            font-size: 1.3em;
+            line-height: 1.5;
+        }
+
+        .bullet-point::before {
+            content: "🔸";
+            margin-right: 15px;
+            font-size: 1.2em;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #ff7f50;
+        }
+
+        .example-box {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #20b2aa;
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 1000;
+        }
+
+        .nav-btn {
+            padding: 15px 25px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .nav-btn:hover {
+            background: #5a67d8;
+            transform: translateY(-2px);
+            box-shadow: 0 7px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .nav-btn:disabled {
+            background: #a0a0a0;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .slide-counter {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: rgba(255,255,255,0.9);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            color: #4a5568;
+            z-index: 1000;
+        }
+
+        .icon {
+            font-size: 1.5em;
+            margin-right: 10px;
+        }
+
+        .center-text {
+            text-align: center;
+        }
+
+        .large-text {
+            font-size: 1.4em;
+            line-height: 1.6;
+        }
+
+        .diagram {
+            background: #f7fafc;
+            border: 2px dashed #667eea;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+            font-family: monospace;
+            font-size: 1.2em;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 1.1em;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        th {
+            background: #667eea;
+            color: white;
+            font-weight: bold;
+        }
+
+        .process-step {
+            background: #e6fffa;
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #38b2ac;
+        }
+
+        /* Quiz Styles */
+        .quiz-container {
+            max-width: 100%;
+            margin: 20px 0;
+        }
+
+        .quiz-question {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border: 2px solid #e2e8f0;
+        }
+
+        .quiz-question h3 {
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+
+        .quiz-question p {
+            font-size: 1.3em;
+            margin-bottom: 25px;
+            font-weight: bold;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .quiz-option {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.1em;
+        }
+
+        .quiz-option:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+            transform: translateX(5px);
+        }
+
+        .quiz-option.selected {
+            border-color: #667eea;
+            background: #667eea;
+            color: white;
+        }
+
+        .quiz-option.correct {
+            border-color: #48bb78;
+            background: #48bb78;
+            color: white;
+        }
+
+        .quiz-option.incorrect {
+            border-color: #f56565;
+            background: #f56565;
+            color: white;
+        }
+
+        .option-letter {
+            background: #667eea;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .quiz-option.correct .option-letter {
+            background: #48bb78;
+        }
+
+        .quiz-option.incorrect .option-letter {
+            background: #f56565;
+        }
+
+        .quiz-feedback {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: bold;
+            display: none;
+        }
+
+        .quiz-feedback.correct {
+            background: #c6f6d5;
+            color: #22543d;
+            border: 2px solid #48bb78;
+            display: block;
+        }
+
+        .quiz-feedback.incorrect {
+            background: #fed7d7;
+            color: #742a2a;
+            border: 2px solid #f56565;
+            display: block;
+        }
+
+        .quiz-navigation {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .quiz-result {
+            text-align: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            margin: 20px 0;
+        }
+
+        .result-box {
+            background: rgba(255,255,255,0.1);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+
+        .result-box p {
+            font-size: 1.4em;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation">
+        <div class="slide-counter">
+            <span id="current-slide">1</span> / <span id="total-slides">18</span>
+        </div>
+
+        <!-- Slide 1: Título -->
+        <div class="slide active">
+            <div class="content center-text">
+                <h1>🌐 Sistema de Nomes de Domínios</h1>
+                <h2 style="border: none; color: #667eea;">DNS - Domain Name System</h2>
+                <div class="highlight-box large-text">
+                    <strong>Aula 07</strong><br>
+                    Transformando nomes em endereços IP<br>
+                    Como a Internet "lembra" onde tudo está
+                </div>
+                
+                <div class="example-box" style="margin-top: 40px;">
+                    <h3>👨‍🏫 Autor da Apresentação</h3>
+                    <p style="font-size: 1.3em; margin: 10px 0;">
+                        <strong>César Azevedo</strong><br>
+                        📧 cesar.augusto@ifrn.edu.br
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 18: Referências -->
+        <div class="slide">
+            <div class="content">
+                <h2>📚 Referências Bibliográficas</h2>
+                
+                <div class="highlight-box">
+                    <h3>📖 Fonte Principal:</h3>
+                    <div class="bullet-point"><strong>Capítulo 25 - Sistema de Nomes de Domínios</strong></div>
+                    <div class="bullet-point">Livro de Redes de Computadores</div>
+                    <div class="bullet-point">Páginas 797-813</div>
+                </div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>🌐 Sites Recomendados:</h3>
+                        <div class="bullet-point">www.internic.net (Informações sobre registros)</div>
+                        <div class="bullet-point">www.ietf.org/rfc.html (RFCs relacionadas)</div>
+                        <div class="bullet-point">docs.anthropic.com (Documentação técnica)</div>
+                    </div>
+                    <div>
+                        <h3>📋 RFCs Principais:</h3>
+                        <div class="bullet-point">RFC 1034 - Domain Concepts</div>
+                        <div class="bullet-point">RFC 1035 - Implementation</div>
+                        <div class="bullet-point">RFC 2671 - Extension Mechanisms</div>
+                        <div class="bullet-point">RFC 2317 - Classless Delegation</div>
+                    </div>
+                </div>
+
+                <div class="example-box center-text">
+                    <h3>🤖 Metodologia de Criação</h3>
+                    <p>Apresentação desenvolvida com assistência de IA Claude Sonnet 4<br>
+                    Baseada integralmente no material didático fornecido<br>
+                    Adaptação pedagógica com foco em simplicidade e clareza</p>
+                </div>
+
+                <div class="highlight-box center-text">
+                    <h3>🎯 Objetivo Educacional</h3>
+                    <p>Facilitar o aprendizado do DNS através de<br>
+                    linguagem simples, analogias e exemplos práticos</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 2: Tópicos da Aula -->
+        <div class="slide">
+            <div class="content">
+                <h2>📋 Tópicos da Aula</h2>
+                
+                <div class="two-column">
+                    <div>
+                        <h3>🌟 Fundamentos</h3>
+                        <div class="bullet-point">O que é DNS e sua importância</div>
+                        <div class="bullet-point">Evolução: dos arquivos hosts ao DNS</div>
+                        <div class="bullet-point">Espaços de nomes (plano vs hierárquico)</div>
+                        <div class="bullet-point">Estrutura da árvore DNS</div>
+                        
+                        <h3>🏗️ Arquitetura</h3>
+                        <div class="bullet-point">Tipos de nomes (FQDN vs PQDN)</div>
+                        <div class="bullet-point">Domínios e zonas</div>
+                        <div class="bullet-point">Hierarquia de servidores</div>
+                        <div class="bullet-point">Servidores primários e secundários</div>
+                    </div>
+                    <div>
+                        <h3>🌐 DNS na Internet</h3>
+                        <div class="bullet-point">Domínios genéricos (.com, .edu, .org)</div>
+                        <div class="bullet-point">Domínios de países (.br, .us, .uk)</div>
+                        <div class="bullet-point">Domínio reverso (.arpa)</div>
+                        
+                        <h3>⚙️ Funcionamento</h3>
+                        <div class="bullet-point">Processo de resolução de nomes</div>
+                        <div class="bullet-point">Resolução recursiva vs iterativa</div>
+                        <div class="bullet-point">Sistema de cache e TTL</div>
+                        <div class="bullet-point">Mensagens DNS (consulta/resposta)</div>
+                        <div class="bullet-point">DNS dinâmico (DDNS)</div>
+                        <div class="bullet-point">Protocolos UDP vs TCP</div>
+                    </div>
+                </div>
+
+                <div class="highlight-box center-text">
+                    <h3>🎯 Objetivo Final</h3>
+                    <p>Compreender como o DNS transforma nomes amigáveis<br>
+                    em endereços IP, possibilitando a navegação na Internet</p>
+                </div>
+
+                <div class="example-box center-text">
+                    <h3>🧠 + Quiz Interativo</h3>
+                    <p>Teste seus conhecimentos com 4 questões práticas!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: O que é DNS -->
+        <div class="slide">
+            <div class="content">
+                <h2>🤔 O que é DNS?</h2>
+                <div class="bullet-point">Sistema cliente/servidor que traduz nomes em endereços IP</div>
+                <div class="bullet-point">Como uma "agenda telefônica" da Internet</div>
+                <div class="bullet-point">Programa de suporte para outras aplicações (e-mail, web, etc.)</div>
+                
+                <div class="example-box">
+                    <h3>💡 Exemplo Prático:</h3>
+                    <div class="diagram">
+                        Usuário digita: aperson@wonderful.com<br>
+                        ⬇️<br>
+                        DNS traduz: wonderful.com → 200.200.200.5<br>
+                        ⬇️<br>
+                        E-mail é enviado para o IP correto
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Slide 4: Por que precisamos do DNS -->
+        <div class="slide">
+            <div class="content">
+                <h2>❓ Por que o DNS é necessário?</h2>
+                
+                <div class="two-column">
+                    <div>
+                        <h3>🧠 Pessoas preferem:</h3>
+                        <div class="bullet-point">Nomes fáceis de lembrar</div>
+                        <div class="bullet-point">google.com</div>
+                        <div class="bullet-point">facebook.com</div>
+                        <div class="bullet-point">youtube.com</div>
+                    </div>
+                    <div>
+                        <h3>🤖 Computadores precisam:</h3>
+                        <div class="bullet-point">Endereços IP numéricos</div>
+                        <div class="bullet-point">142.250.191.14</div>
+                        <div class="bullet-point">157.240.15.35</div>
+                        <div class="bullet-point">142.251.129.90</div>
+                    </div>
+                </div>
+
+                <div class="highlight-box">
+                    <strong>🎯 Solução:</strong> DNS faz a ponte entre o mundo humano e o mundo das máquinas!
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: Evolução - Arquivo de Hosts -->
+        <div class="slide">
+            <div class="content">
+                <h2>📜 Era dos Arquivos de Hosts</h2>
+                
+                <div class="bullet-point">Antigamente: arquivo simples com duas colunas</div>
+                <div class="bullet-point">Nome ↔ Endereço IP</div>
+                <div class="bullet-point">Cada computador tinha sua cópia</div>
+                <div class="bullet-point">Atualização manual e periódica</div>
+
+                <div class="example-box">
+                    <h3>📄 Exemplo de arquivo hosts:</h3>
+                    <div class="diagram">
+                        google.com&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;142.250.191.14<br>
+                        facebook.com&nbsp;&nbsp;&nbsp;&nbsp;157.240.15.35<br>
+                        youtube.com&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;142.251.129.90
+                    </div>
+                </div>
+
+                <div class="highlight-box">
+                    <strong>⚠️ Problemas:</strong><br>
+                    • Arquivo muito grande para a Internet atual<br>
+                    • Impossível atualizar milhões de computadores<br>
+                    • Criar gargalo com servidor centralizado
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: Espaços de Nomes -->
+        <div class="slide">
+            <div class="content">
+                <h2>🏗️ Espaços de Nomes</h2>
+                
+                <div class="two-column">
+                    <div>
+                        <h3>📏 Espaço Plano</h3>
+                        <div class="bullet-point">Nomes sem estrutura</div>
+                        <div class="bullet-point">Sequência simples de caracteres</div>
+                        <div class="bullet-point">Controle centralizado necessário</div>
+                        <div class="bullet-point">❌ Não funciona para grandes redes</div>
+                    </div>
+                    <div>
+                        <h3>🌳 Espaço Hierárquico</h3>
+                        <div class="bullet-point">Nomes com múltiplas partes</div>
+                        <div class="bullet-point">Estrutura organizacional</div>
+                        <div class="bullet-point">Controle descentralizado</div>
+                        <div class="bullet-point">✅ Perfeito para a Internet</div>
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>🏫 Exemplo Hierárquico:</h3>
+                    <div class="bullet-point">challenger.atc.fhda.edu</div>
+                    <div class="bullet-point">challenger.berkeley.edu</div>
+                    <div class="bullet-point">challenger.smart.com</div>
+                    <p><strong>Mesmo nome "challenger", mas endereços únicos!</strong></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7: Estrutura da Árvore DNS -->
+        <div class="slide">
+            <div class="content">
+                <h2>🌳 Estrutura da Árvore DNS</h2>
+                
+                <div class="bullet-point">Árvore invertida com raiz no topo</div>
+                <div class="bullet-point">Até 128 níveis (0 a 127)</div>
+                <div class="bullet-point">Cada nó tem um rótulo (label)</div>
+                <div class="bullet-point">Labels de filhos devem ser únicos</div>
+
+                <div class="diagram">
+                    <strong>Estrutura da Árvore:</strong><br><br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;. (raiz)<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;com&nbsp;&nbsp;&nbsp;&nbsp;edu&nbsp;&nbsp;&nbsp;&nbsp;org<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;google&nbsp;&nbsp;fhda&nbsp;&nbsp;&nbsp;apache<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;atc<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;challenger
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: Tipos de Nomes de Domínio -->
+        <div class="slide">
+            <div class="content">
+                <h2>🏷️ Tipos de Nomes de Domínio</h2>
+                
+                <div class="two-column">
+                    <div>
+                        <h3>✅ FQDN (Totalmente Qualificado)</h3>
+                        <div class="bullet-point">Termina com ponto (.)</div>
+                        <div class="bullet-point">Nome completo até a raiz</div>
+                        <div class="bullet-point">Única forma aceita pelo DNS</div>
+                        
+                        <div class="example-box">
+                            <strong>Exemplos:</strong><br>
+                            challenger.atc.fhda.edu.<br>
+                            www.google.com.<br>
+                            mail.yahoo.com.
+                        </div>
+                    </div>
+                    <div>
+                        <h3>⚠️ PQDN (Parcialmente Qualificado)</h3>
+                        <div class="bullet-point">Não termina com ponto</div>
+                        <div class="bullet-point">Nome incompleto</div>
+                        <div class="bullet-point">Cliente adiciona sufixo</div>
+                        
+                        <div class="example-box">
+                            <strong>Exemplos:</strong><br>
+                            challenger<br>
+                            www<br>
+                            mail<br><br>
+                            <em>Resolvedor adiciona domínio local</em>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 9: Distribuição e Hierarquia -->
+        <div class="slide">
+            <div class="content">
+                <h2>🌐 Distribuição do Sistema</h2>
+                
+                <div class="bullet-point">Informações divididas entre múltiplos servidores</div>
+                <div class="bullet-point">Hierarquia de servidores espelha hierarquia de nomes</div>
+                <div class="bullet-point">Cada servidor responsável por uma "zona"</div>
+
+                <div class="highlight-box">
+                    <h3>🎯 Zona vs Domínio:</h3>
+                    <div class="bullet-point"><strong>Domínio:</strong> Parte da árvore de nomes</div>
+                    <div class="bullet-point"><strong>Zona:</strong> Parte que um servidor gerencia</div>
+                    <div class="bullet-point">Zona ≤ Domínio (pode ser igual ou menor)</div>
+                </div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>🏆 Servidor Primário:</h3>
+                        <div class="bullet-point">Controla e mantém dados originais</div>
+                        <div class="bullet-point">Autoridade sobre a zona</div>
+                        <div class="bullet-point">Fonte das atualizações</div>
+                    </div>
+                    <div>
+                        <h3>🔄 Servidor Secundário:</h3>
+                        <div class="bullet-point">Cópia dos dados do primário</div>
+                        <div class="bullet-point">Backup e redundância</div>
+                        <div class="bullet-point">Transferência de zona</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 10: DNS na Internet -->
+        <div class="slide">
+            <div class="content">
+                <h2>🌍 DNS na Internet</h2>
+                
+                <div class="bullet-point">Três seções principais no espaço de nomes</div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>🏢 Domínios Genéricos</h3>
+                        <div class="bullet-point">.com (comercial)</div>
+                        <div class="bullet-point">.edu (educacional)</div>
+                        <div class="bullet-point">.org (organizações)</div>
+                        <div class="bullet-point">.gov (governo)</div>
+                        <div class="bullet-point">.mil (militar)</div>
+                        <div class="bullet-point">.net (redes)</div>
+                    </div>
+                    <div>
+                        <h3>🌎 Domínios de Países</h3>
+                        <div class="bullet-point">.br (Brasil)</div>
+                        <div class="bullet-point">.us (Estados Unidos)</div>
+                        <div class="bullet-point">.uk (Reino Unido)</div>
+                        <div class="bullet-point">.jp (Japão)</div>
+                        <div class="bullet-point">.ca (Canadá)</div>
+                        <div class="bullet-point">.fr (França)</div>
+                    </div>
+                </div>
+
+                <div class="highlight-box">
+                    <h3>🔄 Domínio Reverso (.arpa)</h3>
+                    <div class="bullet-point">Traduz IP → Nome</div>
+                    <div class="bullet-point">132.34.45.121 → 121.45.34.132.in-addr.arpa</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 11: Processo de Resolução -->
+        <div class="slide">
+            <div class="content">
+                <h2>🔍 Como Funciona a Resolução</h2>
+                
+                <div class="bullet-point">Cliente (resolvedor) faz solicitação</div>
+                <div class="bullet-point">Servidor DNS procura resposta</div>
+                <div class="bullet-point">Se não tem, consulta outros servidores</div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>🔄 Resolução Recursiva</h3>
+                        <div class="bullet-point">Cliente espera resposta final</div>
+                        <div class="bullet-point">Servidor faz todo o trabalho</div>
+                        <div class="bullet-point">Consulta múltiplos servidores</div>
+                        <div class="bullet-point">Retorna resposta completa</div>
+                    </div>
+                    <div>
+                        <h3>⚡ Resolução Iterativa</h3>
+                        <div class="bullet-point">Cliente faz múltiplas consultas</div>
+                        <div class="bullet-point">Cada servidor dá uma "dica"</div>
+                        <div class="bullet-point">Cliente segue as referências</div>
+                        <div class="bullet-point">Mais trabalho para o cliente</div>
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>📝 Exemplo de Resolução:</h3>
+                    <div class="process-step">1. Cliente quer: www.fhda.edu</div>
+                    <div class="process-step">2. Servidor local consulta servidor raiz</div>
+                    <div class="process-step">3. Servidor raiz indica servidor .edu</div>
+                    <div class="process-step">4. Servidor .edu indica servidor fhda.edu</div>
+                    <div class="process-step">5. Servidor fhda.edu retorna IP de www</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 12: Cache DNS -->
+        <div class="slide">
+            <div class="content">
+                <h2>💾 Sistema de Cache</h2>
+                
+                <div class="bullet-point">Servidores guardam respostas na memória</div>
+                <div class="bullet-point">Acelera consultas futuras</div>
+                <div class="bullet-point">Reduz tráfego na Internet</div>
+
+                <div class="highlight-box">
+                    <h3>⏰ TTL (Time to Live)</h3>
+                    <div class="bullet-point">Define quanto tempo manter no cache</div>
+                    <div class="bullet-point">Previne informações desatualizadas</div>
+                    <div class="bullet-point">Balanceia velocidade vs. precisão</div>
+                </div>
+
+                <div class="example-box">
+                    <h3>🔄 Funcionamento do Cache:</h3>
+                    <div class="process-step">1. Primeira consulta: busca nos servidores</div>
+                    <div class="process-step">2. Resposta salva no cache com TTL</div>
+                    <div class="process-step">3. Consultas seguintes: resposta do cache</div>
+                    <div class="process-step">4. TTL expira: cache é renovado</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 13: Mensagens DNS -->
+        <div class="slide">
+            <div class="content">
+                <h2>📨 Mensagens DNS</h2>
+                
+                <div class="two-column">
+                    <div>
+                        <h3>❓ Mensagem de Consulta</h3>
+                        <div class="bullet-point">Cabeçalho (12 bytes)</div>
+                        <div class="bullet-point">Seção de perguntas</div>
+                        <div class="bullet-point">Cliente → Servidor</div>
+                    </div>
+                    <div>
+                        <h3>✅ Mensagem de Resposta</h3>
+                        <div class="bullet-point">Cabeçalho (12 bytes)</div>
+                        <div class="bullet-point">Seção de perguntas</div>
+                        <div class="bullet-point">Seção de respostas</div>
+                        <div class="bullet-point">Seção de autoridades</div>
+                        <div class="bullet-point">Seção de informações adicionais</div>
+                    </div>
+                </div>
+
+                <div class="highlight-box">
+                    <h3>🎯 Campos do Cabeçalho:</h3>
+                    <div class="bullet-point">Identificação (para relacionar pergunta/resposta)</div>
+                    <div class="bullet-point">Flags (tipo de mensagem e configurações)</div>
+                    <div class="bullet-point">Contadores (número de registros em cada seção)</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 14: DNS Dinâmico (DDNS) -->
+        <div class="slide">
+            <div class="content">
+                <h2>🔄 DNS Dinâmico (DDNS)</h2>
+                
+                <div class="bullet-point">Atualização automática dos registros</div>
+                <div class="bullet-point">Integração com DHCP</div>
+                <div class="bullet-point">Elimina configuração manual</div>
+
+                <div class="example-box">
+                    <h3>⚡ Processo DDNS:</h3>
+                    <div class="process-step">1. Novo host conecta na rede</div>
+                    <div class="process-step">2. DHCP atribui IP dinamicamente</div>
+                    <div class="process-step">3. DHCP informa DNS sobre nova ligação</div>
+                    <div class="process-step">4. Servidor primário atualiza zona</div>
+                    <div class="process-step">5. Servidores secundários são notificados</div>
+                </div>
+
+                <div class="highlight-box">
+                    <h3>🔐 Segurança:</h3>
+                    <div class="bullet-point">Mecanismos de autenticação</div>
+                    <div class="bullet-point">Previne alterações não autorizadas</div>
+                    <div class="bullet-point">Controle de acesso aos registros</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 15: Protocolos de Transporte -->
+        <div class="slide">
+            <div class="content">
+                <h2>🚚 Transporte das Mensagens</h2>
+                
+                <div class="bullet-point">Porta padrão: 53 (TCP e UDP)</div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>⚡ UDP (Mais Comum)</h3>
+                        <div class="bullet-point">Mensagens até 512 bytes</div>
+                        <div class="bullet-point">Consultas simples</div>
+                        <div class="bullet-point">Mais rápido</div>
+                        <div class="bullet-point">Menos confiável</div>
+                    </div>
+                    <div>
+                        <h3>🔒 TCP (Quando Necessário)</h3>
+                        <div class="bullet-point">Mensagens > 512 bytes</div>
+                        <div class="bullet-point">Transferência de zona</div>
+                        <div class="bullet-point">Mais lento</div>
+                        <div class="bullet-point">Mais confiável</div>
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>🔄 Mudança de Protocolo:</h3>
+                    <div class="process-step">1. Cliente tenta UDP primeiro</div>
+                    <div class="process-step">2. Se resposta > 512 bytes, servidor trunca</div>
+                    <div class="process-step">3. Servidor ativa bit TC (truncated)</div>
+                    <div class="process-step">4. Cliente refaz consulta via TCP</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 16: Resumo e Importância -->
+        <div class="slide">
+            <div class="content">
+                <h2>🎯 Resumo Final</h2>
+                
+                <div class="highlight-box large-text center-text">
+                    <strong>DNS é a "agenda telefônica" da Internet</strong>
+                </div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>✅ Características Principais:</h3>
+                        <div class="bullet-point">Sistema hierárquico</div>
+                        <div class="bullet-point">Distribuído globalmente</div>
+                        <div class="bullet-point">Cache para eficiência</div>
+                        <div class="bullet-point">Redundância e confiabilidade</div>
+                        <div class="bullet-point">Atualizações dinâmicas</div>
+                    </div>
+                    <div>
+                        <h3>🎯 Benefícios:</h3>
+                        <div class="bullet-point">Nomes fáceis de lembrar</div>
+                        <div class="bullet-point">Escalabilidade global</div>
+                        <div class="bullet-point">Descentralização</div>
+                        <div class="bullet-point">Tolerância a falhas</div>
+                        <div class="bullet-point">Base da Internet moderna</div>
+                    </div>
+                </div>
+
+                <div class="example-box center-text">
+                    <h3>🌐 Sem DNS, a Internet seria apenas números!</h3>
+                    <p>Imaginem ter que decorar 142.250.191.14 em vez de google.com</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 17: Quiz -->
+        <div class="slide">
+            <div class="content">
+                <h2>🧠 Quiz - Teste seus conhecimentos!</h2>
+                
+                <div class="quiz-container">
+                    <!-- Questão 1 -->
+                    <div class="quiz-question" id="question1">
+                        <h3>📝 Questão 1</h3>
+                        <p><strong>Qual é a principal função do DNS?</strong></p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(1, 'a', false)">
+                                <span class="option-letter">A)</span> Proteger a rede contra vírus
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(1, 'b', true)">
+                                <span class="option-letter">B)</span> Traduzir nomes de domínio em endereços IP
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(1, 'c', false)">
+                                <span class="option-letter">C)</span> Gerenciar o tráfego de dados na Internet
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(1, 'd', false)">
+                                <span class="option-letter">D)</span> Criptografar mensagens de e-mail
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback1"></div>
+                    </div>
+
+                    <!-- Questão 2 -->
+                    <div class="quiz-question" id="question2" style="display: none;">
+                        <h3>📝 Questão 2</h3>
+                        <p><strong>Qual a diferença entre FQDN e PQDN?</strong></p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(2, 'a', false)">
+                                <span class="option-letter">A)</span> FQDN é mais rápido que PQDN
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(2, 'b', false)">
+                                <span class="option-letter">B)</span> PQDN é usado apenas para e-mails
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(2, 'c', true)">
+                                <span class="option-letter">C)</span> FQDN termina com ponto (.), PQDN não
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(2, 'd', false)">
+                                <span class="option-letter">D)</span> Não há diferença entre eles
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback2"></div>
+                    </div>
+
+                    <!-- Questão 3 -->
+                    <div class="quiz-question" id="question3" style="display: none;">
+                        <h3>📝 Questão 3</h3>
+                        <p><strong>Na resolução recursiva, quem faz o trabalho de consultar múltiplos servidores?</strong></p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(3, 'a', false)">
+                                <span class="option-letter">A)</span> O cliente (resolvedor)
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(3, 'b', true)">
+                                <span class="option-letter">B)</span> O servidor DNS
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(3, 'c', false)">
+                                <span class="option-letter">C)</span> O servidor raiz
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(3, 'd', false)">
+                                <span class="option-letter">D)</span> Todos os servidores juntos
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback3"></div>
+                    </div>
+
+                    <!-- Questão 4 -->
+                    <div class="quiz-question" id="question4" style="display: none;">
+                        <h3>📝 Questão 4</h3>
+                        <p><strong>Quando o DNS usa TCP em vez de UDP?</strong></p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(4, 'a', false)">
+                                <span class="option-letter">A)</span> Sempre que possível
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(4, 'b', true)">
+                                <span class="option-letter">B)</span> Quando a mensagem é maior que 512 bytes
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(4, 'c', false)">
+                                <span class="option-letter">C)</span> Apenas para consultas de e-mail
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(4, 'd', false)">
+                                <span class="option-letter">D)</span> Nunca, sempre usa UDP
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback4"></div>
+                    </div>
+
+                    <!-- Resultado Final -->
+                    <div class="quiz-result" id="quizResult" style="display: none;">
+                        <h3>🎉 Parabéns! Quiz Concluído!</h3>
+                        <div class="result-box">
+                            <p><strong>Sua pontuação: <span id="finalScore">0</span>/4</strong></p>
+                            <p id="resultMessage"></p>
+                        </div>
+                        <button class="nav-btn" onclick="restartQuiz()">🔄 Refazer Quiz</button>
+                    </div>
+                </div>
+
+                <div class="quiz-navigation">
+                    <button class="nav-btn" id="nextQuizBtn" onclick="nextQuestion()" style="display: none;">
+                        Próxima Questão ➡️
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="navigation">
+            <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">⬅️ Anterior</button>
+            <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">Próximo ➡️</button>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        document.getElementById('total-slides').textContent = totalSlides;
+
+        // Quiz variables
+        let currentQuestion = 1;
+        let score = 0;
+        let quizAnswered = [false, false, false, false];
+
+        function showSlide(index) {
+            slides.forEach((slide, i) => {
+                slide.classList.toggle('active', i === index);
+            });
+            
+            document.getElementById('current-slide').textContent = index + 1;
+            document.getElementById('prevBtn').disabled = index === 0;
+            document.getElementById('nextBtn').disabled = index === totalSlides - 1;
+        }
+
+        function changeSlide(direction) {
+            const newSlide = currentSlide + direction;
+            if (newSlide >= 0 && newSlide < totalSlides) {
+                currentSlide = newSlide;
+                showSlide(currentSlide);
+            }
+        }
+
+        // Quiz Functions
+        function selectOption(questionNum, option, isCorrect) {
+            if (quizAnswered[questionNum - 1]) return; // Já respondida
+            
+            const options = document.querySelectorAll(`#question${questionNum} .quiz-option`);
+            const feedback = document.getElementById(`feedback${questionNum}`);
+            
+            // Marcar todas as opções
+            options.forEach(opt => {
+                opt.style.pointerEvents = 'none';
+                if (opt.onclick.toString().includes('true')) {
+                    opt.classList.add('correct');
+                } else if (opt === event.currentTarget) {
+                    opt.classList.add(isCorrect ? 'correct' : 'incorrect');
+                }
+            });
+            
+            // Mostrar feedback
+            if (isCorrect) {
+                feedback.innerHTML = '✅ Correto! Muito bem!';
+                feedback.className = 'quiz-feedback correct';
+                score++;
+            } else {
+                feedback.innerHTML = '❌ Incorreto. A resposta correta está destacada em verde.';
+                feedback.className = 'quiz-feedback incorrect';
+            }
+            
+            quizAnswered[questionNum - 1] = true;
+            
+            // Mostrar botão para próxima questão
+            if (questionNum < 4) {
+                document.getElementById('nextQuizBtn').style.display = 'inline-block';
+            } else {
+                // Última questão - mostrar resultado
+                setTimeout(() => {
+                    showQuizResult();
+                }, 2000);
+            }
+        }
+
+        function nextQuestion() {
+            document.getElementById(`question${currentQuestion}`).style.display = 'none';
+            currentQuestion++;
+            document.getElementById(`question${currentQuestion}`).style.display = 'block';
+            document.getElementById('nextQuizBtn').style.display = 'none';
+        }
+
+        function showQuizResult() {
+            // Esconder última questão
+            document.getElementById('question4').style.display = 'none';
+            
+            // Mostrar resultado
+            document.getElementById('quizResult').style.display = 'block';
+            document.getElementById('finalScore').textContent = score;
+            
+            const resultMessage = document.getElementById('resultMessage');
+            if (score === 4) {
+                resultMessage.innerHTML = '🏆 Excelente! Você domina o DNS!';
+            } else if (score === 3) {
+                resultMessage.innerHTML = '👏 Muito bom! Quase perfeito!';
+            } else if (score === 2) {
+                resultMessage.innerHTML = '👍 Bom trabalho! Continue estudando!';
+            } else if (score === 1) {
+                resultMessage.innerHTML = '📚 Estude um pouco mais sobre DNS!';
+            } else {
+                resultMessage.innerHTML = '📖 Recomendo revisar o conteúdo!';
+            }
+        }
+
+        function restartQuiz() {
+            // Reset variables
+            currentQuestion = 1;
+            score = 0;
+            quizAnswered = [false, false, false, false];
+            
+            // Reset interface
+            for (let i = 1; i <= 4; i++) {
+                const question = document.getElementById(`question${i}`);
+                const options = question.querySelectorAll('.quiz-option');
+                const feedback = document.getElementById(`feedback${i}`);
+                
+                // Reset options
+                options.forEach(opt => {
+                    opt.className = 'quiz-option';
+                    opt.style.pointerEvents = 'auto';
+                });
+                
+                // Hide feedback
+                feedback.style.display = 'none';
+                
+                // Hide all questions except first
+                question.style.display = i === 1 ? 'block' : 'none';
+            }
+            
+            // Hide result and buttons
+            document.getElementById('quizResult').style.display = 'none';
+            document.getElementById('nextQuizBtn').style.display = 'none';
+        }
+
+        function showSlide(index) {
+            slides.forEach((slide, i) => {
+                slide.classList.toggle('active', i === index);
+            });
+            
+            document.getElementById('current-slide').textContent = index + 1;
+            document.getElementById('prevBtn').disabled = index === 0;
+            document.getElementById('nextBtn').disabled = index === totalSlides - 1;
+        }
+
+        function changeSlide(direction) {
+            const newSlide = currentSlide + direction;
+            if (newSlide >= 0 && newSlide < totalSlides) {
+                currentSlide = newSlide;
+                showSlide(currentSlide);
+            }
+        }
+
+        // Navegação por teclado
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') changeSlide(-1);
+            if (e.key === 'ArrowRight') changeSlide(1);
+            if (e.key === 'Home') {
+                currentSlide = 0;
+                showSlide(currentSlide);
+            }
+            if (e.key === 'End') {
+                currentSlide = totalSlides - 1;
+                showSlide(currentSlide);
+            }
+        });
+
+        // Inicializar
+        showSlide(0);
+        
+        // Inicializar quiz no slide 16
+        document.getElementById('question1').style.display = 'block';
+    </script>
+</body>
+</html>

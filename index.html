@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apostila Virtual da disciplina Redes de Computadores</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .header {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 60px 40px;
+            border-radius: 25px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            margin-bottom: 50px;
+            backdrop-filter: blur(10px);
+        }
+
+        .header h1 {
+            font-size: 3.5em;
+            color: #4a5568;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .header .subtitle {
+            font-size: 1.4em;
+            color: #667eea;
+            margin-bottom: 30px;
+            font-weight: 500;
+        }
+
+        .author-info {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            padding: 25px;
+            border-radius: 15px;
+            border-left: 5px solid #20b2aa;
+            margin-top: 30px;
+        }
+
+        .author-info h3 {
+            color: #4a5568;
+            margin-bottom: 10px;
+        }
+
+        .author-info p {
+            font-size: 1.2em;
+            color: #2d3748;
+        }
+
+        .bimestre-section {
+            margin-bottom: 60px;
+        }
+
+        .bimestre-header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .bimestre-header h2 {
+            font-size: 2.5em;
+            color: #4a5568;
+            margin-bottom: 0;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .chapters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+        }
+
+        .chapter-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .chapter-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .chapter-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+        }
+
+        .chapter-number {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .chapter-title {
+            font-size: 1.8em;
+            color: #2d3748;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .chapter-description {
+            color: #4a5568;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .chapter-topics {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .topic-tag {
+            background: #e2e8f0;
+            color: #4a5568;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.9em;
+            font-weight: 500;
+        }
+
+        .chapter-status {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .status-badge {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: bold;
+        }
+
+        .status-available {
+            background: #c6f6d5;
+            color: #22543d;
+        }
+
+        .chapter-icon {
+            font-size: 1.2em;
+        }
+
+        .coming-soon-message {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            margin: 20px 0;
+            border: 2px dashed #667eea;
+        }
+
+        .coming-soon-message p {
+            font-size: 1.3em;
+            color: #667eea;
+            margin: 0;
+            font-weight: 500;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 60px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+
+        .footer h3 {
+            color: #4a5568;
+            margin-bottom: 15px;
+        }
+
+        .footer p {
+            color: #667eea;
+            font-size: 1.1em;
+        }
+
+        .progress-info {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            padding: 25px;
+            border-radius: 15px;
+            border-left: 5px solid #ff7f50;
+            margin: 30px 0;
+            text-align: center;
+        }
+
+        .progress-bar {
+            background: #e2e8f0;
+            border-radius: 10px;
+            overflow: hidden;
+            height: 20px;
+            margin: 15px 0;
+        }
+
+        .progress-fill {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2.5em;
+            }
+            
+            .chapters-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .container {
+                padding: 20px 15px;
+            }
+        }
+
+        .chapter-card.intro::before {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        }
+
+        .chapter-card.osi::before {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .chapter-card.tcpip::before {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        }
+
+        .chapter-card.http::before {
+            background: linear-gradient(135deg, #ff7b7b 0%, #667eea 100%);
+        }
+
+        .chapter-card.dns::before {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .chapter-card.ftp::before {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        .chapter-card.dhcp::before {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .chapter-card.telnet::before {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .chapter-card.tcpudp::before {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        }
+
+        .chapter-card.internet::before {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .chapter-card.ip::before {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+		
+		.chapter-card.completed::after {
+		content: "";
+		position: absolute;
+		top: 15px;
+		right: 15px;
+		width: 80px;
+		height: 80px;
+		background-image: url('images/100completo.jpg');
+		background-size: contain;
+		background-repeat: no-repeat;
+		background-position: center;
+		opacity: 0.85;
+		transform: rotate(-15deg);
+		z-index: 10;
+		pointer-events: none;
+	}
+
+/* Bimestre 2 - tom esverdeado */
+	.chapter-card.bimestre2 .chapter-number {
+		background: linear-gradient(135deg, #38ef7d 0%, #11998e 100%);
+	}
+
+	/* Bimestre 3 - tom alaranjado */
+	.chapter-card.bimestre3 .chapter-number {
+		background: linear-gradient(135deg, #f7971e 0%, #ffd200 100%);
+	}
+
+	/* Bimestre 4 - tom rosado */
+	.chapter-card.bimestre4 .chapter-number {
+		background: linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%);
+	}
+
+
+	}	
+
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🖧 Redes de Computadores</h1>
+            <p class="subtitle">Apostila Virtual</p>
+            
+            <div class="progress-info">
+                <h3>📊 Progresso Geral da Apostila</h3>
+                <p>24 capítulos distribuídos em 4 bimestres</p>
+                <div class="progress-bar">
+                    <div class="progress-fill"></div>
+                </div>
+                <p><strong>1º bimestre concluído</strong></p>
+            </div>
+
+            <div class="author-info">
+                <h3>👨‍🏫 Professor</h3>
+                <p><strong>César Augusto de Freitas Azevedo</strong><br>
+                📧 cesar.augusto@escolar.ifrn.edu.br<br></p>
+            </div>
+        </div>
+
+        <!-- 1º BIMESTRE -->
+        <div class="bimestre-section">
+            <div class="bimestre-header">
+                <h2>📚 1º BIMESTRE</h2>
+            </div>
+            
+            <div class="chapters-grid">
+                <!-- Capítulo 1 - Introdução às Redes -->
+                <a href="intro_redes_presentation.html" class="chapter-card intro completed">
+                    <div class="chapter-number">1</div>
+                    <h2 class="chapter-title">🎯 Introdução às Redes</h2>
+                    <p class="chapter-description">
+                        Fundamentos de redes de computadores, desde a ARPANET até a Internet moderna. 
+                        Conceitos básicos, arquiteturas e topologias.
+                    </p>
+                    <div class="chapter-topics">
+                        <span class="topic-tag">História da Internet</span>
+                        <span class="topic-tag">Tipos de Redes</span>
+                        <span class="topic-tag">Topologias</span>
+                        <span class="topic-tag">Arquiteturas</span>
+                    </div>
+                    <div class="chapter-status">
+                        <span class="status-badge status-available">✅ Disponível</span>
+                        <span class="chapter-icon">🌐</span>
+                    </div>
+                </a>
+
+                <!-- Capítulo 2 - Comutação -->
+                <a href="comutacao_presentation.html" class="chapter-card comut completed">
+                    <div class="chapter-number">2</div>
+                    <h2 class="chapter-title">🏗️ Comutação</h2>
+                    <p class="chapter-description">
+                        Como os Dados Viajam pelas Redes.
+                    </p>
+                    <div class="chapter-topics">
+                        <span class="topic-tag">Comutação de circuitos</span>
+                        <span class="topic-tag">Comutação de pacotes</span>
+                        <span class="topic-tag">Comparação</span>
+                        <span class="topic-tag">Atrasos e performance</span>
+                    </div>
+                    <div class="chapter-status">
+                        <span class="status-badge status-available">✅ Disponível</span>
+                        <span class="chapter-icon">📖</span>
+                    </div>
+                </a>
+                
+                <!-- Capítulo 3 - Modelo OSI -->
+                <a href="osi_model_presentation.html" class="chapter-card osi completed">
+                    <div class="chapter-number">3</div>
+                    <h2 class="chapter-title">🏗️ Modelo OSI</h2>
+                    <p class="chapter-description">
+                        Compreenda o modelo de 7 camadas que padroniza a comunicação 
+                        em redes, com analogias práticas e exemplos do mundo real.
+                    </p>
+                    <div class="chapter-topics">
+                        <span class="topic-tag">7 Camadas</span>
+                        <span class="topic-tag">Encapsulamento</span>
+                        <span class="topic-tag">Protocolos</span>
+                        <span class="topic-tag">Analogias</span>
+                    </div>
+                    <div class="chapter-status">
+                        <span class="status-badge status-available">✅ Disponível</span>
+                        <span class="chapter-icon">📖</span>
+                    </div>
+                </a>
+
+                <!-- Capítulo 4 - TCP/IP -->
+                <a href="tcpip_presentation.html" class="chapter-card tcpip completed">
+                    <div class="chapter-number">4</div>
+                    <h2 class="chapter-title">🚀 Modelo TCP/IP</h2>
+                    <p class="chapter-description">
+                        Explore a arquitetura que move a Internet moderna, desde sua 
+                        origem militar até se tornar a base da conectividade global.
+                    </p>
+                    <div class="chapter-topics">
+                        <span class="topic-tag">4 Camadas</span>
+                        <span class="topic-tag">ARPANET</span>
+                        <span class="topic-tag">TCP vs UDP</span>
+                        <span class="topic-tag">PING</span>
+                    </div>
+                    <div class="chapter-status">
+                        <span class="status-badge status-available">✅ Disponível</span>
+                        <span class="chapter-icon">🌐</span>
+                    </div>
+                </a>
+
+                <!-- Capítulo 5 - HTTP -->
+                <a href="http_presentation.html" class="chapter-card http completed">
+                    <div class="chapter-number">5</div>
+                    <h2 class="chapter-title">🌐 World Wide Web & HTTP</h2>
+                    <p class="chapter-description">
+                        Descubra como funciona o protocolo que faz a Web existir, 
+                        desde o clique do mouse até o conteúdo aparecer na tela.
+                    </p>
+                    <div class="chapter-topics">
+                        <span class="topic-tag">Métodos HTTP</span>
+                        <span class="topic-tag">Códigos de Status</span>
+                        <span class="topic-tag">Conexões</span>
+                        <span class="topic-tag">Cache</span>
+                    </div>
+                    <div class="chapter-status">
+                        <span class="status-badge status-available">✅ Disponível</span>
+                        <span class="chapter-icon">📡</span>
+                    </div>
+                </a>
+                
+                <!-- Capítulo 6 - FTP -->
+                <a href="ftp_presentation.html" class="chapter-card ftp completed">
+                    <div class="chapter-number">6</div>
+                    <h2 class="chapter-title">📁 File Transfer Protocol</h2>
+                    <p class="chapter-description">
+                        Conheça o protocolo clássico para transferir arquivos pela Internet, 
+                        desde seus fundamentos até as versões seguras modernas.
+                    </p>
+                    <div class="chapter-topics">
+                        <span class="topic-tag">Portas 20 e 21</span>
+                        <span class="topic-tag">Comandos FTP</span>
+                        <span class="topic-tag">Cliente-Servidor</span>
+                        <span class="topic-tag">SFTP vs FTP</span>
+                    </div>
+                    <div class="chapter-status">
+                        <span class="status-badge status-available">✅ Disponível</span>
+                        <span class="chapter-icon">📁</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <!-- 2º BIMESTRE -->
+        <div class="bimestre-section">
+            <div class="bimestre-header">
+                <h2>📚 2º BIMESTRE</h2>
+            </div>
+            
+            <div class="chapters-grid">
+                <!-- Capítulo 7 - DNS -->
+                <a href="dns_presentation_topics.html" class="chapter-card dns bimestre2 completed">
+                    <div class="chapter-number">7</div>
+                    <h2 class="chapter-title">🌐 Sistema DNS</h2>
+                    <p class="chapter-description">
+                        Entenda como a "agenda telefônica" da Internet transforma 
+                        nomes amigáveis em endereços IP de forma distribuída e eficiente.
+                    </p>
+                    <div class="chapter-topics">
+                        <span class="topic-tag">Resolução de Nomes</span>
+                        <span class="topic-tag">Hierarquia</span>
+                        <span class="topic-tag">Cache</span>
+                        <span class="topic-tag">DDNS</span>
+                    </div>
+                    <div class="chapter-status">
+                        <span class="status-badge status-available">✅ Disponível</span>
+                        <span class="chapter-icon">📇</span>
+                    </div>
+                </a>
+
+                <!-- Capítulo 8 - DHCP -->
+                <a href="dhcp_presentation.html" class="chapter-card dhcp bimestre2 completed">
+                    <div class="chapter-number">8</div>
+                    <h2 class="chapter-title">🔧 Dynamic Host Configuration Protocol</h2>
+                    <p class="chapter-description">
+                        Descubra como o DHCP automatiza a configuração de redes, 
+                        desde a atribuição de IPs até o gerenciamento centralizado.
+                    </p>
+                    <div class="chapter-topics">
+                        <span class="topic-tag">Processo DORA</span>
+                        <span class="topic-tag">Portas UDP 67/68</span>
+                        <span class="topic-tag">Lease de IPs</span>
+                        <span class="topic-tag">Relay Agent</span>
+                    </div>
+                    <div class="chapter-status">
+                        <span class="status-badge status-available">✅ Disponível</span>
+                        <span class="chapter-icon">🔧</span>
+                    </div>
+                </a>
+
+                <!-- Capítulo 9 - NTP -->
+                <a href="ntp_presentation.html" class="chapter-card bimestre2 telnet">
+                    <div class="chapter-number">9</div>
+                    <h2 class="chapter-title">⏰ Protocolo NTP</h2>
+                    <p class="chapter-description">
+                        Aprenda o protocolo que sincroniza a Internet!
+                    </p>
+                    <div class="chapter-topics">
+                        <span class="topic-tag">Fontes Primárias</span>
+                        <span class="topic-tag">Distribuição Hierárquica</span>
+                        <span class="topic-tag">Cálculo Delay/Offset</span>
+                        <span class="topic-tag">Coordenação Global</span>
+                    </div>
+                    <div class="chapter-status">
+                        <span class="status-badge status-available">✅ Disponível</span>
+                        <span class="chapter-icon">💻</span>
+                    </div>
+                </a>
+
+				
+                <!-- Capítulo 10 - Protocolos SMTP e POP3 -->
+                <a href="email_protocols_presentation.html" class="chapter-card bimestre2 internet">
+                    <div class="chapter-number">10</div>
+                    <h2 class="chapter-title">🌍 Protocolos de E-mail</h2>
+                    <p class="chapter-description">
+                        Compreenda os protocolos responsáveis pelo envio e recebimento de mensagens eletrônicas. 
+						SMTP para transferência e POP3 para download na comunicação digital.
+                    </p>
+                    <div class="chapter-topics">
+                        <span class="topic-tag">Protocolo SMTP</span>
+                        <span class="topic-tag">Protocolo POP3</span>
+                        <span class="topic-tag">Envio e Recebimento</span>
+                        <span class="topic-tag">Correio Eletrônico</span>
+                    </div>
+                    <div class="chapter-status">
+                        <span class="status-badge status-available">✅ Disponível</span>
+                        <span class="chapter-icon">🌍</span>
+                    </div>
+                </a>
+
+				<!-- Capítulo 11 - TCP e UDP -->
+                <a href="tcp_udp_presentation.html" class="chapter-card bimestre2 tcpudp">
+                    <div class="chapter-number">11</div>
+                    <h2 class="chapter-title">🌐 Protocolos TCP e UDP</h2>
+                    <p class="chapter-description">
+                        Explore os dois principais protocolos da camada de transporte: UDP (simples e rápido) 
+                        e TCP (confiável e robusto). Comunicação entre processos e controle de fluxo.
+                    </p>
+                    <div class="chapter-topics">
+                        <span class="topic-tag">Comunicação entre Processos</span>
+                        <span class="topic-tag">UDP vs TCP</span>
+                        <span class="topic-tag">Controle de Fluxo</span>
+                        <span class="topic-tag">Controle de Erros</span>
+                    </div>
+                    <div class="chapter-status">
+                        <span class="status-badge status-available">✅ Disponível</span>
+                        <span class="chapter-icon">📡</span>
+                    </div>
+                </a>
+                <!-- Capítulo 12 - Protocolo IP -->
+                <a href="ip_protocol_presentation.html" class="chapter-card bimestre2 ip">
+                    <div class="chapter-number">12</div>
+                    <h2 class="chapter-title">🌐 Protocolo IP</h2>
+                    <p class="chapter-description">
+                        Aprenda os fundamentos do Internet Protocol: endereçamento IPv4, classes de endereços, 
+                        máscaras de rede e configuração prática de redes.
+                    </p>
+                    <div class="chapter-topics">
+                        <span class="topic-tag">Endereçamento IPv4</span>
+                        <span class="topic-tag">Classes A, B, C</span>
+                        <span class="topic-tag">Máscaras de Rede</span>
+                        <span class="topic-tag">Protocolo ARP</span>
+                    </div>
+                    <div class="chapter-status">
+                        <span class="status-badge status-available">✅ Disponível</span>
+                        <span class="chapter-icon">🔢</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <!-- 3º BIMESTRE -->
+        <div class="bimestre-section">
+            <div class="bimestre-header">
+                <h2>📚 3º BIMESTRE</h2>
+            </div>
+            
+            <div class="chapters-grid">
+                <!-- Capítulo 13 - DNS -->
+                <a href="dns_presentation_topics.html" class="chapter-card bimestre3 dns">
+                    <div class="chapter-number">13</div>
+                    <h2 class="chapter-title">🌐 Sistema DNS</h2>
+                    <p class="chapter-description">
+                        Entenda como a "agenda telefônica" da Internet transforma 
+                        nomes amigáveis em endereços IP de forma distribuída e eficiente.
+                    </p>
+                    <div class="chapter-topics">
+                        <span class="topic-tag">Resolução de Nomes</span>
+                        <span class="topic-tag">Hierarquia</span>
+                        <span class="topic-tag">Cache</span>
+                        <span class="topic-tag">DDNS</span>
+                    </div>
+                    <div class="chapter-status">
+                        <span class="status-badge status-available">✅ Disponível</span>
+                        <span class="chapter-icon">📇</span>
+                    </div>
+                </a>
+
+                <!-- Capítulo 14 - DHCP -->
+                <a href="dhcp_presentation.html" class="chapter-card bimestre3 dhcp">
+                    <div class="chapter-number">14</div>
+                    <h2 class="chapter-title">🔧 Dynamic Host Configuration Protocol</h2>
+                    <p class="chapter-description">
+                        Descubra como o DHCP automatiza a configuração de redes, 
+                        desde a atribuição de IPs até o gerenciamento centralizado.
+                    </p>
+                    <div class="chapter-topics">
+                        <span class="topic-tag">Processo DORA</span>
+                        <span class="topic-tag">Portas UDP 67/68</span>
+                        <span class="topic-tag">Lease de IPs</span>
+                        <span class="topic-tag">Relay Agent</span>
+                    </div>
+                    <div class="chapter-status">
+                        <span class="status-badge status-available">✅ Disponível</span>
+                        <span class="chapter-icon">🔧</span>
+                    </div>
+                </a>
+
+                <!-- Capítulo 15 - TELNET -->
+                <a href="ntp_presentation.html" class="chapter-card bimestre3 telnet">
+                    <div class="chapter-number">15</div>
+                    <h2 class="chapter-title">💻 Protocolo NTP</h2>
+                    <p class="chapter-description">
+                        Aprenda o protocolo que sincroniza a Internet: Fontes de tempo primárias, distribuição
+						hierárquica e cálculos de delay/offset para coordenar sistemas globais.
+                    </p>
+                    <div class="chapter-topics">
+                        <span class="topic-tag">Fontes Primárias</span>
+                        <span class="topic-tag">Distribuição Hierárquica</span>
+                        <span class="topic-tag">Cálculo Delay/Offset</span>
+                        <span class="topic-tag">Coordenação Global</span>
+                    </div>
+                    <div class="chapter-status">
+                        <span class="status-badge status-available">✅ Disponível</span>
+                        <span class="chapter-icon">💻</span>
+                    </div>
+                </a>
+
+				<!-- Capítulo 16 - TCP e UDP -->
+                <a href="tcp_udp_presentation.html" class="chapter-card bimestre3 tcpudp">
+                    <div class="chapter-number">16</div>
+                    <h2 class="chapter-title">🌐 Protocolos TCP e UDP</h2>
+                    <p class="chapter-description">
+                        Explore os dois principais protocolos da camada de transporte: UDP (simples e rápido) 
+                        e TCP (confiável e robusto). Comunicação entre processos e controle de fluxo.
+                    </p>
+                    <div class="chapter-topics">
+                        <span class="topic-tag">Comunicação entre Processos</span>
+                        <span class="topic-tag">UDP vs TCP</span>
+                        <span class="topic-tag">Controle de Fluxo</span>
+                        <span class="topic-tag">Controle de Erros</span>
+                    </div>
+                    <div class="chapter-status">
+                        <span class="status-badge status-available">✅ Disponível</span>
+                        <span class="chapter-icon">📡</span>
+                    </div>
+                </a>
+
+                <!-- Capítulo 17 - Camada de Internet -->
+                <a href="internet_layer_presentation.html" class="chapter-card bimestre3 internet">
+                    <div class="chapter-number">17</div>
+                    <h2 class="chapter-title">🌍 Camada de Internet</h2>
+                    <p class="chapter-description">
+                        Compreenda a camada responsável pela entrega de datagramas entre redes diferentes. 
+                        Protocolo IP, endereçamento, classes e roteamento na Internet.
+                    </p>
+                    <div class="chapter-topics">
+                        <span class="topic-tag">Protocolo IP</span>
+                        <span class="topic-tag">Classes de Endereços</span>
+                        <span class="topic-tag">IPs Públicos vs Privados</span>
+                        <span class="topic-tag">Fragmentação</span>
+                    </div>
+                    <div class="chapter-status">
+                        <span class="status-badge status-available">✅ Disponível</span>
+                        <span class="chapter-icon">🌍</span>
+                    </div>
+                </a>
+
+                <!-- Capítulo 18 - Protocolo IP -->
+                <a href="ip_protocol_presentation.html" class="chapter-card bimestre3 ip">
+                    <div class="chapter-number">18</div>
+                    <h2 class="chapter-title">🌐 Protocolo IP</h2>
+                    <p class="chapter-description">
+                        Aprenda os fundamentos do Internet Protocol: endereçamento IPv4, classes de endereços, 
+                        máscaras de rede e configuração prática de redes.
+                    </p>
+                    <div class="chapter-topics">
+                        <span class="topic-tag">Endereçamento IPv4</span>
+                        <span class="topic-tag">Classes A, B, C</span>
+                        <span class="topic-tag">Máscaras de Rede</span>
+                        <span class="topic-tag">Protocolo ARP</span>
+                    </div>
+                    <div class="chapter-status">
+                        <span class="status-badge status-available">✅ Disponível</span>
+                        <span class="chapter-icon">🔢</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <!-- 4º BIMESTRE -->
+        <div class="bimestre-section">
+            <div class="bimestre-header">
+                <h2>📚 4º BIMESTRE</h2>
+            </div>
+            
+            <div class="chapters-grid">
+                <!-- Capítulo 19 - Introdução às Redes -->
+                <a href="intro_redes_presentation.html" class="chapter-card bimestre4 intro">
+                    <div class="chapter-number">19</div>
+                    <h2 class="chapter-title">🎯 Introdução às Redes</h2>
+                    <p class="chapter-description">
+                        Fundamentos de redes de computadores, desde a ARPANET até a Internet moderna. 
+                        Conceitos básicos, arquiteturas e topologias.
+                    </p>
+                    <div class="chapter-topics">
+                        <span class="topic-tag">História da Internet</span>
+                        <span class="topic-tag">Tipos de Redes</span>
+                        <span class="topic-tag">Topologias</span>
+                        <span class="topic-tag">Arquiteturas</span>
+                    </div>
+                    <div class="chapter-status">
+                        <span class="status-badge status-available">✅ Disponível</span>
+                        <span class="chapter-icon">🌐</span>
+                    </div>
+                </a>
+
+                <!-- Capítulo 20 - Comutação -->
+                <a href="comutacao_presentation.html" class="chapter-card bimestre4 comut">
+                    <div class="chapter-number">20</div>
+                    <h2 class="chapter-title">🏗️ Comutação</h2>
+                    <p class="chapter-description">
+                        Como os Dados Viajam pelas Redes.
+                    </p>
+                    <div class="chapter-topics">
+                        <span class="topic-tag">Comutação de circuitos</span>
+                        <span class="topic-tag">Comutação de pacotes</span>
+                        <span class="topic-tag">Comparação</span>
+                        <span class="topic-tag">Atrasos e performance</span>
+                    </div>
+                    <div class="chapter-status">
+                        <span class="status-badge status-available">✅ Disponível</span>
+                        <span class="chapter-icon">📖</span>
+                    </div>
+                </a>
+                
+                <!-- Capítulo 21 - Modelo OSI -->
+                <a href="osi_model_presentation.html" class="chapter-card bimestre4 osi">
+                    <div class="chapter-number">21</div>
+                    <h2 class="chapter-title">🏗️ Modelo OSI</h2>
+                    <p class="chapter-description">
+                        Compreenda o modelo de 7 camadas que padroniza a comunicação 
+                        em redes, com analogias práticas e exemplos do mundo real.
+                    </p>
+                    <div class="chapter-topics">
+                        <span class="topic-tag">7 Camadas</span>
+                        <span class="topic-tag">Encapsulamento</span>
+                        <span class="topic-tag">Protocolos</span>
+                        <span class="topic-tag">Analogias</span>
+                    </div>
+                    <div class="chapter-status">
+                        <span class="status-badge status-available">✅ Disponível</span>
+                        <span class="chapter-icon">📖</span>
+                    </div>
+                </a>
+
+                <!-- Capítulo 22 - TCP/IP -->
+                <a href="tcpip_presentation.html" class="chapter-card bimestre4 tcpip">
+                    <div class="chapter-number">22</div>
+                    <h2 class="chapter-title">🚀 Modelo TCP/IP</h2>
+                    <p class="chapter-description">
+                        Explore a arquitetura que move a Internet moderna, desde sua 
+                        origem militar até se tornar a base da conectividade global.
+                    </p>
+                    <div class="chapter-topics">
+                        <span class="topic-tag">4 Camadas</span>
+                        <span class="topic-tag">ARPANET</span>
+                        <span class="topic-tag">TCP vs UDP</span>
+                        <span class="topic-tag">PING</span>
+                    </div>
+                    <div class="chapter-status">
+                        <span class="status-badge status-available">✅ Disponível</span>
+                        <span class="chapter-icon">🌐</span>
+                    </div>
+                </a>
+
+                <!-- Capítulo 23 - HTTP -->
+                <a href="http_presentation.html" class="chapter-card bimestre4 http">
+                    <div class="chapter-number">23</div>
+                    <h2 class="chapter-title">🌐 World Wide Web & HTTP</h2>
+                    <p class="chapter-description">
+                        Descubra como funciona o protocolo que faz a Web existir, 
+                        desde o clique do mouse até o conteúdo aparecer na tela.
+                    </p>
+                    <div class="chapter-topics">
+                        <span class="topic-tag">Métodos HTTP</span>
+                        <span class="topic-tag">Códigos de Status</span>
+                        <span class="topic-tag">Conexões</span>
+                        <span class="topic-tag">Cache</span>
+                    </div>
+                    <div class="chapter-status">
+                        <span class="status-badge status-available">✅ Disponível</span>
+                        <span class="chapter-icon">📡</span>
+                    </div>
+                </a>
+                
+                <!-- Capítulo 24 - FTP -->
+                <a href="ftp_presentation.html" class="chapter-card bimestre4 ftp">
+                    <div class="chapter-number">24</div>
+                    <h2 class="chapter-title">📁 File Transfer Protocol</h2>
+                    <p class="chapter-description">
+                        Conheça o protocolo clássico para transferir arquivos pela Internet, 
+                        desde seus fundamentos até as versões seguras modernas.
+                    </p>
+                    <div class="chapter-topics">
+                        <span class="topic-tag">Portas 20 e 21</span>
+                        <span class="topic-tag">Comandos FTP</span>
+                        <span class="topic-tag">Cliente-Servidor</span>
+                        <span class="topic-tag">SFTP vs FTP</span>
+                    </div>
+                    <div class="chapter-status">
+                        <span class="status-badge status-available">✅ Disponível</span>
+                        <span class="chapter-icon">📁</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+    <script>
+        // Adicionar efeitos de hover e interatividade
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.chapter-card');
+            
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-10px) scale(1.02)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0) scale(1)';
+                });
+            });
+
+            // Efeito de digitação no título
+            const title = document.querySelector('.header h1');
+            const originalText = title.textContent;
+            title.textContent = '';
+            
+            let i = 0;
+            const typeEffect = setInterval(() => {
+                title.textContent += originalText.charAt(i);
+                i++;
+                if (i > originalText.length - 1) {
+                    clearInterval(typeEffect);
+                }
+            }, 100);
+
+            // Animação da barra de progresso geral (2 de 4 bimestres)
+            setTimeout(() => {
+                document.querySelector('.progress-fill').style.width = '25%';
+            }, 1000);
+        });
+
+        // Todas as 12 apresentações estão completas nos 2 primeiros bimestres!
+    </script>
+</body>
+</html>

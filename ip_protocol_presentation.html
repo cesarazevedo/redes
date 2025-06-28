@@ -1,0 +1,1249 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Protocolo IP - Internet Protocol</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        .presentation {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .slide {
+            min-height: 100vh;
+            padding: 60px 40px;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            background: white;
+            margin: 20px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        .slide.active {
+            display: flex;
+        }
+
+        .slide h1 {
+            font-size: 3.5em;
+            color: #4a5568;
+            text-align: center;
+            margin-bottom: 40px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .slide h2 {
+            font-size: 2.8em;
+            color: #2d3748;
+            margin-bottom: 30px;
+            border-bottom: 4px solid #667eea;
+            padding-bottom: 15px;
+        }
+
+        .slide h3 {
+            font-size: 2.2em;
+            color: #4a5568;
+            margin: 25px 0 15px 0;
+        }
+
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: start;
+        }
+
+        .bullet-point {
+            display: flex;
+            align-items: flex-start;
+            margin: 15px 0;
+            font-size: 1.3em;
+            line-height: 1.5;
+        }
+
+        .bullet-point::before {
+            content: "🔸";
+            margin-right: 15px;
+            font-size: 1.2em;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #667eea;
+        }
+
+        .example-box {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #20b2aa;
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 1000;
+        }
+
+        .nav-btn {
+            padding: 15px 25px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .nav-btn:hover {
+            background: #5a67d8;
+            transform: translateY(-2px);
+            box-shadow: 0 7px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .nav-btn:disabled {
+            background: #a0a0a0;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .slide-counter {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: rgba(255,255,255,0.9);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            color: #4a5568;
+            z-index: 1000;
+        }
+
+        .icon {
+            font-size: 1.5em;
+            margin-right: 10px;
+        }
+
+        .center-text {
+            text-align: center;
+        }
+
+        .large-text {
+            font-size: 1.4em;
+            line-height: 1.6;
+        }
+
+        .diagram {
+            background: #f7fafc;
+            border: 2px dashed #667eea;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+            font-family: monospace;
+            font-size: 1.2em;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 1.1em;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        th {
+            background: #667eea;
+            color: white;
+            font-weight: bold;
+        }
+
+        .process-step {
+            background: #e6fffa;
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #38b2ac;
+        }
+
+        .code-box {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: monospace;
+            font-size: 1em;
+            margin: 20px 0;
+            overflow-x: auto;
+        }
+
+        .ip-address {
+            background: #4299e1;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            margin: 2px;
+            display: inline-block;
+        }
+
+        .network-class {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin: 5px;
+            display: inline-block;
+        }
+
+        .class-a { background: #fed7d7; color: #742a2a; }
+        .class-b { background: #bee3f8; color: #2a4365; }
+        .class-c { background: #c6f6d5; color: #22543d; }
+
+        /* Quiz Styles */
+        .quiz-container {
+            max-width: 100%;
+            margin: 20px 0;
+        }
+
+        .quiz-question {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border: 2px solid #e2e8f0;
+        }
+
+        .quiz-question h3 {
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+
+        .quiz-question p {
+            font-size: 1.3em;
+            margin-bottom: 25px;
+            font-weight: bold;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .quiz-option {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.1em;
+        }
+
+        .quiz-option:hover {
+            border-color: #667eea;
+            background: #f7fafc;
+            transform: translateX(5px);
+        }
+
+        .quiz-option.selected {
+            border-color: #667eea;
+            background: #667eea;
+            color: white;
+        }
+
+        .quiz-option.correct {
+            border-color: #48bb78;
+            background: #48bb78;
+            color: white;
+        }
+
+        .quiz-option.incorrect {
+            border-color: #f56565;
+            background: #f56565;
+            color: white;
+        }
+
+        .option-letter {
+            background: #667eea;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .quiz-option.correct .option-letter {
+            background: #48bb78;
+        }
+
+        .quiz-option.incorrect .option-letter {
+            background: #f56565;
+        }
+
+        .quiz-feedback {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: bold;
+            display: none;
+        }
+
+        .quiz-feedback.correct {
+            background: #c6f6d5;
+            color: #22543d;
+            border: 2px solid #48bb78;
+            display: block;
+        }
+
+        .quiz-feedback.incorrect {
+            background: #fed7d7;
+            color: #742a2a;
+            border: 2px solid #f56565;
+            display: block;
+        }
+
+        .quiz-navigation {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .quiz-result {
+            text-align: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            margin: 20px 0;
+        }
+
+        .result-box {
+            background: rgba(255,255,255,0.1);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+
+        .result-box p {
+            font-size: 1.4em;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation">
+        <div class="slide-counter">
+            <span id="current-slide">1</span> / <span id="total-slides">20</span>
+        </div>
+
+        <!-- Slide 1: Título -->
+        <div class="slide active">
+            <div class="content center-text">
+                <h1>🌐 Protocolo IP</h1>
+                <h2 style="border: none; color: #667eea;">Internet Protocol</h2>
+                <div class="highlight-box large-text">
+                    <strong>Aula 11</strong><br>
+                    Endereçamento básico e fundamentos do IPv4<br>
+                    Como funciona o endereçamento na Internet
+                </div>
+                
+                <div class="example-box" style="margin-top: 40px;">
+                    <h3>👨‍🏫 Autor da Apresentação</h3>
+                    <p style="font-size: 1.3em; margin: 10px 0;">
+                        <strong>César Azevedo</strong><br>
+                        📧 cesar.augusto@ifrn.edu.br<br>
+                        🏫 Instituto Federal do Rio Grande do Norte
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 2: Tópicos da Aula -->
+        <div class="slide">
+            <div class="content">
+                <h2>📋 Tópicos da Aula</h2>
+                
+                <div class="two-column">
+                    <div>
+                        <h3>🎯 Fundamentos</h3>
+                        <div class="bullet-point">O que são endereços IP</div>
+                        <div class="bullet-point">Estrutura hierárquica</div>
+                        <div class="bullet-point">Notação decimal pontuada</div>
+                        <div class="bullet-point">32 bits e 2³² endereços</div>
+                        
+                        <h3>📊 Classes de Endereços</h3>
+                        <div class="bullet-point">Classes A, B, C, D e E</div>
+                        <div class="bullet-point">Identificador de rede vs host</div>
+                        <div class="bullet-point">Diferentes tamanhos de redes</div>
+                    </div>
+                    <div>
+                        <h3>🔧 Endereços Especiais</h3>
+                        <div class="bullet-point">Endereços de rede</div>
+                        <div class="bullet-point">Endereços de broadcast</div>
+                        <div class="bullet-point">Endereços privados</div>
+                        <div class="bullet-point">Endereço de loopback</div>
+                        
+                        <h3>🎭 Máscaras e Ferramentas</h3>
+                        <div class="bullet-point">Máscara de rede</div>
+                        <div class="bullet-point">Comandos ipconfig e netstat</div>
+                        <div class="bullet-point">Protocolo ARP</div>
+                    </div>
+                </div>
+
+                <div class="highlight-box center-text">
+                    <h3>🎯 Objetivo Final</h3>
+                    <p>Compreender como funciona o endereçamento IP<br>
+                    e ser capaz de identificar e configurar endereços de rede</p>
+                </div>
+
+                <div class="example-box center-text">
+                    <h3>🧠 + Quiz Interativo</h3>
+                    <p>Teste seus conhecimentos com 4 questões práticas!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: O que é IP -->
+        <div class="slide">
+            <div class="content">
+                <h2>🤔 O que são Endereços IP?</h2>
+                
+                <div class="bullet-point">Mecanismo de endereçamento universal</div>
+                <div class="bullet-point">Identificação única de cada dispositivo</div>
+                <div class="bullet-point">Números inteiros de 32 bits</div>
+                <div class="bullet-point">2³² endereços possíveis (4.294.967.296)</div>
+
+                <div class="example-box">
+                    <h3>💡 Notação Decimal Pontuada:</h3>
+                    <div class="diagram">
+                        32 bits divididos em 4 grupos de 8 bits<br>
+                        <span class="ip-address">192.168.1.1</span><br>
+                        Cada número varia de 0 a 255
+                    </div>
+                </div>
+
+                <div class="highlight-box">
+                    <h3>🎯 Importante Lembrar:</h3>
+                    <div class="bullet-point">Endereços são atribuídos às <strong>interfaces</strong>, não aos dispositivos</div>
+                    <div class="bullet-point">Cada interface deve ter um endereço IP único</div>
+                    <div class="bullet-point">Um dispositivo pode ter múltiplas interfaces</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Estrutura Hierárquica -->
+        <div class="slide">
+            <div class="content">
+                <h2>🏗️ Estrutura Hierárquica</h2>
+                
+                <div class="bullet-point">Todo endereço IPv4 é dividido em duas partes</div>
+                <div class="bullet-point">Permite roteamento baseado em redes, não em estações</div>
+                <div class="bullet-point">Reduz drasticamente informações de roteamento</div>
+
+                <div class="example-box">
+                    <h3>📊 Divisão do Endereço IP:</h3>
+                    <div class="diagram">
+                        <strong>Identificador de Rede (Prefixo)</strong><br>
+                        ↓<br>
+                        Identifica a rede de forma única<br><br>
+                        <strong>Identificador de Host (Estação)</strong><br>
+                        ↓<br>
+                        Identifica o dispositivo dentro da rede
+                    </div>
+                </div>
+
+                <div class="highlight-box">
+                    <h3>📋 Regras Importantes:</h3>
+                    <div class="bullet-point">Redes diferentes devem ter prefixos diferentes</div>
+                    <div class="bullet-point">Mesma rede física compartilha o mesmo prefixo</div>
+                    <div class="bullet-point">Cada host na rede deve ter identificador único</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: Classes de Endereços -->
+        <div class="slide">
+            <div class="content">
+                <h2>📊 Classes de Endereços</h2>
+                
+                <div class="bullet-point">Espaço IP dividido em 5 classes: A, B, C, D e E</div>
+                <div class="bullet-point">Cada classe para diferentes tamanhos de redes</div>
+                <div class="bullet-point">Posição diferente para delimitar rede e host</div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Classe</th>
+                            <th>Faixa de Endereços</th>
+                            <th>Prefixo de Rede</th>
+                            <th>Hosts por Rede</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="network-class class-a">A</span></td>
+                            <td>1.0.0.0 - 126.255.255.255</td>
+                            <td>8 bits</td>
+                            <td>16.777.214</td>
+                        </tr>
+                        <tr>
+                            <td><span class="network-class class-b">B</span></td>
+                            <td>128.0.0.0 - 191.255.255.255</td>
+                            <td>16 bits</td>
+                            <td>65.534</td>
+                        </tr>
+                        <tr>
+                            <td><span class="network-class class-c">C</span></td>
+                            <td>192.0.0.0 - 223.255.255.255</td>
+                            <td>24 bits</td>
+                            <td>254</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="example-box">
+                    <h3>🔍 Identificação Rápida:</h3>
+                    <div class="bullet-point"><strong>Classe A:</strong> Primeiro octeto 1-126</div>
+                    <div class="bullet-point"><strong>Classe B:</strong> Primeiro octeto 128-191</div>
+                    <div class="bullet-point"><strong>Classe C:</strong> Primeiro octeto 192-223</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: Exemplos de Classes -->
+        <div class="slide">
+            <div class="content">
+                <h2>💡 Exemplos Práticos de Classes</h2>
+                
+                <div class="example-box">
+                    <h3>🅰️ Classe A - Exemplo: 10.2.61.20</h3>
+                    <div class="bullet-point"><strong>Identificador de Rede:</strong> 10</div>
+                    <div class="bullet-point"><strong>Identificador de Host:</strong> 2.61.20</div>
+                    <div class="bullet-point"><strong>Uso:</strong> Redes muito grandes (corporações, ISPs)</div>
+                </div>
+
+                <div class="example-box">
+                    <h3>🅱️ Classe B - Exemplo: 172.121.40.25</h3>
+                    <div class="bullet-point"><strong>Identificador de Rede:</strong> 172.121</div>
+                    <div class="bullet-point"><strong>Identificador de Host:</strong> 40.25</div>
+                    <div class="bullet-point"><strong>Uso:</strong> Redes médias (universidades, empresas)</div>
+                </div>
+
+                <div class="example-box">
+                    <h3>🅰️ Classe C - Exemplo: 192.168.0.1</h3>
+                    <div class="bullet-point"><strong>Identificador de Rede:</strong> 192.168.0</div>
+                    <div class="bullet-point"><strong>Identificador de Host:</strong> 1</div>
+                    <div class="bullet-point"><strong>Uso:</strong> Redes pequenas (escritórios, residências)</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7: Endereços Especiais -->
+        <div class="slide">
+            <div class="content">
+                <h2>🔧 Endereços Especiais</h2>
+                
+                <div class="bullet-point">Vários endereços são reservados para finalidades específicas</div>
+                <div class="bullet-point">Não podem ser usados em interfaces normais</div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>🏠 Endereços de Rede</h3>
+                        <div class="bullet-point">Identificador de host = 0</div>
+                        <div class="bullet-point">Referenciam a própria rede</div>
+                        <div class="example-box">
+                            <strong>Exemplos:</strong><br>
+                            <span class="ip-address">10.0.0.0</span><br>
+                            <span class="ip-address">192.168.1.0</span><br>
+                            <span class="ip-address">172.16.0.0</span>
+                        </div>
+                        
+                        <h3>📢 Endereços de Broadcast</h3>
+                        <div class="bullet-point">Identificador de host = 255</div>
+                        <div class="bullet-point">Envio para todos da rede</div>
+                        <div class="example-box">
+                            <strong>Exemplos:</strong><br>
+                            <span class="ip-address">10.255.255.255</span><br>
+                            <span class="ip-address">192.168.1.255</span><br>
+                            <span class="ip-address">172.16.255.255</span>
+                        </div>
+                    </div>
+                    <div>
+                        <h3>🔒 Endereços Privados</h3>
+                        <div class="bullet-point">Uso livre sem autorização</div>
+                        <div class="bullet-point">Não roteáveis na Internet</div>
+                        <div class="example-box">
+                            <strong>Faixas Privadas:</strong><br>
+                            <span class="ip-address">10.0.0.0</span> (Classe A)<br>
+                            <span class="ip-address">172.16.0.0-172.31.0.0</span> (Classe B)<br>
+                            <span class="ip-address">192.168.0.0-192.168.255.0</span> (Classe C)
+                        </div>
+                        
+                        <h3>🔄 Endereço de Loopback</h3>
+                        <div class="bullet-point">Rede 127.x.x.x</div>
+                        <div class="bullet-point">Interface virtual interna</div>
+                        <div class="example-box">
+                            <strong>Mais comum:</strong><br>
+                            <span class="ip-address">127.0.0.1</span> (localhost)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: Máscara de Rede -->
+        <div class="slide">
+            <div class="content">
+                <h2>🎭 Máscara de Rede</h2>
+                
+                <div class="bullet-point">Mecanismo para identificar a porção de rede e host</div>
+                <div class="bullet-point">Padrão de 32 bits: 1s para rede, 0s para host</div>
+                <div class="bullet-point">Representada em decimal ou por contagem de bits</div>
+
+                <div class="example-box">
+                    <h3>📊 Máscaras Padrão por Classe:</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Classe</th>
+                                <th>Máscara Decimal</th>
+                                <th>Notação CIDR</th>
+                                <th>Bits de Rede</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>A</td>
+                                <td>255.0.0.0</td>
+                                <td>/8</td>
+                                <td>8</td>
+                            </tr>
+                            <tr>
+                                <td>B</td>
+                                <td>255.255.0.0</td>
+                                <td>/16</td>
+                                <td>16</td>
+                            </tr>
+                            <tr>
+                                <td>C</td>
+                                <td>255.255.255.0</td>
+                                <td>/24</td>
+                                <td>24</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="highlight-box">
+                    <h3>💡 Operação AND Lógica:</h3>
+                    <div class="bullet-point">IP AND Máscara = Endereço de Rede</div>
+                    <div class="bullet-point">Permite determinar se dois IPs estão na mesma rede</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 9: Exemplo Prático de Máscara -->
+        <div class="slide">
+            <div class="content">
+                <h2>🔧 Exemplo Prático - Máscara de Rede</h2>
+                
+                <div class="example-box">
+                    <h3>📊 Determinando a Rede do IP 192.168.1.15/24</h3>
+                    <div class="code-box">
+IP:      192.168.1.15  = 11000000.10101000.00000001.00001111<br>
+Máscara: 255.255.255.0 = 11111111.11111111.11111111.00000000<br>
+                        --------------------------------<br>
+Rede:    192.168.1.0   = 11000000.10101000.00000001.00000000
+                    </div>
+                </div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>✅ Exemplos de IPs Válidos:</h3>
+                        <div class="bullet-point"><span class="ip-address">192.168.1.1</span></div>
+                        <div class="bullet-point"><span class="ip-address">192.168.1.50</span></div>
+                        <div class="bullet-point"><span class="ip-address">192.168.1.254</span></div>
+                        
+                        <div class="highlight-box">
+                            <strong>Faixa Utilizável:</strong><br>
+                            192.168.1.1 a 192.168.1.254<br>
+                            <small>(excluindo rede e broadcast)</small>
+                        </div>
+                    </div>
+                    <div>
+                        <h3>❌ Endereços Reservados:</h3>
+                        <div class="bullet-point"><span class="ip-address">192.168.1.0</span> (Rede)</div>
+                        <div class="bullet-point"><span class="ip-address">192.168.1.255</span> (Broadcast)</div>
+                        
+                        <div class="example-box">
+                            <strong>Total de Hosts:</strong><br>
+                            256 - 2 = 254 hosts<br>
+                            <small>(excluindo rede e broadcast)</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 10: Comandos de Configuração -->
+        <div class="slide">
+            <div class="content">
+                <h2>💻 Comandos de Configuração</h2>
+                
+                <div class="two-column">
+                    <div>
+                        <h3>🔧 Comando ipconfig (Windows)</h3>
+                        <div class="bullet-point">Mostra configurações de rede</div>
+                        <div class="bullet-point">Equivalente: ifconfig (Linux)</div>
+                        
+                        <div class="code-box">
+# Informações básicas<br>
+ipconfig<br><br>
+# Informações detalhadas<br>
+ipconfig /all<br><br>
+# Renovar endereço DHCP<br>
+ipconfig /renew
+                        </div>
+                    </div>
+                    <div>
+                        <h3>📊 Comando netstat</h3>
+                        <div class="bullet-point">Mostra conexões ativas</div>
+                        <div class="bullet-point">Lista portas em uso</div>
+                        <div class="bullet-point">Informações de roteamento</div>
+                        
+                        <div class="code-box">
+# Conexões ativas<br>
+netstat -a<br><br>
+# Tabela de roteamento<br>
+netstat -r<br><br>
+# Estatísticas por protocolo<br>
+netstat -s
+                        </div>
+                    </div>
+                </div>
+
+                <div class="highlight-box">
+                    <h3>🔍 Comando arp</h3>
+                    <div class="bullet-point">Mostra tabela ARP (Address Resolution Protocol)</div>
+                    <div class="bullet-point">Relaciona endereços IP com endereços MAC</div>
+                    <div class="code-box">
+# Mostrar tabela ARP<br>
+arp -a<br><br>
+# Limpar cache ARP<br>
+arp -d *
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 11: Protocolo ARP -->
+        <div class="slide">
+            <div class="content">
+                <h2>🔄 Protocolo ARP</h2>
+                
+                <div class="bullet-point">Address Resolution Protocol</div>
+                <div class="bullet-point">Resolve endereços IP em endereços MAC</div>
+                <div class="bullet-point">Essencial para comunicação na camada de enlace</div>
+
+                <div class="example-box">
+                    <h3>🔄 Como funciona o ARP:</h3>
+                    <div class="process-step">1. PC A quer enviar dados para PC B (IP conhecido)</div>
+                    <div class="process-step">2. PC A não conhece o MAC de PC B</div>
+                    <div class="process-step">3. PC A envia ARP Request por broadcast</div>
+                    <div class="process-step">4. PC B responde com seu endereço MAC</div>
+                    <div class="process-step">5. PC A armazena na tabela ARP</div>
+                    <div class="process-step">6. PC A envia dados usando o MAC de PC B</div>
+                </div>
+
+                <div class="highlight-box">
+                    <h3>💾 Tabela ARP:</h3>
+                    <div class="bullet-point">Cache temporário de mapeamentos IP-MAC</div>
+                    <div class="bullet-point">Evita broadcasts desnecessários</div>
+                    <div class="bullet-point">Entradas expiram após um tempo</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 12: Endereços Públicos vs Privados -->
+        <div class="slide">
+            <div class="content">
+                <h2>🌐 Endereços Públicos vs Privados</h2>
+                
+                <div class="two-column">
+                    <div>
+                        <h3>🌍 Endereços Públicos</h3>
+                        <div class="bullet-point">Unicidade global na Internet</div>
+                        <div class="bullet-point">Alocados por autoridades competentes</div>
+                        <div class="bullet-point">Roteáveis na Internet pública</div>
+                        <div class="bullet-point">Recursos limitados e caros</div>
+                        
+                        <div class="example-box">
+                            <strong>Exemplos:</strong><br>
+                            <span class="ip-address">8.8.8.8</span> (Google DNS)<br>
+                            <span class="ip-address">1.1.1.1</span> (Cloudflare DNS)<br>
+                            <span class="ip-address">208.67.222.222</span> (OpenDNS)
+                        </div>
+                    </div>
+                    <div>
+                        <h3>🏠 Endereços Privados</h3>
+                        <div class="bullet-point">Uso livre por qualquer organização</div>
+                        <div class="bullet-point">Unicidade apenas local</div>
+                        <div class="bullet-point">Não roteáveis na Internet</div>
+                        <div class="bullet-point">Necessitam NAT para acesso externo</div>
+                        
+                        <div class="example-box">
+                            <strong>Faixas RFC 1918:</strong><br>
+                            <span class="ip-address">10.0.0.0/8</span><br>
+                            <span class="ip-address">172.16.0.0/12</span><br>
+                            <span class="ip-address">192.168.0.0/16</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="highlight-box center-text">
+                    <h3>💡 Por que usar endereços privados?</h3>
+                    <div class="bullet-point">Conserva endereços públicos IPv4</div>
+                    <div class="bullet-point">Maior segurança (não acessíveis diretamente)</div>
+                    <div class="bullet-point">Flexibilidade de configuração interna</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 13: IPv4 vs IPv6 -->
+        <div class="slide">
+            <div class="content">
+                <h2>🔄 IPv4 vs IPv6</h2>
+                
+                <div class="two-column">
+                    <div>
+                        <h3>📊 IPv4 (Internet Protocol version 4)</h3>
+                        <div class="bullet-point">32 bits (4 octetos)</div>
+                        <div class="bullet-point">~4,3 bilhões de endereços</div>
+                        <div class="bullet-point">Formato: 192.168.1.1</div>
+                        <div class="bullet-point">Esgotamento de endereços</div>
+                        
+                        <div class="example-box">
+                            <strong>Limitações:</strong><br>
+                            • Escassez de endereços<br>
+                            • Necessidade de NAT<br>
+                            • Fragmentação complexa<br>
+                            • Configuração manual/DHCP
+                        </div>
+                    </div>
+                    <div>
+                        <h3>🚀 IPv6 (Internet Protocol version 6)</h3>
+                        <div class="bullet-point">128 bits (8 grupos de 4 hex)</div>
+                        <div class="bullet-point">~3,4×10³⁸ endereços</div>
+                        <div class="bullet-point">Formato: 2001:db8::1</div>
+                        <div class="bullet-point">Futuro da Internet</div>
+                        
+                        <div class="example-box">
+                            <strong>Vantagens:</strong><br>
+                            • Espaço praticamente infinito<br>
+                            • Autoconfiguração<br>
+                            • Segurança integrada (IPSec)<br>
+                            • Melhor suporte a mobilidade
+                        </div>
+                    </div>
+                </div>
+
+                <div class="highlight-box center-text">
+                    <h3>🔄 Transição IPv4 → IPv6</h3>
+                    <div class="bullet-point">Dual Stack: Ambos protocolos simultaneamente</div>
+                    <div class="bullet-point">Tunneling: IPv6 sobre IPv4</div>
+                    <div class="bullet-point">Translation: Conversão entre protocolos</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 14: Resumo Final -->
+        <div class="slide">
+            <div class="content">
+                <h2>🎯 Resumo Final</h2>
+                
+                <div class="highlight-box large-text center-text">
+                    <strong>IP é o protocolo fundamental da Internet</strong>
+                </div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>✅ Conceitos Principais:</h3>
+                        <div class="bullet-point">Endereços de 32 bits únicos</div>
+                        <div class="bullet-point">Estrutura hierárquica (rede + host)</div>
+                        <div class="bullet-point">Classes A, B e C para diferentes tamanhos</div>
+                        <div class="bullet-point">Endereços especiais (rede, broadcast, privados)</div>
+                        <div class="bullet-point">Máscaras de rede para segmentação</div>
+                    </div>
+                    <div>
+                        <h3>🎯 Aplicações Práticas:</h3>
+                        <div class="bullet-point">Configuração de redes locais</div>
+                        <div class="bullet-point">Planejamento de sub-redes</div>
+                        <div class="bullet-point">Troubleshooting de conectividade</div>
+                        <div class="bullet-point">Implementação de segurança</div>
+                        <div class="bullet-point">Migração para IPv6</div>
+                    </div>
+                </div>
+
+                <div class="example-box center-text">
+                    <h3>🌐 O IP permite que bilhões de dispositivos se comuniquem!</h3>
+                    <p>Sem endereçamento IP, não existiria a Internet como conhecemos</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 15: Quiz -->
+        <div class="slide">
+            <div class="content">
+                <h2>🧠 Quiz - Teste seus conhecimentos!</h2>
+                
+                <div class="quiz-container">
+                    <!-- Questão 1 -->
+                    <div class="quiz-question" id="question1">
+                        <h3>📝 Questão 1</h3>
+                        <p><strong>Qual é a máscara de rede padrão para a Classe C?</strong></p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(1, 'a', false)">
+                                <span class="option-letter">A)</span> 255.0.0.0
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(1, 'b', false)">
+                                <span class="option-letter">B)</span> 255.255.0.0
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(1, 'c', true)">
+                                <span class="option-letter">C)</span> 255.255.255.0
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(1, 'd', false)">
+                                <span class="option-letter">D)</span> 255.255.255.255
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback1"></div>
+                    </div>
+
+                    <!-- Questão 2 -->
+                    <div class="quiz-question" id="question2" style="display: none;">
+                        <h3>📝 Questão 2</h3>
+                        <p><strong>Qual endereço é usado para loopback?</strong></p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(2, 'a', false)">
+                                <span class="option-letter">A)</span> 192.168.1.1
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(2, 'b', true)">
+                                <span class="option-letter">B)</span> 127.0.0.1
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(2, 'c', false)">
+                                <span class="option-letter">C)</span> 10.0.0.1
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(2, 'd', false)">
+                                <span class="option-letter">D)</span> 172.16.0.1
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback2"></div>
+                    </div>
+
+                    <!-- Questão 3 -->
+                    <div class="quiz-question" id="question3" style="display: none;">
+                        <h3>📝 Questão 3</h3>
+                        <p><strong>O endereço 172.16.5.10 pertence a qual classe?</strong></p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(3, 'a', false)">
+                                <span class="option-letter">A)</span> Classe A
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(3, 'b', true)">
+                                <span class="option-letter">B)</span> Classe B
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(3, 'c', false)">
+                                <span class="option-letter">C)</span> Classe C
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(3, 'd', false)">
+                                <span class="option-letter">D)</span> Classe D
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback3"></div>
+                    </div>
+
+                    <!-- Questão 4 -->
+                    <div class="quiz-question" id="question4" style="display: none;">
+                        <h3>📝 Questão 4</h3>
+                        <p><strong>Qual protocolo resolve endereços IP em endereços MAC?</strong></p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(4, 'a', false)">
+                                <span class="option-letter">A)</span> DHCP
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(4, 'b', false)">
+                                <span class="option-letter">B)</span> DNS
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(4, 'c', true)">
+                                <span class="option-letter">C)</span> ARP
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(4, 'd', false)">
+                                <span class="option-letter">D)</span> ICMP
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback4"></div>
+                    </div>
+
+                    <!-- Resultado Final -->
+                    <div class="quiz-result" id="quizResult" style="display: none;">
+                        <h3>🎉 Parabéns! Quiz Concluído!</h3>
+                        <div class="result-box">
+                            <p><strong>Sua pontuação: <span id="finalScore">0</span>/4</strong></p>
+                            <p id="resultMessage"></p>
+                        </div>
+                        <button class="nav-btn" onclick="restartQuiz()">🔄 Refazer Quiz</button>
+                    </div>
+                </div>
+
+                <div class="quiz-navigation">
+                    <button class="nav-btn" id="nextQuizBtn" onclick="nextQuestion()" style="display: none;">
+                        Próxima Questão ➡️
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 16: Referências -->
+        <div class="slide">
+            <div class="content">
+                <h2>📚 Referências Bibliográficas</h2>
+                
+                <div class="highlight-box">
+                    <h3>📖 Fontes Principais:</h3>
+                    <div class="bullet-point"><strong>Material Didático - Protocolo IP</strong></div>
+                    <div class="bullet-point">Prof. César Azevedo - IFRN</div>
+                    <div class="bullet-point">Arquitetura de Redes de Computadores e Tecnologia de Implementação de Redes</div>
+                </div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>📖 Bibliografia Recomendada:</h3>
+                        <div class="bullet-point">KUROSE, J. F; ROSS, K. W. Redes de Computadores e a Internet</div>
+                        <div class="bullet-point">TANNENBAUM, Andrew S. Redes de Computadores</div>
+                        <div class="bullet-point">CISCO CCNA 4: Tecnologias WAN</div>
+                    </div>
+                    <div>
+                        <h3>🌐 RFCs Importantes:</h3>
+                        <div class="bullet-point">RFC 791 - Internet Protocol</div>
+                        <div class="bullet-point">RFC 1918 - Address Allocation for Private Internets</div>
+                        <div class="bullet-point">RFC 826 - Address Resolution Protocol</div>
+                        <div class="bullet-point">RFC 950 - Internet Standard Subnetting Procedure</div>
+                    </div>
+                </div>
+
+                <div class="example-box center-text">
+                    <h3>🤖 Metodologia de Criação</h3>
+                    <p>Apresentação desenvolvida com assistência de IA Claude Sonnet 4<br>
+                    Baseada integralmente no material didático oficial da disciplina<br>
+                    Adaptação pedagógica com foco em simplicidade e clareza</p>
+                </div>
+
+                <div class="highlight-box center-text">
+                    <h3>🎯 Objetivo Educacional</h3>
+                    <p>Facilitar o aprendizado do Protocolo IP através de<br>
+                    linguagem simples, exemplos práticos e visualizações claras</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="navigation">
+            <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">⬅️ Anterior</button>
+            <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">Próximo ➡️</button>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        document.getElementById('total-slides').textContent = totalSlides;
+
+        // Quiz variables
+        let currentQuestion = 1;
+        let score = 0;
+        let quizAnswered = [false, false, false, false];
+
+        function showSlide(index) {
+            slides.forEach((slide, i) => {
+                slide.classList.toggle('active', i === index);
+            });
+            
+            document.getElementById('current-slide').textContent = index + 1;
+            document.getElementById('prevBtn').disabled = index === 0;
+            document.getElementById('nextBtn').disabled = index === totalSlides - 1;
+        }
+
+        function changeSlide(direction) {
+            const newSlide = currentSlide + direction;
+            if (newSlide >= 0 && newSlide < totalSlides) {
+                currentSlide = newSlide;
+                showSlide(currentSlide);
+            }
+        }
+
+        // Quiz Functions
+        function selectOption(questionNum, option, isCorrect) {
+            if (quizAnswered[questionNum - 1]) return; // Já respondida
+            
+            const options = document.querySelectorAll(`#question${questionNum} .quiz-option`);
+            const feedback = document.getElementById(`feedback${questionNum}`);
+            
+            // Marcar todas as opções
+            options.forEach(opt => {
+                opt.style.pointerEvents = 'none';
+                if (opt.onclick.toString().includes('true')) {
+                    opt.classList.add('correct');
+                } else if (opt === event.currentTarget) {
+                    opt.classList.add(isCorrect ? 'correct' : 'incorrect');
+                }
+            });
+            
+            // Mostrar feedback
+            if (isCorrect) {
+                feedback.innerHTML = '✅ Correto! Muito bem!';
+                feedback.className = 'quiz-feedback correct';
+                score++;
+            } else {
+                feedback.innerHTML = '❌ Incorreto. A resposta correta está destacada em verde.';
+                feedback.className = 'quiz-feedback incorrect';
+            }
+            
+            quizAnswered[questionNum - 1] = true;
+            
+            // Mostrar botão para próxima questão
+            if (questionNum < 4) {
+                document.getElementById('nextQuizBtn').style.display = 'inline-block';
+            } else {
+                // Última questão - mostrar resultado
+                setTimeout(() => {
+                    showQuizResult();
+                }, 2000);
+            }
+        }
+
+        function nextQuestion() {
+            document.getElementById(`question${currentQuestion}`).style.display = 'none';
+            currentQuestion++;
+            document.getElementById(`question${currentQuestion}`).style.display = 'block';
+            document.getElementById('nextQuizBtn').style.display = 'none';
+        }
+
+        function showQuizResult() {
+            // Esconder última questão
+            document.getElementById('question4').style.display = 'none';
+            
+            // Mostrar resultado
+            document.getElementById('quizResult').style.display = 'block';
+            document.getElementById('finalScore').textContent = score;
+            
+            const resultMessage = document.getElementById('resultMessage');
+            if (score === 4) {
+                resultMessage.innerHTML = '🏆 Excelente! Você domina o Protocolo IP!';
+            } else if (score === 3) {
+                resultMessage.innerHTML = '👏 Muito bom! Quase perfeito!';
+            } else if (score === 2) {
+                resultMessage.innerHTML = '👍 Bom trabalho! Continue estudando!';
+            } else if (score === 1) {
+                resultMessage.innerHTML = '📚 Estude um pouco mais sobre IP!';
+            } else {
+                resultMessage.innerHTML = '📖 Recomendo revisar o conteúdo!';
+            }
+        }
+
+        function restartQuiz() {
+            // Reset variables
+            currentQuestion = 1;
+            score = 0;
+            quizAnswered = [false, false, false, false];
+            
+            // Reset interface
+            for (let i = 1; i <= 4; i++) {
+                const question = document.getElementById(`question${i}`);
+                const options = question.querySelectorAll('.quiz-option');
+                const feedback = document.getElementById(`feedback${i}`);
+                
+                // Reset options
+                options.forEach(opt => {
+                    opt.className = 'quiz-option';
+                    opt.style.pointerEvents = 'auto';
+                });
+                
+                // Hide feedback
+                feedback.style.display = 'none';
+                
+                // Hide all questions except first
+                question.style.display = i === 1 ? 'block' : 'none';
+            }
+            
+            // Hide result and buttons
+            document.getElementById('quizResult').style.display = 'none';
+            document.getElementById('nextQuizBtn').style.display = 'none';
+        }
+
+        // Navegação por teclado
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') changeSlide(-1);
+            if (e.key === 'ArrowRight') changeSlide(1);
+            if (e.key === 'Home') {
+                currentSlide = 0;
+                showSlide(currentSlide);
+            }
+            if (e.key === 'End') {
+                currentSlide = totalSlides - 1;
+                showSlide(currentSlide);
+            }
+        });
+
+        // Inicializar
+        showSlide(0);
+        
+        // Inicializar quiz no slide 15
+        document.getElementById('question1').style.display = 'block';
+    </script>
+</body>
+</html>

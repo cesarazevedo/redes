@@ -1,0 +1,1453 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Protocolo TELNET - Terminal Virtual de Rede</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        .presentation {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .slide {
+            min-height: 100vh;
+            padding: 60px 40px;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            background: white;
+            margin: 20px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        .slide.active {
+            display: flex;
+        }
+
+        .slide h1 {
+            font-size: 3.5em;
+            color: #4a5568;
+            text-align: center;
+            margin-bottom: 40px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .slide h2 {
+            font-size: 2.8em;
+            color: #2d3748;
+            margin-bottom: 30px;
+            border-bottom: 4px solid #667eea;
+            padding-bottom: 15px;
+        }
+
+        .slide h3 {
+            font-size: 2.2em;
+            color: #4a5568;
+            margin: 25px 0 15px 0;
+        }
+
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: start;
+        }
+
+        .three-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 30px;
+            align-items: start;
+        }
+
+        .bullet-point {
+            display: flex;
+            align-items: flex-start;
+            margin: 15px 0;
+            font-size: 1.3em;
+            line-height: 1.5;
+        }
+
+        .bullet-point::before {
+            content: "🔸";
+            margin-right: 15px;
+            font-size: 1.2em;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #667eea;
+        }
+
+        .example-box {
+            background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #9c27b0;
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 1000;
+        }
+
+        .nav-btn {
+            padding: 15px 25px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .nav-btn:hover {
+            background: #5a67d8;
+            transform: translateY(-2px);
+            box-shadow: 0 7px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .nav-btn:disabled {
+            background: #a0a0a0;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .slide-counter {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: rgba(255,255,255,0.9);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            color: #4a5568;
+            z-index: 1000;
+        }
+
+        .center-text {
+            text-align: center;
+        }
+
+        .large-text {
+            font-size: 1.4em;
+            line-height: 1.6;
+        }
+
+        .diagram {
+            background: #f7fafc;
+            border: 2px dashed #667eea;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+            font-family: monospace;
+            font-size: 1.2em;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 1.1em;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        th {
+            background: #667eea;
+            color: white;
+            font-weight: bold;
+        }
+
+        .process-step {
+            background: #e8f5e8;
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #4caf50;
+        }
+
+        .code-box {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: monospace;
+            font-size: 1em;
+            margin: 20px 0;
+            overflow-x: auto;
+        }
+
+        /* Quiz Styles */
+        .quiz-container {
+            max-width: 100%;
+            margin: 20px 0;
+        }
+
+        .quiz-question {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border: 2px solid #e2e8f0;
+        }
+
+        .quiz-question h3 {
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+
+        .quiz-question p {
+            font-size: 1.3em;
+            margin-bottom: 25px;
+            font-weight: bold;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .quiz-option {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.1em;
+        }
+
+        .quiz-option:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+            transform: translateX(5px);
+        }
+
+        .quiz-option.selected {
+            border-color: #667eea;
+            background: #667eea;
+            color: white;
+        }
+
+        .quiz-option.correct {
+            border-color: #48bb78;
+            background: #48bb78;
+            color: white;
+        }
+
+        .quiz-option.incorrect {
+            border-color: #f56565;
+            background: #f56565;
+            color: white;
+        }
+
+        .option-letter {
+            background: #667eea;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .quiz-option.correct .option-letter {
+            background: #48bb78;
+        }
+
+        .quiz-option.incorrect .option-letter {
+            background: #f56565;
+        }
+
+        .quiz-feedback {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: bold;
+            display: none;
+        }
+
+        .quiz-feedback.correct {
+            background: #c6f6d5;
+            color: #22543d;
+            border: 2px solid #48bb78;
+            display: block;
+        }
+
+        .quiz-feedback.incorrect {
+            background: #fed7d7;
+            color: #742a2a;
+            border: 2px solid #f56565;
+            display: block;
+        }
+
+        .quiz-navigation {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .quiz-result {
+            text-align: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            margin: 20px 0;
+        }
+
+        .result-box {
+            background: rgba(255,255,255,0.1);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+
+        .result-box p {
+            font-size: 1.4em;
+            margin: 10px 0;
+        }
+
+        .protocol-code {
+            display: inline-block;
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            margin: 2px;
+        }
+
+        .architecture-diagram {
+            background: #f0f4ff;
+            border: 2px solid #667eea;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .flow-step {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            border-left: 4px solid #2196f3;
+        }
+
+        .warning-box {
+            background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #ffc107;
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation">
+        <div class="slide-counter">
+            <span id="current-slide">1</span> / <span id="total-slides">16</span>
+        </div>
+
+        <!-- Slide 1: Título -->
+        <div class="slide active">
+            <div class="content center-text">
+                <h1>💻 Protocolo TELNET</h1>
+                <h2 style="border: none; color: #667eea;">TErminaL NETwork - Acesso Remoto</h2>
+                <div class="highlight-box large-text">
+                    <strong>Aula 06</strong><br>
+                    Terminal Virtual de Rede e Logging Remoto<br>
+                    Do terminal local ao sistema remoto
+                </div>
+                
+                <div class="example-box" style="margin-top: 40px;">
+                    <h3>👨‍🏫 Autor da Apresentação</h3>
+                    <p style="font-size: 1.3em; margin: 10px 0;">
+                        <strong>César Azevedo</strong><br>
+                        📧 cesar.augusto@ifrn.edu.br
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 2: Tópicos da Aula -->
+        <div class="slide">
+            <div class="content">
+                <h2>📋 Tópicos da Aula</h2>
+                
+                <div class="two-column">
+                    <div>
+                        <h3>🎯 Fundamentos</h3>
+                        <div class="bullet-point">O que é TELNET</div>
+                        <div class="bullet-point">Ambiente de tempo compartilhado</div>
+                        <div class="bullet-point">Login local vs remoto</div>
+                        <div class="bullet-point">Arquitetura cliente/servidor</div>
+                        
+                        <h3>🖥️ Terminal Virtual de Rede</h3>
+                        <div class="bullet-point">Conceito do NVT</div>
+                        <div class="bullet-point">Compatibilidade entre sistemas</div>
+                        <div class="bullet-point">Conjunto de caracteres NVT</div>
+                        <div class="bullet-point">Caracteres de dados vs controle</div>
+                    </div>
+                    <div>
+                        <h3>⚙️ Aspectos Técnicos</h3>
+                        <div class="bullet-point">Embedding de comandos</div>
+                        <div class="bullet-point">Caractere IAC</div>
+                        <div class="bullet-point">Negociação de opções</div>
+                        <div class="bullet-point">Comandos WILL, WONT, DO, DONT</div>
+                        
+                        <h3>🔄 Modos de Operação</h3>
+                        <div class="bullet-point">Modo padrão</div>
+                        <div class="bullet-point">Modo caractere</div>
+                        <div class="bullet-point">Modo linha</div>
+                        <div class="bullet-point">Comparação de eficiência</div>
+                    </div>
+                </div>
+
+                <div class="highlight-box center-text">
+                    <h3>🎯 Objetivo Final</h3>
+                    <p>Compreender como o TELNET permite acesso remoto a sistemas<br>
+                    e como o NVT resolve incompatibilidades entre plataformas</p>
+                </div>
+
+                <div class="example-box center-text">
+                    <h3>🧠 + Quiz Interativo</h3>
+                    <p>Teste seus conhecimentos com 4 questões sobre TELNET!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: O que é TELNET -->
+        <div class="slide">
+            <div class="content">
+                <h2>🤔 O que é TELNET?</h2>
+                
+                <div class="bullet-point"><strong>TErminaL NETwork</strong> - Protocolo para acesso remoto</div>
+                <div class="bullet-point">Aplicação TCP/IP padrão para serviços de terminal virtual</div>
+                <div class="bullet-point">Programa cliente/servidor de finalidade genérica</div>
+                <div class="bullet-point">Permite executar qualquer aplicação em computador remoto</div>
+
+                <div class="example-box">
+                    <h3>💡 Propósito do TELNET:</h3>
+                    <div class="diagram">
+                        Terminal Local se comporta<br>
+                        ⬇️<br>
+                        EXATAMENTE<br>
+                        ⬇️<br>
+                        como se fosse terminal do sistema remoto
+                    </div>
+                </div>
+
+                <div class="highlight-box">
+                    <h3>🎯 Cenários de Uso:</h3>
+                    <div class="bullet-point">Estudante acessa laboratório da universidade de casa</div>
+                    <div class="bullet-point">Administrador gerencia servidores remotamente</div>
+                    <div class="bullet-point">Desenvolver programas cliente/servidor específico para cada necessidade seria impossível</div>
+                    <div class="bullet-point">TELNET oferece solução genérica e flexível</div>
+                </div>
+
+                <div class="warning-box">
+                    <h3>⚠️ Observação Importante</h3>
+                    <p>TELNET foi desenvolvido quando a maioria dos sistemas operacionais funcionava em ambiente de tempo compartilhado (time sharing)</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Ambiente de Tempo Compartilhado -->
+        <div class="slide">
+            <div class="content">
+                <h2>⏰ Ambiente de Tempo Compartilhado</h2>
+                
+                <div class="bullet-point">Computador grande suporta vários usuários simultaneamente</div>
+                <div class="bullet-point">Interação via terminal (teclado + monitor + mouse)</div>
+                <div class="bullet-point">Cada usuário tem identificação (login) e senha</div>
+                <div class="bullet-point">Recursos compartilhados com controle de acesso</div>
+
+                <div class="architecture-diagram">
+                    <h3>🖥️ Componentes do Sistema</h3>
+                    <div style="display: flex; justify-content: space-around; margin: 20px 0;">
+                        <div style="background: #e3f2fd; padding: 20px; border-radius: 10px; text-align: center;">
+                            <strong>Terminal</strong><br>
+                            Teclado + Monitor<br>
+                            <small>(Interface física)</small>
+                        </div>
+                        <div style="background: #f3e5f5; padding: 20px; border-radius: 10px; text-align: center;">
+                            <strong>Driver do Terminal</strong><br>
+                            Aceita digitações<br>
+                            <small>(Software de interface)</small>
+                        </div>
+                        <div style="background: #e8f5e8; padding: 20px; border-radius: 10px; text-align: center;">
+                            <strong>Sistema Operacional</strong><br>
+                            Interpreta comandos<br>
+                            <small>(Núcleo do sistema)</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="highlight-box center-text">
+                    <h3>🔐 Processo de Autenticação</h3>
+                    <p>Identificação do usuário → Verificação de senha → Definição de direitos de acesso<br>
+                    Sistema controla quem pode acessar quais recursos</p>
+                </div>
+
+                <div class="example-box">
+                    <h3>🖥️ Microcomputador como Terminal</h3>
+                    <p>Um microcomputador pode simular terminal usando emulador de terminais<br>
+                    Software especial faz PC se comportar como terminal "burro"</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: Login Local vs Remoto -->
+        <div class="slide">
+            <div class="content">
+                <h2>🏠 Login Local vs 🌐 Login Remoto</h2>
+                
+                <div class="two-column">
+                    <div>
+                        <h3>🏠 Login Local</h3>
+                        <div class="flow-step">1. Usuário digita no terminal</div>
+                        <div class="flow-step">2. Driver do terminal aceita caracteres</div>
+                        <div class="flow-step">3. Repassa para sistema operacional</div>
+                        <div class="flow-step">4. SO interpreta e executa programa</div>
+                        
+                        <div class="example-box">
+                            <strong>Fluxo Simples:</strong><br>
+                            Terminal → Driver → SO → Programa
+                        </div>
+                    </div>
+                    <div>
+                        <h3>🌐 Login Remoto</h3>
+                        <div class="flow-step">1. Usuário digita no terminal</div>
+                        <div class="flow-step">2. SO local aceita mas NÃO interpreta</div>
+                        <div class="flow-step">3. Cliente TELNET converte para NVT</div>
+                        <div class="flow-step">4. Transmite via Internet</div>
+                        <div class="flow-step">5. Servidor TELNET recebe</div>
+                        <div class="flow-step">6. Pseudodriver converte para SO remoto</div>
+                        <div class="flow-step">7. SO remoto interpreta e executa</div>
+                        
+                        <div class="example-box">
+                            <strong>Fluxo Complexo:</strong><br>
+                            Terminal → Cliente TELNET → Internet → Servidor TELNET → Pseudodriver → SO Remoto
+                        </div>
+                    </div>
+                </div>
+
+                <div class="warning-box">
+                    <h3>🔧 Pseudodriver de Terminal</h3>
+                    <p><strong>Por que é necessário?</strong> SO não foi projetado para interpretar caracteres de servidor TELNET<br>
+                    <strong>Solução:</strong> Pseudodriver faz conversões adicionais, simulando terminal local</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: Terminal Virtual de Rede (NVT) -->
+        <div class="slide">
+            <div class="content">
+                <h2>🖥️ Terminal Virtual de Rede (NVT)</h2>
+                
+                <div class="bullet-point">Solução para sistemas heterogêneos incompatíveis</div>
+                <div class="bullet-point">Interface universal entre diferentes computadores</div>
+                <div class="bullet-point">Cada sistema tem convenções diferentes para mesma função</div>
+
+                <div class="example-box">
+                    <h3>🎯 Problema dos Sistemas Heterogêneos:</h3>
+                    <div style="display: flex; justify-content: space-around; margin: 20px 0;">
+                        <div style="background: #e3f2fd; padding: 15px; border-radius: 10px;">
+                            <strong>Sistema DOS</strong><br>
+                            Fim de arquivo = <code>Ctrl+Z</code>
+                        </div>
+                        <div style="background: #e8f5e8; padding: 15px; border-radius: 10px;">
+                            <strong>Sistema UNIX</strong><br>
+                            Fim de arquivo = <code>Ctrl+D</code>
+                        </div>
+                    </div>
+                    <p style="text-align: center; margin-top: 15px;"><strong>Mesmo comando, caracteres diferentes!</strong></p>
+                </div>
+
+                <div class="architecture-diagram">
+                    <h3>🔄 Como o NVT Resolve o Problema</h3>
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin: 20px 0;">
+                        <div style="background: #e3f2fd; padding: 15px; border-radius: 10px;">
+                            <strong>Cliente TELNET</strong><br>
+                            Converte caracteres locais<br>
+                            ⬇️<br>
+                            <em>para formato NVT</em>
+                        </div>
+                        <div style="background: #f3e5f5; padding: 15px; border-radius: 10px;">
+                            <strong>FORMATO NVT</strong><br>
+                            Interface Universal<br>
+                            📡<br>
+                            <em>Transmitido pela rede</em>
+                        </div>
+                        <div style="background: #e8f5e8; padding: 15px; border-radius: 10px;">
+                            <strong>Servidor TELNET</strong><br>
+                            Converte NVT<br>
+                            ⬇️<br>
+                            <em>para formato local</em>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="highlight-box center-text">
+                    <h3>💡 Vantagem do NVT</h3>
+                    <p>Sem NVT: Seria necessário conhecer cada tipo de computador remoto<br>
+                    Com NVT: Um formato universal funciona com qualquer sistema</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7: Conjunto de Caracteres NVT -->
+        <div class="slide">
+            <div class="content">
+                <h2>📝 Conjunto de Caracteres NVT</h2>
+                
+                <div class="bullet-point">NVT implementa dois conjuntos de caracteres de 8 bits</div>
+                <div class="bullet-point">Separação clara entre dados e comandos de controle</div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>📄 Caracteres de Dados</h3>
+                        <div class="bullet-point">7 bits de ordem inferior = ASCII padrão</div>
+                        <div class="bullet-point">Bit de ordem superior = 0</div>
+                        <div class="bullet-point">Conteúdo normal das mensagens</div>
+                        <div class="bullet-point">Compatível com sistemas legados</div>
+                        
+                        <div class="code-box">
+Exemplo de dados:<br>
+01001000 = 'H' (ASCII 72)<br>
+01100101 = 'e' (ASCII 101)<br>
+01101100 = 'l' (ASCII 108)<br>
+01101100 = 'l' (ASCII 108)<br>
+01101111 = 'o' (ASCII 111)
+                        </div>
+                    </div>
+                    <div>
+                        <h3>⚙️ Caracteres de Controle</h3>
+                        <div class="bullet-point">Bit de ordem superior = 1</div>
+                        <div class="bullet-point">Comandos especiais do protocolo</div>
+                        <div class="bullet-point">Controle da comunicação</div>
+                        <div class="bullet-point">Negociação de opções</div>
+                        
+                        <div class="code-box">
+Exemplos de controle:<br>
+11111111 = IAC (255)<br>
+11110100 = IP (244)<br>
+11110111 = EC (247)<br>
+11111000 = EL (248)
+                        </div>
+                    </div>
+                </div>
+
+                <div class="highlight-box">
+                    <h3>🎯 Identificação Automática</h3>
+                    <p>Sistema examina bit mais significativo:<br>
+                    <strong>0 = Dados</strong> (processa como texto normal)<br>
+                    <strong>1 = Controle</strong> (interpreta como comando)</p>
+                </div>
+
+                <div class="example-box center-text">
+                    <h3>💡 Vantagem da Separação</h3>
+                    <p>Não há confusão entre dados do usuário e comandos do protocolo<br>
+                    Sistema sempre sabe como interpretar cada byte recebido</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: Caracteres de Controle Principais -->
+        <div class="slide">
+            <div class="content">
+                <h2>⌨️ Caracteres de Controle NVT</h2>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Caractere</th>
+                            <th>Código</th>
+                            <th>Binário</th>
+                            <th>Significado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="protocol-code">IAC</span></td>
+                            <td>255</td>
+                            <td>11111111</td>
+                            <td>Interpret As Control - Próximo é comando</td>
+                        </tr>
+                        <tr>
+                            <td><span class="protocol-code">IP</span></td>
+                            <td>244</td>
+                            <td>11110100</td>
+                            <td>Interrupt Process - Interrompe processo</td>
+                        </tr>
+                        <tr>
+                            <td><span class="protocol-code">AO</span></td>
+                            <td>245</td>
+                            <td>11110101</td>
+                            <td>Abort Output - Cancela saída pendente</td>
+                        </tr>
+                        <tr>
+                            <td><span class="protocol-code">EC</span></td>
+                            <td>247</td>
+                            <td>11110111</td>
+                            <td>Erase Character - Apaga caractere (backspace)</td>
+                        </tr>
+                        <tr>
+                            <td><span class="protocol-code">EL</span></td>
+                            <td>248</td>
+                            <td>11111000</td>
+                            <td>Erase Line - Apaga linha inteira</td>
+                        </tr>
+                        <tr>
+                            <td><span class="protocol-code">AYT</span></td>
+                            <td>246</td>
+                            <td>11110110</td>
+                            <td>Are You There? - Teste de conectividade</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="example-box">
+                    <h3>💻 Exemplo Prático de Uso</h3>
+                    <p>Usuário digita: <code>cat filea</code> e percebe erro</p>
+                    <p>Pressiona backspace e digita: <code>1</code></p>
+                    <div class="code-box">
+Sequência enviada:<br>
+c a t   f i l e a &lt;IAC&gt;&lt;EC&gt; 1<br>
+                    </div>
+                    <p>O backspace é convertido em IAC + EC (dois caracteres de controle)</p>
+                </div>
+
+                <div class="highlight-box">
+                    <h3>🔧 Função do IAC</h3>
+                    <p>IAC = "Interpret As Control" - Marca início de sequência de controle<br>
+                    Sem IAC: Sistema não saberia distinguir dados de comandos<br>
+                    Com IAC: Sistema sabe que próximo byte é comando especial</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 9: Embedding de Comandos -->
+        <div class="slide">
+            <div class="content">
+                <h2>🔀 Embedding de Comandos</h2>
+                
+                <div class="bullet-point">TELNET usa apenas uma conexão TCP (porta 23)</div>
+                <div class="bullet-point">Mesma conexão para dados e comandos de controle</div>
+                <div class="bullet-point">Comandos são "embutidos" no fluxo de dados</div>
+                <div class="bullet-point">IAC distingue controle de dados</div>
+
+                <div class="example-box">
+                    <h3>💡 Exemplo Detalhado de Embedding</h3>
+                    <p><strong>Cenário:</strong> Usuário quer exibir arquivo "file1" mas digita "filea" por engano</p>
+                    
+                    <div class="flow-step">1. Usuário digita: <code>cat filea</code></div>
+                    <div class="flow-step">2. Percebe erro e pressiona backspace</div>
+                    <div class="flow-step">3. Digita: <code>1</code></div>
+                    
+                    <div class="code-box">
+Sequência de bytes transmitida:<br>
+[c] [a] [t] [ ] [f] [i] [l] [e] [a] [IAC] [EC] [1]<br>
+ ↑                                  ↑     ↑    ↑<br>
+dados normais                   controle    dados
+                    </div>
+                    
+                    <p><strong>Resultado:</strong> Servidor interpreta backspace e executa: <code>cat file1</code></p>
+                </div>
+
+                <div class="highlight-box">
+                    <h3>⚡ Vantagens do Embedding</h3>
+                    <div class="bullet-point">Uma única conexão TCP (mais simples)</div>
+                    <div class="bullet-point">Menor overhead de rede</div>
+                    <div class="bullet-point">Comandos sincronizados com dados</div>
+                    <div class="bullet-point">Não há problema de ordem entre conexões</div>
+                </div>
+
+                <div class="warning-box">
+                    <h3>⚠️ Limitação Importante</h3>
+                    <p>Na implementação padrão do TELNET, usuário NÃO pode editar localmente<br>
+                    Toda edição (backspace, etc.) ocorre no servidor remoto</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 10: Negociação de Opções -->
+        <div class="slide">
+            <div class="content">
+                <h2>⚙️ Negociação de Opções</h2>
+                
+                <div class="bullet-point">TELNET permite negociar recursos extras</div>
+                <div class="bullet-point">Opções para terminais mais sofisticados</div>
+                <div class="bullet-point">Usuários de terminais simples usam recursos-padrão</div>
+                <div class="bullet-point">Negociação antes ou durante o uso do serviço</div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>📋 Comandos de Negociação</h3>
+                        <table style="font-size: 0.9em;">
+                            <tr>
+                                <td><span class="protocol-code">WILL</span> (251)</td>
+                                <td>Oferece-se para habilitar opção</td>
+                            </tr>
+                            <tr>
+                                <td><span class="protocol-code">WONT</span> (252)</td>
+                                <td>Rejeita ou oferece-se para desabilitar</td>
+                            </tr>
+                            <tr>
+                                <td><span class="protocol-code">DO</span> (253)</td>
+                                <td>Aprova oferta ou solicita habilitação</td>
+                            </tr>
+                            <tr>
+                                <td><span class="protocol-code">DONT</span> (254)</td>
+                                <td>Rejeita oferta ou solicita desabilitação</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div>
+                        <h3>🔧 Opções Comuns</h3>
+                        <table style="font-size: 0.9em;">
+                            <tr>
+                                <td><span class="protocol-code">Echo</span> (1)</td>
+                                <td>Eco dos caracteres</td>
+                            </tr>
+                            <tr>
+                                <td><span class="protocol-code">Binary</span> (0)</td>
+                                <td>Transmissão binária 8 bits</td>
+                            </tr>
+                            <tr>
+                                <td><span class="protocol-code">Terminal Type</span> (24)</td>
+                                <td>Tipo de terminal</td>
+                            </tr>
+                            <tr>
+                                <td><span class="protocol-code">Line Mode</span> (34)</td>
+                                <td>Modo de linha</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>💬 Exemplo de Negociação - Echo</h3>
+                    <div class="flow-step">
+                        <strong>Cliente:</strong> IAC DO ECHO <br>
+                        <em>"Por favor, habilite a opção de eco"</em>
+                    </div>
+                    <div class="flow-step">
+                        <strong>Servidor:</strong> IAC WILL ECHO <br>
+                        <em>"Ok, vou habilitar a opção de eco"</em>
+                    </div>
+                    <p><strong>Resultado:</strong> Servidor passa a fazer eco dos caracteres de volta ao cliente</p>
+                </div>
+
+                <div class="highlight-box">
+                    <h3>🔄 Processo de Negociação</h3>
+                    <p><strong>Oferecer:</strong> WILL = "Posso fazer isso?" → Resposta: DO/DONT<br>
+                    <strong>Solicitar:</strong> DO = "Por favor, faça isso" → Resposta: WILL/WONT</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 11: Subopções -->
+        <div class="slide">
+            <div class="content">
+                <h2>🔧 Negociação de Subopções</h2>
+                
+                <div class="bullet-point">Algumas opções requerem parâmetros adicionais</div>
+                <div class="bullet-point">Exemplo: tipo específico de terminal ou velocidade</div>
+                <div class="bullet-point">Subopções permitem passar informações detalhadas</div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>📝 Caracteres de Subopção</h3>
+                        <table>
+                            <tr>
+                                <td><span class="protocol-code">SB</span> (250)</td>
+                                <td>Início da Subopção</td>
+                            </tr>
+                            <tr>
+                                <td><span class="protocol-code">SE</span> (240)</td>
+                                <td>Fim da Subopção</td>
+                            </tr>
+                        </table>
+                        
+                        <div class="example-box">
+                            <h3>🖥️ Formato Geral</h3>
+                            <div class="code-box">
+IAC SB &lt;opção&gt; &lt;parâmetros&gt; IAC SE
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <h3>💻 Exemplo: Tipo de Terminal</h3>
+                        <div class="flow-step">
+                            <strong>1. Cliente oferece:</strong><br>
+                            IAC WILL TERMINAL_TYPE
+                        </div>
+                        <div class="flow-step">
+                            <strong>2. Servidor aceita:</strong><br>
+                            IAC DO TERMINAL_TYPE
+                        </div>
+                        <div class="flow-step">
+                            <strong>3. Cliente especifica:</strong><br>
+                            IAC SB TERMINAL_TYPE "VT100" IAC SE
+                        </div>
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>🎯 Exemplo Completo de Subopção</h3>
+                    <div class="code-box">
+Sequência completa para definir terminal VT100:<br><br>
+IAC WILL TERMINAL_TYPE    (Cliente oferece opção)<br>
+IAC DO TERMINAL_TYPE      (Servidor aceita)<br>
+IAC SB TERMINAL_TYPE 'V' 'T' '1' '0' '0' IAC SE
+    ↑                ←── Parâmetros ──→        ↑<br>
+  Início                                     Fim
+                    </div>
+                </div>
+
+                <div class="highlight-box">
+                    <h3>⚡ Outros Exemplos de Subopções</h3>
+                    <div class="bullet-point"><strong>Velocidade do terminal:</strong> 9600, 19200, 38400 bps</div>
+                    <div class="bullet-point"><strong>Tamanho da tela:</strong> 80x24, 132x43 caracteres</div>
+                    <div class="bullet-point"><strong>Capacidades especiais:</strong> cores, gráficos, som</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 12: Modos de Operação -->
+        <div class="slide">
+            <div class="content">
+                <h2>🔄 Modos de Operação TELNET</h2>
+                
+                <div class="three-column">
+                    <div>
+                        <h3>📝 Modo Padrão</h3>
+                        <div class="bullet-point">Usado se nenhum outro for negociado</div>
+                        <div class="bullet-point">Eco feito localmente pelo cliente</div>
+                        <div class="bullet-point">Linha completa enviada de uma vez</div>
+                        <div class="bullet-point">Cliente não transmite até linha estar pronta</div>
+                        
+                        <div class="example-box">
+                            <strong>👍 Vantagem:</strong><br>
+                            Menor tráfego de rede
+                        </div>
+                        
+                        <div class="warning-box">
+                            <strong>👎 Desvantagem:</strong><br>
+                            Sem feedback imediato
+                        </div>
+                    </div>
+                    <div>
+                        <h3>⌨️ Modo Caractere</h3>
+                        <div class="bullet-point">Cada caractere enviado imediatamente</div>
+                        <div class="bullet-point">Servidor faz eco de volta</div>
+                        <div class="bullet-point">Interação mais responsiva</div>
+                        <div class="bullet-point">Alto overhead de rede</div>
+                        
+                        <div class="example-box">
+                            <strong>👍 Vantagem:</strong><br>
+                            Resposta imediata
+                        </div>
+                        
+                        <div class="warning-box">
+                            <strong>👎 Desvantagem:</strong><br>
+                            3 segmentos TCP por caractere!<br>
+                            (requisição + eco + confirmação)
+                        </div>
+                    </div>
+                    <div>
+                        <h3>📏 Modo Linha</h3>
+                        <div class="bullet-point">Proposto para compensar ineficiências</div>
+                        <div class="bullet-point">Edição de linha feita localmente</div>
+                        <div class="bullet-point">Cliente transmite linha completa</div>
+                        <div class="bullet-point">Equilibra eficiência e usabilidade</div>
+                        
+                        <div class="example-box">
+                            <strong>👍 Vantagem:</strong><br>
+                            Melhor dos dois mundos
+                        </div>
+                        
+                        <div class="example-box">
+                            <strong>🎯 Status:</strong><br>
+                            Modo preferido atualmente
+                        </div>
+                    </div>
+                </div>
+
+                <div class="highlight-box center-text">
+                    <h3>⚖️ Comparação de Eficiência</h3>
+                    <p><strong>Modo Caractere:</strong> Para digitar "hello" = 15 segmentos TCP<br>
+                    <strong>Modo Linha:</strong> Para digitar "hello" = 2 segmentos TCP<br>
+                    <strong>Diferença:</strong> 750% menos tráfego no modo linha!</p>
+                </div>
+
+                <div class="example-box center-text">
+                    <h3>📊 Análise de Overhead</h3>
+                    <p>Conexão via satélite (500ms ida e volta):<br>
+                    <strong>Modo Caractere:</strong> 500ms de atraso para cada tecla<br>
+                    <strong>Modo Linha:</strong> 500ms de atraso apenas no final da linha</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 13: Exemplo Prático com TELNET -->
+        <div class="slide">
+            <div class="content">
+                <h2>💻 Exemplo Prático com TELNET</h2>
+                
+                <div class="bullet-point">TELNET usa caracteres ASCII legíveis</div>
+                <div class="bullet-point">Possível conectar diretamente via terminal</div>
+                <div class="bullet-point">Útil para debug e testes de conectividade</div>
+
+                <div class="example-box">
+                    <h3>🔧 Teste Manual via Terminal</h3>
+                    <div class="code-box">
+$ telnet www.exemplo.com 23<br>
+Trying 198.45.24.104...<br>
+Connected to www.exemplo.com (198.45.24.104).<br>
+Escape character is '^]'.<br>
+<br>
+<strong>Sistema solicita login:</strong><br>
+Login: alice<br>
+Password: ******<br>
+<br>
+<strong>Usuário executa comando:</strong><br>
+$ ls -la<br>
+total 1024<br>
+drwxr-xr-x  5 alice users  4096 Jan 15 10:30 .<br>
+drwxr-xr-x 12 root  root   4096 Jan 10 09:15 ..<br>
+-rw-r--r--  1 alice users   156 Jan 15 10:30 arquivo.txt<br>
+<br>
+$ exit<br>
+Connection closed by foreign host.
+                    </div>
+                </div>
+
+                <div class="highlight-box">
+                    <h3>📝 Passos do Processo</h3>
+                    <div class="flow-step">1. Cliente conecta na porta 23 do servidor</div>
+                    <div class="flow-step">2. Servidor responde com prompt de login</div>
+                    <div class="flow-step">3. Usuário se autentica com ID e senha</div>
+                    <div class="flow-step">4. Sistema remoto executa comandos digitados</div>
+                    <div class="flow-step">5. Resultados são enviados de volta e exibidos</div>
+                    <div class="flow-step">6. Conexão encerrada com exit ou logout</div>
+                </div>
+
+                <div class="warning-box">
+                    <h3>🔒 Questões de Segurança</h3>
+                    <p><strong>TELNET transmite tudo em texto claro!</strong><br>
+                    Senhas, comandos e dados são visíveis na rede<br>
+                    <strong>Solução moderna:</strong> SSH (Secure Shell) - porta 22</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 14: Quiz -->
+        <div class="slide">
+            <div class="content">
+                <h2>🧠 Quiz - Teste seus conhecimentos!</h2>
+                
+                <div class="quiz-container">
+                    <!-- Questão 1 -->
+                    <div class="quiz-question" id="question1">
+                        <h3>📝 Questão 1</h3>
+                        <p><strong>Qual a principal função do NVT (Network Virtual Terminal) no TELNET?</strong></p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(1, 'a', false)">
+                                <span class="option-letter">A)</span> Criptografar dados transmitidos pela rede
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(1, 'b', true)">
+                                <span class="option-letter">B)</span> Criar interface universal entre sistemas incompatíveis
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(1, 'c', false)">
+                                <span class="option-letter">C)</span> Comprimir dados para economizar banda
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(1, 'd', false)">
+                                <span class="option-letter">D)</span> Acelerar a velocidade da conexão TCP
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback1"></div>
+                    </div>
+
+                    <!-- Questão 2 -->
+                    <div class="quiz-question" id="question2" style="display: none;">
+                        <h3>📝 Questão 2</h3>
+                        <p><strong>Como o TELNET distingue caracteres de dados de caracteres de controle?</strong></p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(2, 'a', false)">
+                                <span class="option-letter">A)</span> Usa conexões TCP separadas
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(2, 'b', true)">
+                                <span class="option-letter">B)</span> Bit mais significativo: 0=dados, 1=controle
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(2, 'c', false)">
+                                <span class="option-letter">C)</span> Envia controle apenas no início da sessão
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(2, 'd', false)">
+                                <span class="option-letter">D)</span> Usa portas diferentes para cada tipo
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback2"></div>
+                    </div>
+
+                    <!-- Questão 3 -->
+                    <div class="quiz-question" id="question3" style="display: none;">
+                        <h3>📝 Questão 3</h3>
+                        <p><strong>Qual modo de operação do TELNET é mais eficiente em termos de tráfego de rede?</strong></p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(3, 'a', false)">
+                                <span class="option-letter">A)</span> Modo caractere
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(3, 'b', true)">
+                                <span class="option-letter">B)</span> Modo linha
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(3, 'c', false)">
+                                <span class="option-letter">C)</span> Modo padrão
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(3, 'd', false)">
+                                <span class="option-letter">D)</span> Todos são igualmente eficientes
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback3"></div>
+                    </div>
+
+                    <!-- Questão 4 -->
+                    <div class="quiz-question" id="question4" style="display: none;">
+                        <h3>📝 Questão 4</h3>
+                        <p><strong>O que significa o comando "IAC DO ECHO" no protocolo TELNET?</strong></p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(4, 'a', false)">
+                                <span class="option-letter">A)</span> Desabilitar a opção de eco
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(4, 'b', true)">
+                                <span class="option-letter">B)</span> Solicitar que o servidor habilite eco
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(4, 'c', false)">
+                                <span class="option-letter">C)</span> Oferecer-se para fazer eco
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(4, 'd', false)">
+                                <span class="option-letter">D)</span> Testar conectividade
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback4"></div>
+                    </div>
+
+                    <!-- Resultado Final -->
+                    <div class="quiz-result" id="quizResult" style="display: none;">
+                        <h3>🎉 Parabéns! Quiz Concluído!</h3>
+                        <div class="result-box">
+                            <p><strong>Sua pontuação: <span id="finalScore">0</span>/4</strong></p>
+                            <p id="resultMessage"></p>
+                        </div>
+                        <button class="nav-btn" onclick="restartQuiz()">🔄 Refazer Quiz</button>
+                    </div>
+                </div>
+
+                <div class="quiz-navigation">
+                    <button class="nav-btn" id="nextQuizBtn" onclick="nextQuestion()" style="display: none;">
+                        Próxima Questão ➡️
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 15: Resumo Final -->
+        <div class="slide">
+            <div class="content">
+                <h2>🎯 Resumo Final</h2>
+                
+                <div class="highlight-box large-text center-text">
+                    <strong>TELNET: O pioneiro do acesso remoto na Internet</strong>
+                </div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>✅ Características Principais</h3>
+                        <div class="bullet-point">Protocolo cliente/servidor genérico</div>
+                        <div class="bullet-point">Terminal Virtual de Rede (NVT)</div>
+                        <div class="bullet-point">Interface universal entre sistemas</div>
+                        <div class="bullet-point">Porta 23, protocolo TCP</div>
+                        <div class="bullet-point">Embedding de comandos</div>
+                    </div>
+                    <div>
+                        <h3>🎯 Componentes Essenciais</h3>
+                        <div class="bullet-point">Caracteres de dados vs controle</div>
+                        <div class="bullet-point">IAC para distinguir comandos</div>
+                        <div class="bullet-point">Negociação de opções</div>
+                        <div class="bullet-point">Três modos de operação</div>
+                        <div class="bullet-point">Pseudodriver de terminal</div>
+                    </div>
+                </div>
+
+                <div class="example-box center-text">
+                    <h3>🏆 Legado Histórico</h3>
+                    <p>TELNET estabeleceu conceitos fundamentais para acesso remoto<br>
+                    Base para protocolos modernos como SSH</p>
+                </div>
+
+                <div class="warning-box center-text">
+                    <h3>⚠️ Limitações de Segurança</h3>
+                    <p>Transmissão em texto claro (sem criptografia)<br>
+                    Hoje substituído por SSH para uso em produção</p>
+                </div>
+
+                <div class="highlight-box center-text">
+                    <h3>📚 Importância Educacional</h3>
+                    <p>Compreender TELNET é essencial para entender<br>
+                    como funciona o acesso remoto e protocolos de aplicação</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 16: Referências -->
+        <div class="slide">
+            <div class="content">
+                <h2>📚 Referências Bibliográficas</h2>
+                
+                <div class="highlight-box">
+                    <h3>📖 Fonte Principal:</h3>
+                    <div class="bullet-point"><strong>Seção 26.1 - Logging Remoto (TELNET)</strong></div>
+                    <div class="bullet-point">Livro de Redes de Computadores</div>
+                    <div class="bullet-point">Páginas 817-824</div>
+                </div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>🌐 RFCs Relacionadas:</h3>
+                        <div class="bullet-point">RFC 854 - TELNET Protocol Specification</div>
+                        <div class="bullet-point">RFC 855 - TELNET Option Specifications</div>
+                        <div class="bullet-point">RFC 1091 - TELNET Terminal-Type Option</div>
+                        <div class="bullet-point">RFC 1073 - TELNET Window Size Option</div>
+                    </div>
+                    <div>
+                        <h3>📋 Documentação Complementar:</h3>
+                        <div class="bullet-point">RFC 4253 - SSH Transport Layer Protocol</div>
+                        <div class="bullet-point">RFC 4251 - SSH Protocol Architecture</div>
+                        <div class="bullet-point">www.ietf.org - Internet Engineering Task Force</div>
+                        <div class="bullet-point">Manuais de sistemas operacionais Unix/Linux</div>
+                    </div>
+                </div>
+
+                <div class="example-box center-text">
+                    <h3>🤖 Metodologia de Criação</h3>
+                    <p>Apresentação desenvolvida com assistência de IA Claude Sonnet 4<br>
+                    Baseada integralmente na Seção 26.1 do material didático<br>
+                    Adaptação pedagógica com foco em clareza e exemplos práticos</p>
+                </div>
+
+                <div class="highlight-box center-text">
+                    <h3>🎯 Objetivo Educacional</h3>
+                    <p>Facilitar a compreensão do protocolo TELNET através de<br>
+                    explicações detalhadas, diagramas e exemplos práticos</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="navigation">
+            <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">⬅️ Anterior</button>
+            <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">Próximo ➡️</button>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        document.getElementById('total-slides').textContent = totalSlides;
+
+        // Quiz variables
+        let currentQuestion = 1;
+        let score = 0;
+        let quizAnswered = [false, false, false, false];
+
+        function showSlide(index) {
+            slides.forEach((slide, i) => {
+                slide.classList.toggle('active', i === index);
+            });
+            
+            document.getElementById('current-slide').textContent = index + 1;
+            document.getElementById('prevBtn').disabled = index === 0;
+            document.getElementById('nextBtn').disabled = index === totalSlides - 1;
+        }
+
+        function changeSlide(direction) {
+            const newSlide = currentSlide + direction;
+            if (newSlide >= 0 && newSlide < totalSlides) {
+                currentSlide = newSlide;
+                showSlide(currentSlide);
+            }
+        }
+
+        // Quiz Functions
+        function selectOption(questionNum, option, isCorrect) {
+            if (quizAnswered[questionNum - 1]) return; // Já respondida
+            
+            const options = document.querySelectorAll(`#question${questionNum} .quiz-option`);
+            const feedback = document.getElementById(`feedback${questionNum}`);
+            
+            // Marcar todas as opções
+            options.forEach(opt => {
+                opt.style.pointerEvents = 'none';
+                if (opt.onclick.toString().includes('true')) {
+                    opt.classList.add('correct');
+                } else if (opt === event.currentTarget) {
+                    opt.classList.add(isCorrect ? 'correct' : 'incorrect');
+                }
+            });
+            
+            // Mostrar feedback
+            if (isCorrect) {
+                feedback.innerHTML = '✅ Correto! Muito bem!';
+                feedback.className = 'quiz-feedback correct';
+                score++;
+            } else {
+                feedback.innerHTML = '❌ Incorreto. A resposta correta está destacada em verde.';
+                feedback.className = 'quiz-feedback incorrect';
+            }
+            
+            quizAnswered[questionNum - 1] = true;
+            
+            // Mostrar botão para próxima questão
+            if (questionNum < 4) {
+                document.getElementById('nextQuizBtn').style.display = 'inline-block';
+            } else {
+                // Última questão - mostrar resultado
+                setTimeout(() => {
+                    showQuizResult();
+                }, 2000);
+            }
+        }
+
+        function nextQuestion() {
+            document.getElementById(`question${currentQuestion}`).style.display = 'none';
+            currentQuestion++;
+            document.getElementById(`question${currentQuestion}`).style.display = 'block';
+            document.getElementById('nextQuizBtn').style.display = 'none';
+        }
+
+        function showQuizResult() {
+            // Esconder última questão
+            document.getElementById('question4').style.display = 'none';
+            
+            // Mostrar resultado
+            document.getElementById('quizResult').style.display = 'block';
+            document.getElementById('finalScore').textContent = score;
+            
+            const resultMessage = document.getElementById('resultMessage');
+            if (score === 4) {
+                resultMessage.innerHTML = '🏆 Excelente! Você domina o TELNET!';
+            } else if (score === 3) {
+                resultMessage.innerHTML = '👏 Muito bom! Quase perfeito!';
+            } else if (score === 2) {
+                resultMessage.innerHTML = '👍 Bom trabalho! Continue estudando!';
+            } else if (score === 1) {
+                resultMessage.innerHTML = '📚 Estude um pouco mais sobre TELNET!';
+            } else {
+                resultMessage.innerHTML = '📖 Recomendo revisar o conteúdo sobre TELNET!';
+            }
+        }
+
+        function restartQuiz() {
+            // Reset variables
+            currentQuestion = 1;
+            score = 0;
+            quizAnswered = [false, false, false, false];
+            
+            // Reset interface
+            for (let i = 1; i <= 4; i++) {
+                const question = document.getElementById(`question${i}`);
+                const options = question.querySelectorAll('.quiz-option');
+                const feedback = document.getElementById(`feedback${i}`);
+                
+                // Reset options
+                options.forEach(opt => {
+                    opt.className = 'quiz-option';
+                    opt.style.pointerEvents = 'auto';
+                });
+                
+                // Hide feedback
+                feedback.style.display = 'none';
+                
+                // Hide all questions except first
+                question.style.display = i === 1 ? 'block' : 'none';
+            }
+            
+            // Hide result and buttons
+            document.getElementById('quizResult').style.display = 'none';
+            document.getElementById('nextQuizBtn').style.display = 'none';
+        }
+
+        // Navegação por teclado
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') changeSlide(-1);
+            if (e.key === 'ArrowRight') changeSlide(1);
+            if (e.key === 'Home') {
+                currentSlide = 0;
+                showSlide(currentSlide);
+            }
+            if (e.key === 'End') {
+                currentSlide = totalSlides - 1;
+                showSlide(currentSlide);
+            }
+        });
+
+        // Inicializar
+        showSlide(0);
+        
+        // Inicializar quiz no slide 14
+        document.getElementById('question1').style.display = 'block';
+    </script>
+</body>
+</html>

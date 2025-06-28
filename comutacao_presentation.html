@@ -1,0 +1,1424 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comutação de Circuitos e Comutação de Pacotes</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        .presentation {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .slide {
+            min-height: 100vh;
+            padding: 60px 40px;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            background: white;
+            margin: 20px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        .slide.active {
+            display: flex;
+        }
+
+        .slide h1 {
+            font-size: 3.5em;
+            color: #4a5568;
+            text-align: center;
+            margin-bottom: 40px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .slide h2 {
+            font-size: 2.8em;
+            color: #2d3748;
+            margin-bottom: 30px;
+            border-bottom: 4px solid #ff6b35;
+            padding-bottom: 15px;
+        }
+
+        .slide h3 {
+            font-size: 2.2em;
+            color: #4a5568;
+            margin: 25px 0 15px 0;
+        }
+
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: start;
+        }
+
+        .bullet-point {
+            display: flex;
+            align-items: flex-start;
+            margin: 15px 0;
+            font-size: 1.3em;
+            line-height: 1.5;
+        }
+
+        .bullet-point::before {
+            content: "🔸";
+            margin-right: 15px;
+            font-size: 1.2em;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #ff6b35;
+        }
+
+        .example-box {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #20b2aa;
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 1000;
+        }
+
+        .nav-btn {
+            padding: 15px 25px;
+            background: #ff6b35;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(255, 107, 53, 0.3);
+        }
+
+        .nav-btn:hover {
+            background: #f7931e;
+            transform: translateY(-2px);
+            box-shadow: 0 7px 20px rgba(255, 107, 53, 0.4);
+        }
+
+        .nav-btn:disabled {
+            background: #a0a0a0;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .slide-counter {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: rgba(255,255,255,0.9);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            color: #4a5568;
+            z-index: 1000;
+        }
+
+        .center-text {
+            text-align: center;
+        }
+
+        .large-text {
+            font-size: 1.4em;
+            line-height: 1.6;
+        }
+
+        .diagram {
+            background: #f7fafc;
+            border: 2px dashed #ff6b35;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+            font-family: monospace;
+            font-size: 1.2em;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 1.1em;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        th {
+            background: #ff6b35;
+            color: white;
+            font-weight: bold;
+        }
+
+        .process-step {
+            background: #e6fffa;
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #38b2ac;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 20px 0;
+        }
+
+        .comparison-card {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            border: 2px solid #e2e8f0;
+        }
+
+        .comparison-card h4 {
+            color: #ff6b35;
+            margin-bottom: 15px;
+            font-size: 1.6em;
+            text-align: center;
+        }
+
+        .circuit-box {
+            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+
+        .packet-box {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+
+        .delay-types {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .delay-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            border-left: 4px solid #ff6b35;
+        }
+
+        .delay-card h4 {
+            color: #ff6b35;
+            margin-bottom: 10px;
+            font-size: 1.3em;
+        }
+
+        /* Quiz Styles */
+        .quiz-container {
+            max-width: 100%;
+            margin: 20px 0;
+        }
+
+        .quiz-question {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border: 2px solid #e2e8f0;
+        }
+
+        .quiz-question h3 {
+            color: #ff6b35;
+            margin-bottom: 20px;
+        }
+
+        .quiz-question p {
+            font-size: 1.3em;
+            margin-bottom: 25px;
+            font-weight: bold;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .quiz-option {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.1em;
+        }
+
+        .quiz-option:hover {
+            border-color: #ff6b35;
+            background: #fff5f0;
+            transform: translateX(5px);
+        }
+
+        .quiz-option.selected {
+            border-color: #ff6b35;
+            background: #ff6b35;
+            color: white;
+        }
+
+        .quiz-option.correct {
+            border-color: #48bb78;
+            background: #48bb78;
+            color: white;
+        }
+
+        .quiz-option.incorrect {
+            border-color: #f56565;
+            background: #f56565;
+            color: white;
+        }
+
+        .option-letter {
+            background: #ff6b35;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .quiz-option.correct .option-letter {
+            background: #48bb78;
+        }
+
+        .quiz-option.incorrect .option-letter {
+            background: #f56565;
+        }
+
+        .quiz-feedback {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: bold;
+            display: none;
+        }
+
+        .quiz-feedback.correct {
+            background: #c6f6d5;
+            color: #22543d;
+            border: 2px solid #48bb78;
+            display: block;
+        }
+
+        .quiz-feedback.incorrect {
+            background: #fed7d7;
+            color: #742a2a;
+            border: 2px solid #f56565;
+            display: block;
+        }
+
+        .quiz-navigation {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .quiz-result {
+            text-align: center;
+            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            margin: 20px 0;
+        }
+
+        .result-box {
+            background: rgba(255,255,255,0.1);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+
+        .result-box p {
+            font-size: 1.4em;
+            margin: 10px 0;
+        }
+
+        .phone-analogy {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation">
+        <div class="slide-counter">
+            <span id="current-slide">1</span> / <span id="total-slides">18</span>
+        </div>
+
+        <!-- Slide 1: Título -->
+        <div class="slide active">
+            <div class="content center-text">
+                <h1>⚡ Comutação de Circuitos e Pacotes</h1>
+                <h2 style="border: none; color: #ff6b35;">Como os Dados Viajam pelas Redes</h2>
+                <div class="highlight-box large-text">
+                    <strong>Aula 02</strong><br>
+                    Do telefone tradicional à Internet moderna<br>
+                    Duas formas de transportar informação
+                </div>
+                
+                <div class="example-box" style="margin-top: 40px;">
+                    <h3>👨‍🏫 Autor da Apresentação</h3>
+                    <p style="font-size: 1.3em; margin: 10px 0;">
+                        <strong>César Azevedo</strong><br>
+                        📧 cesar.augusto@ifrn.edu.br
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 2: Tópicos da Aula -->
+        <div class="slide">
+            <div class="content">
+                <h2>📋 Tópicos da Aula</h2>
+                
+                <div class="two-column">
+                    <div>
+                        <h3>🔌 Comutação de Circuitos</h3>
+                        <div class="bullet-point">O que é comutação</div>
+                        <div class="bullet-point">Sistema telefônico tradicional</div>
+                        <div class="bullet-point">3 fases do processo</div>
+                        <div class="bullet-point">Vantagens e desvantagens</div>
+                        
+                        <h3>📦 Comutação de Pacotes</h3>
+                        <div class="bullet-point">Base da Internet</div>
+                        <div class="bullet-point">Store-and-forward</div>
+                        <div class="bullet-point">Tolerância a falhas</div>
+                        <div class="bullet-point">Uso eficiente de recursos</div>
+                    </div>
+                    <div>
+                        <h3>⚖️ Comparação</h3>
+                        <div class="bullet-point">Circuitos vs Pacotes</div>
+                        <div class="bullet-point">Quando usar cada um</div>
+                        <div class="bullet-point">Tabela comparativa</div>
+                        
+                        <h3>🐌 Atrasos e Performance</h3>
+                        <div class="bullet-point">Tipos de atraso</div>
+                        <div class="bullet-point">Perda de pacotes</div>
+                        <div class="bullet-point">Vazão (throughput)</div>
+                        <div class="bullet-point">Softswitch (ponte entre mundos)</div>
+                    </div>
+                </div>
+
+                <div class="highlight-box center-text">
+                    <h3>🎯 Objetivo Final</h3>
+                    <p>Entender como telefones e Internet transportam dados<br>
+                    e por que cada tecnologia tem suas aplicações ideais</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: O que é Comutação -->
+        <div class="slide">
+            <div class="content">
+                <h2>❓ O que é Comutação?</h2>
+                
+                <div class="bullet-point">Processo que reserva e libera recursos de uma rede</div>
+                <div class="bullet-point">Define como os dados são transportados</div>
+                <div class="bullet-point">Duas formas principais: circuitos e pacotes</div>
+
+                <div class="phone-analogy">
+                    <h3>📞 Da Telefonista Manual ao Automático</h3>
+                    <div class="bullet-point"><strong>Antigamente:</strong> Telefonista conectava cabos manualmente</div>
+                    <div class="bullet-point"><strong>Hoje:</strong> Processo automatizado por equipamentos</div>
+                    <div class="bullet-point">Mesmo conceito: criar caminho para comunicação</div>
+                </div>
+
+                <div class="comparison-grid">
+                    <div class="comparison-card">
+                        <h4>🔌 Comutação de Circuitos</h4>
+                        <div class="bullet-point">Telefonia tradicional</div>
+                        <div class="bullet-point">Caminho dedicado</div>
+                        <div class="bullet-point">Recursos reservados</div>
+                    </div>
+                    <div class="comparison-card">
+                        <h4>📦 Comutação de Pacotes</h4>
+                        <div class="bullet-point">Internet moderna</div>
+                        <div class="bullet-point">Caminhos variáveis</div>
+                        <div class="bullet-point">Recursos compartilhados</div>
+                    </div>
+                </div>
+
+                <div class="diagram">
+                    COMUTAÇÃO = Como os dados "viajam" de A até B
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Comutação de Circuitos - Conceito -->
+        <div class="slide">
+            <div class="content">
+                <h2>🔌 Comutação de Circuitos</h2>
+                
+                <div class="bullet-point">Base do sistema telefônico tradicional</div>
+                <div class="bullet-point">Estabelece caminho físico dedicado</div>
+                <div class="bullet-point">Recursos reservados exclusivamente</div>
+                <div class="bullet-point">Caminho mantido durante toda a comunicação</div>
+
+                <div class="circuit-box">
+                    <h3>📞 Como Funciona uma Ligação Telefônica</h3>
+                    <div class="bullet-point">Você disca → Sistema procura caminho → Telefone toca</div>
+                    <div class="bullet-point">Aquele caminho fica "seu" até desligar</div>
+                    <div class="bullet-point">Ninguém mais pode usar aqueles recursos</div>
+                </div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>✅ Garantias</h3>
+                        <div class="bullet-point">Taxa de transmissão constante</div>
+                        <div class="bullet-point">Ordem dos dados preservada</div>
+                        <div class="bullet-point">Qualidade previsível</div>
+                        <div class="bullet-point">Sem interferência externa</div>
+                    </div>
+                    <div>
+                        <h3>⚠️ Características</h3>
+                        <div class="bullet-point">Configuração obrigatória</div>
+                        <div class="bullet-point">Caminho físico dedicado</div>
+                        <div class="bullet-point">Largura de banda fixa</div>
+                        <div class="bullet-point">Tarifação por tempo + distância</div>
+                    </div>
+                </div>
+
+                <div class="example-box center-text">
+                    <h3>🛣️ Analogia da Estrada</h3>
+                    <p>Como reservar uma estrada inteira só para você<br>
+                    Garantido que chegará, mas caro e pode desperdiçar espaço</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: 3 Fases da Comutação de Circuitos -->
+        <div class="slide">
+            <div class="content">
+                <h2>📋 3 Fases da Comutação de Circuitos</h2>
+                
+                <div class="process-step">
+                    <strong>1️⃣ Estabelecimento do Circuito</strong><br>
+                    Antes da comunicação, sistema reserva largura de banda<br>
+                    Procura e define o caminho físico completo
+                </div>
+
+                <div class="process-step">
+                    <strong>2️⃣ Transferência de Dados</strong><br>
+                    Comunicação acontece pelo caminho estabelecido<br>
+                    Dados fluem com qualidade garantida
+                </div>
+
+                <div class="process-step">
+                    <strong>3️⃣ Desconexão do Circuito</strong><br>
+                    Terminada a comunicação, largura de banda é liberada<br>
+                    Recursos ficam disponíveis para outras conexões
+                </div>
+
+                <div class="example-box">
+                    <h3>☎️ Exemplo Prático: Ligação Telefônica</h3>
+                    <div class="bullet-point"><strong>Fase 1:</strong> Você disca, sistema busca caminho até o destinatário</div>
+                    <div class="bullet-point"><strong>Fase 2:</strong> Telefone toca, conversa acontece</div>
+                    <div class="bullet-point"><strong>Fase 3:</strong> Alguém desliga, linha fica livre para outros</div>
+                </div>
+
+                <div class="highlight-box center-text">
+                    <h3>⏰ Detalhe Importante</h3>
+                    <p>O tempo entre discar e o telefone tocar é a Fase 1<br>
+                    Sistema está procurando e reservando o caminho!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: Vantagens e Desvantagens dos Circuitos -->
+        <div class="slide">
+            <div class="content">
+                <h2>⚖️ Circuitos: Prós e Contras</h2>
+                
+                <div class="two-column">
+                    <div>
+                        <h3>✅ Vantagens</h3>
+                        <div class="bullet-point">Qualidade garantida</div>
+                        <div class="bullet-point">Taxa constante de transmissão</div>
+                        <div class="bullet-point">Dados chegam em ordem</div>
+                        <div class="bullet-point">Previsibilidade total</div>
+                        <div class="bullet-point">Ideal para voz em tempo real</div>
+                    </div>
+                    <div>
+                        <h3>❌ Desvantagens</h3>
+                        <div class="bullet-point">Desperdício de recursos</div>
+                        <div class="bullet-point">Ineficiente durante silêncios</div>
+                        <div class="bullet-point">Recursos "presos" mesmo sem uso</div>
+                        <div class="bullet-point">Custo elevado</div>
+                        <div class="bullet-point">Setup necessário antes de transmitir</div>
+                    </div>
+                </div>
+
+                <div class="highlight-box">
+                    <h3>💸 O Problema do Desperdício</h3>
+                    <div class="bullet-point">Durante uma ligação telefônica, há muitos momentos de silêncio</div>
+                    <div class="bullet-point">Mesmo assim, a largura de banda fica reservada</div>
+                    <div class="bullet-point">É como alugar uma estrada e não usar sempre</div>
+                    <div class="bullet-point">Recursos ficam "trancados" até alguém desligar</div>
+                </div>
+
+                <div class="example-box">
+                    <h3>📊 Eficiência Real</h3>
+                    <div class="bullet-point">Em conversas normais, cada pessoa fala ~40% do tempo</div>
+                    <div class="bullet-point">Ou seja, 60% da largura de banda é desperdiçada!</div>
+                    <div class="bullet-point">Mas a qualidade de voz é sempre perfeita</div>
+                </div>
+
+                <div class="diagram">
+                    Conversação: "Alô" → [silêncio] → "Como vai?" → [silêncio] → "Bem!"<br>
+                    Largura de banda: RESERVADA durante todo o tempo!
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7: Comutação de Pacotes - Conceito -->
+        <div class="slide">
+            <div class="content">
+                <h2>📦 Comutação de Pacotes</h2>
+                
+                <div class="bullet-point">Base da Internet e redes de dados</div>
+                <div class="bullet-point">Mensagem dividida em pequenos pacotes</div>
+                <div class="bullet-point">Não exige caminho físico dedicado</div>
+                <div class="bullet-point">Recursos compartilhados dinamicamente</div>
+
+                <div class="packet-box">
+                    <h3>📮 Como Funciona</h3>
+                    <div class="bullet-point">Dados divididos em "pacotinhos"</div>
+                    <div class="bullet-point">Cada pacote viaja independentemente</div>
+                    <div class="bullet-point">Podem seguir caminhos diferentes</div>
+                    <div class="bullet-point">Reagrupados no destino</div>
+                </div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>🎯 Características</h3>
+                        <div class="bullet-point">Sem reserva prévia de recursos</div>
+                        <div class="bullet-point">Largura de banda sob demanda</div>
+                        <div class="bullet-point">Store-and-forward</div>
+                        <div class="bullet-point">Tolerante a falhas</div>
+                    </div>
+                    <div>
+                        <h3>💰 Vantagens Econômicas</h3>
+                        <div class="bullet-point">Melhor uso dos recursos</div>
+                        <div class="bullet-point">Sem desperdício</div>
+                        <div class="bullet-point">Tarifação por volume</div>
+                        <div class="bullet-point">Mais barato para dados</div>
+                    </div>
+                </div>
+
+                <div class="example-box center-text">
+                    <h3>📬 Analogia dos Correios</h3>
+                    <p>Como enviar uma carta em várias partes<br>
+                    Cada parte pode seguir rota diferente, chegam fora de ordem<br>
+                    No destino, você reorganiza as partes</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: Store-and-Forward -->
+        <div class="slide">
+            <div class="content">
+                <h2>📥 Processo Store-and-Forward</h2>
+                
+                <div class="bullet-point">Técnica fundamental da comutação de pacotes</div>
+                <div class="bullet-point">Cada roteador recebe pacote completo</div>
+                <div class="bullet-point">Armazena temporariamente</div>
+                <div class="bullet-point">Decide melhor próximo destino</div>
+                <div class="bullet-point">Encaminha para próximo roteador</div>
+
+                <div class="process-step">
+                    <strong>1. STORE (Armazenar):</strong><br>
+                    Roteador recebe pacote inteiro e guarda na memória
+                </div>
+
+                <div class="process-step">
+                    <strong>2. ANALYZE (Analisar):</strong><br>
+                    Examina endereço de destino do pacote
+                </div>
+
+                <div class="process-step">
+                    <strong>3. FORWARD (Encaminhar):</strong><br>
+                    Decide melhor rota e envia para próximo roteador
+                </div>
+
+                <div class="example-box">
+                    <h3>🏃‍♂️ Analogia da Corrida de Revezamento</h3>
+                    <div class="bullet-point">Cada corredor recebe o bastão completo</div>
+                    <div class="bullet-point">Para, analisa o melhor caminho</div>
+                    <div class="bullet-point">Passa para o próximo corredor</div>
+                    <div class="bullet-point">Processo se repete até o destino final</div>
+                </div>
+
+                <div class="highlight-box">
+                    <h3>🗺️ Roteamento Inteligente</h3>
+                    <div class="bullet-point">Cada roteador tem tabela de rotas</div>
+                    <div class="bullet-point">Conhece "vizinhos" e caminhos possíveis</div>
+                    <div class="bullet-point">Escolhe rota baseada em algoritmos</div>
+                    <div class="bullet-point">Pode contornar equipamentos com problemas</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 9: Vantagens e Desvantagens dos Pacotes -->
+        <div class="slide">
+            <div class="content">
+                <h2>⚖️ Pacotes: Prós e Contras</h2>
+                
+                <div class="two-column">
+                    <div>
+                        <h3>✅ Vantagens</h3>
+                        <div class="bullet-point">Uso eficiente de recursos</div>
+                        <div class="bullet-point">Sem desperdício de largura de banda</div>
+                        <div class="bullet-point">Tolerante a falhas de equipamentos</div>
+                        <div class="bullet-point">Roteamento dinâmico</div>
+                        <div class="bullet-point">Custo menor</div>
+                        <div class="bullet-point">Escalabilidade</div>
+                    </div>
+                    <div>
+                        <h3>❌ Desvantagens</h3>
+                        <div class="bullet-point">Sem garantia de entrega imediata</div>
+                        <div class="bullet-point">Pacotes podem chegar fora de ordem</div>
+                        <div class="bullet-point">Possibilidade de atrasos (jitter)</div>
+                        <div class="bullet-point">Perda de pacotes em congestionamento</div>
+                        <div class="bullet-point">Qualidade variável</div>
+                    </div>
+                </div>
+
+                <div class="highlight-box">
+                    <h3>🚦 Tolerância a Falhas</h3>
+                    <div class="bullet-point">Se um roteador falha, pacotes encontram rota alternativa</div>
+                    <div class="bullet-point">Internet continua funcionando mesmo com problemas locais</div>
+                    <div class="bullet-point">Redundância natural do sistema</div>
+                </div>
+
+                <div class="example-box">
+                    <h3>🛣️ Analogia do Trânsito</h3>
+                    <div class="bullet-point">Como dirigir pela cidade em horário de pico</div>
+                    <div class="bullet-point">Se uma rua está congestionada, você desvia</div>
+                    <div class="bullet-point">Pode demorar mais, mas sempre há alternativa</div>
+                    <div class="bullet-point">Melhor uso das ruas disponíveis</div>
+                </div>
+
+                <div class="diagram">
+                    Rota A bloqueada → Pacotes desviam para Rota B<br>
+                    Internet continua funcionando!
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 10: Comparação Completa -->
+        <div class="slide">
+            <div class="content">
+                <h2>📊 Comparação: Circuitos vs Pacotes</h2>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Aspecto</th>
+                            <th>Comutação de Circuitos</th>
+                            <th>Comutação de Pacotes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Configuração inicial</strong></td>
+                            <td>Obrigatória</td>
+                            <td>Não necessária</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Caminho físico dedicado</strong></td>
+                            <td>Sim</td>
+                            <td>Não</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Pacotes mesmo caminho</strong></td>
+                            <td>Sim</td>
+                            <td>Não</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Ordem garantida</strong></td>
+                            <td>Sim</td>
+                            <td>Não</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Reserva de largura</strong></td>
+                            <td>Fixa</td>
+                            <td>Dinâmica</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Desperdício de recursos</strong></td>
+                            <td>Sim</td>
+                            <td>Não</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Falha é fatal</strong></td>
+                            <td>Sim</td>
+                            <td>Não</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Tarifação</strong></td>
+                            <td>Tempo + Distância</td>
+                            <td>Volume de dados</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="highlight-box center-text">
+                    <h3>🎯 Em Resumo</h3>
+                    <p><strong>Circuitos:</strong> Qualidade garantida, mas caro e rígido<br>
+                    <strong>Pacotes:</strong> Eficiente e flexível, mas sem garantias</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 11: Quando Usar Cada Um -->
+        <div class="slide">
+            <div class="content">
+                <h2>🤔 Quando Usar Cada Tecnologia?</h2>
+                
+                <div class="comparison-grid">
+                    <div class="circuit-box">
+                        <h4>🔌 Use Comutação de Circuitos Para:</h4>
+                        <div class="bullet-point">Comunicação de voz em tempo real</div>
+                        <div class="bullet-point">Videoconferências críticas</div>
+                        <div class="bullet-point">Transmissões que exigem qualidade constante</div>
+                        <div class="bullet-point">Aplicações sensíveis a atraso</div>
+                        <div class="bullet-point">Quando qualidade > custo</div>
+                    </div>
+                    
+                    <div class="packet-box">
+                        <h4>📦 Use Comutação de Pacotes Para:</h4>
+                        <div class="bullet-point">Navegação na web</div>
+                        <div class="bullet-point">E-mails e mensagens</div>
+                        <div class="bullet-point">Transferência de arquivos</div>
+                        <div class="bullet-point">Redes sociais</div>
+                        <div class="bullet-point">Quando eficiência > qualidade garantida</div>
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>🌐 Mundo Real: Convergência</h3>
+                    <div class="bullet-point"><strong>VoIP:</strong> Voz sobre pacotes (Skype, WhatsApp)</div>
+                    <div class="bullet-point"><strong>Video streaming:</strong> Netflix usa pacotes, mas simula qualidade constante</div>
+                    <div class="bullet-point"><strong>5G:</strong> Combina benefícios das duas tecnologias</div>
+                </div>
+
+                <div class="highlight-box">
+                    <h3>🔮 Tendência Atual</h3>
+                    <div class="bullet-point">Mundo caminha para "tudo sobre pacotes"</div>
+                    <div class="bullet-point">Melhorias em QoS (Quality of Service)</div>
+                    <div class="bullet-point">Protocolos inteligentes compensam limitações</div>
+                    <div class="bullet-point">Custo e flexibilidade vencem na maioria dos casos</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 12: Tipos de Atraso -->
+        <div class="slide">
+            <div class="content">
+                <h2>🐌 Tipos de Atraso em Redes de Pacotes</h2>
+                
+                <div class="bullet-point">Atrasos são inevitáveis na comutação de pacotes</div>
+                <div class="bullet-point">Quatro tipos principais de atraso</div>
+                <div class="bullet-point">Cada um tem causa específica</div>
+
+                <div class="delay-types">
+                    <div class="delay-card">
+                        <h4>🧠 Atraso de Processamento</h4>
+                        <div class="bullet-point">Tempo para examinar o pacote</div>
+                        <div class="bullet-point">Verificar erros</div>
+                        <div class="bullet-point">Decidir próximo destino</div>
+                    </div>
+
+                    <div class="delay-card">
+                        <h4>⏰ Atraso de Fila</h4>
+                        <div class="bullet-point">Tempo esperando na fila</div>
+                        <div class="bullet-point">Depende do congestionamento</div>
+                        <div class="bullet-point">Varia muito</div>
+                    </div>
+
+                    <div class="delay-card">
+                        <h4>📡 Atraso de Transmissão</h4>
+                        <div class="bullet-point">Tempo para "empurrar" bits no cabo</div>
+                        <div class="bullet-point">Tamanho do pacote ÷ Velocidade do link</div>
+                        <div class="bullet-point">Previsível</div>
+                    </div>
+
+                    <div class="delay-card">
+                        <h4>🏃‍♂️ Atraso de Propagação</h4>
+                        <div class="bullet-point">Tempo da viagem física</div>
+                        <div class="bullet-point">Distância ÷ Velocidade da luz</div>
+                        <div class="bullet-point">Limitado pela física</div>
+                    </div>
+                </div>
+
+                <div class="example-box center-text">
+                    <h3>🏪 Analogia do Supermercado</h3>
+                    <p><strong>Processamento:</strong> Caixa scaneando produtos<br>
+                    <strong>Fila:</strong> Esperando sua vez<br>
+                    <strong>Transmissão:</strong> Passando produtos pelo scanner<br>
+                    <strong>Propagação:</strong> Caminhando até a saída</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 13: Perda de Pacotes -->
+        <div class="slide">
+            <div class="content">
+                <h2>💀 Perda de Pacotes</h2>
+                
+                <div class="bullet-point">Roteadores têm memória limitada (buffers)</div>
+                <div class="bullet-point">Quando buffer fica cheio, pacotes são descartados</div>
+                <div class="bullet-point">Perda aumenta com congestionamento</div>
+                <div class="bullet-point">Aplicações devem lidar com perdas</div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>🔥 Causas da Perda</h3>
+                        <div class="bullet-point">Buffer lotado</div>
+                        <div class="bullet-point">Congestionamento na rede</div>
+                        <div class="bullet-point">Falha de equipamentos</div>
+                        <div class="bullet-point">Interferência no meio físico</div>
+                    </div>
+                    <div>
+                        <h3>🛠️ Como Lidar</h3>
+                        <div class="bullet-point">Retransmissão automática</div>
+                        <div class="bullet-point">Protocolos de confirmação</div>
+                        <div class="bullet-point">Controle de congestionamento</div>
+                        <div class="bullet-point">Buffering no destinatário</div>
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>🏥 Analogia do Hospital</h3>
+                    <div class="bullet-point">Sala de espera tem capacidade limitada</div>
+                    <div class="bullet-point">Se lotou, novos pacientes são dispensados</div>
+                    <div class="bullet-point">Em emergência, podem voltar depois</div>
+                    <div class="bullet-point">Hospital aumenta atendimento para reduzir fila</div>
+                </div>
+
+                <div class="highlight-box">
+                    <h3>📊 Taxa de Perda Típica</h3>
+                    <div class="bullet-point">Internet residencial: 0,1% a 1%</div>
+                    <div class="bullet-point">Redes corporativas: < 0,1%</div>
+                    <div class="bullet-point">WiFi congestionado: pode chegar a 5%</div>
+                </div>
+
+                <div class="diagram">
+                    Pacotes chegando → [Buffer cheio] → Pacote descartado<br>
+                    Aplicação detecta perda → Retransmite
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 14: Vazão (Throughput) -->
+        <div class="slide">
+            <div class="content">
+                <h2>🚀 Vazão (Throughput)</h2>
+                
+                <div class="bullet-point">Taxa de transferência de dados entre dois pontos</div>
+                <div class="bullet-point">Medida em bits por segundo (bps)</div>
+                <div class="bullet-point">Diferente da velocidade do link</div>
+                <div class="bullet-point">Limitada pelo "gargalo" do caminho</div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>🎯 Vazão Instantânea</h3>
+                        <div class="bullet-point">Taxa em um momento específico</div>
+                        <div class="bullet-point">Varia conforme congestionamento</div>
+                        <div class="bullet-point">Pode oscilar muito</div>
+                    </div>
+                    <div>
+                        <h3>📊 Vazão Média</h3>
+                        <div class="bullet-point">Taxa ao longo do tempo</div>
+                        <div class="bullet-point">Mais relevante para usuários</div>
+                        <div class="bullet-point">Medida em downloads</div>
+                    </div>
+                </div>
+
+                <div class="highlight-box">
+                    <h3>🚰 Lei do Gargalo</h3>
+                    <div class="bullet-point">Vazão fim-a-fim = velocidade do link mais lento</div>
+                    <div class="bullet-point">Como água em um cano: fluxo limitado pela parte mais estreita</div>
+                    <div class="bullet-point">Não adianta ter fibra se WiFi é lento</div>
+                </div>
+
+                <div class="example-box">
+                    <h3>🏠 Exemplo Doméstico</h3>
+                    <div class="bullet-point">Internet contratada: 100 Mbps</div>
+                    <div class="bullet-point">WiFi: 50 Mbps (gargalo!)</div>
+                    <div class="bullet-point">Vazão real: máximo 50 Mbps</div>
+                    <div class="bullet-point">Compartilhado entre todos os dispositivos</div>
+                </div>
+
+                <div class="diagram">
+                    Servidor [1 Gbps] → Internet [100 Mbps] → WiFi [50 Mbps] → Seu PC<br>
+                    Vazão real: 50 Mbps (limitado pelo WiFi)
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 15: Softswitch - Ponte Entre Mundos -->
+        <div class="slide">
+            <div class="content">
+                <h2>🌉 Softswitch: Ponte Entre Mundos</h2>
+                
+                <div class="bullet-point">Arquitetura que combina circuitos e pacotes</div>
+                <div class="bullet-point">Software especializado em hardware comum</div>
+                <div class="bullet-point">Possibilita VoIP e convergência</div>
+                <div class="bullet-point">Evolução dos sistemas telefônicos</div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>🎭 Dupla Personalidade</h3>
+                        <div class="bullet-point">Metade computador (pacotes)</div>
+                        <div class="bullet-point">Metade comutador telefônico (circuitos)</div>
+                        <div class="bullet-point">Traduz entre os dois mundos</div>
+                        <div class="bullet-point">Gateway inteligente</div>
+                    </div>
+                    <div>
+                        <h3>⚙️ Componentes</h3>
+                        <div class="bullet-point">Gateway de mídia (conversão)</div>
+                        <div class="bullet-point">Controlador (lógica)</div>
+                        <div class="bullet-point">Banco de dados (endereços)</div>
+                        <div class="bullet-point">Interface de rede</div>
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>📞 Funcionamento Prático</h3>
+                    <div class="bullet-point">Telefone tradicional liga para celular</div>
+                    <div class="bullet-point">Softswitch converte voz em pacotes IP</div>
+                    <div class="bullet-point">Redes de pacotes transportam a voz</div>
+                    <div class="bullet-point">Outro softswitch reconverte para circuito</div>
+                </div>
+
+                <div class="highlight-box">
+                    <h3>🔮 Importância</h3>
+                    <div class="bullet-point">Permite migração gradual para IP</div>
+                    <div class="bullet-point">Aproveitamento da infraestrutura existente</div>
+                    <div class="bullet-point">Base para VoIP comercial</div>
+                    <div class="bullet-point">Convergência de voz e dados</div>
+                </div>
+
+                <div class="diagram">
+                    Telefone → [Circuito] → Softswitch → [Pacotes] → Internet → [Pacotes] → Softswitch → [Circuito] → Telefone
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 16: Resumo Final -->
+        <div class="slide">
+            <div class="content">
+                <h2>🎯 Resumo Final</h2>
+                
+                <div class="highlight-box large-text center-text">
+                    <strong>Duas formas fundamentais de transportar dados</strong>
+                </div>
+
+                <div class="comparison-grid">
+                    <div class="circuit-box">
+                        <h4>🔌 Comutação de Circuitos</h4>
+                        <div class="bullet-point">Telefonia tradicional</div>
+                        <div class="bullet-point">Qualidade garantida</div>
+                        <div class="bullet-point">Recursos dedicados</div>
+                        <div class="bullet-point">Mais cara, menos eficiente</div>
+                    </div>
+                    
+                    <div class="packet-box">
+                        <h4>📦 Comutação de Pacotes</h4>
+                        <div class="bullet-point">Internet moderna</div>
+                        <div class="bullet-point">Uso eficiente de recursos</div>
+                        <div class="bullet-point">Tolerante a falhas</div>
+                        <div class="bullet-point">Mais barata, qualidade variável</div>
+                    </div>
+                </div>
+
+                <div class="example-box center-text">
+                    <h3>🌐 Convergência Digital</h3>
+                    <p>O futuro combina o melhor dos dois mundos<br>
+                    VoIP, streaming e 5G usam pacotes com qualidade de circuitos</p>
+                </div>
+
+                <div class="process-step center-text">
+                    <strong>🔄 Conceitos Aprendidos:</strong><br>
+                    Comutação • Atrasos • Perdas • Vazão • Softswitch<br>
+                    Base para entender performance de redes
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 17: Quiz -->
+        <div class="slide">
+            <div class="content">
+                <h2>🧠 Quiz - Teste seus conhecimentos!</h2>
+                
+                <div class="quiz-container">
+                    <!-- Questão 1 -->
+                    <div class="quiz-question" id="question1">
+                        <h3>📝 Questão 1</h3>
+                        <p><strong>Qual é a principal vantagem da comutação de circuitos?</strong></p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(1, 'a', false)">
+                                <span class="option-letter">A)</span> Uso eficiente de recursos
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(1, 'b', true)">
+                                <span class="option-letter">B)</span> Qualidade e taxa garantidas
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(1, 'c', false)">
+                                <span class="option-letter">C)</span> Tolerância a falhas
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(1, 'd', false)">
+                                <span class="option-letter">D)</span> Baixo custo
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback1"></div>
+                    </div>
+
+                    <!-- Questão 2 -->
+                    <div class="quiz-question" id="question2" style="display: none;">
+                        <h3>📝 Questão 2</h3>
+                        <p><strong>Na comutação de pacotes, o que significa "store-and-forward"?</strong></p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(2, 'a', false)">
+                                <span class="option-letter">A)</span> Pacotes são enviados diretamente
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(2, 'b', true)">
+                                <span class="option-letter">B)</span> Recebe, armazena e depois encaminha
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(2, 'c', false)">
+                                <span class="option-letter">C)</span> Apenas armazena os pacotes
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(2, 'd', false)">
+                                <span class="option-letter">D)</span> Descarta pacotes desnecessários
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback2"></div>
+                    </div>
+
+                    <!-- Questão 3 -->
+                    <div class="quiz-question" id="question3" style="display: none;">
+                        <h3>📝 Questão 3</h3>
+                        <p><strong>O que limita a vazão (throughput) em uma rede?</strong></p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(3, 'a', false)">
+                                <span class="option-letter">A)</span> O link mais rápido
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(3, 'b', true)">
+                                <span class="option-letter">B)</span> O gargalo (link mais lento)
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(3, 'c', false)">
+                                <span class="option-letter">C)</span> A distância física
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(3, 'd', false)">
+                                <span class="option-letter">D)</span> O número de roteadores
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback3"></div>
+                    </div>
+
+                    <!-- Questão 4 -->
+                    <div class="quiz-question" id="question4" style="display: none;">
+                        <h3>📝 Questão 4</h3>
+                        <p><strong>O que é um softswitch?</strong></p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(4, 'a', false)">
+                                <span class="option-letter">A)</span> Um tipo de roteador
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(4, 'b', false)">
+                                <span class="option-letter">B)</span> Um protocolo de rede
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(4, 'c', true)">
+                                <span class="option-letter">C)</span> Ponte entre circuitos e pacotes
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(4, 'd', false)">
+                                <span class="option-letter">D)</span> Um cabo especial
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback4"></div>
+                    </div>
+
+                    <!-- Resultado Final -->
+                    <div class="quiz-result" id="quizResult" style="display: none;">
+                        <h3>🎉 Parabéns! Quiz Concluído!</h3>
+                        <div class="result-box">
+                            <p><strong>Sua pontuação: <span id="finalScore">0</span>/4</strong></p>
+                            <p id="resultMessage"></p>
+                        </div>
+                        <button class="nav-btn" onclick="restartQuiz()">🔄 Refazer Quiz</button>
+                    </div>
+                </div>
+
+                <div class="quiz-navigation">
+                    <button class="nav-btn" id="nextQuizBtn" onclick="nextQuestion()" style="display: none;">
+                        Próxima Questão ➡️
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 18: Referências -->
+        <div class="slide">
+            <div class="content">
+                <h2>📚 Referências Bibliográficas</h2>
+                
+                <div class="highlight-box">
+                    <h3>📖 Fontes Principais:</h3>
+                    <div class="bullet-point"><strong>Capítulos 1.3 e 1.4</strong> - Redes de Computadores e a Internet</div>
+                    <div class="bullet-point"><strong>Tutorial VoIP I</strong> - Comutação de Circuito e de Pacote</div>
+                    <div class="bullet-point">Material didático oficial da disciplina</div>
+                </div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>📚 Bibliografia Complementar:</h3>
+                        <div class="bullet-point">Kurose & Ross - Redes de Computadores</div>
+                        <div class="bullet-point">Tanenbaum - Computer Networks</div>
+                        <div class="bullet-point">Site Teleco.com.br</div>
+                        <div class="bullet-point">RFCs da IETF sobre QoS</div>
+                    </div>
+                    <div>
+                        <h3>🔗 Conceitos Relacionados:</h3>
+                        <div class="bullet-point">Quality of Service (QoS)</div>
+                        <div class="bullet-point">Voice over IP (VoIP)</div>
+                        <div class="bullet-point">Multiplexação (FDM, TDM)</div>
+                        <div class="bullet-point">Protocolos de transporte</div>
+                    </div>
+                </div>
+
+                <div class="example-box center-text">
+                    <h3>🤖 Metodologia de Criação</h3>
+                    <p>Apresentação desenvolvida com assistência de IA Claude Sonnet 4<br>
+                    Baseada integralmente no material didático fornecido<br>
+                    Foco em analogias práticas e comparações visuais</p>
+                </div>
+
+                <div class="highlight-box center-text">
+                    <h3>🎯 Objetivo Educacional</h3>
+                    <p>Facilitar a compreensão das diferenças entre comutação<br>
+                    de circuitos e pacotes através de exemplos do cotidiano</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="navigation">
+            <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">⬅️ Anterior</button>
+            <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">Próximo ➡️</button>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        document.getElementById('total-slides').textContent = totalSlides;
+
+        // Quiz variables
+        let currentQuestion = 1;
+        let score = 0;
+        let quizAnswered = [false, false, false, false];
+
+        function showSlide(index) {
+            slides.forEach((slide, i) => {
+                slide.classList.toggle('active', i === index);
+            });
+            
+            document.getElementById('current-slide').textContent = index + 1;
+            document.getElementById('prevBtn').disabled = index === 0;
+            document.getElementById('nextBtn').disabled = index === totalSlides - 1;
+        }
+
+        function changeSlide(direction) {
+            const newSlide = currentSlide + direction;
+            if (newSlide >= 0 && newSlide < totalSlides) {
+                currentSlide = newSlide;
+                showSlide(currentSlide);
+            }
+        }
+
+        // Quiz Functions
+        function selectOption(questionNum, option, isCorrect) {
+            if (quizAnswered[questionNum - 1]) return; // Já respondida
+            
+            const options = document.querySelectorAll(`#question${questionNum} .quiz-option`);
+            const feedback = document.getElementById(`feedback${questionNum}`);
+            
+            // Marcar todas as opções
+            options.forEach(opt => {
+                opt.style.pointerEvents = 'none';
+                if (opt.onclick.toString().includes('true')) {
+                    opt.classList.add('correct');
+                } else if (opt === event.currentTarget) {
+                    opt.classList.add(isCorrect ? 'correct' : 'incorrect');
+                }
+            });
+            
+            // Mostrar feedback
+            if (isCorrect) {
+                feedback.innerHTML = '✅ Correto! Muito bem!';
+                feedback.className = 'quiz-feedback correct';
+                score++;
+            } else {
+                feedback.innerHTML = '❌ Incorreto. A resposta correta está destacada em verde.';
+                feedback.className = 'quiz-feedback incorrect';
+            }
+            
+            quizAnswered[questionNum - 1] = true;
+            
+            // Mostrar botão para próxima questão
+            if (questionNum < 4) {
+                document.getElementById('nextQuizBtn').style.display = 'inline-block';
+            } else {
+                // Última questão - mostrar resultado
+                setTimeout(() => {
+                    showQuizResult();
+                }, 2000);
+            }
+        }
+
+        function nextQuestion() {
+            document.getElementById(`question${currentQuestion}`).style.display = 'none';
+            currentQuestion++;
+            document.getElementById(`question${currentQuestion}`).style.display = 'block';
+            document.getElementById('nextQuizBtn').style.display = 'none';
+        }
+
+        function showQuizResult() {
+            // Esconder última questão
+            document.getElementById('question4').style.display = 'none';
+            
+            // Mostrar resultado
+            document.getElementById('quizResult').style.display = 'block';
+            document.getElementById('finalScore').textContent = score;
+            
+            const resultMessage = document.getElementById('resultMessage');
+            if (score === 4) {
+                resultMessage.innerHTML = '🏆 Excelente! Você domina comutação de redes!';
+            } else if (score === 3) {
+                resultMessage.innerHTML = '👏 Muito bom! Quase perfeito!';
+            } else if (score === 2) {
+                resultMessage.innerHTML = '👍 Bom trabalho! Continue estudando!';
+            } else if (score === 1) {
+                resultMessage.innerHTML = '📚 Estude um pouco mais sobre comutação!';
+            } else {
+                resultMessage.innerHTML = '📖 Recomendo revisar o conteúdo!';
+            }
+        }
+
+        function restartQuiz() {
+            // Reset variables
+            currentQuestion = 1;
+            score = 0;
+            quizAnswered = [false, false, false, false];
+            
+            // Reset interface
+            for (let i = 1; i <= 4; i++) {
+                const question = document.getElementById(`question${i}`);
+                const options = question.querySelectorAll('.quiz-option');
+                const feedback = document.getElementById(`feedback${i}`);
+                
+                // Reset options
+                options.forEach(opt => {
+                    opt.className = 'quiz-option';
+                    opt.style.pointerEvents = 'auto';
+                });
+                
+                // Hide feedback
+                feedback.style.display = 'none';
+                
+                // Hide all questions except first
+                question.style.display = i === 1 ? 'block' : 'none';
+            }
+            
+            // Hide result and buttons
+            document.getElementById('quizResult').style.display = 'none';
+            document.getElementById('nextQuizBtn').style.display = 'none';
+        }
+
+        // Navegação por teclado
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') changeSlide(-1);
+            if (e.key === 'ArrowRight') changeSlide(1);
+            if (e.key === 'Home') {
+                currentSlide = 0;
+                showSlide(currentSlide);
+            }
+            if (e.key === 'End') {
+                currentSlide = totalSlides - 1;
+                showSlide(currentSlide);
+            }
+        });
+
+        // Inicializar
+        showSlide(0);
+        
+        // Inicializar quiz no slide 17
+        document.getElementById('question1').style.display = 'block';
+    </script>
+</body>
+</html>

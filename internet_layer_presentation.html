@@ -1,0 +1,1141 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Camada de Internet - TCP/IP</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        .presentation {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .slide {
+            min-height: 100vh;
+            padding: 60px 40px;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            background: white;
+            margin: 20px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        .slide.active {
+            display: flex;
+        }
+
+        .slide h1 {
+            font-size: 3.5em;
+            color: #4a5568;
+            text-align: center;
+            margin-bottom: 40px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .slide h2 {
+            font-size: 2.8em;
+            color: #2d3748;
+            margin-bottom: 30px;
+            border-bottom: 4px solid #11998e;
+            padding-bottom: 15px;
+        }
+
+        .slide h3 {
+            font-size: 2.2em;
+            color: #4a5568;
+            margin: 25px 0 15px 0;
+        }
+
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: start;
+        }
+
+        .bullet-point {
+            display: flex;
+            align-items: flex-start;
+            margin: 15px 0;
+            font-size: 1.3em;
+            line-height: 1.5;
+        }
+
+        .bullet-point::before {
+            content: "🔸";
+            margin-right: 15px;
+            font-size: 1.2em;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #c6f6d5 0%, #9ae6b4 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #11998e;
+        }
+
+        .example-box {
+            background: linear-gradient(135deg, #e6fffa 0%, #b2f5ea 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #38b2ac;
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 1000;
+        }
+
+        .nav-btn {
+            padding: 15px 25px;
+            background: #11998e;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(17, 153, 142, 0.3);
+        }
+
+        .nav-btn:hover {
+            background: #0f7c75;
+            transform: translateY(-2px);
+            box-shadow: 0 7px 20px rgba(17, 153, 142, 0.4);
+        }
+
+        .nav-btn:disabled {
+            background: #a0a0a0;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .slide-counter {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: rgba(255,255,255,0.9);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            color: #4a5568;
+            z-index: 1000;
+        }
+
+        .icon {
+            font-size: 1.5em;
+            margin-right: 10px;
+        }
+
+        .center-text {
+            text-align: center;
+        }
+
+        .large-text {
+            font-size: 1.4em;
+            line-height: 1.6;
+        }
+
+        .diagram {
+            background: #f7fafc;
+            border: 2px dashed #11998e;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+            font-family: monospace;
+            font-size: 1.2em;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 1.1em;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        th {
+            background: #11998e;
+            color: white;
+            font-weight: bold;
+        }
+
+        .process-step {
+            background: #e6fffa;
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #38b2ac;
+        }
+
+        .code-box {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: monospace;
+            font-size: 1em;
+            margin: 20px 0;
+            overflow-x: auto;
+        }
+
+        .ip-address {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            margin: 2px;
+            display: inline-block;
+        }
+
+        .class-box {
+            display: inline-block;
+            padding: 10px 15px;
+            margin: 5px;
+            border-radius: 10px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .class-a { background: #e53e3e; }
+        .class-b { background: #dd6b20; }
+        .class-c { background: #38a169; }
+
+        /* Quiz Styles */
+        .quiz-container {
+            max-width: 100%;
+            margin: 20px 0;
+        }
+
+        .quiz-question {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border: 2px solid #e2e8f0;
+        }
+
+        .quiz-question h3 {
+            color: #11998e;
+            margin-bottom: 20px;
+        }
+
+        .quiz-question p {
+            font-size: 1.3em;
+            margin-bottom: 25px;
+            font-weight: bold;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .quiz-option {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.1em;
+        }
+
+        .quiz-option:hover {
+            border-color: #11998e;
+            background: #e6fffa;
+            transform: translateX(5px);
+        }
+
+        .quiz-option.selected {
+            border-color: #11998e;
+            background: #11998e;
+            color: white;
+        }
+
+        .quiz-option.correct {
+            border-color: #48bb78;
+            background: #48bb78;
+            color: white;
+        }
+
+        .quiz-option.incorrect {
+            border-color: #f56565;
+            background: #f56565;
+            color: white;
+        }
+
+        .option-letter {
+            background: #11998e;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .quiz-option.correct .option-letter {
+            background: #48bb78;
+        }
+
+        .quiz-option.incorrect .option-letter {
+            background: #f56565;
+        }
+
+        .quiz-feedback {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: bold;
+            display: none;
+        }
+
+        .quiz-feedback.correct {
+            background: #c6f6d5;
+            color: #22543d;
+            border: 2px solid #48bb78;
+            display: block;
+        }
+
+        .quiz-feedback.incorrect {
+            background: #fed7d7;
+            color: #742a2a;
+            border: 2px solid #f56565;
+            display: block;
+        }
+
+        .quiz-navigation {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .quiz-result {
+            text-align: center;
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            margin: 20px 0;
+        }
+
+        .result-box {
+            background: rgba(255,255,255,0.1);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+
+        .result-box p {
+            font-size: 1.4em;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation">
+        <div class="slide-counter">
+            <span id="current-slide">1</span> / <span id="total-slides">16</span>
+        </div>
+
+        <!-- Slide 1: Título -->
+        <div class="slide active">
+            <div class="content center-text">
+                <h1>🌐 Camada de Internet</h1>
+                <h2 style="border: none; color: #11998e;">Protocolo IP e Endereçamento</h2>
+                <div class="highlight-box large-text">
+                    <strong>Aula Extra</strong><br>
+                    A camada responsável pela entrega de datagramas<br>
+                    Roteamento e endereçamento na Internet
+                </div>
+                
+                <div class="example-box" style="margin-top: 40px;">
+                    <h3>👨‍🏫 Autor da Apresentação</h3>
+                    <p style="font-size: 1.3em; margin: 10px 0;">
+                        <strong>César Azevedo</strong><br>
+                        📧 cesar.augusto@ifrn.edu.br
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 2: Tópicos da Aula -->
+        <div class="slide">
+            <div class="content">
+                <h2>📋 Tópicos da Aula</h2>
+                
+                <div class="two-column">
+                    <div>
+                        <h3>🎯 Características</h3>
+                        <div class="bullet-point">Responsabilidade da camada</div>
+                        <div class="bullet-point">Serviço não confiável</div>
+                        <div class="bullet-point">Paradigma de melhor esforço</div>
+                        <div class="bullet-point">Serviço sem conexão</div>
+                        
+                        <h3>🔧 Protocolos</h3>
+                        <div class="bullet-point">IP (Internet Protocol)</div>
+                        <div class="bullet-point">ICMP, IGMP, ARP</div>
+                        <div class="bullet-point">Formato do datagrama IP</div>
+                    </div>
+                    <div>
+                        <h3>📍 Endereçamento</h3>
+                        <div class="bullet-point">Classes de endereços IP</div>
+                        <div class="bullet-point">IPs públicos vs privados</div>
+                        <div class="bullet-point">Sub-redes e máscaras</div>
+                        
+                        <h3>📦 Funcionalidades</h3>
+                        <div class="bullet-point">Fragmentação e remontagem</div>
+                        <div class="bullet-point">Roteamento passo-a-passo</div>
+                        <div class="bullet-point">TTL e controle de vida</div>
+                    </div>
+                </div>
+
+                <div class="highlight-box center-text">
+                    <h3>🎯 Objetivo Final</h3>
+                    <p>Compreender como a camada de internet move dados<br>
+                    entre redes diferentes através do protocolo IP</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: Características Gerais -->
+        <div class="slide">
+            <div class="content">
+                <h2>⚙️ Características da Camada de Internet</h2>
+                
+                <div class="bullet-point">Responsável pela entrega de datagramas entre hosts distintos</div>
+                <div class="bullet-point">Atua nos sistemas finais e nos roteadores</div>
+                <div class="bullet-point">PDU (Protocol Data Unit): Pacote ou Datagrama</div>
+
+                <div class="highlight-box">
+                    <h3>🎯 Função Principal:</h3>
+                    <div class="bullet-point">Repassar segmentos da origem para o destino</div>
+                    <div class="bullet-point">Encapsula segmentos em datagramas (remetente)</div>
+                    <div class="bullet-point">Extrai segmentos de datagramas (receptor)</div>
+                </div>
+
+                <div class="example-box">
+                    <h3>🔄 Processo de Encapsulamento:</h3>
+                    <div class="diagram">
+                        Camada de Transporte (Segmento)<br>
+                        ⬇️ Encapsulamento<br>
+                        Camada de Internet (Datagrama/Pacote)<br>
+                        ⬇️ Encapsulamento<br>
+                        Camada de Acesso à Rede (Quadro)
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Serviço Não Confiável -->
+        <div class="slide">
+            <div class="content">
+                <h2>⚠️ Serviço Não Confiável</h2>
+                
+                <div class="bullet-point">Não garante que datagramas sejam entregues com sucesso</div>
+                <div class="bullet-point">Não garante que cheguem na ordem correta</div>
+                <div class="bullet-point">Paradigma de "melhor esforço"</div>
+
+                <div class="example-box">
+                    <h3>🚀 Melhor Esforço (Best Effort):</h3>
+                    <div class="bullet-point">Tenta realizar a entrega com o melhor aproveitamento possível</div>
+                    <div class="bullet-point">Pacotes só são descartados em condições especiais:</div>
+                    <div style="margin-left: 40px;">
+                        <div class="bullet-point">Escassez de recursos (buffer cheio)</div>
+                        <div class="bullet-point">Erros de transmissão</div>
+                        <div class="bullet-point">TTL expirado</div>
+                    </div>
+                </div>
+
+                <div class="highlight-box">
+                    <h3>🛡️ Onde fica a confiabilidade?</h3>
+                    <p>A confiabilidade deve ser fornecida por protocolos de <strong>camadas superiores</strong>, como o TCP na camada de transporte.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: Serviço Sem Conexão -->
+        <div class="slide">
+            <div class="content">
+                <h2>📡 Serviço Sem Conexão</h2>
+                
+                <div class="bullet-point">Não existe comunicação prévia entre participantes</div>
+                <div class="bullet-point">Origem monta o datagrama e adiciona endereçamento</div>
+                <div class="bullet-point">Cada datagrama é tratado individualmente</div>
+                <div class="bullet-point">Datagramas podem seguir caminhos diferentes</div>
+
+                <div class="example-box">
+                    <h3>🗺️ Roteamento Passo-a-Passo (Hop-by-Hop):</h3>
+                    <div class="process-step">1. Se origem e destino estão na mesma rede: envio direto</div>
+                    <div class="process-step">2. Se estão em redes diferentes: envio para próximo roteador</div>
+                    <div class="process-step">3. Processo se repete até alcançar a rede de destino</div>
+                    <div class="process-step">4. Cada roteador consulta sua tabela de roteamento</div>
+                </div>
+
+                <div class="highlight-box center-text">
+                    <h3>🔄 Resultado</h3>
+                    <p>Datagramas podem chegar fora de ordem<br>
+                    Cabe à camada superior reorganizar se necessário</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: Protocolos da Camada -->
+        <div class="slide">
+            <div class="content">
+                <h2>🔧 Protocolos da Camada de Internet</h2>
+                
+                <div class="two-column">
+                    <div>
+                        <h3>📌 IP (Internet Protocol)</h3>
+                        <div class="bullet-point">Protocolo principal da camada</div>
+                        <div class="bullet-point">Entrega de datagramas não confiável</div>
+                        <div class="bullet-point">Define formato do datagrama</div>
+                        <div class="bullet-point">Executa função de roteamento</div>
+                        
+                        <h3>📋 ICMP</h3>
+                        <div class="bullet-point">Internet Control Message Protocol</div>
+                        <div class="bullet-point">Mensagens de erro e controle</div>
+                        <div class="bullet-point">Sinaliza situações anormais</div>
+                        <div class="bullet-point">Usado pelo comando PING</div>
+                    </div>
+                    <div>
+                        <h3>👥 IGMP</h3>
+                        <div class="bullet-point">Internet Group Management Protocol</div>
+                        <div class="bullet-point">Entrega multicast</div>
+                        <div class="bullet-point">Múltiplos destinatários</div>
+                        
+                        <h3>🔍 ARP</h3>
+                        <div class="bullet-point">Address Resolution Protocol</div>
+                        <div class="bullet-point">Resolve endereços IP em MAC</div>
+                        <div class="bullet-point">Necessário para envio na rede local</div>
+                    </div>
+                </div>
+
+                <div class="highlight-box center-text">
+                    <h3>🎯 Todos trabalham juntos</h3>
+                    <p>Para prover o serviço completo de entrega de datagramas e roteamento</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7: Formato do Datagrama IP -->
+        <div class="slide">
+            <div class="content">
+                <h2>📦 Formato do Datagrama IP</h2>
+                
+                <div class="diagram" style="font-size: 0.9em;">
+                    |Ver|HLEN|Tipo Serviço|  Comprimento Total  |<br>
+                    |  Identificador  |Flags|Deslocamento Frag.|<br>
+                    |Tempo Vida|Protocolo| Cabeçalho Checksum|<br>
+                    |         Endereço IP de Origem         |<br>
+                    |         Endereço IP de Destino        |<br>
+                    |      Opções IP (se houver)  |Padding|<br>
+                    |              Dados                    |
+                </div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>🔑 Campos Principais:</h3>
+                        <div class="bullet-point"><strong>Version:</strong> Versão do IP (4 ou 6)</div>
+                        <div class="bullet-point"><strong>HLEN:</strong> Tamanho do cabeçalho</div>
+                        <div class="bullet-point"><strong>Total Length:</strong> Tamanho total</div>
+                        <div class="bullet-point"><strong>TTL:</strong> Tempo de vida</div>
+                    </div>
+                    <div>
+                        <h3>📍 Endereçamento:</h3>
+                        <div class="bullet-point"><strong>Source IP:</strong> IP de origem</div>
+                        <div class="bullet-point"><strong>Destination IP:</strong> IP de destino</div>
+                        <div class="bullet-point"><strong>Protocol:</strong> Protocolo encapsulado</div>
+                        <div class="bullet-point">1=ICMP, 6=TCP, 17=UDP</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: TTL e Fragmentação -->
+        <div class="slide">
+            <div class="content">
+                <h2>⏱️ TTL e Fragmentação</h2>
+                
+                <div class="two-column">
+                    <div>
+                        <h3>⏰ Time To Live (TTL)</h3>
+                        <div class="bullet-point">Número máximo de roteadores</div>
+                        <div class="bullet-point">Valor inicial definido pela origem</div>
+                        <div class="bullet-point">Cada roteador decrementa em 1</div>
+                        <div class="bullet-point">TTL = 0: datagrama descartado</div>
+                        
+                        <div class="example-box">
+                            <h3>🎯 Finalidade do TTL:</h3>
+                            <p>Evitar que datagramas circulem infinitamente na rede devido a loops de roteamento</p>
+                        </div>
+                    </div>
+                    <div>
+                        <h3>✂️ Fragmentação</h3>
+                        <div class="bullet-point">MTU (Maximum Transmission Unit)</div>
+                        <div class="bullet-point">Cada rede tem limite de tamanho</div>
+                        <div class="bullet-point">Datagramas grandes são fragmentados</div>
+                        <div class="bullet-point">Remontagem só no destino final</div>
+                        
+                        <h3>🔧 Campos de Controle:</h3>
+                        <div class="bullet-point"><strong>Identification:</strong> ID do datagrama</div>
+                        <div class="bullet-point"><strong>Flags:</strong> Controle de fragmentação</div>
+                        <div class="bullet-point"><strong>Fragment Offset:</strong> Posição do fragmento</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 9: Classes de Endereços -->
+        <div class="slide">
+            <div class="content">
+                <h2>📍 Classes de Endereços IPv4</h2>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Classe</th>
+                            <th>Primeiro Octeto</th>
+                            <th>Bits de Rede</th>
+                            <th>Bits de Host</th>
+                            <th>Máscara Padrão</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="class-box class-a">A</span></td>
+                            <td>1-126</td>
+                            <td>8</td>
+                            <td>24</td>
+                            <td>255.0.0.0 (/8)</td>
+                        </tr>
+                        <tr>
+                            <td><span class="class-box class-b">B</span></td>
+                            <td>128-191</td>
+                            <td>16</td>
+                            <td>16</td>
+                            <td>255.255.0.0 (/16)</td>
+                        </tr>
+                        <tr>
+                            <td><span class="class-box class-c">C</span></td>
+                            <td>192-223</td>
+                            <td>24</td>
+                            <td>8</td>
+                            <td>255.255.255.0 (/24)</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="two-column">
+                    <div>
+                        <h3>🌐 Exemplos:</h3>
+                        <div class="bullet-point">Classe A: <span class="ip-address">10.0.0.1</span></div>
+                        <div class="bullet-point">Classe B: <span class="ip-address">172.16.0.1</span></div>
+                        <div class="bullet-point">Classe C: <span class="ip-address">192.168.1.1</span></div>
+                    </div>
+                    <div>
+                        <h3>📊 Capacidade:</h3>
+                        <div class="bullet-point">Classe A: 16,7 milhões de hosts</div>
+                        <div class="bullet-point">Classe B: 65.534 hosts</div>
+                        <div class="bullet-point">Classe C: 254 hosts</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 10: IPs Públicos vs Privados -->
+        <div class="slide">
+            <div class="content">
+                <h2>🌍 IPs Públicos vs IPs Privados</h2>
+                
+                <div class="two-column">
+                    <div>
+                        <h3>🌐 IPs Públicos</h3>
+                        <div class="bullet-point">Válidos na Internet global</div>
+                        <div class="bullet-point">Atribuídos por entidades centralizadoras</div>
+                        <div class="bullet-point">IANA → RIRs → ISPs → Usuários</div>
+                        <div class="bullet-point">Únicos mundialmente</div>
+                        
+                        <div class="example-box">
+                            <h3>🏢 Exemplos de IPs Públicos:</h3>
+                            <div class="bullet-point"><span class="ip-address">8.8.8.8</span> (Google DNS)</div>
+                            <div class="bullet-point"><span class="ip-address">1.1.1.1</span> (Cloudflare DNS)</div>
+                        </div>
+                    </div>
+                    <div>
+                        <h3>🏠 IPs Privados</h3>
+                        <div class="bullet-point">Não roteáveis na Internet</div>
+                        <div class="bullet-point">Uso em redes locais</div>
+                        <div class="bullet-point">Podem ser reutilizados</div>
+                        <div class="bullet-point">Definidos na RFC 1918</div>
+                        
+                        <div class="highlight-box">
+                            <h3>📋 Faixas Privadas:</h3>
+                            <div class="bullet-point"><span class="ip-address">10.0.0.0/8</span> (Classe A)</div>
+                            <div class="bullet-point"><span class="ip-address">172.16.0.0/12</span> (Classe B)</div>
+                            <div class="bullet-point"><span class="ip-address">192.168.0.0/16</span> (Classe C)</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="example-box center-text">
+                    <h3>🔄 NAT (Network Address Translation)</h3>
+                    <p>Permite que redes privadas acessem a Internet através de um IP público</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 11: Sub-redes -->
+        <div class="slide">
+            <div class="content">
+                <h2>🕸️ Sub-redes (Subnetting)</h2>
+                
+                <div class="bullet-point">Divisão de uma rede grande em redes menores</div>
+                <div class="bullet-point">Melhor aproveitamento do espaço de endereços</div>
+                <div class="bullet-point">Maior eficiência e organização</div>
+
+                <div class="example-box">
+                    <h3>📊 Exemplo de Subnetting:</h3>
+                    <p><strong>Rede original:</strong> <span class="ip-address">192.168.1.0/24</span> (256 endereços)</p>
+                    <br>
+                    <p><strong>Dividindo em 4 sub-redes:</strong></p>
+                    <div class="bullet-point"><span class="ip-address">192.168.1.0/26</span> (64 endereços)</div>
+                    <div class="bullet-point"><span class="ip-address">192.168.1.64/26</span> (64 endereços)</div>
+                    <div class="bullet-point"><span class="ip-address">192.168.1.128/26</span> (64 endereços)</div>
+                    <div class="bullet-point"><span class="ip-address">192.168.1.192/26</span> (64 endereços)</div>
+                </div>
+
+                <div class="highlight-box">
+                    <h3>🎯 Máscara de Sub-rede:</h3>
+                    <p>Define quantos bits são para rede e quantos para hosts<br>
+                    <span class="ip-address">255.255.255.192</span> = <span class="ip-address">/26</span></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 12: Processamento de Datagramas -->
+        <div class="slide">
+            <div class="content">
+                <h2>⚙️ Processamento de Datagramas</h2>
+                
+                <div class="two-column">
+                    <div>
+                        <h3>📤 No Remetente:</h3>
+                        <div class="process-step">1. Recebe segmento da camada superior</div>
+                        <div class="process-step">2. Adiciona cabeçalho IP</div>
+                        <div class="process-step">3. Define endereços origem/destino</div>
+                        <div class="process-step">4. Calcula rota (consulta tabela)</div>
+                        <div class="process-step">5. Fragmenta se necessário</div>
+                        <div class="process-step">6. Envia para camada inferior</div>
+                    </div>
+                    <div>
+                        <h3>📥 No Receptor:</h3>
+                        <div class="process-step">1. Recebe datagrama da camada inferior</div>
+                        <div class="process-step">2. Verifica se é destinatário</div>
+                        <div class="process-step">3. Remonta fragmentos se necessário</div>
+                        <div class="process-step">4. Remove cabeçalho IP</div>
+                        <div class="process-step">5. Identifica protocolo superior</div>
+                        <div class="process-step">6. Entrega para camada apropriada</div>
+                    </div>
+                </div>
+
+                <div class="highlight-box center-text">
+                    <h3>🔀 No Roteador Intermediário:</h3>
+                    <p>Consulta tabela de roteamento, decrementa TTL,<br>
+                    e encaminha para o próximo salto (next-hop)</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 13: Quiz -->
+        <div class="slide">
+            <div class="content">
+                <h2>🧠 Quiz - Teste seus conhecimentos!</h2>
+                
+                <div class="quiz-container">
+                    <!-- Questão 1 -->
+                    <div class="quiz-question" id="question1">
+                        <h3>📝 Questão 1</h3>
+                        <p><strong>Qual é a principal característica do serviço IP?</strong></p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(1, 'a', false)">
+                                <span class="option-letter">A)</span> Confiável e com conexão
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(1, 'b', true)">
+                                <span class="option-letter">B)</span> Não confiável e sem conexão
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(1, 'c', false)">
+                                <span class="option-letter">C)</span> Confiável e sem conexão
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(1, 'd', false)">
+                                <span class="option-letter">D)</span> Não confiável e com conexão
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback1"></div>
+                    </div>
+
+                    <!-- Questão 2 -->
+                    <div class="quiz-question" id="question2" style="display: none;">
+                        <h3>📝 Questão 2</h3>
+                        <p><strong>A que classe pertence o IP 172.16.10.1?</strong></p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(2, 'a', false)">
+                                <span class="option-letter">A)</span> Classe A
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(2, 'b', true)">
+                                <span class="option-letter">B)</span> Classe B
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(2, 'c', false)">
+                                <span class="option-letter">C)</span> Classe C
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(2, 'd', false)">
+                                <span class="option-letter">D)</span> Classe D
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback2"></div>
+                    </div>
+
+                    <!-- Questão 3 -->
+                    <div class="quiz-question" id="question3" style="display: none;">
+                        <h3>📝 Questão 3</h3>
+                        <p><strong>O que acontece quando o TTL de um datagrama chega a 0?</strong></p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(3, 'a', false)">
+                                <span class="option-letter">A)</span> É entregue normalmente
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(3, 'b', true)">
+                                <span class="option-letter">B)</span> É descartado pelo roteador
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(3, 'c', false)">
+                                <span class="option-letter">C)</span> É retornado à origem
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(3, 'd', false)">
+                                <span class="option-letter">D)</span> É armazenado no roteador
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback3"></div>
+                    </div>
+
+                    <!-- Questão 4 -->
+                    <div class="quiz-question" id="question4" style="display: none;">
+                        <h3>📝 Questão 4</h3>
+                        <p><strong>Qual faixa de IPs é reservada para uso privado na Classe C?</strong></p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(4, 'a', false)">
+                                <span class="option-letter">A)</span> 10.0.0.0/8
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(4, 'b', false)">
+                                <span class="option-letter">B)</span> 172.16.0.0/12
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(4, 'c', true)">
+                                <span class="option-letter">C)</span> 192.168.0.0/16
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(4, 'd', false)">
+                                <span class="option-letter">D)</span> 127.0.0.0/8
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback4"></div>
+                    </div>
+
+                    <!-- Resultado Final -->
+                    <div class="quiz-result" id="quizResult" style="display: none;">
+                        <h3>🎉 Parabéns! Quiz Concluído!</h3>
+                        <div class="result-box">
+                            <p><strong>Sua pontuação: <span id="finalScore">0</span>/4</strong></p>
+                            <p id="resultMessage"></p>
+                        </div>
+                        <button class="nav-btn" onclick="restartQuiz()">🔄 Refazer Quiz</button>
+                    </div>
+                </div>
+
+                <div class="quiz-navigation">
+                    <button class="nav-btn" id="nextQuizBtn" onclick="nextQuestion()" style="display: none;">
+                        Próxima Questão ➡️
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 14: Resumo -->
+        <div class="slide">
+            <div class="content">
+                <h2>🎯 Resumo Final</h2>
+                
+                <div class="highlight-box large-text center-text">
+                    <strong>A Camada de Internet é o coração do TCP/IP</strong>
+                </div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>✅ Características Principais:</h3>
+                        <div class="bullet-point">Serviço não confiável e sem conexão</div>
+                        <div class="bullet-point">Paradigma de melhor esforço</div>
+                        <div class="bullet-point">Roteamento passo-a-passo</div>
+                        <div class="bullet-point">Protocolo IP como base</div>
+                        <div class="bullet-point">Fragmentação quando necessário</div>
+                    </div>
+                    <div>
+                        <h3>🎯 Funcionalidades Essenciais:</h3>
+                        <div class="bullet-point">Endereçamento hierárquico</div>
+                        <div class="bullet-point">Classes A, B e C</div>
+                        <div class="bullet-point">IPs públicos e privados</div>
+                        <div class="bullet-point">Sub-redes para organização</div>
+                        <div class="bullet-point">TTL para controle de vida</div>
+                    </div>
+                </div>
+
+                <div class="example-box center-text">
+                    <h3>🌐 Sem a Camada de Internet, não haveria roteamento!</h3>
+                    <p>Ela conecta redes diferentes e torna possível<br>
+                    a comunicação global na Internet</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 15: Referências -->
+        <div class="slide">
+            <div class="content">
+                <h2>📚 Referências Bibliográficas</h2>
+                
+                <div class="highlight-box">
+                    <h3>📖 Fontes Principais:</h3>
+                    <div class="bullet-point"><strong>Capítulo 17 - TCP/IP: Camada de Rede</strong></div>
+                    <div class="bullet-point">Material didático oficial da disciplina</div>
+                    <div class="bullet-point">Slides de aula - Prof. César Azevedo</div>
+                </div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>📋 RFCs Principais:</h3>
+                        <div class="bullet-point">RFC 791 - Internet Protocol</div>
+                        <div class="bullet-point">RFC 792 - ICMP</div>
+                        <div class="bullet-point">RFC 1918 - IPs Privados</div>
+                        <div class="bullet-point">RFC 950 - Subnetting</div>
+                    </div>
+                    <div>
+                        <h3>📚 Bibliografia:</h3>
+                        <div class="bullet-point">TANENBAUM - Redes de Computadores</div>
+                        <div class="bullet-point">KUROSE e ROSS - Redes de Computadores</div>
+                        <div class="bullet-point">Material IFRN - Arquitetura de Redes</div>
+                    </div>
+                </div>
+
+                <div class="example-box center-text">
+                    <h3>🤖 Metodologia de Criação</h3>
+                    <p>Apresentação desenvolvida com assistência de IA Claude Sonnet 4<br>
+                    Baseada integralmente no material didático fornecido<br>
+                    Adaptação pedagógica com foco em simplicidade e clareza</p>
+                </div>
+
+                <div class="highlight-box center-text">
+                    <h3>🎯 Objetivo Educacional</h3>
+                    <p>Facilitar o aprendizado da Camada de Internet através de<br>
+                    linguagem simples, exemplos práticos e visualizações claras</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="navigation">
+            <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">⬅️ Anterior</button>
+            <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">Próximo ➡️</button>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        document.getElementById('total-slides').textContent = totalSlides;
+
+        // Quiz variables
+        let currentQuestion = 1;
+        let score = 0;
+        let quizAnswered = [false, false, false, false];
+
+        function showSlide(index) {
+            slides.forEach((slide, i) => {
+                slide.classList.toggle('active', i === index);
+            });
+            
+            document.getElementById('current-slide').textContent = index + 1;
+            document.getElementById('prevBtn').disabled = index === 0;
+            document.getElementById('nextBtn').disabled = index === totalSlides - 1;
+        }
+
+        function changeSlide(direction) {
+            const newSlide = currentSlide + direction;
+            if (newSlide >= 0 && newSlide < totalSlides) {
+                currentSlide = newSlide;
+                showSlide(currentSlide);
+            }
+        }
+
+        // Quiz Functions
+        function selectOption(questionNum, option, isCorrect) {
+            if (quizAnswered[questionNum - 1]) return; // Já respondida
+            
+            const options = document.querySelectorAll(`#question${questionNum} .quiz-option`);
+            const feedback = document.getElementById(`feedback${questionNum}`);
+            
+            // Marcar todas as opções
+            options.forEach(opt => {
+                opt.style.pointerEvents = 'none';
+                if (opt.onclick.toString().includes('true')) {
+                    opt.classList.add('correct');
+                } else if (opt === event.currentTarget) {
+                    opt.classList.add(isCorrect ? 'correct' : 'incorrect');
+                }
+            });
+            
+            // Mostrar feedback
+            if (isCorrect) {
+                feedback.innerHTML = '✅ Correto! Muito bem!';
+                feedback.className = 'quiz-feedback correct';
+                score++;
+            } else {
+                feedback.innerHTML = '❌ Incorreto. A resposta correta está destacada em verde.';
+                feedback.className = 'quiz-feedback incorrect';
+            }
+            
+            quizAnswered[questionNum - 1] = true;
+            
+            // Mostrar botão para próxima questão
+            if (questionNum < 4) {
+                document.getElementById('nextQuizBtn').style.display = 'inline-block';
+            } else {
+                // Última questão - mostrar resultado
+                setTimeout(() => {
+                    showQuizResult();
+                }, 2000);
+            }
+        }
+
+        function nextQuestion() {
+            document.getElementById(`question${currentQuestion}`).style.display = 'none';
+            currentQuestion++;
+            document.getElementById(`question${currentQuestion}`).style.display = 'block';
+            document.getElementById('nextQuizBtn').style.display = 'none';
+        }
+
+        function showQuizResult() {
+            // Esconder última questão
+            document.getElementById('question4').style.display = 'none';
+            
+            // Mostrar resultado
+            document.getElementById('quizResult').style.display = 'block';
+            document.getElementById('finalScore').textContent = score;
+            
+            const resultMessage = document.getElementById('resultMessage');
+            if (score === 4) {
+                resultMessage.innerHTML = '🏆 Excelente! Você domina a Camada de Internet!';
+            } else if (score === 3) {
+                resultMessage.innerHTML = '👏 Muito bom! Quase perfeito!';
+            } else if (score === 2) {
+                resultMessage.innerHTML = '👍 Bom trabalho! Continue estudando!';
+            } else if (score === 1) {
+                resultMessage.innerHTML = '📚 Estude um pouco mais sobre IP!';
+            } else {
+                resultMessage.innerHTML = '📖 Recomendo revisar o conteúdo!';
+            }
+        }
+
+        function restartQuiz() {
+            // Reset variables
+            currentQuestion = 1;
+            score = 0;
+            quizAnswered = [false, false, false, false];
+            
+            // Reset interface
+            for (let i = 1; i <= 4; i++) {
+                const question = document.getElementById(`question${i}`);
+                const options = question.querySelectorAll('.quiz-option');
+                const feedback = document.getElementById(`feedback${i}`);
+                
+                // Reset options
+                options.forEach(opt => {
+                    opt.className = 'quiz-option';
+                    opt.style.pointerEvents = 'auto';
+                });
+                
+                // Hide feedback
+                feedback.style.display = 'none';
+                
+                // Hide all questions except first
+                question.style.display = i === 1 ? 'block' : 'none';
+            }
+            
+            // Hide result and buttons
+            document.getElementById('quizResult').style.display = 'none';
+            document.getElementById('nextQuizBtn').style.display = 'none';
+        }
+
+        // Navegação por teclado
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') changeSlide(-1);
+            if (e.key === 'ArrowRight') changeSlide(1);
+            if (e.key === 'Home') {
+                currentSlide = 0;
+                showSlide(currentSlide);
+            }
+            if (e.key === 'End') {
+                currentSlide = totalSlides - 1;
+                showSlide(currentSlide);
+            }
+        });
+
+        // Inicializar
+        showSlide(0);
+        
+        // Inicializar quiz no slide 13
+        document.getElementById('question1').style.display = 'block';
+    </script>
+</body>
+</html>

@@ -1,0 +1,1572 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Protocolos TCP e UDP - Camada de Transporte</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        .presentation {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .slide {
+            min-height: 100vh;
+            padding: 60px 40px;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            background: white;
+            margin: 20px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        .slide.active {
+            display: flex;
+        }
+
+        .slide h1 {
+            font-size: 3.5em;
+            color: #4a5568;
+            text-align: center;
+            margin-bottom: 40px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .slide h2 {
+            font-size: 2.8em;
+            color: #2d3748;
+            margin-bottom: 30px;
+            border-bottom: 4px solid #11998e;
+            padding-bottom: 15px;
+        }
+
+        .slide h3 {
+            font-size: 2.2em;
+            color: #4a5568;
+            margin: 25px 0 15px 0;
+        }
+
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: start;
+        }
+
+        .three-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 30px;
+            align-items: start;
+        }
+
+        .bullet-point {
+            display: flex;
+            align-items: flex-start;
+            margin: 15px 0;
+            font-size: 1.3em;
+            line-height: 1.5;
+        }
+
+        .bullet-point::before {
+            content: "🔸";
+            margin-right: 15px;
+            font-size: 1.2em;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #11998e;
+        }
+
+        .example-box {
+            background: linear-gradient(135deg, #e1f5fe 0%, #b3e5fc 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #0288d1;
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 1000;
+        }
+
+        .nav-btn {
+            padding: 15px 25px;
+            background: #11998e;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(17, 153, 142, 0.3);
+        }
+
+        .nav-btn:hover {
+            background: #0d7377;
+            transform: translateY(-2px);
+            box-shadow: 0 7px 20px rgba(17, 153, 142, 0.4);
+        }
+
+        .nav-btn:disabled {
+            background: #a0a0a0;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .slide-counter {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: rgba(255,255,255,0.9);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            color: #4a5568;
+            z-index: 1000;
+        }
+
+        .center-text {
+            text-align: center;
+        }
+
+        .large-text {
+            font-size: 1.4em;
+            line-height: 1.6;
+        }
+
+        .diagram {
+            background: #f7fafc;
+            border: 2px dashed #11998e;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+            font-family: monospace;
+            font-size: 1.2em;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 1.1em;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        th {
+            background: #11998e;
+            color: white;
+            font-weight: bold;
+        }
+
+        .process-step {
+            background: #e8f5e8;
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #4caf50;
+        }
+
+        .code-box {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: monospace;
+            font-size: 1em;
+            margin: 20px 0;
+            overflow-x: auto;
+        }
+
+        /* Quiz Styles */
+        .quiz-container {
+            max-width: 100%;
+            margin: 20px 0;
+        }
+
+        .quiz-question {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border: 2px solid #e2e8f0;
+        }
+
+        .quiz-question h3 {
+            color: #11998e;
+            margin-bottom: 20px;
+        }
+
+        .quiz-question p {
+            font-size: 1.3em;
+            margin-bottom: 25px;
+            font-weight: bold;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .quiz-option {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.1em;
+        }
+
+        .quiz-option:hover {
+            border-color: #11998e;
+            background: #e8f5e8;
+            transform: translateX(5px);
+        }
+
+        .quiz-option.selected {
+            border-color: #11998e;
+            background: #11998e;
+            color: white;
+        }
+
+        .quiz-option.correct {
+            border-color: #48bb78;
+            background: #48bb78;
+            color: white;
+        }
+
+        .quiz-option.incorrect {
+            border-color: #f56565;
+            background: #f56565;
+            color: white;
+        }
+
+        .option-letter {
+            background: #11998e;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .quiz-option.correct .option-letter {
+            background: #48bb78;
+        }
+
+        .quiz-option.incorrect .option-letter {
+            background: #f56565;
+        }
+
+        .quiz-feedback {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: bold;
+            display: none;
+        }
+
+        .quiz-feedback.correct {
+            background: #c6f6d5;
+            color: #22543d;
+            border: 2px solid #48bb78;
+            display: block;
+        }
+
+        .quiz-feedback.incorrect {
+            background: #fed7d7;
+            color: #742a2a;
+            border: 2px solid #f56565;
+            display: block;
+        }
+
+        .quiz-navigation {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .quiz-result {
+            text-align: center;
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            margin: 20px 0;
+        }
+
+        .result-box {
+            background: rgba(255,255,255,0.1);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+
+        .result-box p {
+            font-size: 1.4em;
+            margin: 10px 0;
+        }
+
+        .protocol-code {
+            display: inline-block;
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            margin: 2px;
+        }
+
+        .vs-box {
+            background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #ffc107;
+        }
+
+        .architecture-diagram {
+            background: #f0f9ff;
+            border: 2px solid #11998e;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .flow-step {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            border-left: 4px solid #2196f3;
+        }
+
+        .warning-box {
+            background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #f44336;
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation">
+        <div class="slide-counter">
+            <span id="current-slide">1</span> / <span id="total-slides">18</span>
+        </div>
+
+        <!-- Slide 1: Título -->
+        <div class="slide active">
+            <div class="content center-text">
+                <h1>🌐 Protocolos TCP e UDP</h1>
+                <h2 style="border: none; color: #11998e;">Camada de Transporte - Comunicação entre Processos</h2>
+                <div class="highlight-box large-text">
+                    <strong>Aula 07</strong><br>
+                    User Datagram Protocol (UDP) e Transmission Control Protocol (TCP)<br>
+                    Da simplicidade à confiabilidade
+                </div>
+                
+                <div class="example-box" style="margin-top: 40px;">
+                    <h3>👨‍🏫 Autor da Apresentação</h3>
+                    <p style="font-size: 1.3em; margin: 10px 0;">
+                        <strong>César Azevedo</strong><br>
+                        📧 cesar.augusto@ifrn.edu.br
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 2: Tópicos da Aula -->
+        <div class="slide">
+            <div class="content">
+                <h2>📋 Tópicos da Aula</h2>
+                
+                <div class="three-column">
+                    <div>
+                        <h3>🎯 Fundamentos</h3>
+                        <div class="bullet-point">Comunicação entre processos</div>
+                        <div class="bullet-point">Paradigma cliente/servidor</div>
+                        <div class="bullet-point">Endereçamento com portas</div>
+                        <div class="bullet-point">Multiplexação/Demultiplexação</div>
+                        <div class="bullet-point">Socket addresses</div>
+                    </div>
+                    <div>
+                        <h3>📦 UDP - Simples e Rápido</h3>
+                        <div class="bullet-point">Características do UDP</div>
+                        <div class="bullet-point">Formato do datagrama</div>
+                        <div class="bullet-point">Checksum opcional</div>
+                        <div class="bullet-point">Portas conhecidas</div>
+                        <div class="bullet-point">Casos de uso</div>
+                    </div>
+                    <div>
+                        <h3>🔒 TCP - Confiável e Robusto</h3>
+                        <div class="bullet-point">Características do TCP</div>
+                        <div class="bullet-point">Formato do segmento</div>
+                        <div class="bullet-point">Estabelecimento de conexão</div>
+                        <div class="bullet-point">Controle de fluxo</div>
+                        <div class="bullet-point">Controle de erros</div>
+                    </div>
+                </div>
+
+                <div class="highlight-box center-text">
+                    <h3>🎯 Objetivo Final</h3>
+                    <p>Compreender as diferenças entre UDP e TCP<br>
+                    e quando usar cada protocolo na camada de transporte</p>
+                </div>
+
+                <div class="example-box center-text">
+                    <h3>🧠 + Quiz Interativo</h3>
+                    <p>Teste seus conhecimentos com 4 questões sobre TCP e UDP!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: Comunicação entre Processos -->
+        <div class="slide">
+            <div class="content">
+                <h2>💬 Comunicação entre Processos</h2>
+                
+                <div class="bullet-point">Camada de transporte realiza comunicação <strong>processo a processo</strong></div>
+                <div class="bullet-point">Diferente da comunicação nó-a-nó (enlace) ou host-a-host (rede)</div>
+                <div class="bullet-point">Múltiplos processos podem executar simultaneamente</div>
+                <div class="bullet-point">Necessário mecanismo para identificar processo correto</div>
+
+                <div class="architecture-diagram">
+                    <h3>🏗️ Tipos de Comunicação</h3>
+                    <div style="display: flex; justify-content: space-around; margin: 20px 0;">
+                        <div style="background: #e3f2fd; padding: 20px; border-radius: 10px; text-align: center;">
+                            <strong>Nó a Nó</strong><br>
+                            Camada de Enlace<br>
+                            <small>Frame entre nós adjacentes</small>
+                        </div>
+                        <div style="background: #f3e5f5; padding: 20px; border-radius: 10px; text-align: center;">
+                            <strong>Host a Host</strong><br>
+                            Camada de Rede<br>
+                            <small>Datagrama entre hosts</small>
+                        </div>
+                        <div style="background: #e8f5e8; padding: 20px; border-radius: 10px; text-align: center;">
+                            <strong>Processo a Processo</strong><br>
+                            Camada de Transporte<br>
+                            <small>Dados entre aplicações</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="highlight-box">
+                    <h3>👥 Paradigma Cliente/Servidor</h3>
+                    <div class="bullet-point"><strong>Cliente:</strong> Processo local que solicita serviços</div>
+                    <div class="bullet-point"><strong>Servidor:</strong> Processo remoto que oferece serviços</div>
+                    <div class="bullet-point"><strong>Comunicação:</strong> Cliente inicia, servidor responde</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Endereçamento com Portas -->
+        <div class="slide">
+            <div class="content">
+                <h2>🏠 Endereçamento com Portas</h2>
+                
+                <div class="bullet-point">Número de porta identifica processo específico no host</div>
+                <div class="bullet-point">Inteiros de 16 bits: 0 a 65.535</div>
+                <div class="bullet-point">Combinado com endereço IP forma o <strong>socket address</strong></div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>🎲 Portas Efêmeras</h3>
+                        <div class="bullet-point">Escolhidas aleatoriamente</div>
+                        <div class="bullet-point">Usadas por clientes</div>
+                        <div class="bullet-point">Temporárias durante conexão</div>
+                        <div class="bullet-point">Faixa: 49.152 - 65.535</div>
+                    </div>
+                    <div>
+                        <h3>🏷️ Portas Conhecidas</h3>
+                        <div class="bullet-point">Números universais fixos</div>
+                        <div class="bullet-point">Usadas por servidores</div>
+                        <div class="bullet-point">Permanentes e padronizadas</div>
+                        <div class="bullet-point">Faixa: 0 - 1.023</div>
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>📋 Faixas de Portas IANA</h3>
+                    <table style="font-size: 0.9em;">
+                        <tr>
+                            <th>Faixa</th>
+                            <th>Tipo</th>
+                            <th>Uso</th>
+                        </tr>
+                        <tr>
+                            <td>0 - 1.023</td>
+                            <td>Conhecidas (Well-known)</td>
+                            <td>Serviços padrão (HTTP, FTP, SSH)</td>
+                        </tr>
+                        <tr>
+                            <td>1.024 - 49.151</td>
+                            <td>Registradas</td>
+                            <td>Aplicações específicas</td>
+                        </tr>
+                        <tr>
+                            <td>49.152 - 65.535</td>
+                            <td>Dinâmicas/Privadas</td>
+                            <td>Uso temporário por clientes</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="highlight-box center-text">
+                    <h3>🎯 Socket Address</h3>
+                    <p><strong>Endereço IP + Número de Porta = Socket</strong><br>
+                    Exemplo: 192.168.1.100:8080</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: Multiplexação e Demultiplexação -->
+        <div class="slide">
+            <div class="content">
+                <h2>🔀 Multiplexação e Demultiplexação</h2>
+                
+                <div class="bullet-point">Permite múltiplas aplicações compartilharem a rede</div>
+                <div class="bullet-point">Multiplexação: combinar dados de várias aplicações</div>
+                <div class="bullet-point">Demultiplexação: entregar dados à aplicação correta</div>
+
+                <div class="architecture-diagram">
+                    <h3>🔄 Processo de Multiplexação</h3>
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin: 20px 0;">
+                        <div style="background: #e3f2fd; padding: 15px; border-radius: 10px;">
+                            <strong>EMISSOR</strong><br>
+                            Processo A (porta 1080)<br>
+                            Processo B (porta 2080)<br>
+                            Processo C (porta 3080)<br>
+                            ⬇️<br>
+                            <strong>Multiplexação</strong>
+                        </div>
+                        <div style="background: #f3e5f5; padding: 15px; border-radius: 10px;">
+                            <strong>REDE</strong><br>
+                            Uma única<br>
+                            conexão IP<br>
+                            📡<br>
+                            <em>Internet</em>
+                        </div>
+                        <div style="background: #e8f5e8; padding: 15px; border-radius: 10px;">
+                            <strong>RECEPTOR</strong><br>
+                            <strong>Demultiplexação</strong><br>
+                            ⬇️<br>
+                            Processo X (porta 80)<br>
+                            Processo Y (porta 21)<br>
+                            Processo Z (porta 25)
+                        </div>
+                    </div>
+                </div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>📤 No Emissor</h3>
+                        <div class="bullet-point">Vários processos enviam dados</div>
+                        <div class="bullet-point">Um protocolo de transporte</div>
+                        <div class="bullet-point">Relação: vários-para-um</div>
+                        <div class="bullet-point">Adiciona cabeçalho com porta</div>
+                    </div>
+                    <div>
+                        <h3>📥 No Receptor</h3>
+                        <div class="bullet-point">Um protocolo de transporte</div>
+                        <div class="bullet-point">Vários processos recebem dados</div>
+                        <div class="bullet-point">Relação: um-para-vários</div>
+                        <div class="bullet-point">Usa porta para entregar corretamente</div>
+                    </div>
+                </div>
+
+                <div class="highlight-box center-text">
+                    <h3>🎯 Chave da Demultiplexação</h3>
+                    <p>Número da porta de destino determina qual processo recebe os dados</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: UDP - Introdução -->
+        <div class="slide">
+            <div class="content">
+                <h2>📦 UDP - User Datagram Protocol</h2>
+                
+                <div class="bullet-point">Protocolo <strong>sem conexão</strong> e <strong>não-confiável</strong></div>
+                <div class="bullet-point">Adiciona apenas comunicação processo-a-processo ao IP</div>
+                <div class="bullet-point">Verificação de erros muito limitada (checksum)</div>
+                <div class="bullet-point">Mínimo overhead - protocolo muito simples</div>
+
+                <div class="example-box">
+                    <h3>⚡ Vantagens do UDP</h3>
+                    <div class="bullet-point">Simplicidade extrema</div>
+                    <div class="bullet-point">Baixo overhead de rede</div>
+                    <div class="bullet-point">Velocidade de transmissão</div>
+                    <div class="bullet-point">Ideal para mensagens pequenas</div>
+                    <div class="bullet-point">Suporte nativo a multicast</div>
+                </div>
+
+                <div class="vs-box">
+                    <h3>🤔 Quando usar UDP?</h3>
+                    <div class="bullet-point">Aplicações que implementam próprio controle de erro</div>
+                    <div class="bullet-point">Comunicação solicitação-resposta simples</div>
+                    <div class="bullet-point">Aplicações em tempo real (streaming)</div>
+                    <div class="bullet-point">Protocolos de gerenciamento (SNMP)</div>
+                    <div class="bullet-point">Descoberta de serviços na rede</div>
+                </div>
+
+                <div class="warning-box">
+                    <h3>⚠️ Limitações do UDP</h3>
+                    <p>Sem garantia de entrega • Sem controle de ordem • Sem controle de fluxo<br>
+                    Aplicação deve implementar confiabilidade se necessário</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7: Formato UDP -->
+        <div class="slide">
+            <div class="content">
+                <h2>📋 Formato do Datagrama UDP</h2>
+                
+                <div class="bullet-point">Cabeçalho fixo de apenas 8 bytes</div>
+                <div class="bullet-point">4 campos simples e diretos</div>
+                <div class="bullet-point">Máxima simplicidade e eficiência</div>
+
+                <div class="diagram">
+                    <h3>🗂️ Estrutura do Datagrama UDP</h3>
+                    <table style="margin: 20px auto; border: 2px solid #11998e;">
+                        <tr style="background: #11998e; color: white;">
+                            <td style="padding: 15px; text-align: center; border: 1px solid white;">
+                                <strong>Porta de Origem (16 bits)</strong>
+                            </td>
+                            <td style="padding: 15px; text-align: center; border: 1px solid white;">
+                                <strong>Porta de Destino (16 bits)</strong>
+                            </td>
+                        </tr>
+                        <tr style="background: #c8e6c9;">
+                            <td style="padding: 15px; text-align: center; border: 1px solid #11998e;">
+                                <strong>Comprimento (16 bits)</strong>
+                            </td>
+                            <td style="padding: 15px; text-align: center; border: 1px solid #11998e;">
+                                <strong>Checksum (16 bits)</strong>
+                            </td>
+                        </tr>
+                        <tr style="background: #e8f5e8;">
+                            <td colspan="2" style="padding: 20px; text-align: center; border: 1px solid #11998e;">
+                                <strong>DADOS</strong><br>
+                                <small>Dados da aplicação</small>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>📝 Campos do Cabeçalho</h3>
+                        <div class="bullet-point"><strong>Porta origem:</strong> Processo remetente</div>
+                        <div class="bullet-point"><strong>Porta destino:</strong> Processo destinatário</div>
+                        <div class="bullet-point"><strong>Comprimento:</strong> Tamanho total (cabeçalho + dados)</div>
+                        <div class="bullet-point"><strong>Checksum:</strong> Verificação de erros (opcional)</div>
+                    </div>
+                    <div>
+                        <h3>🔢 Detalhes Técnicos</h3>
+                        <div class="bullet-point">Tamanho máximo: 65.535 bytes</div>
+                        <div class="bullet-point">Tamanho mínimo: 8 bytes (só cabeçalho)</div>
+                        <div class="bullet-point">Campo comprimento é redundante</div>
+                        <div class="bullet-point">Mantido por eficiência de processamento</div>
+                    </div>
+                </div>
+
+                <div class="highlight-box center-text">
+                    <h3>💡 Eficiência</h3>
+                    <p>8 bytes de overhead vs dezenas de bytes no TCP<br>
+                    Ideal para dados pequenos e frequentes</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: Portas UDP Conhecidas -->
+        <div class="slide">
+            <div class="content">
+                <h2>🏷️ Portas Conhecidas UDP</h2>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Porta</th>
+                            <th>Protocolo</th>
+                            <th>Descrição</th>
+                            <th>Uso</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="protocol-code">53</span></td>
+                            <td>DNS</td>
+                            <td>Domain Name System</td>
+                            <td>Resolução de nomes</td>
+                        </tr>
+                        <tr>
+                            <td><span class="protocol-code">67/68</span></td>
+                            <td>DHCP</td>
+                            <td>Dynamic Host Configuration</td>
+                            <td>Configuração automática IP</td>
+                        </tr>
+                        <tr>
+                            <td><span class="protocol-code">69</span></td>
+                            <td>TFTP</td>
+                            <td>Trivial File Transfer Protocol</td>
+                            <td>Transferência simples de arquivos</td>
+                        </tr>
+                        <tr>
+                            <td><span class="protocol-code">123</span></td>
+                            <td>NTP</td>
+                            <td>Network Time Protocol</td>
+                            <td>Sincronização de tempo</td>
+                        </tr>
+                        <tr>
+                            <td><span class="protocol-code">161/162</span></td>
+                            <td>SNMP</td>
+                            <td>Simple Network Management</td>
+                            <td>Gerenciamento de rede</td>
+                        </tr>
+                        <tr>
+                            <td><span class="protocol-code">514</span></td>
+                            <td>Syslog</td>
+                            <td>System Logging</td>
+                            <td>Logs do sistema</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="highlight-box">
+                    <h3>🎯 Características Comuns</h3>
+                    <div class="bullet-point">Protocolos simples de solicitação-resposta</div>
+                    <div class="bullet-point">Mensagens pequenas e rápidas</div>
+                    <div class="bullet-point">Tolerância à perda ocasional de pacotes</div>
+                    <div class="bullet-point">Baixa latência mais importante que confiabilidade</div>
+                </div>
+
+                <div class="example-box center-text">
+                    <h3>💡 Por que UDP para DNS?</h3>
+                    <p>Consultas DNS são rápidas (< 512 bytes tradicionalmente)<br>
+                    Cliente pode facilmente repetir consulta se não receber resposta</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 9: TCP - Introdução -->
+        <div class="slide">
+            <div class="content">
+                <h2>🔒 TCP - Transmission Control Protocol</h2>
+                
+                <div class="bullet-point">Protocolo <strong>orientado a conexão</strong> e <strong>confiável</strong></div>
+                <div class="bullet-point">Oferece serviço de <strong>fluxo de dados</strong> confiável</div>
+                <div class="bullet-point">Implementa controle de fluxo e controle de erros</div>
+                <div class="bullet-point">Comunicação full-duplex entre processos</div>
+
+                <div class="example-box">
+                    <h3>✅ Características do TCP</h3>
+                    <div class="bullet-point">Estabelecimento de conexão virtual</div>
+                    <div class="bullet-point">Entrega ordenada e sem duplicatas</div>
+                    <div class="bullet-point">Controle de fluxo (evita sobrecarga)</div>
+                    <div class="bullet-point">Detecção e correção de erros</div>
+                    <div class="bullet-point">Controle de congestionamento</div>
+                </div>
+
+                <div class="architecture-diagram">
+                    <h3>🌊 Serviço de Fluxo de Dados</h3>
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin: 20px 0;">
+                        <div style="background: #e3f2fd; padding: 15px; border-radius: 10px;">
+                            <strong>Processo</strong><br>
+                            <strong>Emissor</strong><br>
+                            ⬇️<br>
+                            Fluxo de bytes
+                        </div>
+                        <div style="background: #f3e5f5; padding: 15px; border-radius: 10px;">
+                            <strong>TCP</strong><br>
+                            Buffer de transmissão<br>
+                            Segmentação<br>
+                            📡<br>
+                            <em>Rede</em>
+                        </div>
+                        <div style="background: #e8f5e8; padding: 15px; border-radius: 10px;">
+                            <strong>TCP</strong><br>
+                            Buffer de recepção<br>
+                            Reordenação<br>
+                            ⬇️<br>
+                            <strong>Processo</strong><br>
+                            <strong>Receptor</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="highlight-box center-text">
+                    <h3>🎯 Transparência</h3>
+                    <p>Aplicação vê canal confiável de bytes<br>
+                    TCP esconde complexidade da rede (perda, reordenação, duplicação)</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 10: Formato TCP -->
+        <div class="slide">
+            <div class="content">
+                <h2>📋 Formato do Segmento TCP</h2>
+                
+                <div class="bullet-point">Cabeçalho de 20 a 60 bytes (opções variáveis)</div>
+                <div class="bullet-point">Muito mais complexo que UDP</div>
+                <div class="bullet-point">Cada campo tem função específica para confiabilidade</div>
+
+                <div class="diagram">
+                    <h3>🗂️ Cabeçalho TCP (campos principais)</h3>
+                    <table style="margin: 20px auto; border: 2px solid #11998e; font-size: 0.9em;">
+                        <tr style="background: #11998e; color: white;">
+                            <td style="padding: 10px; text-align: center; border: 1px solid white;">
+                                <strong>Porta Origem (16)</strong>
+                            </td>
+                            <td style="padding: 10px; text-align: center; border: 1px solid white;">
+                                <strong>Porta Destino (16)</strong>
+                            </td>
+                        </tr>
+                        <tr style="background: #c8e6c9;">
+                            <td colspan="2" style="padding: 10px; text-align: center; border: 1px solid #11998e;">
+                                <strong>Número de Sequência (32 bits)</strong>
+                            </td>
+                        </tr>
+                        <tr style="background: #c8e6c9;">
+                            <td colspan="2" style="padding: 10px; text-align: center; border: 1px solid #11998e;">
+                                <strong>Número de Confirmação (32 bits)</strong>
+                            </td>
+                        </tr>
+                        <tr style="background: #e8f5e8;">
+                            <td style="padding: 10px; text-align: center; border: 1px solid #11998e;">
+                                <strong>HLEN(4) | Res(6) | Flags(6)</strong>
+                            </td>
+                            <td style="padding: 10px; text-align: center; border: 1px solid #11998e;">
+                                <strong>Janela (16)</strong>
+                            </td>
+                        </tr>
+                        <tr style="background: #e8f5e8;">
+                            <td style="padding: 10px; text-align: center; border: 1px solid #11998e;">
+                                <strong>Checksum (16)</strong>
+                            </td>
+                            <td style="padding: 10px; text-align: center; border: 1px solid #11998e;">
+                                <strong>Urgent Pointer (16)</strong>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>🔢 Campos de Controle</h3>
+                        <div class="bullet-point"><strong>Seq:</strong> Número do primeiro byte</div>
+                        <div class="bullet-point"><strong>Ack:</strong> Próximo byte esperado</div>
+                        <div class="bullet-point"><strong>Window:</strong> Bytes que podem ser enviados</div>
+                        <div class="bullet-point"><strong>Checksum:</strong> Obrigatório (vs UDP)</div>
+                    </div>
+                    <div>
+                        <h3>🚩 Flags de Controle</h3>
+                        <div class="bullet-point"><strong>SYN:</strong> Sincronizar sequência</div>
+                        <div class="bullet-point"><strong>ACK:</strong> Confirmação válida</div>
+                        <div class="bullet-point"><strong>FIN:</strong> Finalizar conexão</div>
+                        <div class="bullet-point"><strong>RST:</strong> Resetar conexão</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 11: Estabelecimento de Conexão TCP -->
+        <div class="slide">
+            <div class="content">
+                <h2>🤝 Estabelecimento de Conexão TCP</h2>
+                
+                <div class="bullet-point">Three-way handshake (handshaking de três vias)</div>
+                <div class="bullet-point">Sincronização de números de sequência</div>
+                <div class="bullet-point">Negociação de parâmetros da conexão</div>
+
+                <div class="architecture-diagram">
+                    <h3>🔄 Three-Way Handshake</h3>
+                    <div style="text-align: left; margin: 20px 0;">
+                        <div class="flow-step">
+                            <strong>1. SYN →</strong><br>
+                            Cliente: "Quero conectar, meu seq inicial é X"<br>
+                            <code>SYN, seq=x</code>
+                        </div>
+                        <div class="flow-step">
+                            <strong>2. ← SYN+ACK</strong><br>
+                            Servidor: "Ok, meu seq inicial é Y, confirmando X+1"<br>
+                            <code>SYN+ACK, seq=y, ack=x+1</code>
+                        </div>
+                        <div class="flow-step">
+                            <strong>3. ACK →</strong><br>
+                            Cliente: "Confirmando Y+1, conexão estabelecida"<br>
+                            <code>ACK, seq=x+1, ack=y+1</code>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>✅ Após Estabelecimento</h3>
+                        <div class="bullet-point">Conexão virtual ativa</div>
+                        <div class="bullet-point">Ambos lados podem enviar dados</div>
+                        <div class="bullet-point">Números de sequência sincronizados</div>
+                        <div class="bullet-point">Buffers alocados</div>
+                    </div>
+                    <div>
+                        <h3>⚠️ Problemas de Segurança</h3>
+                        <div class="bullet-point">SYN Flooding Attack</div>
+                        <div class="bullet-point">Esgotamento de recursos</div>
+                        <div class="bullet-point">Negação de serviço (DoS)</div>
+                        <div class="bullet-point">Contramedidas: SYN cookies</div>
+                    </div>
+                </div>
+
+                <div class="warning-box">
+                    <h3>🛡️ SYN Flooding</h3>
+                    <p>Atacante envia muitos SYNs falsos → Servidor aloca recursos → Recursos esgotam → Servidor falha</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 12: Controle de Fluxo TCP -->
+        <div class="slide">
+            <div class="content">
+                <h2>🌊 Controle de Fluxo TCP</h2>
+                
+                <div class="bullet-point">Janela deslizante orientada a bytes</div>
+                <div class="bullet-point">Receptor controla taxa de envio do emissor</div>
+                <div class="bullet-point">Evita sobrecarga do buffer receptor</div>
+                <div class="bullet-point">Tamanho da janela é dinâmico</div>
+
+                <div class="example-box">
+                    <h3>🪟 Operações com Janela</h3>
+                    <div class="bullet-point"><strong>Abrir janela:</strong> Move parede direita (mais bytes)</div>
+                    <div class="bullet-point"><strong>Fechar janela:</strong> Move parede esquerda (ACKs)</div>
+                    <div class="bullet-point"><strong>Reduzir janela:</strong> Desencorajado (problemas)</div>
+                </div>
+
+                <div class="diagram">
+                    <h3>📐 Janela Deslizante TCP</h3>
+                    <div style="font-family: monospace; margin: 20px 0;">
+                        <div style="display: flex; justify-content: center; align-items: center;">
+                            <div style="border: 2px solid #red; padding: 5px; background: #ffebee;">Confirmados</div>
+                            <div style="border: 2px solid #11998e; padding: 5px; background: #e8f5e8;">Enviados não confirmados</div>
+                            <div style="border: 2px solid #ffc107; padding: 5px; background: #fffde7;">Podem ser enviados</div>
+                            <div style="border: 2px solid #grey; padding: 5px; background: #f5f5f5;">Não podem ser enviados</div>
+                        </div>
+                        <div style="text-align: center; margin-top: 10px;">
+                            ← Tamanho da Janela = min(rwnd, cwnd) →
+                        </div>
+                    </div>
+                </div>
+
+                <div class="highlight-box">
+                    <h3>📊 Cálculo da Janela</h3>
+                    <div class="bullet-point"><strong>rwnd:</strong> Janela receptora (anunciada pelo receptor)</div>
+                    <div class="bullet-point"><strong>cwnd:</strong> Janela de congestionamento (evita sobrecarga rede)</div>
+                    <div class="bullet-point"><strong>Janela efetiva:</strong> min(rwnd, cwnd)</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 13: Controle de Erros TCP -->
+        <div class="slide">
+            <div class="content">
+                <h2>🛠️ Controle de Erros TCP</h2>
+                
+                <div class="bullet-point">Garante entrega confiável e ordenada</div>
+                <div class="bullet-point">Detecta segmentos perdidos, corrompidos ou duplicados</div>
+                <div class="bullet-point">Implementa retransmissão automática</div>
+
+                <div class="three-column">
+                    <div>
+                        <h3>🔍 Detecção</h3>
+                        <div class="bullet-point">Checksum obrigatório</div>
+                        <div class="bullet-point">Números de sequência</div>
+                        <div class="bullet-point">Timeout (RTO)</div>
+                        <div class="bullet-point">ACKs duplicados</div>
+                    </div>
+                    <div>
+                        <h3>✅ Confirmação</h3>
+                        <div class="bullet-point">ACK cumulativo</div>
+                        <div class="bullet-point">Próximo byte esperado</div>
+                        <div class="bullet-point">Piggybacking possível</div>
+                        <div class="bullet-point">ACK não gera ACK</div>
+                    </div>
+                    <div>
+                        <h3>🔄 Retransmissão</h3>
+                        <div class="bullet-point">Timeout de retransmissão</div>
+                        <div class="bullet-point">Fast retransmit (3 ACKs dup)</div>
+                        <div class="bullet-point">RTO dinâmico (RTT)</div>
+                        <div class="bullet-point">Exponential backoff</div>
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>⚡ Fast Retransmit</h3>
+                    <div class="flow-step">Segmento perdido → Próximos chegam fora de ordem</div>
+                    <div class="flow-step">Receptor envia ACK duplicado para cada segmento fora de ordem</div>
+                    <div class="flow-step">Emissor recebe 3 ACKs duplicados</div>
+                    <div class="flow-step">Retransmite imediatamente (não espera timeout)</div>
+                </div>
+
+                <div class="highlight-box center-text">
+                    <h3>🎯 Garantias TCP</h3>
+                    <p>Dados entregues em ordem • Sem duplicatas • Sem perdas<br>
+                    Transparente para a aplicação</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 14: Encerramento de Conexão TCP -->
+        <div class="slide">
+            <div class="content">
+                <h2>👋 Encerramento de Conexão TCP</h2>
+                
+                <div class="bullet-point">Processo ordenado para finalizar conexão</div>
+                <div class="bullet-point">Garante que todos os dados foram entregues</div>
+                <div class="bullet-point">Libera recursos alocados</div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>🔄 Three-Way Close</h3>
+                        <div class="flow-step">
+                            <strong>1. FIN →</strong><br>
+                            "Terminei de enviar dados"
+                        </div>
+                        <div class="flow-step">
+                            <strong>2. ← FIN+ACK</strong><br>
+                            "Confirmo, também terminei"
+                        </div>
+                        <div class="flow-step">
+                            <strong>3. ACK →</strong><br>
+                            "Confirmado, conexão fechada"
+                        </div>
+                    </div>
+                    <div>
+                        <h3>↔️ Semi-Encerramento</h3>
+                        <div class="flow-step">
+                            <strong>1. FIN →</strong><br>
+                            "Terminei de enviar"
+                        </div>
+                        <div class="flow-step">
+                            <strong>2. ← ACK</strong><br>
+                            "Confirmado, mas ainda envio"
+                        </div>
+                        <div class="flow-step">
+                            <strong>3. ← Dados + FIN</strong><br>
+                            "Agora terminei"
+                        </div>
+                        <div class="flow-step">
+                            <strong>4. ACK →</strong><br>
+                            "Conexão fechada"
+                        </div>
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>💡 Exemplo de Semi-Encerramento</h3>
+                    <p><strong>Cenário:</strong> Cliente envia dados para ordenação no servidor</p>
+                    <div class="bullet-point">Cliente envia todos dados e fecha seu lado (FIN)</div>
+                    <div class="bullet-point">Servidor confirma (ACK) mas continua processamento</div>
+                    <div class="bullet-point">Servidor envia dados processados</div>
+                    <div class="bullet-point">Servidor termina (FIN) e cliente confirma (ACK)</div>
+                </div>
+
+                <div class="highlight-box center-text">
+                    <h3>⏱️ Estados de Conexão</h3>
+                    <p>TCP mantém máquina de estados complexa<br>
+                    LISTEN → SYN_SENT → ESTABLISHED → FIN_WAIT → CLOSED</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 15: UDP vs TCP - Comparação -->
+        <div class="slide">
+            <div class="content">
+                <h2>⚖️ UDP vs TCP - Comparação</h2>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Característica</th>
+                            <th>UDP</th>
+                            <th>TCP</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Conexão</strong></td>
+                            <td>❌ Sem conexão</td>
+                            <td>✅ Orientado a conexão</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Confiabilidade</strong></td>
+                            <td>❌ Não confiável</td>
+                            <td>✅ Confiável</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Controle de Fluxo</strong></td>
+                            <td>❌ Não implementa</td>
+                            <td>✅ Janela deslizante</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Controle de Erros</strong></td>
+                            <td>⚠️ Checksum opcional</td>
+                            <td>✅ Completo</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Overhead</strong></td>
+                            <td>🟢 Baixo (8 bytes)</td>
+                            <td>🟡 Alto (20-60 bytes)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Velocidade</strong></td>
+                            <td>🟢 Rápido</td>
+                            <td>🟡 Mais lento</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Ordem dos dados</strong></td>
+                            <td>❌ Não garante</td>
+                            <td>✅ Entrega ordenada</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Multicast</strong></td>
+                            <td>✅ Suporte nativo</td>
+                            <td>❌ Não suporta</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="two-column">
+                    <div>
+                        <h3>🚀 Use UDP quando</h3>
+                        <div class="bullet-point">Velocidade > Confiabilidade</div>
+                        <div class="bullet-point">Mensagens pequenas</div>
+                        <div class="bullet-point">Aplicação implementa próprio controle</div>
+                        <div class="bullet-point">Tempo real (jogos, streaming)</div>
+                        <div class="bullet-point">Broadcast/Multicast</div>
+                    </div>
+                    <div>
+                        <h3>🔒 Use TCP quando</h3>
+                        <div class="bullet-point">Confiabilidade é crítica</div>
+                        <div class="bullet-point">Transferência de arquivos</div>
+                        <div class="bullet-point">Aplicações web (HTTP)</div>
+                        <div class="bullet-point">Email, chat</div>
+                        <div class="bullet-point">Dados grandes</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 16: Quiz -->
+        <div class="slide">
+            <div class="content">
+                <h2>🧠 Quiz - Teste seus conhecimentos!</h2>
+                
+                <div class="quiz-container">
+                    <!-- Questão 1 -->
+                    <div class="quiz-question" id="question1">
+                        <h3>📝 Questão 1</h3>
+                        <p><strong>Qual a principal diferença entre UDP e TCP?</strong></p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(1, 'a', false)">
+                                <span class="option-letter">A)</span> UDP usa portas, TCP não usa
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(1, 'b', true)">
+                                <span class="option-letter">B)</span> UDP é sem conexão e não-confiável, TCP é orientado a conexão e confiável
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(1, 'c', false)">
+                                <span class="option-letter">C)</span> UDP é mais lento que TCP
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(1, 'd', false)">
+                                <span class="option-letter">D)</span> Não há diferença significativa
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback1"></div>
+                    </div>
+
+                    <!-- Questão 2 -->
+                    <div class="quiz-question" id="question2" style="display: none;">
+                        <h3>📝 Questão 2</h3>
+                        <p><strong>Quantos passos tem o three-way handshake do TCP?</strong></p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(2, 'a', false)">
+                                <span class="option-letter">A)</span> 2 passos: SYN, ACK
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(2, 'b', true)">
+                                <span class="option-letter">B)</span> 3 passos: SYN, SYN+ACK, ACK
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(2, 'c', false)">
+                                <span class="option-letter">C)</span> 4 passos: SYN, ACK, SYN, ACK
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(2, 'd', false)">
+                                <span class="option-letter">D)</span> 1 passo: apenas SYN
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback2"></div>
+                    </div>
+
+                    <!-- Questão 3 -->
+                    <div class="quiz-question" id="question3" style="display: none;">
+                        <h3>📝 Questão 3</h3>
+                        <p><strong>Qual o tamanho do cabeçalho UDP?</strong></p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(3, 'a', true)">
+                                <span class="option-letter">A)</span> 8 bytes fixos
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(3, 'b', false)">
+                                <span class="option-letter">B)</span> 20 bytes fixos
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(3, 'c', false)">
+                                <span class="option-letter">C)</span> 20 a 60 bytes variáveis
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(3, 'd', false)">
+                                <span class="option-letter">D)</span> 4 bytes fixos
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback3"></div>
+                    </div>
+
+                    <!-- Questão 4 -->
+                    <div class="quiz-question" id="question4" style="display: none;">
+                        <h3>📝 Questão 4</h3>
+                        <p><strong>Quando o TCP faz retransmissão rápida (fast retransmit)?</strong></p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(4, 'a', false)">
+                                <span class="option-letter">A)</span> Quando recebe 1 ACK duplicado
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(4, 'b', true)">
+                                <span class="option-letter">B)</span> Quando recebe 3 ACKs duplicados
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(4, 'c', false)">
+                                <span class="option-letter">C)</span> Quando o timeout expira
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(4, 'd', false)">
+                                <span class="option-letter">D)</span> TCP não faz retransmissão rápida
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback4"></div>
+                    </div>
+
+                    <!-- Resultado Final -->
+                    <div class="quiz-result" id="quizResult" style="display: none;">
+                        <h3>🎉 Parabéns! Quiz Concluído!</h3>
+                        <div class="result-box">
+                            <p><strong>Sua pontuação: <span id="finalScore">0</span>/4</strong></p>
+                            <p id="resultMessage"></p>
+                        </div>
+                        <button class="nav-btn" onclick="restartQuiz()">🔄 Refazer Quiz</button>
+                    </div>
+                </div>
+
+                <div class="quiz-navigation">
+                    <button class="nav-btn" id="nextQuizBtn" onclick="nextQuestion()" style="display: none;">
+                        Próxima Questão ➡️
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 17: Resumo Final -->
+        <div class="slide">
+            <div class="content">
+                <h2>🎯 Resumo Final</h2>
+                
+                <div class="highlight-box large-text center-text">
+                    <strong>TCP e UDP: Dois paradigmas da camada de transporte</strong>
+                </div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>📦 UDP - Simplicidade</h3>
+                        <div class="bullet-point">Protocolo minimalista (8 bytes)</div>
+                        <div class="bullet-point">Sem conexão, sem estados</div>
+                        <div class="bullet-point">Ideal para aplicações rápidas</div>
+                        <div class="bullet-point">Aplicação controla confiabilidade</div>
+                        <div class="bullet-point">Suporte nativo a multicast</div>
+                    </div>
+                    <div>
+                        <h3>🔒 TCP - Confiabilidade</h3>
+                        <div class="bullet-point">Protocolo completo (20-60 bytes)</div>
+                        <div class="bullet-point">Orientado a conexão</div>
+                        <div class="bullet-point">Entrega confiável e ordenada</div>
+                        <div class="bullet-point">Controle de fluxo e congestionamento</div>
+                        <div class="bullet-point">Transparência para aplicação</div>
+                    </div>
+                </div>
+
+                <div class="example-box center-text">
+                    <h3>🎯 Escolha do Protocolo</h3>
+                    <p><strong>Velocidade + Simplicidade = UDP</strong><br>
+                    <strong>Confiabilidade + Robustez = TCP</strong></p>
+                </div>
+
+                <div class="vs-box center-text">
+                    <h3>🌐 Na Prática</h3>
+                    <p>DNS, DHCP, streaming → UDP<br>
+                    HTTP, FTP, email → TCP<br>
+                    Ambos fundamentais para Internet moderna</p>
+                </div>
+
+                <div class="highlight-box center-text">
+                    <h3>💡 Lição Principal</h3>
+                    <p>Não existe protocolo "melhor" - existe protocolo adequado<br>
+                    para cada tipo de aplicação e requisito</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 18: Referências -->
+        <div class="slide">
+            <div class="content">
+                <h2>📚 Referências Bibliográficas</h2>
+                
+                <div class="highlight-box">
+                    <h3>📖 Fonte Principal:</h3>
+                    <div class="bullet-point"><strong>Capítulo 23 - Comunicação entre Processos: UDP, TCP e SCTP</strong></div>
+                    <div class="bullet-point">Livro de Redes de Computadores</div>
+                    <div class="bullet-point">Páginas 703-735</div>
+                </div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>🌐 RFCs Fundamentais:</h3>
+                        <div class="bullet-point">RFC 768 - User Datagram Protocol (UDP)</div>
+                        <div class="bullet-point">RFC 793 - Transmission Control Protocol (TCP)</div>
+                        <div class="bullet-point">RFC 1122 - Requirements for Internet Hosts</div>
+                        <div class="bullet-point">RFC 2581 - TCP Congestion Control</div>
+                        <div class="bullet-point">RFC 3168 - ECN (Explicit Congestion Notification)</div>
+                    </div>
+                    <div>
+                        <h3>📋 Documentação Adicional:</h3>
+                        <div class="bullet-point">RFC 6298 - Computing TCP's RTO</div>
+                        <div class="bullet-point">RFC 5681 - TCP Congestion Control</div>
+                        <div class="bullet-point">RFC 3390 - Increasing TCP's Initial Window</div>
+                        <div class="bullet-point">www.iana.org - Registro de portas</div>
+                        <div class="bullet-point">Stevens, W. R. - TCP/IP Illustrated</div>
+                    </div>
+                </div>
+
+                <div class="example-box center-text">
+                    <h3>🤖 Metodologia de Criação</h3>
+                    <p>Apresentação desenvolvida com assistência de IA Claude Sonnet 4<br>
+                    Baseada integralmente no Capítulo 23 do material didático<br>
+                    Adaptação pedagógica com foco em comparação prática</p>
+                </div>
+
+                <div class="highlight-box center-text">
+                    <h3>🎯 Objetivo Educacional</h3>
+                    <p>Facilitar a compreensão dos protocolos de transporte<br>
+                    através de comparações claras e exemplos práticos</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="navigation">
+            <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">⬅️ Anterior</button>
+            <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">Próximo ➡️</button>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        document.getElementById('total-slides').textContent = totalSlides;
+
+        // Quiz variables
+        let currentQuestion = 1;
+        let score = 0;
+        let quizAnswered = [false, false, false, false];
+
+        function showSlide(index) {
+            slides.forEach((slide, i) => {
+                slide.classList.toggle('active', i === index);
+            });
+            
+            document.getElementById('current-slide').textContent = index + 1;
+            document.getElementById('prevBtn').disabled = index === 0;
+            document.getElementById('nextBtn').disabled = index === totalSlides - 1;
+        }
+
+        function changeSlide(direction) {
+            const newSlide = currentSlide + direction;
+            if (newSlide >= 0 && newSlide < totalSlides) {
+                currentSlide = newSlide;
+                showSlide(currentSlide);
+            }
+        }
+
+        // Quiz Functions
+        function selectOption(questionNum, option, isCorrect) {
+            if (quizAnswered[questionNum - 1]) return; // Já respondida
+            
+            const options = document.querySelectorAll(`#question${questionNum} .quiz-option`);
+            const feedback = document.getElementById(`feedback${questionNum}`);
+            
+            // Marcar todas as opções
+            options.forEach(opt => {
+                opt.style.pointerEvents = 'none';
+                if (opt.onclick.toString().includes('true')) {
+                    opt.classList.add('correct');
+                } else if (opt === event.currentTarget) {
+                    opt.classList.add(isCorrect ? 'correct' : 'incorrect');
+                }
+            });
+            
+            // Mostrar feedback
+            if (isCorrect) {
+                feedback.innerHTML = '✅ Correto! Muito bem!';
+                feedback.className = 'quiz-feedback correct';
+                score++;
+            } else {
+                feedback.innerHTML = '❌ Incorreto. A resposta correta está destacada em verde.';
+                feedback.className = 'quiz-feedback incorrect';
+            }
+            
+            quizAnswered[questionNum - 1] = true;
+            
+            // Mostrar botão para próxima questão
+            if (questionNum < 4) {
+                document.getElementById('nextQuizBtn').style.display = 'inline-block';
+            } else {
+                // Última questão - mostrar resultado
+                setTimeout(() => {
+                    showQuizResult();
+                }, 2000);
+            }
+        }
+
+        function nextQuestion() {
+            document.getElementById(`question${currentQuestion}`).style.display = 'none';
+            currentQuestion++;
+            document.getElementById(`question${currentQuestion}`).style.display = 'block';
+            document.getElementById('nextQuizBtn').style.display = 'none';
+        }
+
+        function showQuizResult() {
+            // Esconder última questão
+            document.getElementById('question4').style.display = 'none';
+            
+            // Mostrar resultado
+            document.getElementById('quizResult').style.display = 'block';
+            document.getElementById('finalScore').textContent = score;
+            
+            const resultMessage = document.getElementById('resultMessage');
+            if (score === 4) {
+                resultMessage.innerHTML = '🏆 Excelente! Você domina TCP e UDP!';
+            } else if (score === 3) {
+                resultMessage.innerHTML = '👏 Muito bom! Quase perfeito!';
+            } else if (score === 2) {
+                resultMessage.innerHTML = '👍 Bom trabalho! Continue estudando!';
+            } else if (score === 1) {
+                resultMessage.innerHTML = '📚 Estude um pouco mais sobre TCP e UDP!';
+            } else {
+                resultMessage.innerHTML = '📖 Recomendo revisar o conteúdo sobre protocolos de transporte!';
+            }
+        }
+
+        function restartQuiz() {
+            // Reset variables
+            currentQuestion = 1;
+            score = 0;
+            quizAnswered = [false, false, false, false];
+            
+            // Reset interface
+            for (let i = 1; i <= 4; i++) {
+                const question = document.getElementById(`question${i}`);
+                const options = question.querySelectorAll('.quiz-option');
+                const feedback = document.getElementById(`feedback${i}`);
+                
+                // Reset options
+                options.forEach(opt => {
+                    opt.className = 'quiz-option';
+                    opt.style.pointerEvents = 'auto';
+                });
+                
+                // Hide feedback
+                feedback.style.display = 'none';
+                
+                // Hide all questions except first
+                question.style.display = i === 1 ? 'block' : 'none';
+            }
+            
+            // Hide result and buttons
+            document.getElementById('quizResult').style.display = 'none';
+            document.getElementById('nextQuizBtn').style.display = 'none';
+        }
+
+        // Navegação por teclado
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') changeSlide(-1);
+            if (e.key === 'ArrowRight') changeSlide(1);
+            if (e.key === 'Home') {
+                currentSlide = 0;
+                showSlide(currentSlide);
+            }
+            if (e.key === 'End') {
+                currentSlide = totalSlides - 1;
+                showSlide(currentSlide);
+            }
+        });
+
+        // Inicializar
+        showSlide(0);
+        
+        // Inicializar quiz no slide 16
+        document.getElementById('question1').style.display = 'block';
+    </script>
+</body>
+</html>

@@ -1,0 +1,1431 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modelo OSI - Open Systems Interconnection</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        .presentation {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .slide {
+            min-height: 100vh;
+            padding: 60px 40px;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            background: white;
+            margin: 20px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        .slide.active {
+            display: flex;
+        }
+
+        .slide h1 {
+            font-size: 3.5em;
+            color: #4a5568;
+            text-align: center;
+            margin-bottom: 40px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .slide h2 {
+            font-size: 2.8em;
+            color: #2d3748;
+            margin-bottom: 30px;
+            border-bottom: 4px solid #667eea;
+            padding-bottom: 15px;
+        }
+
+        .slide h3 {
+            font-size: 2.2em;
+            color: #4a5568;
+            margin: 25px 0 15px 0;
+        }
+
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: start;
+        }
+
+        .bullet-point {
+            display: flex;
+            align-items: flex-start;
+            margin: 15px 0;
+            font-size: 1.3em;
+            line-height: 1.5;
+        }
+
+        .bullet-point::before {
+            content: "🔸";
+            margin-right: 15px;
+            font-size: 1.2em;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #667eea;
+        }
+
+        .example-box {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #20b2aa;
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 1000;
+        }
+
+        .nav-btn {
+            padding: 15px 25px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .nav-btn:hover {
+            background: #5a67d8;
+            transform: translateY(-2px);
+            box-shadow: 0 7px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .nav-btn:disabled {
+            background: #a0a0a0;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .slide-counter {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: rgba(255,255,255,0.9);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            color: #4a5568;
+            z-index: 1000;
+        }
+
+        .center-text {
+            text-align: center;
+        }
+
+        .large-text {
+            font-size: 1.4em;
+            line-height: 1.6;
+        }
+
+        .diagram {
+            background: #f7fafc;
+            border: 2px dashed #667eea;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+            font-family: monospace;
+            font-size: 1.2em;
+        }
+
+        .layer-stack {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px 0;
+        }
+
+        .layer {
+            color: white;
+            padding: 15px 40px;
+            margin: 3px;
+            border-radius: 12px;
+            font-weight: bold;
+            min-width: 350px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            font-size: 1.2em;
+            position: relative;
+            transition: transform 0.3s ease;
+        }
+
+        .layer:hover {
+            transform: scale(1.02);
+        }
+
+        .layer.osi-7 { 
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        }
+        .layer.osi-6 { 
+            background: linear-gradient(135deg, #e67e22 0%, #d35400 100%); 
+        }
+        .layer.osi-5 { 
+            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%); 
+        }
+        .layer.osi-4 { 
+            background: linear-gradient(135deg, #27ae60 0%, #229954 100%); 
+        }
+        .layer.osi-3 { 
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); 
+        }
+        .layer.osi-2 { 
+            background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%); 
+        }
+        .layer.osi-1 { 
+            background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%); 
+        }
+
+        .layer-number {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255,255,255,0.3);
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .telephone-analogy {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #c44569;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 1.1em;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        th {
+            background: #667eea;
+            color: white;
+            font-weight: bold;
+        }
+
+        .process-step {
+            background: #e6fffa;
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #38b2ac;
+        }
+
+        .protocol-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .protocol-badge {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: bold;
+        }
+
+        /* Quiz Styles */
+        .quiz-container {
+            max-width: 100%;
+            margin: 20px 0;
+        }
+
+        .quiz-question {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border: 2px solid #e2e8f0;
+        }
+
+        .quiz-question h3 {
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+
+        .quiz-question p {
+            font-size: 1.3em;
+            margin-bottom: 25px;
+            font-weight: bold;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .quiz-option {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.1em;
+        }
+
+        .quiz-option:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+            transform: translateX(5px);
+        }
+
+        .quiz-option.selected {
+            border-color: #667eea;
+            background: #667eea;
+            color: white;
+        }
+
+        .quiz-option.correct {
+            border-color: #48bb78;
+            background: #48bb78;
+            color: white;
+        }
+
+        .quiz-option.incorrect {
+            border-color: #f56565;
+            background: #f56565;
+            color: white;
+        }
+
+        .option-letter {
+            background: #667eea;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .quiz-option.correct .option-letter {
+            background: #48bb78;
+        }
+
+        .quiz-option.incorrect .option-letter {
+            background: #f56565;
+        }
+
+        .quiz-feedback {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: bold;
+            display: none;
+        }
+
+        .quiz-feedback.correct {
+            background: #c6f6d5;
+            color: #22543d;
+            border: 2px solid #48bb78;
+            display: block;
+        }
+
+        .quiz-feedback.incorrect {
+            background: #fed7d7;
+            color: #742a2a;
+            border: 2px solid #f56565;
+            display: block;
+        }
+
+        .quiz-navigation {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .quiz-result {
+            text-align: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            margin: 20px 0;
+        }
+
+        .result-box {
+            background: rgba(255,255,255,0.1);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+
+        .result-box p {
+            font-size: 1.4em;
+            margin: 10px 0;
+        }
+
+        .connector-examples {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .connector {
+            background: #e2e8f0;
+            padding: 10px;
+            border-radius: 8px;
+            margin: 5px;
+            font-weight: bold;
+            color: #4a5568;
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation">
+        <div class="slide-counter">
+            <span id="current-slide">1</span> / <span id="total-slides">16</span>
+        </div>
+
+        <!-- Slide 1: Título -->
+        <div class="slide active">
+            <div class="content center-text">
+                <h1>🏗️ Modelo OSI</h1>
+                <h2 style="border: none; color: #667eea;">Open Systems Interconnection</h2>
+                <div class="highlight-box large-text">
+                    <strong>Aula 03</strong><br>
+                    O modelo teórico das 7 camadas<br>
+                    Padrão ISO para interconexão de sistemas
+                </div>
+                
+                <div class="example-box" style="margin-top: 40px;">
+                    <h3>👨‍🏫 Autor da Apresentação</h3>
+                    <p style="font-size: 1.3em; margin: 10px 0;">
+                        <strong>César Azevedo</strong><br>
+                        📧 cesar.augusto@ifrn.edu.br
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 2: Tópicos da Aula -->
+        <div class="slide">
+            <div class="content">
+                <h2>📋 Tópicos da Aula</h2>
+                
+                <div class="two-column">
+                    <div>
+                        <h3>🌟 História e Motivação</h3>
+                        <div class="bullet-point">Problema das redes proprietárias</div>
+                        <div class="bullet-point">Necessidade de padronização</div>
+                        <div class="bullet-point">Papel da ISO</div>
+                        <div class="bullet-point">Objetivo da interconexão</div>
+                        
+                        <h3>🏗️ As 7 Camadas</h3>
+                        <div class="bullet-point">1. Física - Hardware</div>
+                        <div class="bullet-point">2. Enlace - Quadros</div>
+                        <div class="bullet-point">3. Rede - Roteamento</div>
+                        <div class="bullet-point">4. Transporte - Confiabilidade</div>
+                    </div>
+                    <div>
+                        <h3>📱 Camadas Superiores</h3>
+                        <div class="bullet-point">5. Sessão - Diálogo</div>
+                        <div class="bullet-point">6. Apresentação - Formatação</div>
+                        <div class="bullet-point">7. Aplicação - Interface usuário</div>
+                        
+                        <h3>📞 Analogias Práticas</h3>
+                        <div class="bullet-point">Sistema telefônico</div>
+                        <div class="bullet-point">Conversação humana</div>
+                        <div class="bullet-point">Exemplo de e-mail</div>
+                        <div class="bullet-point">Encapsulamento de dados</div>
+                    </div>
+                </div>
+
+                <div class="highlight-box center-text">
+                    <h3>🎯 Objetivo Final</h3>
+                    <p>Compreender como o modelo OSI estrutura<br>
+                    a comunicação em redes de forma padronizada</p>
+                </div>
+
+                <div class="example-box center-text">
+                    <h3>🧠 + Quiz Interativo</h3>
+                    <p>Teste seus conhecimentos com 4 questões práticas!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: História e Motivação -->
+        <div class="slide">
+            <div class="content">
+                <h2>📜 História: O Problema Original</h2>
+                
+                <div class="highlight-box">
+                    <h3>🏭 Redes Proprietárias</h3>
+                    <div class="bullet-point">Cada fabricante tinha sua própria tecnologia</div>
+                    <div class="bullet-point">Impossível misturar soluções diferentes</div>
+                    <div class="bullet-point">Falta de compatibilidade</div>
+                    <div class="bullet-point">Fabricante controlava todos os componentes</div>
+                </div>
+
+                <div class="example-box">
+                    <h3>⚠️ Problemas Resultantes</h3>
+                    <div class="bullet-point">Cliente "preso" a um fornecedor</div>
+                    <div class="bullet-point">Custos altos de expansão</div>
+                    <div class="bullet-point">Dificuldade de integração</div>
+                    <div class="bullet-point">Evolução tecnológica limitada</div>
+                </div>
+
+                <div class="telephone-analogy">
+                    <h3>💡 A Solução da ISO</h3>
+                    <div class="bullet-point">International Standards Organization</div>
+                    <div class="bullet-point">Modelo OSI (Open Systems Interconnection)</div>
+                    <div class="bullet-point">Padrão para interconexão de sistemas</div>
+                    <div class="bullet-point">7 camadas bem definidas</div>
+                    <div class="bullet-point">Fabricantes criam componentes compatíveis</div>
+                </div>
+
+                <div class="diagram center-text">
+                    <strong>Antes:</strong> Cada fabricante = ilha isolada<br>
+                    <strong>Depois:</strong> Padrão OSI = comunicação universal
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Visão Geral das 7 Camadas -->
+        <div class="slide">
+            <div class="content">
+                <h2>🏗️ As 7 Camadas do Modelo OSI</h2>
+                
+                <div class="layer-stack">
+                    <div class="layer osi-7">
+                        <div class="layer-number">7</div>
+                        7. Aplicação
+                    </div>
+                    <div class="layer osi-6">
+                        <div class="layer-number">6</div>
+                        6. Apresentação
+                    </div>
+                    <div class="layer osi-5">
+                        <div class="layer-number">5</div>
+                        5. Sessão
+                    </div>
+                    <div class="layer osi-4">
+                        <div class="layer-number">4</div>
+                        4. Transporte
+                    </div>
+                    <div class="layer osi-3">
+                        <div class="layer-number">3</div>
+                        3. Rede
+                    </div>
+                    <div class="layer osi-2">
+                        <div class="layer-number">2</div>
+                        2. Enlace de Dados
+                    </div>
+                    <div class="layer osi-1">
+                        <div class="layer-number">1</div>
+                        1. Física
+                    </div>
+                </div>
+
+                <div class="highlight-box center-text">
+                    <h3>🎯 Lembre-se do Mnemônico</h3>
+                    <p><strong>"Físico Enlace Rede Transporte Sessão Apresentação Aplicação"</strong><br>
+                    ou<br>
+                    <strong>"Por Favor Não Tire Suas Botas Aqui"</strong> (inglês)</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: Camada 1 - Física -->
+        <div class="slide">
+            <div class="content">
+                <h2>🔌 Camada 1 - Física</h2>
+                
+                <div class="bullet-point">Características físicas, elétricas e ópticas</div>
+                <div class="bullet-point">Totalmente ligada ao hardware</div>
+                <div class="bullet-point">Especifica conectores e cabos</div>
+                <div class="bullet-point">Transparente para o usuário</div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>🔧 Componentes Físicos</h3>
+                        <div class="bullet-point">Placas de rede</div>
+                        <div class="bullet-point">Cabos e conectores</div>
+                        <div class="bullet-point">Repetidores e hubs</div>
+                        <div class="bullet-point">Conversores de mídia</div>
+                        
+                        <div class="connector-examples">
+                            <div class="connector">RJ-11</div>
+                            <div class="connector">RJ-45</div>
+                            <div class="connector">BNC</div>
+                            <div class="connector">Fibra</div>
+                        </div>
+                    </div>
+                    <div>
+                        <h3>⚡ Funções Principais</h3>
+                        <div class="bullet-point">Transmitir bits (0s e 1s)</div>
+                        <div class="bullet-point">Converter sinais elétricos/ópticos</div>
+                        <div class="bullet-point">Definir tensões e temporização</div>
+                        <div class="bullet-point">Especificar conectores</div>
+                    </div>
+                </div>
+
+                <div class="telephone-analogy">
+                    <h3>📞 Analogia do Telefone</h3>
+                    <p>Como os <strong>fios e tomadas</strong> do telefone - conectam fisicamente, mas não sabem o que está sendo falado.</p>
+                </div>
+
+                <div class="example-box">
+                    <h3>💡 Exemplo Prático</h3>
+                    <div class="bullet-point">Cabo de rede: transporta sinais elétricos</div>
+                    <div class="bullet-point">Placa de rede: converte dados em sinais</div>
+                    <div class="bullet-point">Não sabe se é e-mail, web ou arquivo</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: Camada 2 - Enlace de Dados -->
+        <div class="slide">
+            <div class="content">
+                <h2>🔗 Camada 2 - Enlace de Dados</h2>
+                
+                <div class="bullet-point">Interface confiável entre físico e dados</div>
+                <div class="bullet-point">Detecta erros e controla fluxo</div>
+                <div class="bullet-point">Organiza bits em quadros (frames)</div>
+                <div class="bullet-point">Endereçamento local (MAC)</div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>🎯 Funções Principais</h3>
+                        <div class="bullet-point">Enquadramento (framing)</div>
+                        <div class="bullet-point">Detecção de erros (CRC)</div>
+                        <div class="bullet-point">Controle de fluxo local</div>
+                        <div class="bullet-point">Endereçamento MAC</div>
+                        
+                        <h3>🔧 Protocolos Comuns</h3>
+                        <div class="protocol-list">
+                            <div class="protocol-badge">Ethernet</div>
+                            <div class="protocol-badge">WiFi 802.11</div>
+                            <div class="protocol-badge">PPP</div>
+                            <div class="protocol-badge">HDLC</div>
+                        </div>
+                    </div>
+                    <div>
+                        <h3>📡 Subcamadas IEEE</h3>
+                        <div class="bullet-point"><strong>LLC:</strong> Logical Link Control</div>
+                        <div class="bullet-point"><strong>MAC:</strong> Media Access Control</div>
+                        
+                        <div class="example-box">
+                            <h3>🏷️ Endereço MAC</h3>
+                            <p>00:1B:63:84:45:E6<br>
+                            Identifica cada placa<br>
+                            globalmente única</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="telephone-analogy">
+                    <h3>📞 Analogia do Telefone</h3>
+                    <p>Como <strong>tirar o fone do gancho e ouvir o tom</strong> - verifica se a linha está funcionando antes de discar.</p>
+                </div>
+
+                <div class="process-step">
+                    <strong>Exemplo:</strong> Se houver ruído na linha, esta camada pede para repetir. É como dizer "Não ouvi, pode repetir?"
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7: Camada 3 - Rede -->
+        <div class="slide">
+            <div class="content">
+                <h2>🌐 Camada 3 - Rede</h2>
+                
+                <div class="bullet-point">Roteamento entre redes diferentes</div>
+                <div class="bullet-point">Endereçamento lógico global</div>
+                <div class="bullet-point">Escolha do melhor caminho</div>
+                <div class="bullet-point">Fragmentação quando necessário</div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>📍 Endereçamento IP</h3>
+                        <div class="bullet-point">Endereços lógicos únicos</div>
+                        <div class="bullet-point">IPv4: 192.168.1.100</div>
+                        <div class="bullet-point">IPv6: 2001:db8::1</div>
+                        <div class="bullet-point">Roteamento hierárquico</div>
+                        
+                        <h3>🚛 Roteadores</h3>
+                        <div class="bullet-point">Decisão de encaminhamento</div>
+                        <div class="bullet-point">Tabelas de roteamento</div>
+                        <div class="bullet-point">Protocolos de roteamento</div>
+                    </div>
+                    <div>
+                        <h3>🔧 Protocolos Principais</h3>
+                        <div class="protocol-list">
+                            <div class="protocol-badge">IP</div>
+                            <div class="protocol-badge">ICMP</div>
+                            <div class="protocol-badge">ARP</div>
+                            <div class="protocol-badge">OSPF</div>
+                            <div class="protocol-badge">BGP</div>
+                        </div>
+                        
+                        <div class="example-box">
+                            <h3>🗺️ Analogia GPS</h3>
+                            <p>Como o GPS do carro:<br>
+                            Calcula a melhor rota<br>
+                            entre origem e destino</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="telephone-analogy">
+                    <h3>📞 Analogia do Telefone</h3>
+                    <p>Como <strong>discar o número</strong> - define para onde a ligação vai e por qual rota chegará ao destino.</p>
+                </div>
+
+                <div class="diagram">
+                    Seu PC → Roteador Casa → Internet → Roteador Destino → Servidor<br>
+                    Cada "salto" é uma decisão de roteamento
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: Camada 4 - Transporte -->
+        <div class="slide">
+            <div class="content">
+                <h2>🚚 Camada 4 - Transporte</h2>
+                
+                <div class="bullet-point">Controle de fluxo fim-a-fim</div>
+                <div class="bullet-point">Confiabilidade na entrega</div>
+                <div class="bullet-point">Controle de sequência</div>
+                <div class="bullet-point">Segmentação e remontagem</div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>📋 Responsabilidades</h3>
+                        <div class="bullet-point">Dividir dados em segmentos</div>
+                        <div class="bullet-point">Controlar velocidade de envio</div>
+                        <div class="bullet-point">Garantir ordem correta</div>
+                        <div class="bullet-point">Detectar e corrigir perdas</div>
+                        
+                        <h3>🚪 Portas</h3>
+                        <div class="bullet-point">Identificam aplicações</div>
+                        <div class="bullet-point">HTTP: porta 80</div>
+                        <div class="bullet-point">HTTPS: porta 443</div>
+                        <div class="bullet-point">FTP: porta 21</div>
+                    </div>
+                    <div>
+                        <h3>🔧 Protocolos</h3>
+                        <div class="protocol-list">
+                            <div class="protocol-badge">TCP</div>
+                            <div class="protocol-badge">UDP</div>
+                            <div class="protocol-badge">SCTP</div>
+                        </div>
+                        
+                        <div class="example-box">
+                            <h3>⚖️ TCP vs UDP</h3>
+                            <p><strong>TCP:</strong> Confiável, lento<br>
+                            <strong>UDP:</strong> Rápido, sem garantias</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="telephone-analogy">
+                    <h3>📞 Analogia do Telefone</h3>
+                    <p>Como <strong>controlar a velocidade da fala</strong> - "Você pode falar mais devagar? Não estou entendendo direito."</p>
+                </div>
+
+                <div class="process-step">
+                    <strong>Exemplo:</strong> Se você fala muito rápido no telefone, a outra pessoa pede para diminuir o ritmo. Similar ao controle de fluxo do TCP.
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 9: Camada 5 - Sessão -->
+        <div class="slide">
+            <div class="content">
+                <h2>💬 Camada 5 - Sessão</h2>
+                
+                <div class="bullet-point">Comunicação fim-a-fim entre usuários</div>
+                <div class="bullet-point">Estabelece, gerencia e termina sessões</div>
+                <div class="bullet-point">Controle de diálogo</div>
+                <div class="bullet-point">Pontos de sincronização</div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>🎯 Funções Principais</h3>
+                        <div class="bullet-point">Estabelecer comunicação</div>
+                        <div class="bullet-point">Gerenciar turnos de fala</div>
+                        <div class="bullet-point">Implementar checkpoints</div>
+                        <div class="bullet-point">Recuperação de falhas</div>
+                        
+                        <h3>🔄 Tipos de Diálogo</h3>
+                        <div class="bullet-point"><strong>Simplex:</strong> Uma direção</div>
+                        <div class="bullet-point"><strong>Half-duplex:</strong> Alternado</div>
+                        <div class="bullet-point"><strong>Full-duplex:</strong> Simultâneo</div>
+                    </div>
+                    <div>
+                        <h3>🔧 Protocolos e Tecnologias</h3>
+                        <div class="protocol-list">
+                            <div class="protocol-badge">NetBIOS</div>
+                            <div class="protocol-badge">RPC</div>
+                            <div class="protocol-badge">SQL Sessions</div>
+                            <div class="protocol-badge">LDAP</div>
+                        </div>
+                        
+                        <div class="example-box">
+                            <h3>📧 Exemplo Prático</h3>
+                            <p>Download de e-mail:<br>
+                            Se interrompido, continua<br>
+                            de onde parou</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="telephone-analogy">
+                    <h3>📞 Analogia do Telefone</h3>
+                    <p>Como <strong>gerenciar a conversa</strong> - quem fala, quando fala, estabelecer o diálogo entre duas pessoas.</p>
+                </div>
+
+                <div class="process-step">
+                    <strong>Exemplo Real:</strong> Aplicativo de download que permite pausar e continuar de onde parou - a camada de sessão gerencia esses "checkpoints".
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 10: Camada 6 - Apresentação -->
+        <div class="slide">
+            <div class="content">
+                <h2>🎨 Camada 6 - Apresentação</h2>
+                
+                <div class="bullet-point">Conversão de formato de dados</div>
+                <div class="bullet-point">Criptografia e descriptografia</div>
+                <div class="bullet-point">Compressão e descompressão</div>
+                <div class="bullet-point">Tradução entre padrões</div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>🔄 Conversão de Dados</h3>
+                        <div class="bullet-point">ASCII ↔ EBCDIC</div>
+                        <div class="bullet-point">Big Endian ↔ Little Endian</div>
+                        <div class="bullet-point">Diferentes conjuntos de caracteres</div>
+                        <div class="bullet-point">Formatos de imagem/vídeo</div>
+                        
+                        <h3>🗜️ Compressão</h3>
+                        <div class="protocol-list">
+                            <div class="protocol-badge">ZIP</div>
+                            <div class="protocol-badge">GZIP</div>
+                            <div class="protocol-badge">LZ77</div>
+                        </div>
+                    </div>
+                    <div>
+                        <h3>🔐 Criptografia</h3>
+                        <div class="bullet-point">Proteção dos dados</div>
+                        <div class="bullet-point">SSL/TLS</div>
+                        <div class="bullet-point">Certificados digitais</div>
+                        <div class="bullet-point">Chaves públicas/privadas</div>
+                        
+                        <div class="example-box">
+                            <h3>🖼️ Exemplo Visual</h3>
+                            <p>JPEG → PNG → GIF<br>
+                            Mesma imagem,<br>
+                            formatos diferentes</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="telephone-analogy">
+                    <h3>📞 Analogia do Telefone</h3>
+                    <p>Como <strong>conversão de voz analógica para digital</strong> - a secretária eletrônica entende e converte sua voz.</p>
+                </div>
+
+                <div class="process-step">
+                    <strong>Exemplo Prático:</strong> Quando você envia um arquivo Word para alguém que só tem OpenOffice - esta camada faria a conversão automática de formato.
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 11: Camada 7 - Aplicação -->
+        <div class="slide">
+            <div class="content">
+                <h2>📱 Camada 7 - Aplicação</h2>
+                
+                <div class="bullet-point">Interface direta com o usuário</div>
+                <div class="bullet-point">Serviços de rede para aplicações</div>
+                <div class="bullet-point">Controle de acesso e integridade</div>
+                <div class="bullet-point">Identificação de recursos</div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>🌐 Protocolos Web</h3>
+                        <div class="protocol-list">
+                            <div class="protocol-badge">HTTP</div>
+                            <div class="protocol-badge">HTTPS</div>
+                            <div class="protocol-badge">FTP</div>
+                            <div class="protocol-badge">SFTP</div>
+                        </div>
+                        
+                        <h3>📧 Protocolos E-mail</h3>
+                        <div class="protocol-list">
+                            <div class="protocol-badge">SMTP</div>
+                            <div class="protocol-badge">POP3</div>
+                            <div class="protocol-badge">IMAP</div>
+                        </div>
+                    </div>
+                    <div>
+                        <h3>🔧 Outros Serviços</h3>
+                        <div class="protocol-list">
+                            <div class="protocol-badge">DNS</div>
+                            <div class="protocol-badge">DHCP</div>
+                            <div class="protocol-badge">SNMP</div>
+                            <div class="protocol-badge">Telnet</div>
+                            <div class="protocol-badge">SSH</div>
+                        </div>
+                        
+                        <div class="example-box">
+                            <h3>💻 Aplicações Comuns</h3>
+                            <p>• Navegador Web<br>
+                            • Cliente de E-mail<br>
+                            • Processador de texto<br>
+                            • Planilha eletrônica</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="telephone-analogy">
+                    <h3>📞 Analogia do Telefone</h3>
+                    <p>Como a <strong>conversa propriamente dita</strong> - o que você realmente quer comunicar, o conteúdo da ligação.</p>
+                </div>
+
+                <div class="highlight-box">
+                    <h3>🎯 Funções Específicas</h3>
+                    <div class="bullet-point">Determinar como ocorrerá o diálogo</div>
+                    <div class="bullet-point">Identificar nomes ou endereços</div>
+                    <div class="bullet-point">Controlar acesso e integridade</div>
+                    <div class="bullet-point">Interface com aplicações do usuário</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 12: Analogia Completa do Telefone -->
+        <div class="slide">
+            <div class="content">
+                <h2>📞 Analogia Completa: Ligação Telefônica</h2>
+                
+                <div class="telephone-analogy">
+                    <h3>🎯 Fazendo uma Ligação - Todas as Camadas</h3>
+                </div>
+
+                <div class="process-step">
+                    <strong>7. Aplicação:</strong> "Alô, gostaria de falar com João"
+                </div>
+                <div class="process-step">
+                    <strong>6. Apresentação:</strong> Secretária eletrônica converte voz analógica → digital
+                </div>
+                <div class="process-step">
+                    <strong>5. Sessão:</strong> Estabelece e gerencia o diálogo entre as pessoas
+                </div>
+                <div class="process-step">
+                    <strong>4. Transporte:</strong> "Fale mais devagar, não estou entendendo"
+                </div>
+                <div class="process-step">
+                    <strong>3. Rede:</strong> Central telefônica roteia pela melhor rota
+                </div>
+                <div class="process-step">
+                    <strong>2. Enlace:</strong> Verifica se a linha está funcionando (tom de discar)
+                </div>
+                <div class="process-step">
+                    <strong>1. Física:</strong> Fios, conectores e aparelhos telefônicos
+                </div>
+
+                <div class="example-box center-text">
+                    <h3>💡 Moral da História</h3>
+                    <p>Cada camada tem sua responsabilidade específica<br>
+                    Trabalham juntas para realizar a comunicação<br>
+                    Usuário só vê a camada 7, mas todas são essenciais</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 13: Encapsulamento de Dados -->
+        <div class="slide">
+            <div class="content">
+                <h2>📦 Encapsulamento de Dados</h2>
+                
+                <div class="bullet-point">Cada camada adiciona suas informações</div>
+                <div class="bullet-point">Como "bonecas russas" ou "caixas dentro de caixas"</div>
+                <div class="bullet-point">Descapsulamento no destino</div>
+                <div class="bullet-point">Processo transparente ao usuário</div>
+
+                <div class="diagram">
+                    <strong>Envio (Encapsulamento):</strong><br><br>
+                    Dados do usuário<br>
+                    ↓ +Cabeçalho Aplicação<br>
+                    ↓ +Cabeçalho Apresentação<br>
+                    ↓ +Cabeçalho Sessão<br>
+                    ↓ +Cabeçalho Transporte<br>
+                    ↓ +Cabeçalho Rede<br>
+                    ↓ +Cabeçalho Enlace<br>
+                    ↓ Sinais Físicos<br><br>
+                    <strong>Recepção (Descapsulamento):</strong><br>
+                    Processo reverso remove cada cabeçalho
+                </div>
+
+                <div class="example-box">
+                    <h3>📮 Analogia do Correio</h3>
+                    <div class="bullet-point">Carta = dados do usuário</div>
+                    <div class="bullet-point">Envelope = cabeçalhos das camadas</div>
+                    <div class="bullet-point">Endereço = informações de roteamento</div>
+                    <div class="bullet-point">Caminhão dos correios = meio físico</div>
+                </div>
+
+                <div class="highlight-box">
+                    <h3>🔍 Por que Encapsular?</h3>
+                    <div class="bullet-point">Cada camada precisa de suas informações</div>
+                    <div class="bullet-point">Roteamento, controle, endereçamento</div>
+                    <div class="bullet-point">Permite funcionamento independente</div>
+                    <div class="bullet-point">Facilita manutenção e evolução</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 14: Resumo das Funções -->
+        <div class="slide">
+            <div class="content">
+                <h2>📋 Resumo das Funções OSI</h2>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Camada</th>
+                            <th>Nome</th>
+                            <th>Função Principal</th>
+                            <th>Exemplo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>7</strong></td>
+                            <td>Aplicação</td>
+                            <td>Interface com usuário</td>
+                            <td>HTTP, E-mail, FTP</td>
+                        </tr>
+                        <tr>
+                            <td><strong>6</strong></td>
+                            <td>Apresentação</td>
+                            <td>Formatação, criptografia</td>
+                            <td>SSL, JPEG, ZIP</td>
+                        </tr>
+                        <tr>
+                            <td><strong>5</strong></td>
+                            <td>Sessão</td>
+                            <td>Gerência de diálogo</td>
+                            <td>NetBIOS, RPC</td>
+                        </tr>
+                        <tr>
+                            <td><strong>4</strong></td>
+                            <td>Transporte</td>
+                            <td>Confiabilidade fim-a-fim</td>
+                            <td>TCP, UDP</td>
+                        </tr>
+                        <tr>
+                            <td><strong>3</strong></td>
+                            <td>Rede</td>
+                            <td>Roteamento entre redes</td>
+                            <td>IP, ICMP, Roteadores</td>
+                        </tr>
+                        <tr>
+                            <td><strong>2</strong></td>
+                            <td>Enlace</td>
+                            <td>Comunicação local confiável</td>
+                            <td>Ethernet, WiFi, Switches</td>
+                        </tr>
+                        <tr>
+                            <td><strong>1</strong></td>
+                            <td>Física</td>
+                            <td>Transmissão de bits</td>
+                            <td>Cabos, Conectores, Hubs</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="highlight-box center-text">
+                    <h3>🎯 Conceitos-Chave</h3>
+                    <p><strong>Camadas 1-3:</strong> Movimento de dados<br>
+                    <strong>Camadas 4-7:</strong> Processamento de dados<br>
+                    <strong>Separação clara de responsabilidades</strong></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 15: Quiz -->
+        <div class="slide">
+            <div class="content">
+                <h2>🧠 Quiz - Teste seus conhecimentos!</h2>
+                
+                <div class="quiz-container">
+                    <!-- Questão 1 -->
+                    <div class="quiz-question" id="question1">
+                        <h3>📝 Questão 1</h3>
+                        <p><strong>Quantas camadas tem o modelo OSI?</strong></p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(1, 'a', false)">
+                                <span class="option-letter">A)</span> 4 camadas
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(1, 'b', false)">
+                                <span class="option-letter">B)</span> 5 camadas
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(1, 'c', true)">
+                                <span class="option-letter">C)</span> 7 camadas
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(1, 'd', false)">
+                                <span class="option-letter">D)</span> 9 camadas
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback1"></div>
+                    </div>
+
+                    <!-- Questão 2 -->
+                    <div class="quiz-question" id="question2" style="display: none;">
+                        <h3>📝 Questão 2</h3>
+                        <p><strong>Qual camada é responsável pelo roteamento entre redes diferentes?</strong></p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(2, 'a', false)">
+                                <span class="option-letter">A)</span> Camada de Enlace
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(2, 'b', true)">
+                                <span class="option-letter">B)</span> Camada de Rede
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(2, 'c', false)">
+                                <span class="option-letter">C)</span> Camada de Transporte
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(2, 'd', false)">
+                                <span class="option-letter">D)</span> Camada de Aplicação
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback2"></div>
+                    </div>
+
+                    <!-- Questão 3 -->
+                    <div class="quiz-question" id="question3" style="display: none;">
+                        <h3>📝 Questão 3</h3>
+                        <p><strong>Qual camada converte dados para formato comum e faz criptografia?</strong></p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(3, 'a', false)">
+                                <span class="option-letter">A)</span> Sessão
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(3, 'b', true)">
+                                <span class="option-letter">B)</span> Apresentação
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(3, 'c', false)">
+                                <span class="option-letter">C)</span> Aplicação
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(3, 'd', false)">
+                                <span class="option-letter">D)</span> Transporte
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback3"></div>
+                    </div>
+
+                    <!-- Questão 4 -->
+                    <div class="quiz-question" id="question4" style="display: none;">
+                        <h3>📝 Questão 4</h3>
+                        <p><strong>Qual foi a motivação original para criar o modelo OSI?</strong></p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(4, 'a', true)">
+                                <span class="option-letter">A)</span> Padronizar redes proprietárias incompatíveis
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(4, 'b', false)">
+                                <span class="option-letter">B)</span> Criar a Internet
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(4, 'c', false)">
+                                <span class="option-letter">C)</span> Substituir o TCP/IP
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(4, 'd', false)">
+                                <span class="option-letter">D)</span> Facilitar jogos online
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback4"></div>
+                    </div>
+
+                    <!-- Resultado Final -->
+                    <div class="quiz-result" id="quizResult" style="display: none;">
+                        <h3>🎉 Parabéns! Quiz Concluído!</h3>
+                        <div class="result-box">
+                            <p><strong>Sua pontuação: <span id="finalScore">0</span>/4</strong></p>
+                            <p id="resultMessage"></p>
+                        </div>
+                        <button class="nav-btn" onclick="restartQuiz()">🔄 Refazer Quiz</button>
+                    </div>
+                </div>
+
+                <div class="quiz-navigation">
+                    <button class="nav-btn" id="nextQuizBtn" onclick="nextQuestion()" style="display: none;">
+                        Próxima Questão ➡️
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 16: Referências -->
+        <div class="slide">
+            <div class="content">
+                <h2>📚 Referências Bibliográficas</h2>
+                
+                <div class="highlight-box">
+                    <h3>📖 Fonte Principal:</h3>
+                    <div class="bullet-point"><strong>Capítulo 3 - Arquiteturas de Redes</strong></div>
+                    <div class="bullet-point">Seção 3.2 - Modelo de Referência OSI</div>
+                    <div class="bullet-point">Páginas 1-9 do documento</div>
+                </div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>🌐 Padrões Oficiais:</h3>
+                        <div class="bullet-point">ISO/IEC 7498-1 (Modelo OSI)</div>
+                        <div class="bullet-point">IEEE 802.3 (Ethernet)</div>
+                        <div class="bullet-point">IEEE 802.11 (WiFi)</div>
+                        <div class="bullet-point">ISO (International Standards Organization)</div>
+                    </div>
+                    <div>
+                        <h3>📋 Conceitos Relacionados:</h3>
+                        <div class="bullet-point">Encapsulamento de dados</div>
+                        <div class="bullet-point">Protocolos por camada</div>
+                        <div class="bullet-point">Endereçamento MAC vs IP</div>
+                        <div class="bullet-point">Redes proprietárias vs padrões</div>
+                    </div>
+                </div>
+
+                <div class="example-box center-text">
+                    <h3>🤖 Metodologia de Criação</h3>
+                    <p>Apresentação desenvolvida com assistência de IA Claude Sonnet 4<br>
+                    Baseada integralmente no material didático fornecido<br>
+                    Analogias práticas para facilitar o aprendizado</p>
+                </div>
+
+                <div class="highlight-box center-text">
+                    <h3>🎯 Objetivo Educacional</h3>
+                    <p>Facilitar o aprendizado do modelo OSI através de<br>
+                    analogias do sistema telefônico e exemplos práticos</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="navigation">
+            <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">⬅️ Anterior</button>
+            <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">Próximo ➡️</button>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        document.getElementById('total-slides').textContent = totalSlides;
+
+        // Quiz variables
+        let currentQuestion = 1;
+        let score = 0;
+        let quizAnswered = [false, false, false, false];
+
+        function showSlide(index) {
+            slides.forEach((slide, i) => {
+                slide.classList.toggle('active', i === index);
+            });
+            
+            document.getElementById('current-slide').textContent = index + 1;
+            document.getElementById('prevBtn').disabled = index === 0;
+            document.getElementById('nextBtn').disabled = index === totalSlides - 1;
+        }
+
+        function changeSlide(direction) {
+            const newSlide = currentSlide + direction;
+            if (newSlide >= 0 && newSlide < totalSlides) {
+                currentSlide = newSlide;
+                showSlide(currentSlide);
+            }
+        }
+
+        // Quiz Functions
+        function selectOption(questionNum, option, isCorrect) {
+            if (quizAnswered[questionNum - 1]) return; // Já respondida
+            
+            const options = document.querySelectorAll(`#question${questionNum} .quiz-option`);
+            const feedback = document.getElementById(`feedback${questionNum}`);
+            
+            // Marcar todas as opções
+            options.forEach(opt => {
+                opt.style.pointerEvents = 'none';
+                if (opt.onclick.toString().includes('true')) {
+                    opt.classList.add('correct');
+                } else if (opt === event.currentTarget) {
+                    opt.classList.add(isCorrect ? 'correct' : 'incorrect');
+                }
+            });
+            
+            // Mostrar feedback
+            if (isCorrect) {
+                feedback.innerHTML = '✅ Correto! Muito bem!';
+                feedback.className = 'quiz-feedback correct';
+                score++;
+            } else {
+                feedback.innerHTML = '❌ Incorreto. A resposta correta está destacada em verde.';
+                feedback.className = 'quiz-feedback incorrect';
+            }
+            
+            quizAnswered[questionNum - 1] = true;
+            
+            // Mostrar botão para próxima questão
+            if (questionNum < 4) {
+                document.getElementById('nextQuizBtn').style.display = 'inline-block';
+            } else {
+                // Última questão - mostrar resultado
+                setTimeout(() => {
+                    showQuizResult();
+                }, 2000);
+            }
+        }
+
+        function nextQuestion() {
+            document.getElementById(`question${currentQuestion}`).style.display = 'none';
+            currentQuestion++;
+            document.getElementById(`question${currentQuestion}`).style.display = 'block';
+            document.getElementById('nextQuizBtn').style.display = 'none';
+        }
+
+        function showQuizResult() {
+            // Esconder última questão
+            document.getElementById('question4').style.display = 'none';
+            
+            // Mostrar resultado
+            document.getElementById('quizResult').style.display = 'block';
+            document.getElementById('finalScore').textContent = score;
+            
+            const resultMessage = document.getElementById('resultMessage');
+            if (score === 4) {
+                resultMessage.innerHTML = '🏆 Excelente! Você domina o modelo OSI!';
+            } else if (score === 3) {
+                resultMessage.innerHTML = '👏 Muito bom! Quase perfeito!';
+            } else if (score === 2) {
+                resultMessage.innerHTML = '👍 Bom trabalho! Continue estudando!';
+            } else if (score === 1) {
+                resultMessage.innerHTML = '📚 Estude um pouco mais sobre OSI!';
+            } else {
+                resultMessage.innerHTML = '📖 Recomendo revisar o conteúdo!';
+            }
+        }
+
+        function restartQuiz() {
+            // Reset variables
+            currentQuestion = 1;
+            score = 0;
+            quizAnswered = [false, false, false, false];
+            
+            // Reset interface
+            for (let i = 1; i <= 4; i++) {
+                const question = document.getElementById(`question${i}`);
+                const options = question.querySelectorAll('.quiz-option');
+                const feedback = document.getElementById(`feedback${i}`);
+                
+                // Reset options
+                options.forEach(opt => {
+                    opt.className = 'quiz-option';
+                    opt.style.pointerEvents = 'auto';
+                });
+                
+                // Hide feedback
+                feedback.style.display = 'none';
+                
+                // Hide all questions except first
+                question.style.display = i === 1 ? 'block' : 'none';
+            }
+            
+            // Hide result and buttons
+            document.getElementById('quizResult').style.display = 'none';
+            document.getElementById('nextQuizBtn').style.display = 'none';
+        }
+
+        // Navegação por teclado
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') changeSlide(-1);
+            if (e.key === 'ArrowRight') changeSlide(1);
+            if (e.key === 'Home') {
+                currentSlide = 0;
+                showSlide(currentSlide);
+            }
+            if (e.key === 'End') {
+                currentSlide = totalSlides - 1;
+                showSlide(currentSlide);
+            }
+        });
+
+        // Inicializar
+        showSlide(0);
+        
+        // Inicializar quiz no slide 15
+        document.getElementById('question1').style.display = 'block';
+    </script>
+</body>
+</html>

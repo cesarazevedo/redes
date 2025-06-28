@@ -1,0 +1,1259 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DHCP - Dynamic Host Configuration Protocol</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        .presentation {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .slide {
+            min-height: 100vh;
+            padding: 60px 40px;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            background: white;
+            margin: 20px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        .slide.active {
+            display: flex;
+        }
+
+        .slide h1 {
+            font-size: 3.5em;
+            color: #4a5568;
+            text-align: center;
+            margin-bottom: 40px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .slide h2 {
+            font-size: 2.8em;
+            color: #2d3748;
+            margin-bottom: 30px;
+            border-bottom: 4px solid #667eea;
+            padding-bottom: 15px;
+        }
+
+        .slide h3 {
+            font-size: 2.2em;
+            color: #4a5568;
+            margin: 25px 0 15px 0;
+        }
+
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: start;
+        }
+
+        .bullet-point {
+            display: flex;
+            align-items: flex-start;
+            margin: 15px 0;
+            font-size: 1.3em;
+            line-height: 1.5;
+        }
+
+        .bullet-point::before {
+            content: "🔧";
+            margin-right: 15px;
+            font-size: 1.2em;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #667eea;
+        }
+
+        .example-box {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #20b2aa;
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 1000;
+        }
+
+        .nav-btn {
+            padding: 15px 25px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .nav-btn:hover {
+            background: #5a67d8;
+            transform: translateY(-2px);
+            box-shadow: 0 7px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .nav-btn:disabled {
+            background: #a0a0a0;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .slide-counter {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: rgba(255,255,255,0.9);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            color: #4a5568;
+            z-index: 1000;
+        }
+
+        .center-text {
+            text-align: center;
+        }
+
+        .large-text {
+            font-size: 1.4em;
+            line-height: 1.6;
+        }
+
+        .diagram {
+            background: #f7fafc;
+            border: 2px dashed #667eea;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+            font-family: monospace;
+            font-size: 1.2em;
+        }
+
+        .process-step {
+            background: #e6fffa;
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #38b2ac;
+            font-size: 1.1em;
+        }
+
+        .process-step strong {
+            color: #38b2ac;
+        }
+
+        .code-box {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: monospace;
+            font-size: 1em;
+            margin: 20px 0;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 1.1em;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        th {
+            background: #667eea;
+            color: white;
+            font-weight: bold;
+        }
+
+        /* Quiz Styles */
+        .quiz-container {
+            max-width: 100%;
+            margin: 20px 0;
+        }
+
+        .quiz-question {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border: 2px solid #e2e8f0;
+        }
+
+        .quiz-question h3 {
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+
+        .quiz-question p {
+            font-size: 1.3em;
+            margin-bottom: 25px;
+            font-weight: bold;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .quiz-option {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.1em;
+        }
+
+        .quiz-option:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+            transform: translateX(5px);
+        }
+
+        .quiz-option.selected {
+            border-color: #667eea;
+            background: #667eea;
+            color: white;
+        }
+
+        .quiz-option.correct {
+            border-color: #48bb78;
+            background: #48bb78;
+            color: white;
+        }
+
+        .quiz-option.incorrect {
+            border-color: #f56565;
+            background: #f56565;
+            color: white;
+        }
+
+        .option-letter {
+            background: #667eea;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .quiz-option.correct .option-letter {
+            background: #48bb78;
+        }
+
+        .quiz-option.incorrect .option-letter {
+            background: #f56565;
+        }
+
+        .quiz-feedback {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: bold;
+            display: none;
+        }
+
+        .quiz-feedback.correct {
+            background: #c6f6d5;
+            color: #22543d;
+            border: 2px solid #48bb78;
+            display: block;
+        }
+
+        .quiz-feedback.incorrect {
+            background: #fed7d7;
+            color: #742a2a;
+            border: 2px solid #f56565;
+            display: block;
+        }
+
+        .quiz-navigation {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .quiz-result {
+            text-align: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            margin: 20px 0;
+        }
+
+        .result-box {
+            background: rgba(255,255,255,0.1);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+
+        .result-box p {
+            font-size: 1.4em;
+            margin: 10px 0;
+        }
+
+        .comparison-box {
+            background: #f7fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .dhcp-flow {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 20px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 15px;
+        }
+
+        .dhcp-step {
+            background: #667eea;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 10px;
+            font-weight: bold;
+            text-align: center;
+            flex: 1;
+            margin: 0 5px;
+        }
+
+        .arrow {
+            font-size: 2em;
+            color: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation">
+        <div class="slide-counter">
+            <span id="current-slide">1</span> / <span id="total-slides">16</span>
+        </div>
+
+        <!-- Slide 1: Título -->
+        <div class="slide active">
+            <div class="content center-text">
+                <h1>🔧 Dynamic Host Configuration Protocol</h1>
+                <h2 style="border: none; color: #667eea;">DHCP - Configuração Automática de Redes</h2>
+                <div class="highlight-box large-text">
+                    <strong>Aula 08</strong><br>
+                    O protocolo que automatiza a configuração de IP<br>
+                    Como as máquinas "ganham vida" na rede automaticamente
+                </div>
+                
+                <div class="example-box" style="margin-top: 40px;">
+                    <h3>👨‍🏫 Autor da Apresentação</h3>
+                    <p style="font-size: 1.3em; margin: 10px 0;">
+                        <strong>César Azevedo</strong><br>
+                        📧 cesar.augusto@ifrn.edu.br
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 2: Tópicos da Aula -->
+        <div class="slide">
+            <div class="content">
+                <h2>📋 Tópicos da Aula</h2>
+                
+                <div class="two-column">
+                    <div>
+                        <h3>🌟 Fundamentos</h3>
+                        <div class="bullet-point">O que é DHCP e sua importância</div>
+                        <div class="bullet-point">Evolução: ARP → RARP → BOOTP → DHCP</div>
+                        <div class="bullet-point">Protocolo da camada de aplicação</div>
+                        <div class="bullet-point">RFC 2131 - Especificação oficial</div>
+                        
+                        <h3>⚙️ Como Funciona</h3>
+                        <div class="bullet-point">Processo de 4 etapas (DORA)</div>
+                        <div class="bullet-point">Mensagens: DISCOVER, OFFER, REQUEST, ACK</div>
+                        <div class="bullet-point">Portas UDP 67 e 68</div>
+                    </div>
+                    <div>
+                        <h3>🏗️ Elementos</h3>
+                        <div class="bullet-point">DHCP Client (cliente)</div>
+                        <div class="bullet-point">DHCP Server (servidor)</div>
+                        <div class="bullet-point">DHCP Relay Agent (agente)</div>
+                        
+                        <h3>🔄 Tipos de Alocação</h3>
+                        <div class="bullet-point">Dinâmica vs Manual</div>
+                        <div class="bullet-point">Concessão (lease) de IPs</div>
+                        <div class="bullet-point">Renovação automática</div>
+                        <div class="bullet-point">Vantagens e desvantagens</div>
+                    </div>
+                </div>
+
+                <div class="highlight-box center-text">
+                    <h3>🎯 Objetivo Final</h3>
+                    <p>Compreender como o DHCP simplifica a administração de redes<br>
+                    automatizando a configuração de endereços IP</p>
+                </div>
+
+                <div class="example-box center-text">
+                    <h3>🧠 + Quiz Interativo</h3>
+                    <p>Teste seus conhecimentos com 4 questões práticas!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: O que é DHCP -->
+        <div class="slide">
+            <div class="content">
+                <h2>🤔 O que é DHCP?</h2>
+                
+                <div class="bullet-point"><strong>D</strong>ynamic <strong>H</strong>ost <strong>C</strong>onfiguration <strong>P</strong>rotocol</div>
+                <div class="bullet-point">Protocolo da camada de aplicação</div>
+                <div class="bullet-point">Automatiza a configuração de endereços IP</div>
+                <div class="bullet-point">Elimina configuração manual das máquinas</div>
+                <div class="bullet-point">Especificado na RFC 2131</div>
+
+                <div class="example-box">
+                    <h3>💡 Analogia simples:</h3>
+                    <p style="font-size: 1.3em;">
+                        <strong>DHCP é como um balcão de atendimento automático:</strong><br>
+                        • Você chega e pede um "endereço" (IP)<br>
+                        • O atendente (servidor) verifica disponibilidade<br>
+                        • Te entrega um endereço temporário (lease)<br>
+                        • Também dá informações extras (gateway, DNS)<br>
+                        • Você pode renovar ou devolver quando sair
+                    </p>
+                </div>
+
+                <div class="highlight-box">
+                    <h3>📜 Evolução Histórica:</h3>
+                    <div class="dhcp-flow">
+                        <div class="dhcp-step">ARP</div>
+                        <div class="arrow">→</div>
+                        <div class="dhcp-step">RARP</div>
+                        <div class="arrow">→</div>
+                        <div class="dhcp-step">BOOTP</div>
+                        <div class="arrow">→</div>
+                        <div class="dhcp-step">DHCP</div>
+                    </div>
+                    <p style="text-align: center; margin-top: 15px;">
+                        Cada versão trouxe melhorias e mais recursos
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Por que DHCP é Importante -->
+        <div class="slide">
+            <div class="content">
+                <h2>🎯 Por que o DHCP é Importante?</h2>
+                
+                <div class="highlight-box">
+                    <h3>🔴 Problema ANTES do DHCP:</h3>
+                    <div class="bullet-point">Configurar cada máquina manualmente</div>
+                    <div class="bullet-point">Controlar quais IPs estão sendo usados</div>
+                    <div class="bullet-point">Resolver conflitos de IP</div>
+                    <div class="bullet-point">Atualizar configurações em massa</div>
+                </div>
+
+                <div class="example-box">
+                    <h3>💭 Imagine numa empresa com 500 computadores...</h3>
+                    <p style="font-size: 1.2em;">
+                        • Configurar IP manualmente em cada um 😰<br>
+                        • Lembrar quais IPs já foram usados 📝<br>
+                        • Ir de máquina em máquina para mudanças 🏃‍♂️<br>
+                        • Resolver conflitos quando dois PCs têm o mesmo IP ⚡
+                    </p>
+                </div>
+
+                <div class="highlight-box">
+                    <h3>✅ Solução COM DHCP:</h3>
+                    <div class="bullet-point">Configuração automática de todas as máquinas</div>
+                    <div class="bullet-point">Controle centralizado de endereços IP</div>
+                    <div class="bullet-point">Prevenção automática de conflitos</div>
+                    <div class="bullet-point">Mudanças instantâneas em toda a rede</div>
+                </div>
+
+                <div class="diagram">
+                    <strong>DHCP = Administração de Rede Inteligente</strong><br>
+                    Uma configuração → Toda a rede funcionando
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: Como Funciona - Processo DORA -->
+        <div class="slide">
+            <div class="content">
+                <h2>⚙️ Como o DHCP Funciona - Processo DORA</h2>
+                
+                <div class="highlight-box center-text">
+                    <h3>🔤 DORA = 4 Etapas Fundamentais</h3>
+                    <p><strong>D</strong>ISCOVER → <strong>O</strong>FFER → <strong>R</strong>EQUEST → <strong>A</strong>CK</p>
+                </div>
+
+                <div class="process-step">
+                    <strong>1. DISCOVER (Descoberta)</strong><br>
+                    Cliente: "Olá rede! Alguém pode me dar um IP?" (Broadcast)
+                </div>
+
+                <div class="process-step">
+                    <strong>2. OFFER (Oferta)</strong><br>
+                    Servidor: "Tenho o IP 192.168.1.50 disponível para você!"
+                </div>
+
+                <div class="process-step">
+                    <strong>3. REQUEST (Solicitação)</strong><br>
+                    Cliente: "Aceito! Quero o IP 192.168.1.50!" (Broadcast)
+                </div>
+
+                <div class="process-step">
+                    <strong>4. ACK (Confirmação)</strong><br>
+                    Servidor: "Confirmado! IP 192.168.1.50 é seu por 24 horas!"
+                </div>
+
+                <div class="example-box">
+                    <h3>📦 O que vem junto com o IP:</h3>
+                    <div class="bullet-point">Máscara de sub-rede (ex: 255.255.255.0)</div>
+                    <div class="bullet-point">Gateway padrão (ex: 192.168.1.1)</div>
+                    <div class="bullet-point">Servidor DNS (ex: 8.8.8.8)</div>
+                    <div class="bullet-point">Tempo de concessão (lease time)</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: Elementos do DHCP -->
+        <div class="slide">
+            <div class="content">
+                <h2>🏗️ Elementos do DHCP</h2>
+                
+                <div class="two-column">
+                    <div>
+                        <h3>💻 DHCP Client (Cliente)</h3>
+                        <div class="bullet-point">Máquina que precisa de IP</div>
+                        <div class="bullet-point">Envia solicitações de endereço</div>
+                        <div class="bullet-point">Renova automaticamente o lease</div>
+                        <div class="bullet-point">Integrado no sistema operacional</div>
+                        
+                        <div class="example-box">
+                            <h3>📱 Exemplos:</h3>
+                            <p>• Computadores<br>• Celulares<br>• Impressoras<br>• Smart TVs</p>
+                        </div>
+                    </div>
+                    <div>
+                        <h3>🖥️ DHCP Server (Servidor)</h3>
+                        <div class="bullet-point">Gerencia pool de endereços IP</div>
+                        <div class="bullet-point">Responde às solicitações</div>
+                        <div class="bullet-point">Controla tempo de concessão</div>
+                        <div class="bullet-point">Mantém registro de IPs alocados</div>
+                        
+                        <div class="example-box">
+                            <h3>🔧 Implementado em:</h3>
+                            <p>• Roteadores<br>• Windows Server<br>• Linux Server<br>• Switches gerenciáveis</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="highlight-box">
+                    <h3>🌉 DHCP Relay Agent (Agente de Retransmissão)</h3>
+                    <div class="bullet-point"><strong>Problema:</strong> Broadcasts não atravessam roteadores</div>
+                    <div class="bullet-point"><strong>Solução:</strong> Relay Agent intercepta e encaminha como unicast</div>
+                    <div class="bullet-point">Permite servidor DHCP centralizado para múltiplas redes</div>
+                    <div class="bullet-point">Configurado nos roteadores entre as redes</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7: Portas e Protocolos -->
+        <div class="slide">
+            <div class="content">
+                <h2>🚪 Portas e Protocolos</h2>
+                
+                <div class="highlight-box">
+                    <h3>🔌 Portas UDP Utilizadas:</h3>
+                    <div class="diagram">
+                        <strong>Porta 67</strong> → Servidor DHCP<br>
+                        (onde o servidor escuta solicitações)<br><br>
+                        <strong>Porta 68</strong> → Cliente DHCP<br>
+                        (onde o cliente recebe respostas)
+                    </div>
+                </div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>📡 Protocolo UDP</h3>
+                        <div class="bullet-point">Mais rápido que TCP</div>
+                        <div class="bullet-point">Sem garantia de entrega</div>
+                        <div class="bullet-point">Ideal para broadcast</div>
+                        <div class="bullet-point">Menos overhead</div>
+                    </div>
+                    <div>
+                        <h3>📻 Tipos de Transmissão</h3>
+                        <div class="bullet-point"><strong>Broadcast:</strong> DISCOVER e REQUEST</div>
+                        <div class="bullet-point"><strong>Unicast:</strong> OFFER e ACK</div>
+                        <div class="bullet-point">Broadcast atinge toda a rede local</div>
+                        <div class="bullet-point">Unicast é direto ao destinatário</div>
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>💻 Comandos Úteis no Windows:</h3>
+                    <div class="code-box">
+ipconfig /release    # Libera o IP atual<br>
+ipconfig /renew      # Solicita novo IP<br>
+ipconfig /all        # Mostra configuração completa<br>
+ipconfig /flushdns   # Limpa cache DNS
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: Tipos de Alocação -->
+        <div class="slide">
+            <div class="content">
+                <h2>🔄 Tipos de Alocação de IP</h2>
+                
+                <div class="two-column">
+                    <div class="comparison-box">
+                        <h3 style="color: #667eea;">🎲 Alocação Dinâmica</h3>
+                        
+                        <h4>✅ Características:</h4>
+                        <div class="bullet-point">IP escolhido automaticamente do pool</div>
+                        <div class="bullet-point">Pode mudar a cada conexão</div>
+                        <div class="bullet-point">Mais eficiente com IPs limitados</div>
+                        <div class="bullet-point">Ideal para usuários temporários</div>
+                        
+                        <h4>📱 Uso Comum:</h4>
+                        <div class="bullet-point">WiFi de cafés, hotéis</div>
+                        <div class="bullet-point">Computadores pessoais</div>
+                        <div class="bullet-point">Dispositivos móveis</div>
+                    </div>
+                    
+                    <div class="comparison-box">
+                        <h3 style="color: #38b2ac;">🔒 Alocação Manual (Estática)</h3>
+                        
+                        <h4>✅ Características:</h4>
+                        <div class="bullet-point">IP fixo baseado no endereço MAC</div>
+                        <div class="bullet-point">Mesmo IP sempre para o mesmo dispositivo</div>
+                        <div class="bullet-point">Maior controle administrativo</div>
+                        <div class="bullet-point">Configuração centralizada</div>
+                        
+                        <h4>🏢 Uso Comum:</h4>
+                        <div class="bullet-point">Servidores</div>
+                        <div class="bullet-point">Impressoras de rede</div>
+                        <div class="bullet-point">Equipamentos críticos</div>
+                    </div>
+                </div>
+
+                <div class="highlight-box">
+                    <h3>⏰ Conceito de Lease (Concessão):</h3>
+                    <div class="bullet-point"><strong>Lease Time:</strong> Quanto tempo o IP fica "alugado"</div>
+                    <div class="bullet-point"><strong>Renovação:</strong> Automática na metade do tempo</div>
+                    <div class="bullet-point"><strong>Expiração:</strong> IP volta para o pool se não renovado</div>
+                    <div class="bullet-point"><strong>Padrão:</strong> Geralmente 24 horas em redes corporativas</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 9: Exemplo Prático -->
+        <div class="slide">
+            <div class="content">
+                <h2>💻 Exemplo Prático - Conexão DHCP</h2>
+                
+                <div class="example-box">
+                    <h3>📱 Cenário: Celular conectando no WiFi da escola</h3>
+                </div>
+
+                <div class="process-step">
+                    <strong>1. DHCPDISCOVER</strong><br>
+                    Celular: "Oi pessoal! Sou novo aqui, alguém pode me dar um IP?"<br>
+                    <em>Mensagem enviada em broadcast para 255.255.255.255</em>
+                </div>
+
+                <div class="process-step">
+                    <strong>2. DHCPOFFER</strong><br>
+                    Servidor: "Oi! Tenho o IP 10.0.0.25 disponível pra você!"<br>
+                    <em>IP: 10.0.0.25, Gateway: 10.0.0.1, DNS: 8.8.8.8, Lease: 8 horas</em>
+                </div>
+
+                <div class="process-step">
+                    <strong>3. DHCPREQUEST</strong><br>
+                    Celular: "Perfeito! Aceito o IP 10.0.0.25!"<br>
+                    <em>Confirma aceitação e avisa outros servidores que recusou suas ofertas</em>
+                </div>
+
+                <div class="process-step">
+                    <strong>4. DHCPACK</strong><br>
+                    Servidor: "Confirmado! IP 10.0.0.25 é seu até às 18h!"<br>
+                    <em>Marca IP como ocupado na tabela interna</em>
+                </div>
+
+                <div class="highlight-box center-text">
+                    <h3>🎉 Resultado: Celular conectado e funcionando!</h3>
+                    <p>Em poucos segundos, configuração completa e automática</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 10: Vantagens e Desvantagens -->
+        <div class="slide">
+            <div class="content">
+                <h2>⚖️ Vantagens vs Desvantagens</h2>
+                
+                <div class="two-column">
+                    <div class="comparison-box">
+                        <h3 style="color: #48bb78;">✅ Vantagens</h3>
+                        
+                        <h4>⏰ Economia de Tempo:</h4>
+                        <div class="bullet-point">Configuração automática instantânea</div>
+                        <div class="bullet-point">Sem configuração manual por máquina</div>
+                        
+                        <h4>🛠️ Facilidade de Administração:</h4>
+                        <div class="bullet-point">Controle centralizado</div>
+                        <div class="bullet-point">Mudanças aplicadas instantaneamente</div>
+                        <div class="bullet-point">Prevenção automática de conflitos</div>
+                        
+                        <h4>💰 Eficiência:</h4>
+                        <div class="bullet-point">Melhor uso do pool de IPs</div>
+                        <div class="bullet-point">IPs liberados automaticamente</div>
+                        <div class="bullet-point">Menos desperdício de endereços</div>
+                    </div>
+                    
+                    <div class="comparison-box">
+                        <h3 style="color: #f56565;">❌ Desvantagens</h3>
+                        
+                        <h4>🔓 Questões de Segurança:</h4>
+                        <div class="bullet-point">Invasor tem "um passo a menos"</div>
+                        <div class="bullet-point">Possibilidade de servidor DHCP falso</div>
+                        <div class="bullet-point">Ataques de exaustão de DHCP</div>
+                        
+                        <h4>📉 Dependência do Servidor:</h4>
+                        <div class="bullet-point">Se servidor "cair", rede para</div>
+                        <div class="bullet-point">Ponto único de falha</div>
+                        <div class="bullet-point">Necessidade de redundância</div>
+                        
+                        <h4>⚠️ Complicações:</h4>
+                        <div class="bullet-point">Debug mais complexo</div>
+                        <div class="bullet-point">IPs podem mudar inesperadamente</div>
+                    </div>
+                </div>
+
+                <div class="highlight-box center-text">
+                    <h3>🎯 Veredicto Final</h3>
+                    <p><strong>Vantagens superam as desvantagens!</strong><br>
+                    DHCP é essencial em redes modernas, mas precisa ser bem configurado</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 11: DHCP Relay Agent Detalhado -->
+        <div class="slide">
+            <div class="content">
+                <h2>🌉 DHCP Relay Agent - Conectando Redes</h2>
+                
+                <div class="highlight-box">
+                    <h3>🔴 O Problema:</h3>
+                    <div class="bullet-point">Broadcasts DHCP não atravessam roteadores</div>
+                    <div class="bullet-point">Cada rede precisaria de seu próprio servidor DHCP</div>
+                    <div class="bullet-point">Administração descentralizada e complexa</div>
+                </div>
+
+                <div class="example-box">
+                    <h3>💡 A Solução: Relay Agent</h3>
+                    <div class="process-step">
+                        <strong>1.</strong> Cliente envia DISCOVER em broadcast
+                    </div>
+                    <div class="process-step">
+                        <strong>2.</strong> Relay Agent intercepta na rede local
+                    </div>
+                    <div class="process-step">
+                        <strong>3.</strong> Converte para unicast e encaminha ao servidor DHCP
+                    </div>
+                    <div class="process-step">
+                        <strong>4.</strong> Servidor responde ao Relay Agent
+                    </div>
+                    <div class="process-step">
+                        <strong>5.</strong> Relay Agent encaminha resposta ao cliente
+                    </div>
+                </div>
+
+                <div class="diagram">
+                    <strong>Rede A (192.168.1.0/24)</strong><br>
+                    ↕️ Relay Agent no Roteador ↕️<br>
+                    <strong>Rede B (192.168.2.0/24)</strong><br>
+                    📡 Servidor DHCP centralizado
+                </div>
+
+                <div class="highlight-box">
+                    <h3>✅ Benefícios do Relay Agent:</h3>
+                    <div class="bullet-point">Um servidor DHCP para múltiplas redes</div>
+                    <div class="bullet-point">Administração centralizada</div>
+                    <div class="bullet-point">Economia de recursos</div>
+                    <div class="bullet-point">Configuração simplificada</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 12: Troubleshooting DHCP -->
+        <div class="slide">
+            <div class="content">
+                <h2>🔧 Troubleshooting DHCP</h2>
+                
+                <div class="two-column">
+                    <div>
+                        <h3>🚨 Problemas Comuns:</h3>
+                        <div class="bullet-point">Cliente não consegue IP</div>
+                        <div class="bullet-point">IP estranho (169.254.x.x)</div>
+                        <div class="bullet-point">Conexão lenta ou instável</div>
+                        <div class="bullet-point">Conflito de endereços IP</div>
+                        
+                        <h3>🔍 Comandos de Diagnóstico:</h3>
+                        <div class="code-box" style="font-size: 0.9em;">
+# Windows<br>
+ipconfig /release<br>
+ipconfig /renew<br>
+ipconfig /all<br><br>
+# Linux<br>
+sudo dhclient -r<br>
+sudo dhclient<br>
+ip addr show
+                        </div>
+                    </div>
+                    <div>
+                        <h3>💡 Possíveis Causas:</h3>
+                        <div class="bullet-point">Servidor DHCP desligado</div>
+                        <div class="bullet-point">Pool de IPs esgotado</div>
+                        <div class="bullet-point">Problemas de rede física</div>
+                        <div class="bullet-point">Firewall bloqueando portas</div>
+                        
+                        <h3>✅ Soluções:</h3>
+                        <div class="bullet-point">Verificar status do servidor</div>
+                        <div class="bullet-point">Expandir range de IPs</div>
+                        <div class="bullet-point">Testar conectividade física</div>
+                        <div class="bullet-point">Liberar portas 67/68 UDP</div>
+                    </div>
+                </div>
+
+                <div class="highlight-box">
+                    <h3>⚠️ IP APIPA (169.254.x.x):</h3>
+                    <div class="bullet-point">Windows atribui automaticamente quando não acha DHCP</div>
+                    <div class="bullet-point">Permite comunicação apenas na rede local</div>
+                    <div class="bullet-point">Indica problema na configuração DHCP</div>
+                    <div class="bullet-point">Solução: Corrigir servidor DHCP ou usar IP estático</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 13: Resumo Final -->
+        <div class="slide">
+            <div class="content">
+                <h2>🎯 Resumo Final</h2>
+                
+                <div class="highlight-box large-text center-text">
+                    <strong>DHCP é a automação inteligente das redes modernas</strong>
+                </div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>✅ Conceitos Fundamentais:</h3>
+                        <div class="bullet-point">Protocolo da camada de aplicação</div>
+                        <div class="bullet-point">Automatiza configuração de IP</div>
+                        <div class="bullet-point">Processo DORA (4 etapas)</div>
+                        <div class="bullet-point">Portas UDP 67 e 68</div>
+                        <div class="bullet-point">Baseado em concessões temporárias</div>
+                    </div>
+                    <div>
+                        <h3>🎯 Pontos-Chave:</h3>
+                        <div class="bullet-point">Simplifica drasticamente administração</div>
+                        <div class="bullet-point">Previne conflitos automaticamente</div>
+                        <div class="bullet-point">Relay Agent conecta múltiplas redes</div>
+                        <div class="bullet-point">Essencial em redes modernas</div>
+                        <div class="bullet-point">Requer cuidados com segurança</div>
+                    </div>
+                </div>
+
+                <div class="example-box center-text">
+                    <h3>🌐 DHCP no Mundo Real</h3>
+                    <p>De redes domésticas a datacenters corporativos,<br>
+                    DHCP está presente em praticamente toda infraestrutura de rede moderna!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 14: Quiz -->
+        <div class="slide">
+            <div class="content">
+                <h2>🧠 Quiz - Teste seus conhecimentos!</h2>
+                
+                <div class="quiz-container">
+                    <!-- Questão 1 -->
+                    <div class="quiz-question" id="question1">
+                        <h3>📝 Questão 1</h3>
+                        <p><strong>Quais portas UDP o DHCP utiliza?</strong></p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(1, 'a', false)">
+                                <span class="option-letter">A)</span> Porta 53 (servidor) e 54 (cliente)
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(1, 'b', true)">
+                                <span class="option-letter">B)</span> Porta 67 (servidor) e 68 (cliente)
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(1, 'c', false)">
+                                <span class="option-letter">C)</span> Porta 80 (servidor) e 443 (cliente)
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(1, 'd', false)">
+                                <span class="option-letter">D)</span> Porta 21 (servidor) e 20 (cliente)
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback1"></div>
+                    </div>
+
+                    <!-- Questão 2 -->
+                    <div class="quiz-question" id="question2" style="display: none;">
+                        <h3>📝 Questão 2</h3>
+                        <p><strong>Qual é a sequência correta do processo DHCP?</strong></p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(2, 'a', false)">
+                                <span class="option-letter">A)</span> OFFER → DISCOVER → ACK → REQUEST
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(2, 'b', true)">
+                                <span class="option-letter">B)</span> DISCOVER → OFFER → REQUEST → ACK
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(2, 'c', false)">
+                                <span class="option-letter">C)</span> REQUEST → DISCOVER → OFFER → ACK
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(2, 'd', false)">
+                                <span class="option-letter">D)</span> ACK → REQUEST → OFFER → DISCOVER
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback2"></div>
+                    </div>
+
+                    <!-- Questão 3 -->
+                    <div class="quiz-question" id="question3" style="display: none;">
+                        <h3>📝 Questão 3</h3>
+                        <p><strong>Para que serve o DHCP Relay Agent?</strong></p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(3, 'a', false)">
+                                <span class="option-letter">A)</span> Acelerar a velocidade da internet
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(3, 'b', false)">
+                                <span class="option-letter">B)</span> Criptografar as mensagens DHCP
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(3, 'c', true)">
+                                <span class="option-letter">C)</span> Encaminhar mensagens DHCP entre redes diferentes
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(3, 'd', false)">
+                                <span class="option-letter">D)</span> Fazer backup das configurações de IP
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback3"></div>
+                    </div>
+
+                    <!-- Questão 4 -->
+                    <div class="quiz-question" id="question4" style="display: none;">
+                        <h3>📝 Questão 4</h3>
+                        <p><strong>O que significa "lease time" no DHCP?</strong></p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(4, 'a', false)">
+                                <span class="option-letter">A)</span> Tempo para o servidor responder
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(4, 'b', true)">
+                                <span class="option-letter">B)</span> Tempo que o cliente pode usar o IP
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(4, 'c', false)">
+                                <span class="option-letter">C)</span> Tempo de vida do servidor DHCP
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(4, 'd', false)">
+                                <span class="option-letter">D)</span> Tempo para configurar a rede
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback4"></div>
+                    </div>
+
+                    <!-- Resultado Final -->
+                    <div class="quiz-result" id="quizResult" style="display: none;">
+                        <h3>🎉 Parabéns! Quiz Concluído!</h3>
+                        <div class="result-box">
+                            <p><strong>Sua pontuação: <span id="finalScore">0</span>/4</strong></p>
+                            <p id="resultMessage"></p>
+                        </div>
+                        <button class="nav-btn" onclick="restartQuiz()">🔄 Refazer Quiz</button>
+                    </div>
+                </div>
+
+                <div class="quiz-navigation">
+                    <button class="nav-btn" id="nextQuizBtn" onclick="nextQuestion()" style="display: none;">
+                        Próxima Questão ➡️
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 15: Referências -->
+        <div class="slide">
+            <div class="content">
+                <h2>📚 Referências Bibliográficas</h2>
+                
+                <div class="highlight-box">
+                    <h3>📖 Fontes Principais:</h3>
+                    <div class="bullet-point"><strong>Material Didático - Protocolo DHCP</strong></div>
+                    <div class="bullet-point">Prof. César Azevedo - IFRN</div>
+                    <div class="bullet-point">Arquitetura de Redes de Computadores</div>
+                    <div class="bullet-point">Capítulo 17 - TCP/IP: Camada de Rede</div>
+                </div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>📋 RFCs e Documentos:</h3>
+                        <div class="bullet-point">RFC 2131 - Dynamic Host Configuration Protocol</div>
+                        <div class="bullet-point">RFC 1533 - DHCP Options and BOOTP Vendor Extensions</div>
+                        <div class="bullet-point">RFC 3046 - DHCP Relay Agent Information Option</div>
+                        
+                        <h3>📖 Bibliografia Complementar:</h3>
+                        <div class="bullet-point">Guide to TCP/IP (Networking) 4th Edition</div>
+                        <div class="bullet-point">Jeffrey L. Carrell, Laura Chappell</div>
+                        <div class="bullet-point">Ed Tittel, James Pyles</div>
+                    </div>
+                    <div>
+                        <h3>🌐 Sites e Recursos:</h3>
+                        <div class="bullet-point">IANA - Internet Assigned Numbers Authority</div>
+                        <div class="bullet-point">itigic.com - Advantages and Disadvantages of DHCP</div>
+                        <div class="bullet-point">masimoes.pro.br - DHCP Introduction</div>
+                        
+                        <h3>🛠️ Ferramentas Práticas:</h3>
+                        <div class="bullet-point">Cisco Packet Tracer - Simulação de DHCP</div>
+                        <div class="bullet-point">Wireshark - Análise de protocolos</div>
+                        <div class="bullet-point">Windows/Linux - Comandos nativos</div>
+                    </div>
+                </div>
+
+                <div class="example-box center-text">
+                    <h3>🤖 Metodologia de Criação</h3>
+                    <p>Apresentação desenvolvida com assistência de IA Claude Sonnet 4<br>
+                    Baseada no material didático do Prof. César Azevedo<br>
+                    Adaptação pedagógica com linguagem simples e analogias práticas</p>
+                </div>
+
+                <div class="highlight-box center-text">
+                    <h3>🎯 Objetivo Educacional</h3>
+                    <p>Facilitar o aprendizado do DHCP através de<br>
+                    explicações claras, exemplos práticos e casos reais</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="navigation">
+            <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">⬅️ Anterior</button>
+            <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">Próximo ➡️</button>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        document.getElementById('total-slides').textContent = totalSlides;
+
+        // Quiz variables
+        let currentQuestion = 1;
+        let score = 0;
+        let quizAnswered = [false, false, false, false];
+
+        function showSlide(index) {
+            slides.forEach((slide, i) => {
+                slide.classList.toggle('active', i === index);
+            });
+            
+            document.getElementById('current-slide').textContent = index + 1;
+            document.getElementById('prevBtn').disabled = index === 0;
+            document.getElementById('nextBtn').disabled = index === totalSlides - 1;
+        }
+
+        function changeSlide(direction) {
+            const newSlide = currentSlide + direction;
+            if (newSlide >= 0 && newSlide < totalSlides) {
+                currentSlide = newSlide;
+                showSlide(currentSlide);
+            }
+        }
+
+        // Quiz Functions
+        function selectOption(questionNum, option, isCorrect) {
+            if (quizAnswered[questionNum - 1]) return; // Já respondida
+            
+            const options = document.querySelectorAll(`#question${questionNum} .quiz-option`);
+            const feedback = document.getElementById(`feedback${questionNum}`);
+            
+            // Marcar todas as opções
+            options.forEach(opt => {
+                opt.style.pointerEvents = 'none';
+                if (opt.onclick.toString().includes('true')) {
+                    opt.classList.add('correct');
+                } else if (opt === event.currentTarget) {
+                    opt.classList.add(isCorrect ? 'correct' : 'incorrect');
+                }
+            });
+            
+            // Mostrar feedback
+            if (isCorrect) {
+                feedback.innerHTML = '✅ Correto! Muito bem!';
+                feedback.className = 'quiz-feedback correct';
+                score++;
+            } else {
+                feedback.innerHTML = '❌ Incorreto. A resposta correta está destacada em verde.';
+                feedback.className = 'quiz-feedback incorrect';
+            }
+            
+            quizAnswered[questionNum - 1] = true;
+            
+            // Mostrar botão para próxima questão
+            if (questionNum < 4) {
+                document.getElementById('nextQuizBtn').style.display = 'inline-block';
+            } else {
+                // Última questão - mostrar resultado
+                setTimeout(() => {
+                    showQuizResult();
+                }, 2000);
+            }
+        }
+
+        function nextQuestion() {
+            document.getElementById(`question${currentQuestion}`).style.display = 'none';
+            currentQuestion++;
+            document.getElementById(`question${currentQuestion}`).style.display = 'block';
+            document.getElementById('nextQuizBtn').style.display = 'none';
+        }
+
+        function showQuizResult() {
+            // Esconder última questão
+            document.getElementById('question4').style.display = 'none';
+            
+            // Mostrar resultado
+            document.getElementById('quizResult').style.display = 'block';
+            document.getElementById('finalScore').textContent = score;
+            
+            const resultMessage = document.getElementById('resultMessage');
+            if (score === 4) {
+                resultMessage.innerHTML = '🏆 Excelente! Você domina o DHCP!';
+            } else if (score === 3) {
+                resultMessage.innerHTML = '👏 Muito bom! Quase perfeito!';
+            } else if (score === 2) {
+                resultMessage.innerHTML = '👍 Bom trabalho! Continue estudando!';
+            } else if (score === 1) {
+                resultMessage.innerHTML = '📚 Estude um pouco mais sobre DHCP!';
+            } else {
+                resultMessage.innerHTML = '📖 Recomendo revisar o conteúdo!';
+            }
+        }
+
+        function restartQuiz() {
+            // Reset variables
+            currentQuestion = 1;
+            score = 0;
+            quizAnswered = [false, false, false, false];
+            
+            // Reset interface
+            for (let i = 1; i <= 4; i++) {
+                const question = document.getElementById(`question${i}`);
+                const options = question.querySelectorAll('.quiz-option');
+                const feedback = document.getElementById(`feedback${i}`);
+                
+                // Reset options
+                options.forEach(opt => {
+                    opt.className = 'quiz-option';
+                    opt.style.pointerEvents = 'auto';
+                });
+                
+                // Hide feedback
+                feedback.style.display = 'none';
+                
+                // Hide all questions except first
+                question.style.display = i === 1 ? 'block' : 'none';
+            }
+            
+            // Hide result and buttons
+            document.getElementById('quizResult').style.display = 'none';
+            document.getElementById('nextQuizBtn').style.display = 'none';
+        }
+
+        // Navegação por teclado
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') changeSlide(-1);
+            if (e.key === 'ArrowRight') changeSlide(1);
+            if (e.key === 'Home') {
+                currentSlide = 0;
+                showSlide(currentSlide);
+            }
+            if (e.key === 'End') {
+                currentSlide = totalSlides - 1;
+                showSlide(currentSlide);
+            }
+        });
+
+        // Inicializar
+        showSlide(0);
+        
+        // Inicializar quiz no slide 14
+        document.getElementById('question1').style.display = 'block';
+    </script>
+</body>
+</html>

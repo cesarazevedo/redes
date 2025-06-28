@@ -1,0 +1,1385 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Introdução às Redes de Computadores</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        .presentation {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .slide {
+            min-height: 100vh;
+            padding: 60px 40px;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            background: white;
+            margin: 20px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        .slide.active {
+            display: flex;
+        }
+
+        .slide h1 {
+            font-size: 3.5em;
+            color: #4a5568;
+            text-align: center;
+            margin-bottom: 40px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .slide h2 {
+            font-size: 2.8em;
+            color: #2d3748;
+            margin-bottom: 30px;
+            border-bottom: 4px solid #1e3c72;
+            padding-bottom: 15px;
+        }
+
+        .slide h3 {
+            font-size: 2.2em;
+            color: #4a5568;
+            margin: 25px 0 15px 0;
+        }
+
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: start;
+        }
+
+        .bullet-point {
+            display: flex;
+            align-items: flex-start;
+            margin: 15px 0;
+            font-size: 1.3em;
+            line-height: 1.5;
+        }
+
+        .bullet-point::before {
+            content: "🔸";
+            margin-right: 15px;
+            font-size: 1.2em;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #1e3c72;
+        }
+
+        .example-box {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #20b2aa;
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 1000;
+        }
+
+        .nav-btn {
+            padding: 15px 25px;
+            background: #1e3c72;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(30, 60, 114, 0.3);
+        }
+
+        .nav-btn:hover {
+            background: #2a5298;
+            transform: translateY(-2px);
+            box-shadow: 0 7px 20px rgba(30, 60, 114, 0.4);
+        }
+
+        .nav-btn:disabled {
+            background: #a0a0a0;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .slide-counter {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: rgba(255,255,255,0.9);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            color: #4a5568;
+            z-index: 1000;
+        }
+
+        .center-text {
+            text-align: center;
+        }
+
+        .large-text {
+            font-size: 1.4em;
+            line-height: 1.6;
+        }
+
+        .diagram {
+            background: #f7fafc;
+            border: 2px dashed #1e3c72;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+            font-family: monospace;
+            font-size: 1.2em;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 1.1em;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        th {
+            background: #1e3c72;
+            color: white;
+            font-weight: bold;
+        }
+
+        .process-step {
+            background: #e6fffa;
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #38b2ac;
+        }
+
+        .topology-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            margin: 20px 0;
+        }
+
+        .topology-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            border: 2px solid #e2e8f0;
+            text-align: center;
+        }
+
+        .topology-card h4 {
+            color: #1e3c72;
+            margin-bottom: 15px;
+            font-size: 1.4em;
+        }
+
+        .network-type {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .network-type h4 {
+            margin-bottom: 10px;
+            font-size: 1.5em;
+        }
+
+        .architecture-comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 20px 0;
+        }
+
+        .architecture-card {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            border: 2px solid #e2e8f0;
+        }
+
+        .architecture-card h4 {
+            color: #1e3c72;
+            margin-bottom: 15px;
+            font-size: 1.6em;
+            text-align: center;
+        }
+
+        /* Quiz Styles */
+        .quiz-container {
+            max-width: 100%;
+            margin: 20px 0;
+        }
+
+        .quiz-question {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border: 2px solid #e2e8f0;
+        }
+
+        .quiz-question h3 {
+            color: #1e3c72;
+            margin-bottom: 20px;
+        }
+
+        .quiz-question p {
+            font-size: 1.3em;
+            margin-bottom: 25px;
+            font-weight: bold;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .quiz-option {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.1em;
+        }
+
+        .quiz-option:hover {
+            border-color: #1e3c72;
+            background: #f0f4ff;
+            transform: translateX(5px);
+        }
+
+        .quiz-option.selected {
+            border-color: #1e3c72;
+            background: #1e3c72;
+            color: white;
+        }
+
+        .quiz-option.correct {
+            border-color: #48bb78;
+            background: #48bb78;
+            color: white;
+        }
+
+        .quiz-option.incorrect {
+            border-color: #f56565;
+            background: #f56565;
+            color: white;
+        }
+
+        .option-letter {
+            background: #1e3c72;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .quiz-option.correct .option-letter {
+            background: #48bb78;
+        }
+
+        .quiz-option.incorrect .option-letter {
+            background: #f56565;
+        }
+
+        .quiz-feedback {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: bold;
+            display: none;
+        }
+
+        .quiz-feedback.correct {
+            background: #c6f6d5;
+            color: #22543d;
+            border: 2px solid #48bb78;
+            display: block;
+        }
+
+        .quiz-feedback.incorrect {
+            background: #fed7d7;
+            color: #742a2a;
+            border: 2px solid #f56565;
+            display: block;
+        }
+
+        .quiz-navigation {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .quiz-result {
+            text-align: center;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            margin: 20px 0;
+        }
+
+        .result-box {
+            background: rgba(255,255,255,0.1);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+
+        .result-box p {
+            font-size: 1.4em;
+            margin: 10px 0;
+        }
+
+        .historical-box {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #c44569;
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation">
+        <div class="slide-counter">
+            <span id="current-slide">1</span> / <span id="total-slides">18</span>
+        </div>
+
+        <!-- Slide 1: Título -->
+        <div class="slide active">
+            <div class="content center-text">
+                <h1>🌐 Introdução às Redes de Computadores</h1>
+                <h2 style="border: none; color: #1e3c72;">Fundamentos e Conceitos Básicos</h2>
+                <div class="highlight-box large-text">
+                    <strong>Aula 01</strong><br>
+                    Da comunicação humana às redes globais<br>
+                    Como os computadores se conectam e se comunicam
+                </div>
+                
+                <div class="example-box" style="margin-top: 40px;">
+                    <h3>👨‍🏫 Autor da Apresentação</h3>
+                    <p style="font-size: 1.3em; margin: 10px 0;">
+                        <strong>César Azevedo</strong><br>
+                        📧 cesar.augusto@ifrn.edu.br
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 2: Tópicos da Aula -->
+        <div class="slide">
+            <div class="content">
+                <h2>📋 Tópicos da Aula</h2>
+                
+                <div class="two-column">
+                    <div>
+                        <h3>🌟 Conceitos Fundamentais</h3>
+                        <div class="bullet-point">O que é uma rede de computadores</div>
+                        <div class="bullet-point">Componentes essenciais</div>
+                        <div class="bullet-point">Finalidades e aplicações</div>
+                        <div class="bullet-point">Importância no mundo moderno</div>
+                        
+                        <h3>📚 História</h3>
+                        <div class="bullet-point">Evolução das redes</div>
+                        <div class="bullet-point">ARPANET: o início da Internet</div>
+                        <div class="bullet-point">Expansão global</div>
+                    </div>
+                    <div>
+                        <h3>🏗️ Arquiteturas</h3>
+                        <div class="bullet-point">Cliente-Servidor</div>
+                        <div class="bullet-point">Ponto-a-Ponto (P2P)</div>
+                        <div class="bullet-point">Vantagens e desvantagens</div>
+                        
+                        <h3>📐 Topologias</h3>
+                        <div class="bullet-point">Topologia física vs lógica</div>
+                        <div class="bullet-point">Tipos: estrela, anel, barramento</div>
+                        <div class="bullet-point">Classificação: LAN, MAN, WAN</div>
+                    </div>
+                </div>
+
+                <div class="highlight-box center-text">
+                    <h3>🎯 Objetivos de Aprendizagem</h3>
+                    <p>Compreender os fundamentos das redes de computadores<br>
+                    e como elas transformaram nossa sociedade</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: O que é uma Rede -->
+        <div class="slide">
+            <div class="content">
+                <h2>🤔 O que é uma Rede de Computadores?</h2>
+                
+                <div class="bullet-point">Conjunto de máquinas independentes conectadas para troca de dados e recursos</div>
+                <div class="bullet-point">Comunicação via protocolos padronizados</div>
+                <div class="bullet-point">Compartilhamento de informações e serviços</div>
+
+                <div class="example-box">
+                    <h3>📖 Definições Acadêmicas:</h3>
+                    <div class="bullet-point"><strong>Tanenbaum (2003):</strong> Máquinas com conexão operacional via processo tecnológico</div>
+                    <div class="bullet-point"><strong>Amazon:</strong> Dispositivos interconectados que compartilham dados seguindo protocolos</div>
+                </div>
+
+                <div class="highlight-box">
+                    <h3>📞 Analogia: Comunicação Humana</h3>
+                    <div class="bullet-point"><strong>Emissor:</strong> Quem fala (computador origem)</div>
+                    <div class="bullet-point"><strong>Receptor:</strong> Quem escuta (computador destino)</div>
+                    <div class="bullet-point"><strong>Meio:</strong> Ar, telefone (cabos, WiFi)</div>
+                    <div class="bullet-point"><strong>Linguagem:</strong> Português, inglês (protocolos)</div>
+                </div>
+
+                <div class="diagram">
+                    Computador A ←→ Meio de Comunicação ←→ Computador B<br>
+                    Usando protocolos para "conversar"
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Componentes de uma Rede -->
+        <div class="slide">
+            <div class="content">
+                <h2>🧩 Componentes de uma Rede</h2>
+                
+                <div class="two-column">
+                    <div>
+                        <h3>💻 Hardware</h3>
+                        <div class="bullet-point">Computadores (clientes)</div>
+                        <div class="bullet-point">Servidores</div>
+                        <div class="bullet-point">Roteadores</div>
+                        <div class="bullet-point">Switches</div>
+                        <div class="bullet-point">Hubs</div>
+                        <div class="bullet-point">Access Points (WiFi)</div>
+                    </div>
+                    <div>
+                        <h3>🔗 Meios de Comunicação</h3>
+                        <div class="bullet-point">Cabos de par trançado</div>
+                        <div class="bullet-point">Fibra óptica</div>
+                        <div class="bullet-point">Sinais sem fio (WiFi)</div>
+                        <div class="bullet-point">Bluetooth</div>
+                        <div class="bullet-point">Satélite</div>
+                    </div>
+                </div>
+
+                <div class="highlight-box">
+                    <h3>📋 Protocolos de Comunicação</h3>
+                    <div class="bullet-point">Regras que definem como os dados são transmitidos</div>
+                    <div class="bullet-point">Exemplos: TCP/IP, HTTP, FTP, SMTP</div>
+                    <div class="bullet-point">Como um "idioma" que todos os dispositivos entendem</div>
+                </div>
+
+                <div class="example-box center-text">
+                    <h3>🏠 Exemplo: Rede Doméstica</h3>
+                    <p>Roteador WiFi + Computadores + Smartphones + Smart TV<br>
+                    Conectados via WiFi usando protocolo TCP/IP</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: Finalidades das Redes -->
+        <div class="slide">
+            <div class="content">
+                <h2>🎯 Finalidade das Redes</h2>
+                
+                <div class="two-column">
+                    <div>
+                        <h3>🤝 Compartilhamento</h3>
+                        <div class="bullet-point">Arquivos e documentos</div>
+                        <div class="bullet-point">Impressoras e periféricos</div>
+                        <div class="bullet-point">Conexão à Internet</div>
+                        <div class="bullet-point">Aplicações e software</div>
+                        
+                        <h3>💬 Comunicação</h3>
+                        <div class="bullet-point">E-mail</div>
+                        <div class="bullet-point">Mensagens instantâneas</div>
+                        <div class="bullet-point">Videoconferências</div>
+                        <div class="bullet-point">Redes sociais</div>
+                    </div>
+                    <div>
+                        <h3>🔗 Acesso Remoto</h3>
+                        <div class="bullet-point">Trabalho a distância</div>
+                        <div class="bullet-point">Serviços na nuvem</div>
+                        <div class="bullet-point">Suporte técnico</div>
+                        
+                        <h3>🛡️ Segurança e Backup</h3>
+                        <div class="bullet-point">Backup automático</div>
+                        <div class="bullet-point">Redundância de dados</div>
+                        <div class="bullet-point">Recuperação de desastres</div>
+                        
+                        <h3>⚡ Produtividade</h3>
+                        <div class="bullet-point">Trabalho colaborativo</div>
+                        <div class="bullet-point">Automação de processos</div>
+                    </div>
+                </div>
+
+                <div class="example-box center-text">
+                    <h3>💼 Exemplo Empresarial</h3>
+                    <p>Funcionários acessam sistema da empresa, compartilham arquivos,<br>
+                    fazem backup automático e se comunicam por e-mail - tudo via rede!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: Histórico - ARPANET -->
+        <div class="slide">
+            <div class="content">
+                <h2>🕰️ Breve Histórico das Redes</h2>
+                
+                <div class="historical-box">
+                    <h3>⚔️ Década de 1960: A Necessidade</h3>
+                    <div class="bullet-point">Guerra Fria entre EUA e União Soviética</div>
+                    <div class="bullet-point">Necessidade de conectar computadores militares</div>
+                    <div class="bullet-point">Comunicação resistente a ataques nucleares</div>
+                </div>
+
+                <div class="process-step">
+                    <strong>1969 - Nascimento da ARPANET:</strong><br>
+                    Criada pelo Departamento de Defesa dos EUA<br>
+                    Primeira rede a usar protocolo TCP/IP
+                </div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>📈 Décadas de 70 e 80</h3>
+                        <div class="bullet-point">Expansão da ARPANET</div>
+                        <div class="bullet-point">Conexão de universidades</div>
+                        <div class="bullet-point">Formação da Internet</div>
+                        <div class="bullet-point">Protocolo TCP/IP padronizado</div>
+                    </div>
+                    <div>
+                        <h3>🌐 Década de 90 em diante</h3>
+                        <div class="bullet-point">World Wide Web (WWW)</div>
+                        <div class="bullet-point">Internet comercial</div>
+                        <div class="bullet-point">Explosão de usuários</div>
+                        <div class="bullet-point">Era da informação</div>
+                    </div>
+                </div>
+
+                <div class="diagram">
+                    ARPANET (1969) → Internet (1980s) → WWW (1990s) → Internet Moderna
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7: Importância das Redes -->
+        <div class="slide">
+            <div class="content">
+                <h2>🌍 Importância das Redes no Mundo Moderno</h2>
+                
+                <div class="bullet-point">Base de funcionamento da sociedade atual</div>
+                <div class="bullet-point">Conectam pessoas, dados e serviços globalmente</div>
+                
+                <div class="two-column">
+                    <div>
+                        <h3>🏥 Setores Essenciais</h3>
+                        <div class="bullet-point"><strong>Educação:</strong> Ensino a distância, pesquisa</div>
+                        <div class="bullet-point"><strong>Saúde:</strong> Telemedicina, prontuários</div>
+                        <div class="bullet-point"><strong>Comércio:</strong> E-commerce, pagamentos</div>
+                        <div class="bullet-point"><strong>Indústria:</strong> Automação, IoT</div>
+                        <div class="bullet-point"><strong>Governo:</strong> Serviços digitais</div>
+                    </div>
+                    <div>
+                        <h3>⚡ Benefícios</h3>
+                        <div class="bullet-point">Comunicação instantânea</div>
+                        <div class="bullet-point">Acesso à informação</div>
+                        <div class="bullet-point">Eficiência nos processos</div>
+                        <div class="bullet-point">Redução de custos</div>
+                        <div class="bullet-point">Inovação tecnológica</div>
+                    </div>
+                </div>
+
+                <div class="highlight-box center-text">
+                    <h3>💭 Reflexão</h3>
+                    <p>Imagine um dia sem redes: sem Internet, sem celular, sem cartões,<br>
+                    sem sistemas bancários... Nossa vida seria completamente diferente!</p>
+                </div>
+
+                <div class="example-box">
+                    <h3>📱 Exemplos do Dia a Dia</h3>
+                    <div class="bullet-point">WhatsApp, Instagram, YouTube</div>
+                    <div class="bullet-point">Netflix, Spotify, jogos online</div>
+                    <div class="bullet-point">Home office, aulas remotas</div>
+                    <div class="bullet-point">PIX, internet banking</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: Arquitetura Cliente-Servidor -->
+        <div class="slide">
+            <div class="content">
+                <h2>🏗️ Arquitetura Cliente-Servidor</h2>
+                
+                <div class="bullet-point">Nós da rede divididos em clientes e servidores</div>
+                <div class="bullet-point">Papéis fixos e bem definidos</div>
+                <div class="bullet-point">Servidores fornecem recursos, clientes consomem</div>
+
+                <div class="architecture-comparison">
+                    <div class="architecture-card">
+                        <h4>🖥️ Servidores</h4>
+                        <div class="bullet-point">Fornecem serviços</div>
+                        <div class="bullet-point">Processamento poderoso</div>
+                        <div class="bullet-point">Sempre disponíveis</div>
+                        <div class="bullet-point">Gerenciam recursos</div>
+                        <div class="bullet-point">Controlam segurança</div>
+                    </div>
+                    <div class="architecture-card">
+                        <h4>💻 Clientes</h4>
+                        <div class="bullet-point">Solicitam serviços</div>
+                        <div class="bullet-point">Interface com usuário</div>
+                        <div class="bullet-point">Conectam quando necessário</div>
+                        <div class="bullet-point">Processamento local</div>
+                        <div class="bullet-point">Dependem do servidor</div>
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>🌐 Exemplos Práticos</h3>
+                    <div class="bullet-point"><strong>Web:</strong> Navegador (cliente) ↔ Servidor web</div>
+                    <div class="bullet-point"><strong>E-mail:</strong> Outlook (cliente) ↔ Servidor de e-mail</div>
+                    <div class="bullet-point"><strong>Jogos:</strong> Game (cliente) ↔ Servidor de jogos</div>
+                    <div class="bullet-point"><strong>Banco:</strong> App (cliente) ↔ Servidor bancário</div>
+                </div>
+
+                <div class="diagram">
+                    Cliente 1 ⬋<br>
+                    Cliente 2 ⬌ 🖥️ SERVIDOR ⬌ Cliente 4<br>
+                    Cliente 3 ⬊
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 9: Arquitetura P2P -->
+        <div class="slide">
+            <div class="content">
+                <h2>🔄 Arquitetura Ponto-a-Ponto (P2P)</h2>
+                
+                <div class="bullet-point">Todos os dispositivos têm as mesmas capacidades</div>
+                <div class="bullet-point">Cada nó atua como cliente E servidor</div>
+                <div class="bullet-point">Sem servidor central</div>
+                <div class="bullet-point">Distribuição de recursos e responsabilidades</div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>✅ Vantagens</h3>
+                        <div class="bullet-point">Não há ponto único de falha</div>
+                        <div class="bullet-point">Maior tolerância a falhas</div>
+                        <div class="bullet-point">Compartilhamento direto</div>
+                        <div class="bullet-point">Economia de infraestrutura</div>
+                        <div class="bullet-point">Escalabilidade natural</div>
+                    </div>
+                    <div>
+                        <h3>⚠️ Desvantagens</h3>
+                        <div class="bullet-point">Difícil controle de segurança</div>
+                        <div class="bullet-point">Gerenciamento complexo</div>
+                        <div class="bullet-point">Dependência dos peers</div>
+                        <div class="bullet-point">Inconsistência de dados</div>
+                        <div class="bullet-point">Problemas legais potenciais</div>
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>📁 Exemplos de P2P</h3>
+                    <div class="bullet-point"><strong>BitTorrent:</strong> Compartilhamento de arquivos</div>
+                    <div class="bullet-point"><strong>Bitcoin:</strong> Moeda digital descentralizada</div>
+                    <div class="bullet-point"><strong>Skype:</strong> Chamadas diretas entre usuários</div>
+                    <div class="bullet-point"><strong>Blockchain:</strong> Banco de dados distribuído</div>
+                </div>
+
+                <div class="diagram">
+                    Peer A ⬌ Peer B<br>
+                    ⬍ ⬌ ⬌ ⬎<br>
+                    Peer D ⬌ Peer C<br>
+                    (Todos conectados entre si)
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 10: Topologia Física - Conceitos -->
+        <div class="slide">
+            <div class="content">
+                <h2>🔌 Topologia Física vs Lógica</h2>
+                
+                <div class="two-column">
+                    <div>
+                        <h3>📐 Topologia Física</h3>
+                        <div class="bullet-point">Como os dispositivos estão fisicamente conectados</div>
+                        <div class="bullet-point">Layout real dos cabos e equipamentos</div>
+                        <div class="bullet-point">Determina custo de instalação</div>
+                        <div class="bullet-point">Influencia na manutenção</div>
+                    </div>
+                    <div>
+                        <h3>💡 Topologia Lógica</h3>
+                        <div class="bullet-point">Como os dados trafegam na rede</div>
+                        <div class="bullet-point">Caminho dos dados independe do físico</div>
+                        <div class="bullet-point">Definida por protocolos</div>
+                        <div class="bullet-point">Pode ser diferente da física</div>
+                    </div>
+                </div>
+
+                <div class="highlight-box">
+                    <h3>🎯 Exemplo Prático</h3>
+                    <div class="bullet-point">Uma rede pode ter topologia física em estrela (todos conectados a um switch)</div>
+                    <div class="bullet-point">Mas topologia lógica de barramento (dados vão para todos)</div>
+                    <div class="bullet-point">O importante é entender que são conceitos diferentes!</div>
+                </div>
+
+                <div class="example-box center-text">
+                    <h3>🏢 Analogia: Prédio de Escritórios</h3>
+                    <p><strong>Física:</strong> Salas conectadas por corredores<br>
+                    <strong>Lógica:</strong> Como as pessoas se comunicam (e-mail, telefone, pessoalmente)</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 11: Tipos de Topologia Física -->
+        <div class="slide">
+            <div class="content">
+                <h2>📐 Tipos de Topologia Física</h2>
+                
+                <div class="topology-grid">
+                    <div class="topology-card">
+                        <h4>⭐ Estrela</h4>
+                        <div class="bullet-point">Dispositivos conectados a um ponto central</div>
+                        <div class="bullet-point">Falha no centro para toda rede</div>
+                        <div class="bullet-point">Fácil manutenção</div>
+                        <div class="bullet-point">Mais cabos necessários</div>
+                    </div>
+                    
+                    <div class="topology-card">
+                        <h4>🔄 Anel</h4>
+                        <div class="bullet-point">Dispositivos em forma de círculo</div>
+                        <div class="bullet-point">Dados circulam em uma direção</div>
+                        <div class="bullet-point">Falha em um nó afeta todos</div>
+                        <div class="bullet-point">Performance previsível</div>
+                    </div>
+                    
+                    <div class="topology-card">
+                        <h4>🚌 Barramento</h4>
+                        <div class="bullet-point">Cabo principal com derivações</div>
+                        <div class="bullet-point">Compartilhamento do meio</div>
+                        <div class="bullet-point">Economia de cabos</div>
+                        <div class="bullet-point">Dificuldade de manutenção</div>
+                    </div>
+                    
+                    <div class="topology-card">
+                        <h4>🕸️ Malha</h4>
+                        <div class="bullet-point">Múltiplas conexões entre nós</div>
+                        <div class="bullet-point">Alta tolerância a falhas</div>
+                        <div class="bullet-point">Custo elevado</div>
+                        <div class="bullet-point">Redundância de caminhos</div>
+                    </div>
+                </div>
+
+                <div class="highlight-box center-text">
+                    <h3>🏆 Mais Comum Hoje</h3>
+                    <p>Topologia <strong>estrela</strong> é a mais usada em redes modernas<br>
+                    (WiFi doméstico, switches empresariais)</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 12: Topologia Lógica -->
+        <div class="slide">
+            <div class="content">
+                <h2>💡 Topologia Lógica - Como os Dados Trafegam</h2>
+                
+                <div class="two-column">
+                    <div>
+                        <h3>📡 Ethernet (Broadcast)</h3>
+                        <div class="bullet-point">Dados enviados para todos</div>
+                        <div class="bullet-point">Só o destinatário processa</div>
+                        <div class="bullet-point">Outros ignoram a mensagem</div>
+                        <div class="bullet-point">Padrão mais comum hoje</div>
+                        
+                        <div class="example-box">
+                            <strong>Analogia:</strong><br>
+                            Como gritar em uma sala:<br>
+                            todos ouvem, mas só quem<br>
+                            foi chamado responde
+                        </div>
+                    </div>
+                    <div>
+                        <h3>🎫 Token Ring</h3>
+                        <div class="bullet-point">Token (ficha) circula na rede</div>
+                        <div class="bullet-point">Só quem tem o token transmite</div>
+                        <div class="bullet-point">Acesso controlado e ordenado</div>
+                        <div class="bullet-point">Menos usado atualmente</div>
+                        
+                        <div class="example-box">
+                            <strong>Analogia:</strong><br>
+                            Como usar um bastão para<br>
+                            falar em uma reunião:<br>
+                            só quem tem o bastão fala
+                        </div>
+                    </div>
+                </div>
+
+                <div class="process-step">
+                    <strong>Exemplo Ethernet:</strong><br>
+                    Computador A quer enviar para B<br>
+                    → A envia para todos (A, B, C, D)<br>
+                    → Todos recebem, mas só B processa<br>
+                    → C e D ignoram a mensagem
+                </div>
+
+                <div class="highlight-box center-text">
+                    <h3>🌐 Na Prática</h3>
+                    <p>Sua rede WiFi doméstica usa Ethernet (broadcast)<br>
+                    mesmo tendo topologia física em estrela!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 13: LAN - Rede Local -->
+        <div class="slide">
+            <div class="content">
+                <h2>🏠 LAN - Local Area Network</h2>
+                
+                <div class="network-type">
+                    <h4>🏠 Rede Local</h4>
+                    <p>Pequena área geográfica - casa, escritório, prédio</p>
+                </div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>✅ Características</h3>
+                        <div class="bullet-point">Alta velocidade (100 Mbps a 10 Gbps)</div>
+                        <div class="bullet-point">Baixa latência</div>
+                        <div class="bullet-point">Propriedade única</div>
+                        <div class="bullet-point">Controle total sobre a rede</div>
+                        <div class="bullet-point">Custo baixo de operação</div>
+                    </div>
+                    <div>
+                        <h3>🎯 Aplicações</h3>
+                        <div class="bullet-point">Compartilhamento de arquivos</div>
+                        <div class="bullet-point">Impressão em rede</div>
+                        <div class="bullet-point">Jogos locais</div>
+                        <div class="bullet-point">Acesso à Internet compartilhado</div>
+                        <div class="bullet-point">Sistemas internos da empresa</div>
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>🏠 Exemplos de LAN</h3>
+                    <div class="bullet-point"><strong>Residencial:</strong> WiFi doméstico conectando celulares, notebooks, smart TV</div>
+                    <div class="bullet-point"><strong>Escritório:</strong> Computadores conectados por switches</div>
+                    <div class="bullet-point"><strong>Escola:</strong> Laboratório de informática</div>
+                    <div class="bullet-point"><strong>Café:</strong> WiFi para clientes</div>
+                </div>
+
+                <div class="highlight-box center-text">
+                    <h3>📏 Tamanho Típico</h3>
+                    <p>De alguns metros até poucos quilômetros<br>
+                    Velocidades muito altas, controle local</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 14: MAN - Rede Metropolitana -->
+        <div class="slide">
+            <div class="content">
+                <h2>🏙️ MAN - Metropolitan Area Network</h2>
+                
+                <div class="network-type">
+                    <h4>🏙️ Rede Metropolitana</h4>
+                    <p>Área de uma cidade ou região metropolitana</p>
+                </div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>✅ Características</h3>
+                        <div class="bullet-point">Velocidade moderada a alta</div>
+                        <div class="bullet-point">Abrange uma cidade</div>
+                        <div class="bullet-point">Conecta várias LANs</div>
+                        <div class="bullet-point">Pode ser pública ou privada</div>
+                        <div class="bullet-point">Uso de fibra óptica comum</div>
+                    </div>
+                    <div>
+                        <h3>🎯 Aplicações</h3>
+                        <div class="bullet-point">Campus universitário distribuído</div>
+                        <div class="bullet-point">Filiais de uma empresa na cidade</div>
+                        <div class="bullet-point">Rede municipal de governo</div>
+                        <div class="bullet-point">Provedores de Internet locais</div>
+                        <div class="bullet-point">TV a cabo e telefonia</div>
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>🏫 Exemplos de MAN</h3>
+                    <div class="bullet-point"><strong>Universidade:</strong> Campus principal conectado com campi satélites</div>
+                    <div class="bullet-point"><strong>Governo:</strong> Prefeitura conectada com escolas e postos de saúde</div>
+                    <div class="bullet-point"><strong>Empresa:</strong> Matriz conectada com filiais na mesma cidade</div>
+                    <div class="bullet-point"><strong>Provedor:</strong> ISP conectando bairros de uma cidade</div>
+                </div>
+
+                <div class="highlight-box center-text">
+                    <h3>📏 Tamanho Típico</h3>
+                    <p>De alguns quilômetros até 100 km<br>
+                    Velocidades boas, controle regional</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 15: WAN - Rede de Longa Distância -->
+        <div class="slide">
+            <div class="content">
+                <h2>🌍 WAN - Wide Area Network</h2>
+                
+                <div class="network-type">
+                    <h4>🌍 Rede de Longa Distância</h4>
+                    <p>Cobre países, continentes ou o mundo todo</p>
+                </div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>✅ Características</h3>
+                        <div class="bullet-point">Velocidade variável</div>
+                        <div class="bullet-point">Latência maior</div>
+                        <div class="bullet-point">Conecta MANs e LANs</div>
+                        <div class="bullet-point">Uso de infraestrutura pública</div>
+                        <div class="bullet-point">Custo elevado</div>
+                    </div>
+                    <div>
+                        <h3>🎯 Tecnologias</h3>
+                        <div class="bullet-point">Cabos submarinos</div>
+                        <div class="bullet-point">Satélites</div>
+                        <div class="bullet-point">Fibra óptica transcontinental</div>
+                        <div class="bullet-point">Redes de telefonia</div>
+                        <div class="bullet-point">Internet pública</div>
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>🌐 Exemplos de WAN</h3>
+                    <div class="bullet-point"><strong>Internet:</strong> A maior WAN do mundo!</div>
+                    <div class="bullet-point"><strong>Multinacional:</strong> Matriz no Brasil conectada com filial no Japão</div>
+                    <div class="bullet-point"><strong>Governo:</strong> Rede federal conectando todos os estados</div>
+                    <div class="bullet-point"><strong>Banco:</strong> Agências de todo o país conectadas</div>
+                </div>
+
+                <div class="highlight-box center-text">
+                    <h3>📏 Tamanho Típico</h3>
+                    <p>Centenas ou milhares de quilômetros<br>
+                    Velocidades menores, alcance global</p>
+                </div>
+
+                <div class="diagram">
+                    LAN (casa) → MAN (cidade) → WAN (mundo) → Internet
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 16: Resumo Final -->
+        <div class="slide">
+            <div class="content">
+                <h2>🎯 Resumo Final</h2>
+                
+                <div class="highlight-box large-text center-text">
+                    <strong>Redes de computadores transformaram o mundo</strong>
+                </div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>✅ Conceitos Fundamentais:</h3>
+                        <div class="bullet-point">Conjunto de dispositivos conectados</div>
+                        <div class="bullet-point">Comunicação via protocolos</div>
+                        <div class="bullet-point">Compartilhamento de recursos</div>
+                        <div class="bullet-point">Base da sociedade digital</div>
+                    </div>
+                    <div>
+                        <h3>🏗️ Arquiteturas:</h3>
+                        <div class="bullet-point">Cliente-Servidor (centralizado)</div>
+                        <div class="bullet-point">P2P (descentralizado)</div>
+                        <div class="bullet-point">Topologias físicas e lógicas</div>
+                        <div class="bullet-point">LAN, MAN, WAN</div>
+                    </div>
+                </div>
+
+                <div class="example-box center-text">
+                    <h3>🌐 Da ARPANET à Internet Global</h3>
+                    <p>De 4 computadores em 1969 para bilhões de dispositivos hoje<br>
+                    Uma revolução que conectou a humanidade</p>
+                </div>
+
+                <div class="process-step center-text">
+                    <strong>🎓 Próximos Passos:</strong><br>
+                    Agora que entendemos os fundamentos, vamos explorar<br>
+                    os modelos OSI e TCP/IP que fazem tudo funcionar!
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 17: Quiz -->
+        <div class="slide">
+            <div class="content">
+                <h2>🧠 Quiz - Teste seus conhecimentos!</h2>
+                
+                <div class="quiz-container">
+                    <!-- Questão 1 -->
+                    <div class="quiz-question" id="question1">
+                        <h3>📝 Questão 1</h3>
+                        <p><strong>Qual foi a primeira rede a usar o protocolo TCP/IP?</strong></p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(1, 'a', true)">
+                                <span class="option-letter">A)</span> ARPANET
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(1, 'b', false)">
+                                <span class="option-letter">B)</span> Internet
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(1, 'c', false)">
+                                <span class="option-letter">C)</span> Ethernet
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(1, 'd', false)">
+                                <span class="option-letter">D)</span> World Wide Web
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback1"></div>
+                    </div>
+
+                    <!-- Questão 2 -->
+                    <div class="quiz-question" id="question2" style="display: none;">
+                        <h3>📝 Questão 2</h3>
+                        <p><strong>Na arquitetura P2P, qual é a principal característica?</strong></p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(2, 'a', false)">
+                                <span class="option-letter">A)</span> Há um servidor central
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(2, 'b', true)">
+                                <span class="option-letter">B)</span> Todos os nós são clientes e servidores
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(2, 'c', false)">
+                                <span class="option-letter">C)</span> Apenas clientes existem
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(2, 'd', false)">
+                                <span class="option-letter">D)</span> É mais seguro que cliente-servidor
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback2"></div>
+                    </div>
+
+                    <!-- Questão 3 -->
+                    <div class="quiz-question" id="question3" style="display: none;">
+                        <h3>📝 Questão 3</h3>
+                        <p><strong>Uma rede que conecta computadores em uma cidade é classificada como:</strong></p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(3, 'a', false)">
+                                <span class="option-letter">A)</span> LAN
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(3, 'b', true)">
+                                <span class="option-letter">B)</span> MAN
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(3, 'c', false)">
+                                <span class="option-letter">C)</span> WAN
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(3, 'd', false)">
+                                <span class="option-letter">D)</span> PAN
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback3"></div>
+                    </div>
+
+                    <!-- Questão 4 -->
+                    <div class="quiz-question" id="question4" style="display: none;">
+                        <h3>📝 Questão 4</h3>
+                        <p><strong>Na topologia lógica Ethernet, como os dados são transmitidos?</strong></p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(4, 'a', true)">
+                                <span class="option-letter">A)</span> Broadcast - para todos os nós
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(4, 'b', false)">
+                                <span class="option-letter">B)</span> Apenas para o destinatário
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(4, 'c', false)">
+                                <span class="option-letter">C)</span> Usando token que circula
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(4, 'd', false)">
+                                <span class="option-letter">D)</span> Por ordem alfabética dos nós
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback4"></div>
+                    </div>
+
+                    <!-- Resultado Final -->
+                    <div class="quiz-result" id="quizResult" style="display: none;">
+                        <h3>🎉 Parabéns! Quiz Concluído!</h3>
+                        <div class="result-box">
+                            <p><strong>Sua pontuação: <span id="finalScore">0</span>/4</strong></p>
+                            <p id="resultMessage"></p>
+                        </div>
+                        <button class="nav-btn" onclick="restartQuiz()">🔄 Refazer Quiz</button>
+                    </div>
+                </div>
+
+                <div class="quiz-navigation">
+                    <button class="nav-btn" id="nextQuizBtn" onclick="nextQuestion()" style="display: none;">
+                        Próxima Questão ➡️
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 18: Referências -->
+        <div class="slide">
+            <div class="content">
+                <h2>📚 Referências Bibliográficas</h2>
+                
+                <div class="highlight-box">
+                    <h3>📖 Fonte Principal:</h3>
+                    <div class="bullet-point"><strong>Aula 01 - Introdução às Redes de Computadores</strong></div>
+                    <div class="bullet-point">Material didático oficial da disciplina</div>
+                    <div class="bullet-point">Professor César Azevedo</div>
+                </div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>📚 Bibliografia Recomendada:</h3>
+                        <div class="bullet-point">Tanenbaum (2003) - Redes de Computadores</div>
+                        <div class="bullet-point">Kurose & Ross - Redes de Computadores</div>
+                        <div class="bullet-point">Amazon - Definições de Rede</div>
+                        <div class="bullet-point">RFCs da IETF</div>
+                    </div>
+                    <div>
+                        <h3>🌐 Sites Recomendados:</h3>
+                        <div class="bullet-point">Computer History Museum</div>
+                        <div class="bullet-point">Internet Society (ISOC)</div>
+                        <div class="bullet-point">IEEE Standards</div>
+                        <div class="bullet-point">IETF.org</div>
+                    </div>
+                </div>
+
+                <div class="example-box center-text">
+                    <h3>🤖 Metodologia de Criação</h3>
+                    <p>Apresentação desenvolvida com assistência de IA Claude Sonnet 4<br>
+                    Baseada integralmente no material didático fornecido<br>
+                    Adaptação pedagógica com foco em simplicidade e clareza</p>
+                </div>
+
+                <div class="highlight-box center-text">
+                    <h3>🎯 Objetivo Educacional</h3>
+                    <p>Facilitar o aprendizado dos fundamentos de redes através de<br>
+                    linguagem simples, analogias práticas e exemplos do cotidiano</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="navigation">
+            <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">⬅️ Anterior</button>
+            <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">Próximo ➡️</button>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        document.getElementById('total-slides').textContent = totalSlides;
+
+        // Quiz variables
+        let currentQuestion = 1;
+        let score = 0;
+        let quizAnswered = [false, false, false, false];
+
+        function showSlide(index) {
+            slides.forEach((slide, i) => {
+                slide.classList.toggle('active', i === index);
+            });
+            
+            document.getElementById('current-slide').textContent = index + 1;
+            document.getElementById('prevBtn').disabled = index === 0;
+            document.getElementById('nextBtn').disabled = index === totalSlides - 1;
+        }
+
+        function changeSlide(direction) {
+            const newSlide = currentSlide + direction;
+            if (newSlide >= 0 && newSlide < totalSlides) {
+                currentSlide = newSlide;
+                showSlide(currentSlide);
+            }
+        }
+
+        // Quiz Functions
+        function selectOption(questionNum, option, isCorrect) {
+            if (quizAnswered[questionNum - 1]) return; // Já respondida
+            
+            const options = document.querySelectorAll(`#question${questionNum} .quiz-option`);
+            const feedback = document.getElementById(`feedback${questionNum}`);
+            
+            // Marcar todas as opções
+            options.forEach(opt => {
+                opt.style.pointerEvents = 'none';
+                if (opt.onclick.toString().includes('true')) {
+                    opt.classList.add('correct');
+                } else if (opt === event.currentTarget) {
+                    opt.classList.add(isCorrect ? 'correct' : 'incorrect');
+                }
+            });
+            
+            // Mostrar feedback
+            if (isCorrect) {
+                feedback.innerHTML = '✅ Correto! Muito bem!';
+                feedback.className = 'quiz-feedback correct';
+                score++;
+            } else {
+                feedback.innerHTML = '❌ Incorreto. A resposta correta está destacada em verde.';
+                feedback.className = 'quiz-feedback incorrect';
+            }
+            
+            quizAnswered[questionNum - 1] = true;
+            
+            // Mostrar botão para próxima questão
+            if (questionNum < 4) {
+                document.getElementById('nextQuizBtn').style.display = 'inline-block';
+            } else {
+                // Última questão - mostrar resultado
+                setTimeout(() => {
+                    showQuizResult();
+                }, 2000);
+            }
+        }
+
+        function nextQuestion() {
+            document.getElementById(`question${currentQuestion}`).style.display = 'none';
+            currentQuestion++;
+            document.getElementById(`question${currentQuestion}`).style.display = 'block';
+            document.getElementById('nextQuizBtn').style.display = 'none';
+        }
+
+        function showQuizResult() {
+            // Esconder última questão
+            document.getElementById('question4').style.display = 'none';
+            
+            // Mostrar resultado
+            document.getElementById('quizResult').style.display = 'block';
+            document.getElementById('finalScore').textContent = score;
+            
+            const resultMessage = document.getElementById('resultMessage');
+            if (score === 4) {
+                resultMessage.innerHTML = '🏆 Excelente! Você domina os fundamentos de redes!';
+            } else if (score === 3) {
+                resultMessage.innerHTML = '👏 Muito bom! Quase perfeito!';
+            } else if (score === 2) {
+                resultMessage.innerHTML = '👍 Bom trabalho! Continue estudando!';
+            } else if (score === 1) {
+                resultMessage.innerHTML = '📚 Estude um pouco mais sobre redes!';
+            } else {
+                resultMessage.innerHTML = '📖 Recomendo revisar o conteúdo!';
+            }
+        }
+
+        function restartQuiz() {
+            // Reset variables
+            currentQuestion = 1;
+            score = 0;
+            quizAnswered = [false, false, false, false];
+            
+            // Reset interface
+            for (let i = 1; i <= 4; i++) {
+                const question = document.getElementById(`question${i}`);
+                const options = question.querySelectorAll('.quiz-option');
+                const feedback = document.getElementById(`feedback${i}`);
+                
+                // Reset options
+                options.forEach(opt => {
+                    opt.className = 'quiz-option';
+                    opt.style.pointerEvents = 'auto';
+                });
+                
+                // Hide feedback
+                feedback.style.display = 'none';
+                
+                // Hide all questions except first
+                question.style.display = i === 1 ? 'block' : 'none';
+            }
+            
+            // Hide result and buttons
+            document.getElementById('quizResult').style.display = 'none';
+            document.getElementById('nextQuizBtn').style.display = 'none';
+        }
+
+        // Navegação por teclado
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') changeSlide(-1);
+            if (e.key === 'ArrowRight') changeSlide(1);
+            if (e.key === 'Home') {
+                currentSlide = 0;
+                showSlide(currentSlide);
+            }
+            if (e.key === 'End') {
+                currentSlide = totalSlides - 1;
+                showSlide(currentSlide);
+            }
+        });
+
+        // Inicializar
+        showSlide(0);
+        
+        // Inicializar quiz no slide 17
+        document.getElementById('question1').style.display = 'block';
+    </script>
+</body>
+</html>

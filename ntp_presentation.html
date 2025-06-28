@@ -1,0 +1,1608 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Protocolo NTP - Sincronização de Tempo na Rede</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        .presentation {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .slide {
+            min-height: 100vh;
+            padding: 60px 40px;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            background: white;
+            margin: 20px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        .slide.active {
+            display: flex;
+        }
+
+        .slide h1 {
+            font-size: 3.5em;
+            color: #4a5568;
+            text-align: center;
+            margin-bottom: 40px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .slide h2 {
+            font-size: 2.8em;
+            color: #2d3748;
+            margin-bottom: 30px;
+            border-bottom: 4px solid #667eea;
+            padding-bottom: 15px;
+        }
+
+        .slide h3 {
+            font-size: 2.2em;
+            color: #4a5568;
+            margin: 25px 0 15px 0;
+        }
+
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: start;
+        }
+
+        .three-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 30px;
+            align-items: start;
+        }
+
+        .bullet-point {
+            display: flex;
+            align-items: flex-start;
+            margin: 15px 0;
+            font-size: 1.3em;
+            line-height: 1.5;
+        }
+
+        .bullet-point::before {
+            content: "🔸";
+            margin-right: 15px;
+            font-size: 1.2em;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #667eea;
+        }
+
+        .example-box {
+            background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #9c27b0;
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 1000;
+        }
+
+        .nav-btn {
+            padding: 15px 25px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .nav-btn:hover {
+            background: #5a67d8;
+            transform: translateY(-2px);
+            box-shadow: 0 7px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .nav-btn:disabled {
+            background: #a0a0a0;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .slide-counter {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: rgba(255,255,255,0.9);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            color: #4a5568;
+            z-index: 1000;
+        }
+
+        .center-text {
+            text-align: center;
+        }
+
+        .large-text {
+            font-size: 1.4em;
+            line-height: 1.6;
+        }
+
+        .diagram {
+            background: #f7fafc;
+            border: 2px dashed #667eea;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+            font-family: monospace;
+            font-size: 1.2em;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 1.1em;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        th {
+            background: #667eea;
+            color: white;
+            font-weight: bold;
+        }
+
+        .process-step {
+            background: #e8f5e8;
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #4caf50;
+        }
+
+        .code-box {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: monospace;
+            font-size: 1em;
+            margin: 20px 0;
+            overflow-x: auto;
+        }
+
+        /* Quiz Styles */
+        .quiz-container {
+            max-width: 100%;
+            margin: 20px 0;
+        }
+
+        .quiz-question {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border: 2px solid #e2e8f0;
+        }
+
+        .quiz-question h3 {
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+
+        .quiz-question p {
+            font-size: 1.3em;
+            margin-bottom: 25px;
+            font-weight: bold;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .quiz-option {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.1em;
+        }
+
+        .quiz-option:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+            transform: translateX(5px);
+        }
+
+        .quiz-option.selected {
+            border-color: #667eea;
+            background: #667eea;
+            color: white;
+        }
+
+        .quiz-option.correct {
+            border-color: #48bb78;
+            background: #48bb78;
+            color: white;
+        }
+
+        .quiz-option.incorrect {
+            border-color: #f56565;
+            background: #f56565;
+            color: white;
+        }
+
+        .option-letter {
+            background: #667eea;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .quiz-option.correct .option-letter {
+            background: #48bb78;
+        }
+
+        .quiz-option.incorrect .option-letter {
+            background: #f56565;
+        }
+
+        .quiz-feedback {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: bold;
+            display: none;
+        }
+
+        .quiz-feedback.correct {
+            background: #c6f6d5;
+            color: #22543d;
+            border: 2px solid #48bb78;
+            display: block;
+        }
+
+        .quiz-feedback.incorrect {
+            background: #fed7d7;
+            color: #742a2a;
+            border: 2px solid #f56565;
+            display: block;
+        }
+
+        .quiz-navigation {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .quiz-result {
+            text-align: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            margin: 20px 0;
+        }
+
+        .result-box {
+            background: rgba(255,255,255,0.1);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+
+        .result-box p {
+            font-size: 1.4em;
+            margin: 10px 0;
+        }
+
+        .protocol-code {
+            display: inline-block;
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            margin: 2px;
+        }
+
+        .architecture-diagram {
+            background: #f0f4ff;
+            border: 2px solid #667eea;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .flow-step {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            border-left: 4px solid #2196f3;
+        }
+
+        .warning-box {
+            background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #ffc107;
+        }
+
+        .stratum-box {
+            background: #e8f5e8;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 10px 0;
+            border-left: 4px solid #4caf50;
+            text-align: center;
+        }
+
+        .time-diagram {
+            background: #f0f8ff;
+            border: 2px solid #4169e1;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation">
+        <div class="slide-counter">
+            <span id="current-slide">1</span> / <span id="total-slides">16</span>
+        </div>
+
+        <!-- Slide 1: Título -->
+        <div class="slide active">
+            <div class="content center-text">
+                <h1>⏰ Protocolo NTP</h1>
+                <h2 style="border: none; color: #667eea;">Network Time Protocol - Sincronização de Tempo</h2>
+                <div class="highlight-box large-text">
+                    <strong>Aula 09</strong><br>
+                    Sincronização Precisa de Relógio na Internet<br>
+                    Do tempo local ao tempo universal
+                </div>
+                
+                <div class="example-box" style="margin-top: 40px;">
+                    <h3>👨‍🏫 Autor da Apresentação</h3>
+                    <p style="font-size: 1.3em; margin: 10px 0;">
+                        <strong>César Azevedo</strong><br>
+                        📧 cesar.augusto@ifrn.edu.br
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 2: Tópicos da Aula -->
+        <div class="slide">
+            <div class="content">
+                <h2>📋 Tópicos da Aula</h2>
+                
+                <div class="two-column">
+                    <div>
+                        <h3>🎯 Fundamentos</h3>
+                        <div class="bullet-point">O que é NTP</div>
+                        <div class="bullet-point">Importância da sincronização</div>
+                        <div class="bullet-point">Problemas sem sincronização</div>
+                        <div class="bullet-point">Arquitetura cliente/servidor</div>
+                        
+                        <h3>🏗️ Hierarquia de Servidores</h3>
+                        <div class="bullet-point">Conceito de Stratum</div>
+                        <div class="bullet-point">Stratum 0, 1, 2, 3...</div>
+                        <div class="bullet-point">Fontes de tempo primárias</div>
+                        <div class="bullet-point">Distribuição hierárquica</div>
+                    </div>
+                    <div>
+                        <h3>⚙️ Aspectos Técnicos</h3>
+                        <div class="bullet-point">Formato da mensagem NTP</div>
+                        <div class="bullet-point">Timestamps e precisão</div>
+                        <div class="bullet-point">Algoritmos de sincronização</div>
+                        <div class="bullet-point">Cálculo de delay e offset</div>
+                        
+                        <h3>🔄 Modos de Operação</h3>
+                        <div class="bullet-point">Modo cliente</div>
+                        <div class="bullet-point">Modo servidor</div>
+                        <div class="bullet-point">Modo peer</div>
+                        <div class="bullet-point">Modo broadcast</div>
+                    </div>
+                </div>
+
+                <div class="highlight-box center-text">
+                    <h3>🎯 Objetivo Final</h3>
+                    <p>Compreender como o NTP mantém relógios sincronizados<br>
+                    com precisão de milissegundos através da Internet</p>
+                </div>
+
+                <div class="example-box center-text">
+                    <h3>🧠 + Quiz Interativo</h3>
+                    <p>Teste seus conhecimentos com 4 questões sobre NTP!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: O que é NTP -->
+        <div class="slide">
+            <div class="content">
+                <h2>🤔 O que é NTP?</h2>
+                
+                <div class="bullet-point"><strong>Network Time Protocol</strong> - Protocolo para sincronização de tempo</div>
+                <div class="bullet-point">Mantém relógios de computadores sincronizados via Internet</div>
+                <div class="bullet-point">Precisão típica de 1-50 milissegundos</div>
+                <div class="bullet-point">Protocolo UDP na porta 123</div>
+
+                <div class="example-box">
+                    <h3>💡 Analogia Simples:</h3>
+                    <div class="diagram">
+                        Igreja com sino marca as horas<br>
+                        ⬇️<br>
+                        Toda cidade ajusta seus relógios<br>
+                        ⬇️<br>
+                        Todos ficam no mesmo horário
+                    </div>
+                    <p><strong>NTP faz isso para computadores na Internet!</strong></p>
+                </div>
+
+                <div class="highlight-box">
+                    <h3>🎯 Aplicações Críticas:</h3>
+                    <div class="bullet-point">Sistemas bancários e financeiros</div>
+                    <div class="bullet-point">Logs de segurança e auditoria</div>
+                    <div class="bullet-point">Sistemas distribuídos e banco de dados</div>
+                    <div class="bullet-point">Certificados digitais e criptografia</div>
+                </div>
+
+                <div class="warning-box">
+                    <h3>⚠️ Observação Importante</h3>
+                    <p>Sem sincronização adequada, sistemas modernos simplesmente não funcionam corretamente!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Por que Sincronização é Importante -->
+        <div class="slide">
+            <div class="content">
+                <h2>🚨 Por que Sincronização é Crítica?</h2>
+                
+                <div class="bullet-point">Computadores têm relógios internos imprecisos</div>
+                <div class="bullet-point">Relógios derivam ao longo do tempo</div>
+                <div class="bullet-point">Diferenças causam problemas graves em sistemas</div>
+                <div class="bullet-point">Aplicações modernas dependem de tempo preciso</div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>❌ Problemas sem Sincronização</h3>
+                        <div class="warning-box">
+                            <strong>Logs confusos:</strong><br>
+                            Evento A: 10:30:15<br>
+                            Evento B: 10:29:45<br>
+                            <em>B aconteceu depois de A!</em>
+                        </div>
+                        
+                        <div class="warning-box">
+                            <strong>Transações bancárias:</strong><br>
+                            Saque: 09:15:30<br>
+                            Depósito: 09:15:25<br>
+                            <em>Ordem errada = saldo negativo!</em>
+                        </div>
+                    </div>
+                    <div>
+                        <h3>✅ Benefícios da Sincronização</h3>
+                        <div class="highlight-box">
+                            <strong>Logs ordenados:</strong><br>
+                            Facilita análise de problemas<br>
+                            Auditoria confiável<br>
+                            Debugging eficiente
+                        </div>
+                        
+                        <div class="highlight-box">
+                            <strong>Sistemas distribuídos:</strong><br>
+                            Coordenação entre servidores<br>
+                            Algoritmos de consenso<br>
+                            Replicação de dados
+                        </div>
+                    </div>
+                </div>
+
+                <div class="example-box center-text">
+                    <h3>🏦 Exemplo Real</h3>
+                    <p>Sistema bancário com 3 servidores dessincronizados:<br>
+                    Cliente faz transferência → Cada servidor registra hora diferente → Auditoria impossível!</p>
+                </div>
+
+                <div class="highlight-box center-text">
+                    <h3>📊 Precisão Típica dos Relógios</h3>
+                    <p>Relógio de computador: Deriva 1-2 segundos por dia<br>
+                    Com NTP: Precisão de 1-50 milissegundos</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: Hierarquia de Servidores (Stratum) -->
+        <div class="slide">
+            <div class="content">
+                <h2>🏗️ Hierarquia de Servidores NTP</h2>
+                
+                <div class="bullet-point">NTP organiza servidores em níveis hierárquicos</div>
+                <div class="bullet-point">Cada nível chama-se <strong>Stratum</strong></div>
+                <div class="bullet-point">Quanto menor o número, mais preciso o tempo</div>
+                <div class="bullet-point">Distribui carga e evita sobrecarga dos servidores primários</div>
+
+                <div class="architecture-diagram">
+                    <h3>🎯 Estrutura Hierárquica</h3>
+                    <div style="display: flex; flex-direction: column; gap: 20px; margin: 20px 0;">
+                        
+                        <div class="stratum-box" style="background: #ffebee;">
+                            <strong>Stratum 0</strong><br>
+                            📡 Relógio Atômico, GPS, Rádio<br>
+                            <small>Fontes de tempo de referência</small>
+                        </div>
+                        
+                        <div style="text-align: center; font-size: 2em;">⬇️</div>
+                        
+                        <div class="stratum-box" style="background: #e3f2fd;">
+                            <strong>Stratum 1</strong><br>
+                            🖥️ Servidores conectados diretamente ao Stratum 0<br>
+                            <small>Servidores de tempo primários</small>
+                        </div>
+                        
+                        <div style="text-align: center; font-size: 2em;">⬇️</div>
+                        
+                        <div class="stratum-box" style="background: #e8f5e8;">
+                            <strong>Stratum 2</strong><br>
+                            🖥️ Sincronizam com Stratum 1<br>
+                            <small>Servidores de tempo secundários</small>
+                        </div>
+                        
+                        <div style="text-align: center; font-size: 2em;">⬇️</div>
+                        
+                        <div class="stratum-box" style="background: #fff3e0;">
+                            <strong>Stratum 3, 4, 5...</strong><br>
+                            💻 Clientes finais e servidores locais<br>
+                            <small>Máximo de 15 níveis</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>🌍 Exemplos de Fontes Stratum 0</h3>
+                    <div class="bullet-point">GPS (Global Positioning System)</div>
+                    <div class="bullet-point">Relógios atômicos de césio</div>
+                    <div class="bullet-point">Sinais de rádio (WWVB, DCF77)</div>
+                    <div class="bullet-point">Outros padrões de tempo nacional</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: Funcionamento Básico do Protocolo -->
+        <div class="slide">
+            <div class="content">
+                <h2>⚙️ Funcionamento Básico do NTP</h2>
+                
+                <div class="bullet-point">Cliente envia solicitação para servidor NTP</div>
+                <div class="bullet-point">Servidor responde com timestamps precisos</div>
+                <div class="bullet-point">Cliente calcula delay e offset</div>
+                <div class="bullet-point">Cliente ajusta seu relógio gradualmente</div>
+
+                <div class="time-diagram">
+                    <h3>🔄 Troca de Mensagens NTP</h3>
+                    <div style="margin: 20px 0; font-size: 1.1em;">
+                        <strong>Cliente → Servidor:</strong><br>
+                        T1: 10:30:00.000 (timestamp do envio)<br><br>
+                        
+                        <strong>Servidor → Cliente:</strong><br>
+                        T1: 10:30:00.000 (eco do cliente)<br>
+                        T2: 10:30:00.025 (recebimento no servidor)<br>
+                        T3: 10:30:00.026 (envio do servidor)<br><br>
+                        
+                        <strong>Cliente recebe:</strong><br>
+                        T4: 10:30:00.051 (recebimento no cliente)
+                    </div>
+                </div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>📊 Cálculos Essenciais</h3>
+                        <div class="code-box">
+<strong>Delay (atraso da rede):</strong><br>
+delay = (T4-T1) - (T3-T2)<br>
+delay = (51-0) - (26-25)<br>
+delay = 51 - 1 = 50ms<br><br>
+
+<strong>Offset (diferença de tempo):</strong><br>
+offset = ((T2-T1) + (T3-T4)) / 2<br>
+offset = ((25-0) + (26-51)) / 2<br>
+offset = (25 + (-25)) / 2 = 0ms
+                        </div>
+                    </div>
+                    <div>
+                        <h3>🎯 Interpretação dos Resultados</h3>
+                        <div class="highlight-box">
+                            <strong>Delay = 50ms:</strong><br>
+                            Tempo total de ida e volta<br>
+                            Indica latência da rede
+                        </div>
+                        
+                        <div class="highlight-box">
+                            <strong>Offset = 0ms:</strong><br>
+                            Relógios já sincronizados<br>
+                            Nenhum ajuste necessário
+                        </div>
+                    </div>
+                </div>
+
+                <div class="example-box center-text">
+                    <h3>🔧 Processo de Ajuste</h3>
+                    <p>NTP NÃO muda o relógio bruscamente<br>
+                    Faz ajustes graduais para evitar "saltos" no tempo</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7: Formato da Mensagem NTP -->
+        <div class="slide">
+            <div class="content">
+                <h2>📦 Formato da Mensagem NTP</h2>
+                
+                <div class="bullet-point">Mensagem de 48 bytes com campos específicos</div>
+                <div class="bullet-point">Contém timestamps e informações de configuração</div>
+                <div class="bullet-point">Todos os timestamps em formato NTP (64 bits)</div>
+                <div class="bullet-point">Precisão de frações de segundo muito alta</div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Campo</th>
+                            <th>Tamanho</th>
+                            <th>Descrição</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="protocol-code">LI</span></td>
+                            <td>2 bits</td>
+                            <td>Leap Indicator - Aviso de segundo intercalar</td>
+                        </tr>
+                        <tr>
+                            <td><span class="protocol-code">VN</span></td>
+                            <td>3 bits</td>
+                            <td>Version Number - Versão do protocolo NTP</td>
+                        </tr>
+                        <tr>
+                            <td><span class="protocol-code">Mode</span></td>
+                            <td>3 bits</td>
+                            <td>Modo de operação (cliente, servidor, peer)</td>
+                        </tr>
+                        <tr>
+                            <td><span class="protocol-code">Stratum</span></td>
+                            <td>8 bits</td>
+                            <td>Nível hierárquico do servidor</td>
+                        </tr>
+                        <tr>
+                            <td><span class="protocol-code">Reference Timestamp</span></td>
+                            <td>64 bits</td>
+                            <td>Última sincronização do servidor</td>
+                        </tr>
+                        <tr>
+                            <td><span class="protocol-code">Origin Timestamp</span></td>
+                            <td>64 bits</td>
+                            <td>T1 - Momento do envio da solicitação</td>
+                        </tr>
+                        <tr>
+                            <td><span class="protocol-code">Receive Timestamp</span></td>
+                            <td>64 bits</td>
+                            <td>T2 - Momento de recebimento no servidor</td>
+                        </tr>
+                        <tr>
+                            <td><span class="protocol-code">Transmit Timestamp</span></td>
+                            <td>64 bits</td>
+                            <td>T3 - Momento do envio da resposta</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="example-box">
+                    <h3>⏱️ Formato do Timestamp NTP</h3>
+                    <div class="code-box">
+Timestamp NTP = 64 bits total<br>
+├─ 32 bits: Segundos desde 1 Jan 1900<br>
+└─ 32 bits: Fração de segundo<br><br>
+Resolução teórica: 2^-32 segundos<br>
+Precisão prática: ≈ 232 picossegundos!
+                    </div>
+                </div>
+
+                <div class="highlight-box center-text">
+                    <h3>🎯 Vantagem da Precisão</h3>
+                    <p>Mesmo com latência de rede variável,<br>
+                    NTP consegue precisão de milissegundos</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: Algoritmos de Sincronização -->
+        <div class="slide">
+            <div class="content">
+                <h2>🧮 Algoritmos de Sincronização</h2>
+                
+                <div class="bullet-point">NTP usa múltiplas medições para filtrar ruído</div>
+                <div class="bullet-point">Algoritmos estatísticos para melhorar precisão</div>
+                <div class="bullet-point">Rejeita medições com muito delay ou jitter</div>
+                <div class="bullet-point">Ajuste gradual evita "saltos" no tempo</div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>📊 Filtragem de Dados</h3>
+                        <div class="flow-step">1. Coleta 8 amostras de offset</div>
+                        <div class="flow-step">2. Ordena por delay crescente</div>
+                        <div class="flow-step">3. Seleciona as 4 melhores</div>
+                        <div class="flow-step">4. Calcula offset médio</div>
+                        <div class="flow-step">5. Aplica filtro passa-baixa</div>
+                        
+                        <div class="example-box">
+                            <strong>Exemplo de Filtro:</strong><br>
+                            Delays: 45, 47, 46, 89, 48, 91, 47, 46ms<br>
+                            Selecionados: 45, 46, 46, 47ms<br>
+                            <em>Rejeita delays altos (jitter de rede)</em>
+                        </div>
+                    </div>
+                    <div>
+                        <h3>⚙️ Ajuste do Relógio</h3>
+                        <div class="flow-step">1. <strong>Offset pequeno (&lt;128ms):</strong><br>Ajuste gradual - slew</div>
+                        <div class="flow-step">2. <strong>Offset médio (128ms-1000ms):</strong><br>Combinação step + slew</div>
+                        <div class="flow-step">3. <strong>Offset grande (&gt;1000ms):</strong><br>Ajuste imediato - step</div>
+                        
+                        <div class="example-box">
+                            <strong>Slew Mode:</strong><br>
+                            Acelera/desacelera relógio<br>
+                            Evita "volta" no tempo<br>
+                            Aplicações não percebem
+                        </div>
+                    </div>
+                </div>
+
+                <div class="highlight-box">
+                    <h3>🔄 Controle de Loop</h3>
+                    <p><strong>Phase-Locked Loop (PLL):</strong> Mantém sincronização contínua<br>
+                    <strong>Frequency-Locked Loop (FLL):</strong> Corrige deriva do oscilador local<br>
+                    <strong>Hybrid Mode:</strong> Combina PLL + FLL para máxima estabilidade</p>
+                </div>
+
+                <div class="warning-box">
+                    <h3>⚠️ Cuidado com Ajustes</h3>
+                    <p>Nunca "voltar" no tempo pode causar problemas graves<br>
+                    Logs duplicados, transações inválidas, etc.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 9: Modos de Operação NTP -->
+        <div class="slide">
+            <div class="content">
+                <h2>🔄 Modos de Operação NTP</h2>
+                
+                <div class="three-column">
+                    <div>
+                        <h3>👤 Modo Cliente</h3>
+                        <div class="bullet-point">Solicita tempo de servidores</div>
+                        <div class="bullet-point">Mais comum para máquinas finais</div>
+                        <div class="bullet-point">Consulta periódica</div>
+                        <div class="bullet-point">Baixo overhead</div>
+                        
+                        <div class="example-box">
+                            <strong>Uso típico:</strong><br>
+                            Workstations, laptops<br>
+                            Servidores locais
+                        </div>
+                    </div>
+                    <div>
+                        <h3>🖥️ Modo Servidor</h3>
+                        <div class="bullet-point">Responde a solicitações</div>
+                        <div class="bullet-point">Mantém tempo preciso</div>
+                        <div class="bullet-point">Pode atender muitos clientes</div>
+                        <div class="bullet-point">Referência para outros</div>
+                        
+                        <div class="example-box">
+                            <strong>Uso típico:</strong><br>
+                            Servidores de tempo<br>
+                            Infrastructure servers
+                        </div>
+                    </div>
+                    <div>
+                        <h3>🤝 Modo Peer</h3>
+                        <div class="bullet-point">Servidores iguais cooperam</div>
+                        <div class="bullet-point">Sincronização mútua</div>
+                        <div class="bullet-point">Redundância e confiabilidade</div>
+                        <div class="bullet-point">Evita ponto único de falha</div>
+                        
+                        <div class="example-box">
+                            <strong>Uso típico:</strong><br>
+                            Pool de servidores<br>
+                            Backup automático
+                        </div>
+                    </div>
+                </div>
+
+                <div class="two-column" style="margin-top: 30px;">
+                    <div>
+                        <h3>📡 Modo Broadcast</h3>
+                        <div class="bullet-point">Servidor envia tempo periodicamente</div>
+                        <div class="bullet-point">Clientes escutam passivamente</div>
+                        <div class="bullet-point">Eficiente para muitos clientes</div>
+                        <div class="bullet-point">Menor precisão (sem cálculo de delay)</div>
+                        
+                        <div class="example-box">
+                            <strong>Cenário ideal:</strong><br>
+                            LANs com muitas máquinas<br>
+                            Precisão moderada aceitável
+                        </div>
+                    </div>
+                    <div>
+                        <h3>🔗 Modo Multicast</h3>
+                        <div class="bullet-point">Versão moderna do broadcast</div>
+                        <div class="bullet-point">Mais eficiente em redes grandes</div>
+                        <div class="bullet-point">Clientes se juntam ao grupo</div>
+                        <div class="bullet-point">Reduz tráfego desnecessário</div>
+                        
+                        <div class="example-box">
+                            <strong>Vantagem:</strong><br>
+                            Escalabilidade melhor<br>
+                            Controle de grupo
+                        </div>
+                    </div>
+                </div>
+
+                <div class="highlight-box center-text">
+                    <h3>⚖️ Escolha do Modo</h3>
+                    <p><strong>Cliente/Servidor:</strong> Máxima precisão<br>
+                    <strong>Peer:</strong> Alta disponibilidade<br>
+                    <strong>Broadcast/Multicast:</strong> Eficiência em LANs</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 10: Configuração e Uso -->
+        <div class="slide">
+            <div class="content">
+                <h2>🔧 Configuração e Uso do NTP</h2>
+                
+                <div class="bullet-point">Configuração via arquivo /etc/ntp.conf (Linux/Unix)</div>
+                <div class="bullet-point">Pool de servidores públicos disponíveis</div>
+                <div class="bullet-point">Diferentes comandos para consulta e configuração</div>
+                <div class="bullet-point">Monitoramento e logs para diagnóstico</div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>📝 Configuração Básica</h3>
+                        <div class="code-box">
+# /etc/ntp.conf<br><br>
+# Pool de servidores públicos<br>
+pool 0.br.pool.ntp.org iburst<br>
+pool 1.br.pool.ntp.org iburst<br>
+pool 2.br.pool.ntp.org iburst<br><br>
+# Servidor local como fallback<br>
+server 127.127.1.0 prefer<br>
+fudge  127.127.1.0 stratum 10<br><br>
+# Arquivos de configuração<br>
+driftfile /var/lib/ntp/drift<br>
+logfile /var/log/ntp.log
+                        </div>
+                    </div>
+                    <div>
+                        <h3>⚙️ Comandos Úteis</h3>
+                        <div class="code-box">
+# Verificar status<br>
+$ ntpq -p<br>
+$ ntpstat<br><br>
+# Sincronização imediata<br>
+$ ntpdate pool.ntp.org<br><br>
+# Logs e debug<br>
+$ tail -f /var/log/ntp.log<br><br>
+# Estatísticas<br>
+$ ntpq -c peers<br>
+$ ntpq -c associations
+                        </div>
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>🌍 Servidores Públicos Populares</h3>
+                    <div style="display: flex; justify-content: space-around; margin: 20px 0;">
+                        <div style="text-align: center;">
+                            <strong>Brasil:</strong><br>
+                            a.ntp.br<br>
+                            b.ntp.br<br>
+                            c.ntp.br
+                        </div>
+                        <div style="text-align: center;">
+                            <strong>Pool Global:</strong><br>
+                            0.pool.ntp.org<br>
+                            1.pool.ntp.org<br>
+                            2.pool.ntp.org
+                        </div>
+                        <div style="text-align: center;">
+                            <strong>Google:</strong><br>
+                            time.google.com<br>
+                            time1.google.com<br>
+                            time2.google.com
+                        </div>
+                    </div>
+                </div>
+
+                <div class="highlight-box">
+                    <h3>📊 Interpretando ntpq -p</h3>
+                    <div class="code-box">
+remote         refid      st t when poll reach   delay   offset  jitter<br>
+*pool.ntp.org  .GPS.       1 u   64   64  377    45.123   0.234   0.891<br>
+ backup.com    pool.ntp    2 u  128  128  377    67.456   1.123   2.345<br><br>
+* = servidor atual    + = candidato    - = rejeitado<br>
+st = stratum         t = tipo         when = última consulta<br>
+reach = acessibilidade (octal)      delay/offset/jitter (ms)
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 11: Precisão e Exatidão -->
+        <div class="slide">
+            <div class="content">
+                <h2>🎯 Precisão e Exatidão do NTP</h2>
+                
+                <div class="bullet-point">Precisão = Quão consistentes são as medições</div>
+                <div class="bullet-point">Exatidão = Quão próximo do tempo real</div>
+                <div class="bullet-point">NTP otimiza ambos através de algoritmos sofisticados</div>
+                <div class="bullet-point">Fatores externos afetam a performance</div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>📊 Fatores que Afetam Precisão</h3>
+                        <div class="warning-box">
+                            <strong>Latência de rede:</strong><br>
+                            ± 1-100ms (Internet)<br>
+                            ± 0.1-1ms (LAN)
+                        </div>
+                        
+                        <div class="warning-box">
+                            <strong>Jitter (variação):</strong><br>
+                            Congestionamento<br>
+                            Roteamento assimétrico<br>
+                            Buffering variável
+                        </div>
+                        
+                        <div class="warning-box">
+                            <strong>Deriva do relógio:</strong><br>
+                            Temperatura<br>
+                            Envelhecimento<br>
+                            Qualidade do oscilador
+                        </div>
+                    </div>
+                    <div>
+                        <h3>✅ Precisão Típica Alcançada</h3>
+                        <div class="highlight-box">
+                            <strong>Internet pública:</strong><br>
+                            1-50 milissegundos<br>
+                            <small>Suficiente para maioria das aplicações</small>
+                        </div>
+                        
+                        <div class="highlight-box">
+                            <strong>LAN corporativa:</strong><br>
+                            0.1-1 milissegundo<br>
+                            <small>Ideal para sistemas críticos</small>
+                        </div>
+                        
+                        <div class="highlight-box">
+                            <strong>PTP (IEEE 1588):</strong><br>
+                            &lt; 1 microssegundo<br>
+                            <small>Para aplicações ultra-precisas</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>🔬 Análise de Exemplo Real</h3>
+                    <div class="time-diagram">
+Medições ao longo de 1 hora:<br><br>
+Offset médio: +2.3ms<br>
+Desvio padrão: 0.8ms<br>
+Máximo: +4.1ms<br>
+Mínimo: +0.7ms<br><br>
+Conclusão: Sistema bem sincronizado!<br>
+Precisão: ±1ms (99% das medições)<br>
+Exatidão: +2.3ms do tempo UTC
+                    </div>
+                </div>
+
+                <div class="highlight-box center-text">
+                    <h3>🎯 Comparação de Protocolos</h3>
+                    <p><strong>SNTP:</strong> 10-100ms (simples)<br>
+                    <strong>NTP:</strong> 1-50ms (completo)<br>
+                    <strong>PTP:</strong> &lt;1µs (hardware dedicado)</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 12: Problemas e Limitações -->
+        <div class="slide">
+            <div class="content">
+                <h2>⚠️ Problemas e Limitações do NTP</h2>
+                
+                <div class="bullet-point">NTP não é perfeito - tem limitações conhecidas</div>
+                <div class="bullet-point">Vulnerabilidades de segurança</div>
+                <div class="bullet-point">Problemas de escalabilidade</div>
+                <div class="bullet-point">Limitações técnicas fundamentais</div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>🚨 Problemas de Segurança</h3>
+                        <div class="warning-box">
+                            <strong>Amplificação DDoS:</strong><br>
+                            Requisição pequena → Resposta grande<br>
+                            Atacantes usam para amplificar ataques
+                        </div>
+                        
+                        <div class="warning-box">
+                            <strong>Spoofing de tempo:</strong><br>
+                            Respostas falsas podem desviar relógios<br>
+                            Certificados podem expirar "prematuramente"
+                        </div>
+                        
+                        <div class="warning-box">
+                            <strong>Falta de autenticação:</strong><br>
+                            NTP básico não verifica origem<br>
+                            Necessário usar chaves criptográficas
+                        </div>
+                    </div>
+                    <div>
+                        <h3>⚙️ Limitações Técnicas</h3>
+                        <div class="warning-box">
+                            <strong>Redes assimétricas:</strong><br>
+                            Delay de ida ≠ delay de volta<br>
+                            Causa erro sistemático no offset
+                        </div>
+                        
+                        <div class="warning-box">
+                            <strong>Sobrecarga de servidores:</strong><br>
+                            Servidores Stratum 1 limitados<br>
+                            Pool público pode ser instável
+                        </div>
+                        
+                        <div class="warning-box">
+                            <strong>Resolução de conflitos:</strong><br>
+                            O que fazer com fontes divergentes?<br>
+                            Algoritmos podem falhar
+                        </div>
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>🛡️ Soluções e Mitigações</h3>
+                    <div class="flow-step"><strong>NTS (Network Time Security):</strong> Autenticação criptográfica</div>
+                    <div class="flow-step"><strong>Múltiplas fontes:</strong> Use pelo menos 3-4 servidores diferentes</div>
+                    <div class="flow-step"><strong>Filtragem:</strong> Rejeite medições muito divergentes</div>
+                    <div class="flow-step"><strong>Monitoramento:</strong> Acompanhe logs e alertas</div>
+                    <div class="flow-step"><strong>Firewall:</strong> Limite acesso aos servidores NTP</div>
+                </div>
+
+                <div class="highlight-box center-text">
+                    <h3>🔮 Futuro: NTS e PTP</h3>
+                    <p><strong>NTS:</strong> Segurança criptográfica para NTP<br>
+                    <strong>PTP:</strong> Precisão de microssegundos com hardware dedicado</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 13: Exemplo Prático -->
+        <div class="slide">
+            <div class="content">
+                <h2>💻 Exemplo Prático com NTP</h2>
+                
+                <div class="bullet-point">Diagnóstico de problemas de sincronização</div>
+                <div class="bullet-point">Comandos úteis para administradores</div>
+                <div class="bullet-point">Interpretação de logs e estatísticas</div>
+
+                <div class="example-box">
+                    <h3>🔧 Diagnóstico Passo a Passo</h3>
+                    <div class="code-box">
+# 1. Verificar status atual<br>
+$ timedatectl status<br>
+               Local time: Sáb 2025-06-28 15:30:25 -03<br>
+           Universal time: Sáb 2025-06-28 18:30:25 UTC<br>
+                 RTC time: Sáb 2025-06-28 18:30:25<br>
+                Time zone: America/Fortaleza (-03, -0300)<br>
+System clock synchronized: yes<br>
+              NTP service: active<br>
+          RTC in local TZ: no<br><br>
+# 2. Verificar servidores NTP<br>
+$ ntpq -p<br>
+     remote           refid      st t when poll reach   delay   offset  jitter<br>
+==============================================================================<br>
+*time.google.com .GOOG.       1 u   32   64  377   45.123   -2.345   0.891<br>
++pool.ntp.br     .GPS.        1 u   41   64  377   67.234   -1.123   1.234<br>
+-backup.ntp.org  time.nist    2 u   55   64  377   89.456    4.567   3.456<br><br>
+# 3. Estatísticas detalhadas<br>
+$ ntpstat<br>
+synchronised to NTP server (time.google.com) at stratum 2<br>
+   time correct to within 12 ms<br>
+   polling server every 64 s
+                    </div>
+                </div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>📊 Interpretação dos Dados</h3>
+                        <div class="highlight-box">
+                            <strong>Símbolos importantes:</strong><br>
+                            * = Servidor escolhido<br>
+                            + = Candidato válido<br>
+                            - = Rejeitado<br>
+                            x = Falso (falseticket)<br>
+                            . = Descartado
+                        </div>
+                        
+                        <div class="highlight-box">
+                            <strong>Valores críticos:</strong><br>
+                            reach = 377 (octal) = ✅<br>
+                            reach < 377 = ⚠️ problemas<br>
+                            offset > 100ms = 🚨 erro
+                        </div>
+                    </div>
+                    <div>
+                        <h3>🚨 Troubleshooting</h3>
+                        <div class="warning-box">
+                            <strong>Problema comum:</strong><br>
+                            "no server suitable for synchronization found"<br><br>
+                            <strong>Soluções:</strong><br>
+                            • Verificar conectividade<br>
+                            • Testar outros servidores<br>
+                            • Verificar firewall<br>
+                            • Reiniciar ntpd
+                        </div>
+                    </div>
+                </div>
+
+                <div class="highlight-box">
+                    <h3>📝 Log de Sincronização Bem-Sucedida</h3>
+                    <div class="code-box">
+Jun 28 15:30:01 servidor ntpd[1234]: synchronized to time.google.com, stratum 1<br>
+Jun 28 15:30:01 servidor ntpd[1234]: kernel time sync status change 0001<br>
+Jun 28 15:35:15 servidor ntpd[1234]: offset -0.002345 sec freq +15.234 ppm<br>
+Jun 28 15:40:30 servidor ntpd[1234]: adjust time server time.google.com offset -0.001234 sec
+                    </div>
+                </div>
+
+                <div class="example-box center-text">
+                    <h3>✅ Sinais de Boa Sincronização</h3>
+                    <p>Offset consistente &lt; 10ms<br>
+                    Reach = 377 para múltiplos servidores<br>
+                    Jitter baixo e estável</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 14: Quiz -->
+        <div class="slide">
+            <div class="content">
+                <h2>🧠 Quiz - Teste seus conhecimentos!</h2>
+                
+                <div class="quiz-container">
+                    <!-- Questão 1 -->
+                    <div class="quiz-question" id="question1">
+                        <h3>📝 Questão 1</h3>
+                        <p><strong>Qual a principal função do protocolo NTP?</strong></p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(1, 'a', false)">
+                                <span class="option-letter">A)</span> Transferir arquivos entre computadores
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(1, 'b', true)">
+                                <span class="option-letter">B)</span> Sincronizar relógios de computadores na rede
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(1, 'c', false)">
+                                <span class="option-letter">C)</span> Enviar emails automaticamente
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(1, 'd', false)">
+                                <span class="option-letter">D)</span> Gerenciar endereços IP dinamicamente
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback1"></div>
+                    </div>
+
+                    <!-- Questão 2 -->
+                    <div class="quiz-question" id="question2" style="display: none;">
+                        <h3>📝 Questão 2</h3>
+                        <p><strong>O que representa o conceito de "Stratum" no NTP?</strong></p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(2, 'a', false)">
+                                <span class="option-letter">A)</span> Velocidade da conexão de rede
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(2, 'b', true)">
+                                <span class="option-letter">B)</span> Nível hierárquico na árvore de sincronização
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(2, 'c', false)">
+                                <span class="option-letter">C)</span> Tipo de algoritmo de criptografia usado
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(2, 'd', false)">
+                                <span class="option-letter">D)</span> Formato da mensagem de sincronização
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback2"></div>
+                    </div>
+
+                    <!-- Questão 3 -->
+                    <div class="quiz-question" id="question3" style="display: none;">
+                        <h3>📝 Questão 3</h3>
+                        <p><strong>Qual a precisão típica que o NTP consegue alcançar na Internet pública?</strong></p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(3, 'a', false)">
+                                <span class="option-letter">A)</span> 1-50 microssegundos
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(3, 'b', true)">
+                                <span class="option-letter">B)</span> 1-50 milissegundos
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(3, 'c', false)">
+                                <span class="option-letter">C)</span> 1-50 segundos
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(3, 'd', false)">
+                                <span class="option-letter">D)</span> 1-50 minutos
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback3"></div>
+                    </div>
+
+                    <!-- Questão 4 -->
+                    <div class="quiz-question" id="question4" style="display: none;">
+                        <h3>📝 Questão 4</h3>
+                        <p><strong>Qual protocolo de transporte o NTP utiliza e em qual porta?</strong></p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(4, 'a', false)">
+                                <span class="option-letter">A)</span> TCP porta 123
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(4, 'b', true)">
+                                <span class="option-letter">B)</span> UDP porta 123
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(4, 'c', false)">
+                                <span class="option-letter">C)</span> UDP porta 23
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(4, 'd', false)">
+                                <span class="option-letter">D)</span> TCP porta 80
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback4"></div>
+                    </div>
+
+                    <!-- Resultado Final -->
+                    <div class="quiz-result" id="quizResult" style="display: none;">
+                        <h3>🎉 Parabéns! Quiz Concluído!</h3>
+                        <div class="result-box">
+                            <p><strong>Sua pontuação: <span id="finalScore">0</span>/4</strong></p>
+                            <p id="resultMessage"></p>
+                        </div>
+                        <button class="nav-btn" onclick="restartQuiz()">🔄 Refazer Quiz</button>
+                    </div>
+                </div>
+
+                <div class="quiz-navigation">
+                    <button class="nav-btn" id="nextQuizBtn" onclick="nextQuestion()" style="display: none;">
+                        Próxima Questão ➡️
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 15: Resumo Final -->
+        <div class="slide">
+            <div class="content">
+                <h2>🎯 Resumo Final</h2>
+                
+                <div class="highlight-box large-text center-text">
+                    <strong>NTP: A base do tempo sincronizado na Internet</strong>
+                </div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>✅ Características Principais</h3>
+                        <div class="bullet-point">Protocolo para sincronização de tempo</div>
+                        <div class="bullet-point">Hierarquia de servidores (Stratum)</div>
+                        <div class="bullet-point">Precisão de milissegundos</div>
+                        <div class="bullet-point">UDP porta 123</div>
+                        <div class="bullet-point">Algoritmos estatísticos sofisticados</div>
+                    </div>
+                    <div>
+                        <h3>🎯 Componentes Essenciais</h3>
+                        <div class="bullet-point">Timestamps de 64 bits</div>
+                        <div class="bullet-point">Cálculo de delay e offset</div>
+                        <div class="bullet-point">Filtragem e ajuste gradual</div>
+                        <div class="bullet-point">Múltiplos modos de operação</div>
+                        <div class="bullet-point">Referências de tempo primárias</div>
+                    </div>
+                </div>
+
+                <div class="example-box center-text">
+                    <h3>🏆 Importância Crítica</h3>
+                    <p>NTP é fundamental para sistemas modernos<br>
+                    Logs, transações, segurança dependem de tempo sincronizado</p>
+                </div>
+
+                <div class="warning-box center-text">
+                    <h3>⚠️ Desafios de Segurança</h3>
+                    <p>Vulnerabilidades conhecidas requerem cuidados<br>
+                    NTS (Network Time Security) é o futuro</p>
+                </div>
+
+                <div class="highlight-box center-text">
+                    <h3>📚 Aplicações Essenciais</h3>
+                    <p>Sistemas bancários, logs de segurança, banco de dados,<br>
+                    certificados digitais, sistemas distribuídos</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 16: Referências -->
+        <div class="slide">
+            <div class="content">
+                <h2>📚 Referências Bibliográficas</h2>
+                
+                <div class="highlight-box">
+                    <h3>📖 Fonte Principal:</h3>
+                    <div class="bullet-point"><strong>Seção sobre Network Time Protocol</strong></div>
+                    <div class="bullet-point">Livro de Redes de Computadores</div>
+                    <div class="bullet-point">Material didático da disciplina</div>
+                </div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>🌐 RFCs Fundamentais:</h3>
+                        <div class="bullet-point">RFC 5905 - Network Time Protocol v4</div>
+                        <div class="bullet-point">RFC 4330 - Simple Network Time Protocol (SNTP)</div>
+                        <div class="bullet-point">RFC 8915 - Network Time Security (NTS)</div>
+                        <div class="bullet-point">RFC 1305 - Network Time Protocol (versão 3)</div>
+                    </div>
+                    <div>
+                        <h3>📋 Documentação Adicional:</h3>
+                        <div class="bullet-point">IEEE 1588 - Precision Time Protocol (PTP)</div>
+                        <div class="bullet-point">www.ntp.org - Documentação oficial</div>
+                        <div class="bullet-point">pool.ntp.org - Pool de servidores públicos</div>
+                        <div class="bullet-point">NIST Time and Frequency Division</div>
+                    </div>
+                </div>
+
+                <div class="example-box center-text">
+                    <h3>🤖 Metodologia de Criação</h3>
+                    <p>Apresentação desenvolvida com assistência de IA Claude Sonnet 4<br>
+                    Baseada em conhecimento consolidado sobre protocolos de rede<br>
+                    Adaptação pedagógica com foco em clareza e exemplos práticos</p>
+                </div>
+
+                <div class="highlight-box center-text">
+                    <h3>🎯 Objetivo Educacional</h3>
+                    <p>Facilitar a compreensão do protocolo NTP através de<br>
+                    explicações detalhadas, diagramas e exemplos práticos</p>
+                </div>
+
+                <div class="example-box center-text">
+                    <h3>🔗 Recursos Online Úteis</h3>
+                    <p><strong>time.google.com</strong> - Servidor NTP do Google<br>
+                    <strong>a.ntp.br</strong> - Servidor NTP brasileiro<br>
+                    <strong>www.timeanddate.com</strong> - Verificação de horário mundial</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="navigation">
+            <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">⬅️ Anterior</button>
+            <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">Próximo ➡️</button>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        document.getElementById('total-slides').textContent = totalSlides;
+
+        // Quiz variables
+        let currentQuestion = 1;
+        let score = 0;
+        let quizAnswered = [false, false, false, false];
+
+        function showSlide(index) {
+            slides.forEach((slide, i) => {
+                slide.classList.toggle('active', i === index);
+            });
+            
+            document.getElementById('current-slide').textContent = index + 1;
+            document.getElementById('prevBtn').disabled = index === 0;
+            document.getElementById('nextBtn').disabled = index === totalSlides - 1;
+        }
+
+        function changeSlide(direction) {
+            const newSlide = currentSlide + direction;
+            if (newSlide >= 0 && newSlide < totalSlides) {
+                currentSlide = newSlide;
+                showSlide(currentSlide);
+            }
+        }
+
+        // Quiz Functions
+        function selectOption(questionNum, option, isCorrect) {
+            if (quizAnswered[questionNum - 1]) return; // Já respondida
+            
+            const options = document.querySelectorAll(`#question${questionNum} .quiz-option`);
+            const feedback = document.getElementById(`feedback${questionNum}`);
+            
+            // Marcar todas as opções
+            options.forEach(opt => {
+                opt.style.pointerEvents = 'none';
+                if (opt.onclick.toString().includes('true')) {
+                    opt.classList.add('correct');
+                } else if (opt === event.currentTarget) {
+                    opt.classList.add(isCorrect ? 'correct' : 'incorrect');
+                }
+            });
+            
+            // Mostrar feedback
+            if (isCorrect) {
+                feedback.innerHTML = '✅ Correto! Muito bem!';
+                feedback.className = 'quiz-feedback correct';
+                score++;
+            } else {
+                feedback.innerHTML = '❌ Incorreto. A resposta correta está destacada em verde.';
+                feedback.className = 'quiz-feedback incorrect';
+            }
+            
+            quizAnswered[questionNum - 1] = true;
+            
+            // Mostrar botão para próxima questão
+            if (questionNum < 4) {
+                document.getElementById('nextQuizBtn').style.display = 'inline-block';
+            } else {
+                // Última questão - mostrar resultado
+                setTimeout(() => {
+                    showQuizResult();
+                }, 2000);
+            }
+        }
+
+        function nextQuestion() {
+            document.getElementById(`question${currentQuestion}`).style.display = 'none';
+            currentQuestion++;
+            document.getElementById(`question${currentQuestion}`).style.display = 'block';
+            document.getElementById('nextQuizBtn').style.display = 'none';
+        }
+
+        function showQuizResult() {
+            // Esconder última questão
+            document.getElementById('question4').style.display = 'none';
+            
+            // Mostrar resultado
+            document.getElementById('quizResult').style.display = 'block';
+            document.getElementById('finalScore').textContent = score;
+            
+            const resultMessage = document.getElementById('resultMessage');
+            if (score === 4) {
+                resultMessage.innerHTML = '🏆 Excelente! Você domina o NTP!';
+            } else if (score === 3) {
+                resultMessage.innerHTML = '👏 Muito bom! Quase perfeito!';
+            } else if (score === 2) {
+                resultMessage.innerHTML = '👍 Bom trabalho! Continue estudando!';
+            } else if (score === 1) {
+                resultMessage.innerHTML = '📚 Estude um pouco mais sobre NTP!';
+            } else {
+                resultMessage.innerHTML = '📖 Recomendo revisar o conteúdo sobre NTP!';
+            }
+        }
+
+        function restartQuiz() {
+            // Reset variables
+            currentQuestion = 1;
+            score = 0;
+            quizAnswered = [false, false, false, false];
+            
+            // Reset interface
+            for (let i = 1; i <= 4; i++) {
+                const question = document.getElementById(`question${i}`);
+                const options = question.querySelectorAll('.quiz-option');
+                const feedback = document.getElementById(`feedback${i}`);
+                
+                // Reset options
+                options.forEach(opt => {
+                    opt.className = 'quiz-option';
+                    opt.style.pointerEvents = 'auto';
+                });
+                
+                // Hide feedback
+                feedback.style.display = 'none';
+                
+                // Hide all questions except first
+                question.style.display = i === 1 ? 'block' : 'none';
+            }
+            
+            // Hide result and buttons
+            document.getElementById('quizResult').style.display = 'none';
+            document.getElementById('nextQuizBtn').style.display = 'none';
+        }
+
+        // Navegação por teclado
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') changeSlide(-1);
+            if (e.key === 'ArrowRight') changeSlide(1);
+            if (e.key === 'Home') {
+                currentSlide = 0;
+                showSlide(currentSlide);
+            }
+            if (e.key === 'End') {
+                currentSlide = totalSlides - 1;
+                showSlide(currentSlide);
+            }
+        });
+
+        // Inicializar
+        showSlide(0);
+        
+        // Inicializar quiz no slide 14
+        document.getElementById('question1').style.display = 'block';
+    </script>
+</body>
+</html>

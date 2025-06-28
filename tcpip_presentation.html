@@ -1,0 +1,1341 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modelo de Referência TCP/IP</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        .presentation {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .slide {
+            min-height: 100vh;
+            padding: 60px 40px;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            background: white;
+            margin: 20px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        .slide.active {
+            display: flex;
+        }
+
+        .slide h1 {
+            font-size: 3.5em;
+            color: #4a5568;
+            text-align: center;
+            margin-bottom: 40px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .slide h2 {
+            font-size: 2.8em;
+            color: #2d3748;
+            margin-bottom: 30px;
+            border-bottom: 4px solid #11998e;
+            padding-bottom: 15px;
+        }
+
+        .slide h3 {
+            font-size: 2.2em;
+            color: #4a5568;
+            margin: 25px 0 15px 0;
+        }
+
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: start;
+        }
+
+        .bullet-point {
+            display: flex;
+            align-items: flex-start;
+            margin: 15px 0;
+            font-size: 1.3em;
+            line-height: 1.5;
+        }
+
+        .bullet-point::before {
+            content: "🔸";
+            margin-right: 15px;
+            font-size: 1.2em;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #11998e;
+        }
+
+        .example-box {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #20b2aa;
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 1000;
+        }
+
+        .nav-btn {
+            padding: 15px 25px;
+            background: #11998e;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(17, 153, 142, 0.3);
+        }
+
+        .nav-btn:hover {
+            background: #0f8a7d;
+            transform: translateY(-2px);
+            box-shadow: 0 7px 20px rgba(17, 153, 142, 0.4);
+        }
+
+        .nav-btn:disabled {
+            background: #a0a0a0;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .slide-counter {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: rgba(255,255,255,0.9);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            color: #4a5568;
+            z-index: 1000;
+        }
+
+        .center-text {
+            text-align: center;
+        }
+
+        .large-text {
+            font-size: 1.4em;
+            line-height: 1.6;
+        }
+
+        .diagram {
+            background: #f7fafc;
+            border: 2px dashed #11998e;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+            font-family: monospace;
+            font-size: 1.2em;
+        }
+
+        .layer-stack {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px 0;
+        }
+
+        .layer {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            padding: 20px 40px;
+            margin: 5px;
+            border-radius: 15px;
+            font-weight: bold;
+            min-width: 300px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            font-size: 1.3em;
+        }
+
+        .layer.tcp-4 { background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); }
+        .layer.tcp-3 { background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); }
+        .layer.tcp-2 { background: linear-gradient(135deg, #27ae60 0%, #229954 100%); }
+        .layer.tcp-1 { background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%); }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 1.1em;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        th {
+            background: #11998e;
+            color: white;
+            font-weight: bold;
+        }
+
+        .process-step {
+            background: #e6fffa;
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #38b2ac;
+        }
+
+        .code-box {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: monospace;
+            font-size: 1em;
+            margin: 20px 0;
+            overflow-x: auto;
+        }
+
+        .protocol-badge {
+            display: inline-block;
+            background: #11998e;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 1em;
+            margin: 5px;
+            font-weight: bold;
+        }
+
+        .ping-output {
+            background: #1a202c;
+            color: #68d391;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            margin: 15px 0;
+            line-height: 1.4;
+        }
+
+        /* Quiz Styles */
+        .quiz-container {
+            max-width: 100%;
+            margin: 20px 0;
+        }
+
+        .quiz-question {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border: 2px solid #e2e8f0;
+        }
+
+        .quiz-question h3 {
+            color: #11998e;
+            margin-bottom: 20px;
+        }
+
+        .quiz-question p {
+            font-size: 1.3em;
+            margin-bottom: 25px;
+            font-weight: bold;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .quiz-option {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.1em;
+        }
+
+        .quiz-option:hover {
+            border-color: #11998e;
+            background: #f0fff4;
+            transform: translateX(5px);
+        }
+
+        .quiz-option.selected {
+            border-color: #11998e;
+            background: #11998e;
+            color: white;
+        }
+
+        .quiz-option.correct {
+            border-color: #48bb78;
+            background: #48bb78;
+            color: white;
+        }
+
+        .quiz-option.incorrect {
+            border-color: #f56565;
+            background: #f56565;
+            color: white;
+        }
+
+        .option-letter {
+            background: #11998e;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .quiz-option.correct .option-letter {
+            background: #48bb78;
+        }
+
+        .quiz-option.incorrect .option-letter {
+            background: #f56565;
+        }
+
+        .quiz-feedback {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: bold;
+            display: none;
+        }
+
+        .quiz-feedback.correct {
+            background: #c6f6d5;
+            color: #22543d;
+            border: 2px solid #48bb78;
+            display: block;
+        }
+
+        .quiz-feedback.incorrect {
+            background: #fed7d7;
+            color: #742a2a;
+            border: 2px solid #f56565;
+            display: block;
+        }
+
+        .quiz-navigation {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .quiz-result {
+            text-align: center;
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            margin: 20px 0;
+        }
+
+        .result-box {
+            background: rgba(255,255,255,0.1);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+
+        .result-box p {
+            font-size: 1.4em;
+            margin: 10px 0;
+        }
+
+        .war-story {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #c44569;
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation">
+        <div class="slide-counter">
+            <span id="current-slide">1</span> / <span id="total-slides">16</span>
+        </div>
+
+        <!-- Slide 1: Título -->
+        <div class="slide active">
+            <div class="content center-text">
+                <h1>🚀 Modelo de Referência TCP/IP</h1>
+                <h2 style="border: none; color: #11998e;">A Arquitetura da Internet</h2>
+                <div class="highlight-box large-text">
+                    <strong>Aula 04</strong><br>
+                    A base tecnológica da Internet moderna<br>
+                    Como dados navegam pela rede global
+                </div>
+                
+                <div class="example-box" style="margin-top: 40px;">
+                    <h3>👨‍🏫 Autor da Apresentação</h3>
+                    <p style="font-size: 1.3em; margin: 10px 0;">
+                        <strong>César Azevedo</strong><br>
+                        📧 cesar.augusto@ifrn.edu.br
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 2: Tópicos da Aula -->
+        <div class="slide">
+            <div class="content">
+                <h2>📋 Tópicos da Aula</h2>
+                
+                <div class="two-column">
+                    <div>
+                        <h3>🚀 História & Fundamentos</h3>
+                        <div class="bullet-point">ARPANET e Guerra Fria</div>
+                        <div class="bullet-point">Origem do modelo TCP/IP</div>
+                        <div class="bullet-point">Diferenças do modelo OSI</div>
+                        <div class="bullet-point">Filosofia de projeto</div>
+                        
+                        <h3>🏗️ As 4 Camadas</h3>
+                        <div class="bullet-point">Aplicação (HTTP, DNS, FTP)</div>
+                        <div class="bullet-point">Transporte (TCP, UDP)</div>
+                        <div class="bullet-point">Internet (IP, ARP, ICMP)</div>
+                        <div class="bullet-point">Rede (Física + Enlace)</div>
+                    </div>
+                    <div>
+                        <h3>⚙️ Protocolos em Ação</h3>
+                        <div class="bullet-point">TCP: Confiabilidade garantida</div>
+                        <div class="bullet-point">UDP: Velocidade sem garantias</div>
+                        <div class="bullet-point">IP: Roteamento de pacotes</div>
+                        <div class="bullet-point">Controles de fluxo e erro</div>
+                        
+                        <h3>🔧 Ferramentas Práticas</h3>
+                        <div class="bullet-point">Comando PING em ação</div>
+                        <div class="bullet-point">Teste de conectividade</div>
+                        <div class="bullet-point">Medição de latência</div>
+                        <div class="bullet-point">Interpretação de resultados</div>
+                    </div>
+                </div>
+
+                <div class="highlight-box center-text">
+                    <h3>🎯 Objetivo Final</h3>
+                    <p>Compreender como o TCP/IP estrutura toda a Internet<br>
+                    e como usar suas ferramentas no dia a dia</p>
+                </div>
+
+                <div class="example-box center-text">
+                    <h3>🧠 + Quiz Interativo</h3>
+                    <p>Teste seus conhecimentos com 4 questões práticas!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: História da ARPANET -->
+        <div class="slide">
+            <div class="content">
+                <h2>🏛️ História: Da Guerra Fria à Internet</h2>
+                
+                <div class="war-story">
+                    <h3>⚔️ Contexto da Guerra Fria</h3>
+                    <div class="bullet-point">EUA vs União Soviética</div>
+                    <div class="bullet-point">Comunicações militares vulneráveis</div>
+                    <div class="bullet-point">Necessidade de rede resistente a ataques</div>
+                    <div class="bullet-point">Departamento de Defesa Americano</div>
+                </div>
+
+                <div class="example-box">
+                    <h3>🌐 O Problema Original</h3>
+                    <div class="bullet-point">Comunicação entre bases militares</div>
+                    <div class="bullet-point">Rede que funcionasse mesmo com partes destruídas</div>
+                    <div class="bullet-point">Pacotes independentes de rotas específicas</div>
+                    <div class="bullet-point">Informação chegando sempre ao destino</div>
+                </div>
+
+                <div class="highlight-box">
+                    <h3>🎯 Solução: ARPANET</h3>
+                    <div class="bullet-point">Primeira rede de computadores distribuída</div>
+                    <div class="bullet-point">Pacotes roteados independentemente</div>
+                    <div class="bullet-point">Resistente a falhas parciais</div>
+                    <div class="bullet-point">Base para a Internet atual</div>
+                </div>
+
+                <div class="diagram center-text">
+                    <strong>ARPANET → Internet → Modelo TCP/IP</strong><br>
+                    A solução militar que virou a base da conectividade global
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Filosofia do TCP/IP -->
+        <div class="slide">
+            <div class="content">
+                <h2>🧠 Filosofia do Modelo TCP/IP</h2>
+                
+                <div class="bullet-point">Desenvolvido por governo + comunidade acadêmica</div>
+                <div class="bullet-point">Protocolos criados primeiro, modelo depois</div>
+                <div class="bullet-point">Baseado em protocolos reais e funcionais</div>
+                <div class="bullet-point">Pragmático e implementável</div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>✅ Características Únicas</h3>
+                        <div class="bullet-point">4 camadas (mais simples)</div>
+                        <div class="bullet-point">Protocolos existentes</div>
+                        <div class="bullet-point">Implementação real</div>
+                        <div class="bullet-point">Foco na funcionalidade</div>
+                    </div>
+                    <div>
+                        <h3>🎯 Vantagens Práticas</h3>
+                        <div class="bullet-point">Menos complexo que OSI</div>
+                        <div class="bullet-point">Protocolos testados</div>
+                        <div class="bullet-point">Amplamente adotado</div>
+                        <div class="bullet-point">Base da Internet</div>
+                    </div>
+                </div>
+
+                <div class="highlight-box center-text">
+                    <h3>💡 Diferença Fundamental</h3>
+                    <p><strong>OSI:</strong> Modelo teórico → Protocolos<br>
+                    <strong>TCP/IP:</strong> Protocolos funcionais → Modelo</p>
+                </div>
+
+                <div class="example-box center-text">
+                    <h3>🌍 Resultado</h3>
+                    <p>TCP/IP virou padrão global<br>
+                    OSI ficou mais como referência acadêmica</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: As 4 Camadas do TCP/IP -->
+        <div class="slide">
+            <div class="content">
+                <h2>🏗️ As 4 Camadas do TCP/IP</h2>
+                
+                <div class="layer-stack">
+                    <div class="layer tcp-4">4. Aplicação</div>
+                    <div class="layer tcp-3">3. Transporte</div>
+                    <div class="layer tcp-2">2. Internet</div>
+                    <div class="layer tcp-1">1. Rede</div>
+                </div>
+
+                <div class="highlight-box">
+                    <h3>📝 Resumo das Funções:</h3>
+                    <div class="bullet-point"><strong>Aplicação:</strong> Interface com usuário (HTTP, DNS, FTP)</div>
+                    <div class="bullet-point"><strong>Transporte:</strong> Confiabilidade fim-a-fim (TCP, UDP)</div>
+                    <div class="bullet-point"><strong>Internet:</strong> Roteamento entre redes (IP, ICMP)</div>
+                    <div class="bullet-point"><strong>Rede:</strong> Transmissão física (Ethernet, WiFi)</div>
+                </div>
+
+                <div class="example-box center-text">
+                    <h3>🔄 Encapsulamento</h3>
+                    <p>Cada camada adiciona seus próprios cabeçalhos<br>
+                    Dados "embrulhados" como bonecas russas</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: Camada de Aplicação -->
+        <div class="slide">
+            <div class="content">
+                <h2>📱 Camada de Aplicação</h2>
+                
+                <div class="bullet-point">Interface direta com o usuário</div>
+                <div class="bullet-point">Combina 3 camadas OSI (Aplicação + Apresentação + Sessão)</div>
+                <div class="bullet-point">Protocolos de alto nível</div>
+                <div class="bullet-point">Funcionalidades completas</div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>🌐 Protocolos Web</h3>
+                        <div class="protocol-badge">HTTP</div>
+                        <div class="protocol-badge">HTTPS</div>
+                        <div class="protocol-badge">FTP</div>
+                        <div class="protocol-badge">SFTP</div>
+                        
+                        <h3>📧 Protocolos de E-mail</h3>
+                        <div class="protocol-badge">SMTP</div>
+                        <div class="protocol-badge">POP3</div>
+                        <div class="protocol-badge">IMAP</div>
+                    </div>
+                    <div>
+                        <h3>🔍 Protocolos de Rede</h3>
+                        <div class="protocol-badge">DNS</div>
+                        <div class="protocol-badge">DHCP</div>
+                        <div class="protocol-badge">SNMP</div>
+                        
+                        <h3>🎮 Protocolos Diversos</h3>
+                        <div class="protocol-badge">SSH</div>
+                        <div class="protocol-badge">Telnet</div>
+                        <div class="protocol-badge">NTP</div>
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>💡 Exemplos Práticos</h3>
+                    <div class="bullet-point"><strong>Navegador:</strong> HTTP/HTTPS para páginas web</div>
+                    <div class="bullet-point"><strong>E-mail:</strong> SMTP para envio, IMAP para recebimento</div>
+                    <div class="bullet-point"><strong>Transferência:</strong> FTP para download de arquivos</div>
+                    <div class="bullet-point"><strong>Resolução:</strong> DNS para traduzir nomes em IPs</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7: Camada de Transporte -->
+        <div class="slide">
+            <div class="content">
+                <h2>🚚 Camada de Transporte</h2>
+                
+                <div class="bullet-point">Comunicação confiável entre aplicações</div>
+                <div class="bullet-point">Controle de fluxo, sequência e erros</div>
+                <div class="bullet-point">Identificação por portas</div>
+                <div class="bullet-point">Dois protocolos principais: TCP e UDP</div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>🛡️ TCP (Transmission Control Protocol)</h3>
+                        <div class="bullet-point">Orientado à conexão</div>
+                        <div class="bullet-point">Entrega garantida</div>
+                        <div class="bullet-point">Controle de sequência</div>
+                        <div class="bullet-point">Correção de erros</div>
+                        <div class="bullet-point">Controle de fluxo</div>
+                        
+                        <div class="example-box">
+                            <strong>Usado em:</strong><br>
+                            • HTTP/HTTPS<br>
+                            • FTP<br>
+                            • E-mail<br>
+                            • SSH
+                        </div>
+                    </div>
+                    <div>
+                        <h3>⚡ UDP (User Datagram Protocol)</h3>
+                        <div class="bullet-point">Sem conexão</div>
+                        <div class="bullet-point">Sem garantias</div>
+                        <div class="bullet-point">Mais rápido</div>
+                        <div class="bullet-point">Menor overhead</div>
+                        <div class="bullet-point">Checksum opcional</div>
+                        
+                        <div class="example-box">
+                            <strong>Usado em:</strong><br>
+                            • DNS<br>
+                            • DHCP<br>
+                            • Streaming de vídeo<br>
+                            • Jogos online
+                        </div>
+                    </div>
+                </div>
+
+                <div class="highlight-box center-text">
+                    <h3>🎯 Escolha do Protocolo</h3>
+                    <p><strong>TCP:</strong> Quando precisão é crítica<br>
+                    <strong>UDP:</strong> Quando velocidade é prioridade</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: Detalhes do TCP -->
+        <div class="slide">
+            <div class="content">
+                <h2>🔧 TCP: Controles Avançados</h2>
+                
+                <div class="highlight-box">
+                    <h3>🎯 Controle de Fluxo</h3>
+                    <div class="bullet-point">Janela deslizante (sliding window)</div>
+                    <div class="bullet-point">Evita sobrecarga do receptor</div>
+                    <div class="bullet-point">Ajuste dinâmico da velocidade</div>
+                    <div class="bullet-point">Duas janelas: envio e recebimento</div>
+                </div>
+
+                <div class="example-box">
+                    <h3>📋 Controle de Sequência</h3>
+                    <div class="bullet-point">Cada pacote numerado</div>
+                    <div class="bullet-point">Reordenação automática</div>
+                    <div class="bullet-point">ACK (acknowledgement) confirma recebimento</div>
+                    <div class="bullet-point">Retransmissão em caso de perda</div>
+                </div>
+
+                <div class="process-step">
+                    <strong>Exemplo de Sequência:</strong><br>
+                    1. Emissor envia pacotes 1, 2, 3<br>
+                    2. Receptor confirma com ACK 4 (próximo esperado)<br>
+                    3. Pacote 2 se perde na rede<br>
+                    4. Receptor recebe 1, 3 - pede retransmissão de 2<br>
+                    5. Emissor retransmite pacote 2<br>
+                    6. Receptor reordena: 1, 2, 3 ✓
+                </div>
+
+                <div class="highlight-box">
+                    <h3>🛠️ Controle de Erros</h3>
+                    <div class="bullet-point">CRC (Cyclic Redundancy Check)</div>
+                    <div class="bullet-point">Detecção de corrupção</div>
+                    <div class="bullet-point">Timeout para retransmissão</div>
+                    <div class="bullet-point">Múltiplos níveis de verificação</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 9: Camada Internet -->
+        <div class="slide">
+            <div class="content">
+                <h2>🌐 Camada Internet</h2>
+                
+                <div class="bullet-point">Roteamento entre redes diferentes</div>
+                <div class="bullet-point">Endereçamento global único</div>
+                <div class="bullet-point">Pacotes independentes</div>
+                <div class="bullet-point">Sem garantia de entrega</div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>📍 IP (Internet Protocol)</h3>
+                        <div class="bullet-point">Endereçamento único</div>
+                        <div class="bullet-point">Roteamento de pacotes</div>
+                        <div class="bullet-point">Fragmentação quando necessário</div>
+                        <div class="bullet-point">IPv4 e IPv6</div>
+                        
+                        <h3>🔍 ARP (Address Resolution)</h3>
+                        <div class="bullet-point">IP → Endereço físico</div>
+                        <div class="bullet-point">Descoberta na rede local</div>
+                        <div class="bullet-point">Cache de endereços</div>
+                    </div>
+                    <div>
+                        <h3>📢 ICMP (Internet Control)</h3>
+                        <div class="bullet-point">Mensagens de controle</div>
+                        <div class="bullet-point">Notificação de erros</div>
+                        <div class="bullet-point">Comando PING</div>
+                        <div class="bullet-point">Diagnóstico de rede</div>
+                        
+                        <h3>🔄 RARP (Reverse ARP)</h3>
+                        <div class="bullet-point">Endereço físico → IP</div>
+                        <div class="bullet-point">Usado por dispositivos</div>
+                        <div class="bullet-point">Configuração automática</div>
+                    </div>
+                </div>
+
+                <div class="highlight-box center-text">
+                    <h3>🎯 Analogia Postal</h3>
+                    <p>Como sistema postal:<br>
+                    • IP = endereço na carta<br>
+                    • Roteamento = centros de distribuição<br>
+                    • Pacotes = cartas individuais</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 10: Comando PING -->
+        <div class="slide">
+            <div class="content">
+                <h2>🏓 Comando PING em Ação</h2>
+                
+                <div class="bullet-point">Ferramenta de diagnóstico essencial</div>
+                <div class="bullet-point">Usa protocolos IP e ICMP</div>
+                <div class="bullet-point">Testa conectividade e latência</div>
+                <div class="bullet-point">Disponível em todos os sistemas</div>
+
+                <div class="example-box">
+                    <h3>🧮 Cálculo de Latência</h3>
+                    <div class="bullet-point">Velocidade da luz: 300.000 km/ms</div>
+                    <div class="bullet-point">Paraná → Miami: ~7.000 km</div>
+                    <div class="bullet-point">Tempo teórico: 23ms (ida) + 23ms (volta) = 46ms</div>
+                    <div class="bullet-point">Tempo real: maior devido aos equipamentos</div>
+                </div>
+
+                <div class="ping-output">
+$ ping www.uol.com.br<br>
+Disparando homeuol.ipv6uol.com.br [200.147.67.142] com 32 bytes de dados:<br><br>
+Resposta de 200.147.67.142: bytes=32 tempo=437ms TTL=245<br>
+Resposta de 200.147.67.142: bytes=32 tempo=456ms TTL=245<br>
+Resposta de 200.147.67.142: bytes=32 tempo=268ms TTL=245<br>
+Resposta de 200.147.67.142: bytes=32 tempo=320ms TTL=245<br><br>
+Estatísticas do Ping para 200.147.67.142:<br>
+&nbsp;&nbsp;Pacotes: Enviados = 4, Recebidos = 4, Perdidos = 0 (0% de perda).<br>
+Aproximar um número redondo de vezes em milissegundos:<br>
+&nbsp;&nbsp;Mínimo = 268ms, Máximo = 456ms, Média = 370ms
+                </div>
+
+                <div class="highlight-box">
+                    <h3>📊 Interpretação dos Resultados</h3>
+                    <div class="bullet-point"><strong>Tempo:</strong> Latência da rede (ms)</div>
+                    <div class="bullet-point"><strong>TTL:</strong> Time To Live (saltos restantes)</div>
+                    <div class="bullet-point"><strong>Perda:</strong> % de pacotes perdidos</div>
+                    <div class="bullet-point"><strong>Variação:</strong> Estabilidade da conexão</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 11: Análise do PING -->
+        <div class="slide">
+            <div class="content">
+                <h2>📊 Interpretando Resultados do PING</h2>
+                
+                <div class="two-column">
+                    <div>
+                        <h3>✅ Conexão Boa</h3>
+                        <div class="bullet-point">Latência < 50ms</div>
+                        <div class="bullet-point">0% de perda</div>
+                        <div class="bullet-point">Tempo estável</div>
+                        <div class="bullet-point">TTL normal (>50)</div>
+                        
+                        <h3>⚠️ Conexão Lenta</h3>
+                        <div class="bullet-point">Latência 100-300ms</div>
+                        <div class="bullet-point">Perda ocasional</div>
+                        <div class="bullet-point">Variação alta</div>
+                        <div class="bullet-point">Pode funcionar, mas lento</div>
+                    </div>
+                    <div>
+                        <h3>❌ Problemas de Rede</h3>
+                        <div class="bullet-point">Latência > 500ms</div>
+                        <div class="bullet-point">Perda > 5%</div>
+                        <div class="bullet-point">Timeouts frequentes</div>
+                        <div class="bullet-point">Instabilidade alta</div>
+                        
+                        <h3>🔧 Causas Comuns</h3>
+                        <div class="bullet-point">Congestionamento</div>
+                        <div class="bullet-point">Equipamentos sobrecarregados</div>
+                        <div class="bullet-point">Problemas de rota</div>
+                        <div class="bullet-point">Interferência WiFi</div>
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>🎯 Dicas Práticas</h3>
+                    <div class="bullet-point">Teste com cabo direto para eliminar WiFi</div>
+                    <div class="bullet-point">Compare horários diferentes (pico vs vale)</div>
+                    <div class="bullet-point">Teste múltiplos destinos</div>
+                    <div class="bullet-point">VoIP e YouTube precisam < 150ms</div>
+                </div>
+
+                <div class="highlight-box center-text">
+                    <h3>⚡ Aplicações Sensíveis</h3>
+                    <p>Jogos online: < 50ms<br>
+                    Videoconferência: < 100ms<br>
+                    Streaming: < 200ms</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 12: Camada de Rede -->
+        <div class="slide">
+            <div class="content">
+                <h2>🔌 Camada de Rede</h2>
+                
+                <div class="bullet-point">Combina Física + Enlace do modelo OSI</div>
+                <div class="bullet-point">Interface com hardware de rede</div>
+                <div class="bullet-point">Diferentes tecnologias suportadas</div>
+                <div class="bullet-point">Independência de meio físico</div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>🔌 Interfaces Físicas</h3>
+                        <div class="bullet-point">Cabos de par trançado</div>
+                        <div class="bullet-point">Fibra óptica</div>
+                        <div class="bullet-point">Coaxial</div>
+                        <div class="bullet-point">Conectores RJ-45, BNC</div>
+                        
+                        <h3>📡 Interfaces Elétricas</h3>
+                        <div class="bullet-point">Conversão de sinais</div>
+                        <div class="bullet-point">Controle de impedância</div>
+                        <div class="bullet-point">Codificação (Manchester, NRZI)</div>
+                    </div>
+                    <div>
+                        <h3>💡 Interfaces Ópticas</h3>
+                        <div class="bullet-point">Conversão elétrica ↔ óptica</div>
+                        <div class="bullet-point">Controle de potência</div>
+                        <div class="bullet-point">Limites de distância</div>
+                        
+                        <h3>🌐 Protocolos Suportados</h3>
+                        <div class="bullet-point">Ethernet</div>
+                        <div class="bullet-point">WiFi (802.11)</div>
+                        <div class="bullet-point">PPP</div>
+                        <div class="bullet-point">ATM</div>
+                    </div>
+                </div>
+
+                <div class="highlight-box">
+                    <h3>🎯 Funções Principais</h3>
+                    <div class="bullet-point">Estabelecer/encerrar conexões físicas</div>
+                    <div class="bullet-point">Sincronização de quadros</div>
+                    <div class="bullet-point">Controle de fluxo local</div>
+                    <div class="bullet-point">Detecção de erros básica</div>
+                </div>
+
+                <div class="example-box center-text">
+                    <h3>🔄 Abstração</h3>
+                    <p>TCP/IP não se preocupa com o "como" físico<br>
+                    Funciona sobre qualquer tecnologia de rede</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 13: Comparação OSI vs TCP/IP -->
+        <div class="slide">
+            <div class="content">
+                <h2>⚖️ TCP/IP vs OSI</h2>
+                
+                <div class="two-column">
+                    <div class="model-box">
+                        <h3 style="color: #11998e;">🚀 TCP/IP</h3>
+                        <div class="layer tcp-4" style="margin: 5px 0; padding: 10px;">Aplicação</div>
+                        <div class="layer tcp-3" style="margin: 5px 0; padding: 10px;">Transporte</div>
+                        <div class="layer tcp-2" style="margin: 5px 0; padding: 10px;">Internet</div>
+                        <div class="layer tcp-1" style="margin: 5px 0; padding: 10px;">Rede</div>
+                    </div>
+                    <div class="model-box">
+                        <h3 style="color: #667eea;">🏗️ OSI</h3>
+                        <div class="layer osi-7" style="margin: 2px 0; padding: 8px; font-size: 1em;">Aplicação</div>
+                        <div class="layer osi-6" style="margin: 2px 0; padding: 8px; font-size: 1em;">Apresentação</div>
+                        <div class="layer osi-5" style="margin: 2px 0; padding: 8px; font-size: 1em;">Sessão</div>
+                        <div class="layer osi-4" style="margin: 2px 0; padding: 8px; font-size: 1em;">Transporte</div>
+                        <div class="layer osi-3" style="margin: 2px 0; padding: 8px; font-size: 1em;">Rede</div>
+                        <div class="layer osi-2" style="margin: 2px 0; padding: 8px; font-size: 1em;">Enlace</div>
+                        <div class="layer osi-1" style="margin: 2px 0; padding: 8px; font-size: 1em;">Física</div>
+                    </div>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Aspecto</th>
+                            <th>TCP/IP</th>
+                            <th>OSI</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Camadas</strong></td>
+                            <td>4 camadas</td>
+                            <td>7 camadas</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Origem</strong></td>
+                            <td>Protocolos → Modelo</td>
+                            <td>Modelo → Protocolos</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Flexibilidade</strong></td>
+                            <td>Menos flexível</td>
+                            <td>Mais flexível</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Uso Real</strong></td>
+                            <td>Internet mundial</td>
+                            <td>Referência acadêmica</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Complexidade</strong></td>
+                            <td>Mais simples</td>
+                            <td>Mais complexo</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="highlight-box center-text">
+                    <h3>🎯 Resultado Prático</h3>
+                    <p>TCP/IP venceu na prática<br>
+                    OSI permanece como referência teórica</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 14: Resumo Final -->
+        <div class="slide">
+            <div class="content">
+                <h2>🎯 Resumo Final</h2>
+                
+                <div class="highlight-box large-text center-text">
+                    <strong>TCP/IP é a espinha dorsal da Internet</strong>
+                </div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>✅ Características Principais:</h3>
+                        <div class="bullet-point">4 camadas bem definidas</div>
+                        <div class="bullet-point">Protocolos robustos e testados</div>
+                        <div class="bullet-point">Escalabilidade global</div>
+                        <div class="bullet-point">Independência de hardware</div>
+                        <div class="bullet-point">Padrão mundial de facto</div>
+                    </div>
+                    <div>
+                        <h3>🎯 Pontos-Chave:</h3>
+                        <div class="bullet-point">Nasceu de necessidade militar</div>
+                        <div class="bullet-point">TCP para confiabilidade</div>
+                        <div class="bullet-point">UDP para velocidade</div>
+                        <div class="bullet-point">IP para roteamento global</div>
+                        <div class="bullet-point">PING para diagnóstico</div>
+                    </div>
+                </div>
+
+                <div class="example-box center-text">
+                    <h3>🌐 Impacto no Mundo</h3>
+                    <p>Sem TCP/IP, não existiria:<br>
+                    Internet • E-mail • Redes sociais • Streaming • E-commerce</p>
+                </div>
+
+                <div class="war-story center-text">
+                    <h3>🚀 Do Laboratório ao Mundo</h3>
+                    <p>Uma solução militar dos anos 70<br>
+                    virou a base da conectividade mundial</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 15: Quiz -->
+        <div class="slide">
+            <div class="content">
+                <h2>🧠 Quiz - Teste seus conhecimentos!</h2>
+                
+                <div class="quiz-container">
+                    <!-- Questão 1 -->
+                    <div class="quiz-question" id="question1">
+                        <h3>📝 Questão 1</h3>
+                        <p><strong>Quantas camadas tem o modelo TCP/IP?</strong></p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(1, 'a', false)">
+                                <span class="option-letter">A)</span> 3 camadas
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(1, 'b', true)">
+                                <span class="option-letter">B)</span> 4 camadas
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(1, 'c', false)">
+                                <span class="option-letter">C)</span> 5 camadas
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(1, 'd', false)">
+                                <span class="option-letter">D)</span> 7 camadas
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback1"></div>
+                    </div>
+
+                    <!-- Questão 2 -->
+                    <div class="quiz-question" id="question2" style="display: none;">
+                        <h3>📝 Questão 2</h3>
+                        <p><strong>Qual protocolo da camada de transporte NÃO garante a entrega dos dados?</strong></p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(2, 'a', false)">
+                                <span class="option-letter">A)</span> TCP
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(2, 'b', true)">
+                                <span class="option-letter">B)</span> UDP
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(2, 'c', false)">
+                                <span class="option-letter">C)</span> IP
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(2, 'd', false)">
+                                <span class="option-letter">D)</span> ICMP
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback2"></div>
+                    </div>
+
+                    <!-- Questão 3 -->
+                    <div class="quiz-question" id="question3" style="display: none;">
+                        <h3>📝 Questão 3</h3>
+                        <p><strong>O comando PING utiliza qual protocolo?</strong></p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(3, 'a', false)">
+                                <span class="option-letter">A)</span> TCP
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(3, 'b', false)">
+                                <span class="option-letter">B)</span> UDP
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(3, 'c', true)">
+                                <span class="option-letter">C)</span> ICMP
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(3, 'd', false)">
+                                <span class="option-letter">D)</span> ARP
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback3"></div>
+                    </div>
+
+                    <!-- Questão 4 -->
+                    <div class="quiz-question" id="question4" style="display: none;">
+                        <h3>📝 Questão 4</h3>
+                        <p><strong>Qual foi a motivação original para criar a ARPANET?</strong></p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(4, 'a', false)">
+                                <span class="option-letter">A)</span> Conectar universidades
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(4, 'b', true)">
+                                <span class="option-letter">B)</span> Comunicação militar resistente a ataques
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(4, 'c', false)">
+                                <span class="option-letter">C)</span> Criar a World Wide Web
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(4, 'd', false)">
+                                <span class="option-letter">D)</span> Facilitar o comércio eletrônico
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback4"></div>
+                    </div>
+
+                    <!-- Resultado Final -->
+                    <div class="quiz-result" id="quizResult" style="display: none;">
+                        <h3>🎉 Parabéns! Quiz Concluído!</h3>
+                        <div class="result-box">
+                            <p><strong>Sua pontuação: <span id="finalScore">0</span>/4</strong></p>
+                            <p id="resultMessage"></p>
+                        </div>
+                        <button class="nav-btn" onclick="restartQuiz()">🔄 Refazer Quiz</button>
+                    </div>
+                </div>
+
+                <div class="quiz-navigation">
+                    <button class="nav-btn" id="nextQuizBtn" onclick="nextQuestion()" style="display: none;">
+                        Próxima Questão ➡️
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 16: Referências -->
+        <div class="slide">
+            <div class="content">
+                <h2>📚 Referências Bibliográficas</h2>
+                
+                <div class="highlight-box">
+                    <h3>📖 Fonte Principal:</h3>
+                    <div class="bullet-point"><strong>Capítulo 3 - Modelo de Referência TCP/IP</strong></div>
+                    <div class="bullet-point">Livro de Redes de Computadores</div>
+                    <div class="bullet-point">Seções 3.3 e 3.4</div>
+                </div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>🌐 Recursos Adicionais:</h3>
+                        <div class="bullet-point">RFC 791 - Internet Protocol</div>
+                        <div class="bullet-point">RFC 793 - TCP Specification</div>
+                        <div class="bullet-point">RFC 768 - UDP Specification</div>
+                        <div class="bullet-point">RFC 792 - ICMP Protocol</div>
+                    </div>
+                    <div>
+                        <h3>📋 Ferramentas Práticas:</h3>
+                        <div class="bullet-point">ping, traceroute, netstat</div>
+                        <div class="bullet-point">Wireshark para análise</div>
+                        <div class="bullet-point">iperf para teste de largura</div>
+                        <div class="bullet-point">nmap para descoberta</div>
+                    </div>
+                </div>
+
+                <div class="example-box center-text">
+                    <h3>🤖 Metodologia de Criação</h3>
+                    <p>Apresentação desenvolvida com assistência de IA Claude Sonnet 4<br>
+                    Baseada integralmente no material didático fornecido<br>
+                    Adaptação pedagógica com foco em simplicidade e clareza</p>
+                </div>
+
+                <div class="highlight-box center-text">
+                    <h3>🎯 Objetivo Educacional</h3>
+                    <p>Facilitar o aprendizado do TCP/IP através de<br>
+                    história, analogias e exemplos práticos do dia a dia</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="navigation">
+            <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">⬅️ Anterior</button>
+            <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">Próximo ➡️</button>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        document.getElementById('total-slides').textContent = totalSlides;
+
+        // Quiz variables
+        let currentQuestion = 1;
+        let score = 0;
+        let quizAnswered = [false, false, false, false];
+
+        function showSlide(index) {
+            slides.forEach((slide, i) => {
+                slide.classList.toggle('active', i === index);
+            });
+            
+            document.getElementById('current-slide').textContent = index + 1;
+            document.getElementById('prevBtn').disabled = index === 0;
+            document.getElementById('nextBtn').disabled = index === totalSlides - 1;
+        }
+
+        function changeSlide(direction) {
+            const newSlide = currentSlide + direction;
+            if (newSlide >= 0 && newSlide < totalSlides) {
+                currentSlide = newSlide;
+                showSlide(currentSlide);
+            }
+        }
+
+        // Quiz Functions
+        function selectOption(questionNum, option, isCorrect) {
+            if (quizAnswered[questionNum - 1]) return; // Já respondida
+            
+            const options = document.querySelectorAll(`#question${questionNum} .quiz-option`);
+            const feedback = document.getElementById(`feedback${questionNum}`);
+            
+            // Marcar todas as opções
+            options.forEach(opt => {
+                opt.style.pointerEvents = 'none';
+                if (opt.onclick.toString().includes('true')) {
+                    opt.classList.add('correct');
+                } else if (opt === event.currentTarget) {
+                    opt.classList.add(isCorrect ? 'correct' : 'incorrect');
+                }
+            });
+            
+            // Mostrar feedback
+            if (isCorrect) {
+                feedback.innerHTML = '✅ Correto! Muito bem!';
+                feedback.className = 'quiz-feedback correct';
+                score++;
+            } else {
+                feedback.innerHTML = '❌ Incorreto. A resposta correta está destacada em verde.';
+                feedback.className = 'quiz-feedback incorrect';
+            }
+            
+            quizAnswered[questionNum - 1] = true;
+            
+            // Mostrar botão para próxima questão
+            if (questionNum < 4) {
+                document.getElementById('nextQuizBtn').style.display = 'inline-block';
+            } else {
+                // Última questão - mostrar resultado
+                setTimeout(() => {
+                    showQuizResult();
+                }, 2000);
+            }
+        }
+
+        function nextQuestion() {
+            document.getElementById(`question${currentQuestion}`).style.display = 'none';
+            currentQuestion++;
+            document.getElementById(`question${currentQuestion}`).style.display = 'block';
+            document.getElementById('nextQuizBtn').style.display = 'none';
+        }
+
+        function showQuizResult() {
+            // Esconder última questão
+            document.getElementById('question4').style.display = 'none';
+            
+            // Mostrar resultado
+            document.getElementById('quizResult').style.display = 'block';
+            document.getElementById('finalScore').textContent = score;
+            
+            const resultMessage = document.getElementById('resultMessage');
+            if (score === 4) {
+                resultMessage.innerHTML = '🏆 Excelente! Você domina o TCP/IP!';
+            } else if (score === 3) {
+                resultMessage.innerHTML = '👏 Muito bom! Quase perfeito!';
+            } else if (score === 2) {
+                resultMessage.innerHTML = '👍 Bom trabalho! Continue estudando!';
+            } else if (score === 1) {
+                resultMessage.innerHTML = '📚 Estude um pouco mais sobre TCP/IP!';
+            } else {
+                resultMessage.innerHTML = '📖 Recomendo revisar o conteúdo!';
+            }
+        }
+
+        function restartQuiz() {
+            // Reset variables
+            currentQuestion = 1;
+            score = 0;
+            quizAnswered = [false, false, false, false];
+            
+            // Reset interface
+            for (let i = 1; i <= 4; i++) {
+                const question = document.getElementById(`question${i}`);
+                const options = question.querySelectorAll('.quiz-option');
+                const feedback = document.getElementById(`feedback${i}`);
+                
+                // Reset options
+                options.forEach(opt => {
+                    opt.className = 'quiz-option';
+                    opt.style.pointerEvents = 'auto';
+                });
+                
+                // Hide feedback
+                feedback.style.display = 'none';
+                
+                // Hide all questions except first
+                question.style.display = i === 1 ? 'block' : 'none';
+            }
+            
+            // Hide result and buttons
+            document.getElementById('quizResult').style.display = 'none';
+            document.getElementById('nextQuizBtn').style.display = 'none';
+        }
+
+        // Navegação por teclado
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') changeSlide(-1);
+            if (e.key === 'ArrowRight') changeSlide(1);
+            if (e.key === 'Home') {
+                currentSlide = 0;
+                showSlide(currentSlide);
+            }
+            if (e.key === 'End') {
+                currentSlide = totalSlides - 1;
+                showSlide(currentSlide);
+            }
+        });
+
+        // Inicializar
+        showSlide(0);
+        
+        // Inicializar quiz no slide 15
+        document.getElementById('question1').style.display = 'block';
+    </script>
+</body>
+</html>

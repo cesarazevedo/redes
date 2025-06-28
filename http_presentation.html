@@ -1,0 +1,1262 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTTP - World Wide Web</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #ff7b7b 0%, #667eea 100%);
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        .presentation {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .slide {
+            min-height: 100vh;
+            padding: 60px 40px;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            background: white;
+            margin: 20px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        .slide.active {
+            display: flex;
+        }
+
+        .slide h1 {
+            font-size: 3.5em;
+            color: #4a5568;
+            text-align: center;
+            margin-bottom: 40px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .slide h2 {
+            font-size: 2.8em;
+            color: #2d3748;
+            margin-bottom: 30px;
+            border-bottom: 4px solid #ff7b7b;
+            padding-bottom: 15px;
+        }
+
+        .slide h3 {
+            font-size: 2.2em;
+            color: #4a5568;
+            margin: 25px 0 15px 0;
+        }
+
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: start;
+        }
+
+        .bullet-point {
+            display: flex;
+            align-items: flex-start;
+            margin: 15px 0;
+            font-size: 1.3em;
+            line-height: 1.5;
+        }
+
+        .bullet-point::before {
+            content: "🔸";
+            margin-right: 15px;
+            font-size: 1.2em;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #ff7b7b;
+        }
+
+        .example-box {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #20b2aa;
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 1000;
+        }
+
+        .nav-btn {
+            padding: 15px 25px;
+            background: #ff7b7b;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(255, 123, 123, 0.3);
+        }
+
+        .nav-btn:hover {
+            background: #ff6b6b;
+            transform: translateY(-2px);
+            box-shadow: 0 7px 20px rgba(255, 123, 123, 0.4);
+        }
+
+        .nav-btn:disabled {
+            background: #a0a0a0;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .slide-counter {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: rgba(255,255,255,0.9);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            color: #4a5568;
+            z-index: 1000;
+        }
+
+        .icon {
+            font-size: 1.5em;
+            margin-right: 10px;
+        }
+
+        .center-text {
+            text-align: center;
+        }
+
+        .large-text {
+            font-size: 1.4em;
+            line-height: 1.6;
+        }
+
+        .diagram {
+            background: #f7fafc;
+            border: 2px dashed #ff7b7b;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+            font-family: monospace;
+            font-size: 1.2em;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 1.1em;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        th {
+            background: #ff7b7b;
+            color: white;
+            font-weight: bold;
+        }
+
+        .process-step {
+            background: #e6fffa;
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #38b2ac;
+        }
+
+        .code-box {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: monospace;
+            font-size: 1em;
+            margin: 20px 0;
+            overflow-x: auto;
+        }
+
+        /* Quiz Styles */
+        .quiz-container {
+            max-width: 100%;
+            margin: 20px 0;
+        }
+
+        .quiz-question {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border: 2px solid #e2e8f0;
+        }
+
+        .quiz-question h3 {
+            color: #ff7b7b;
+            margin-bottom: 20px;
+        }
+
+        .quiz-question p {
+            font-size: 1.3em;
+            margin-bottom: 25px;
+            font-weight: bold;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .quiz-option {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.1em;
+        }
+
+        .quiz-option:hover {
+            border-color: #ff7b7b;
+            background: #fff5f5;
+            transform: translateX(5px);
+        }
+
+        .quiz-option.selected {
+            border-color: #ff7b7b;
+            background: #ff7b7b;
+            color: white;
+        }
+
+        .quiz-option.correct {
+            border-color: #48bb78;
+            background: #48bb78;
+            color: white;
+        }
+
+        .quiz-option.incorrect {
+            border-color: #f56565;
+            background: #f56565;
+            color: white;
+        }
+
+        .option-letter {
+            background: #ff7b7b;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .quiz-option.correct .option-letter {
+            background: #48bb78;
+        }
+
+        .quiz-option.incorrect .option-letter {
+            background: #f56565;
+        }
+
+        .quiz-feedback {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: bold;
+            display: none;
+        }
+
+        .quiz-feedback.correct {
+            background: #c6f6d5;
+            color: #22543d;
+            border: 2px solid #48bb78;
+            display: block;
+        }
+
+        .quiz-feedback.incorrect {
+            background: #fed7d7;
+            color: #742a2a;
+            border: 2px solid #f56565;
+            display: block;
+        }
+
+        .quiz-navigation {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .quiz-result {
+            text-align: center;
+            background: linear-gradient(135deg, #ff7b7b 0%, #667eea 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            margin: 20px 0;
+        }
+
+        .result-box {
+            background: rgba(255,255,255,0.1);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+
+        .result-box p {
+            font-size: 1.4em;
+            margin: 10px 0;
+        }
+
+        .status-code {
+            display: inline-block;
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            margin: 2px;
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation">
+        <div class="slide-counter">
+            <span id="current-slide">1</span> / <span id="total-slides">18</span>
+        </div>
+
+        <!-- Slide 1: Título -->
+        <div class="slide active">
+            <div class="content center-text">
+                <h1>🌐 World Wide Web & HTTP</h1>
+                <h2 style="border: none; color: #ff7b7b;">HyperText Transfer Protocol</h2>
+                <div class="highlight-box large-text">
+                    <strong>Aula 05</strong><br>
+                    Como a Web funciona por baixo dos panos<br>
+                    Do clique do mouse ao conteúdo na tela
+                </div>
+                
+                <div class="example-box" style="margin-top: 40px;">
+                    <h3>👨‍🏫 Autor da Apresentação</h3>
+                    <p style="font-size: 1.3em; margin: 10px 0;">
+                        <strong>César Azevedo</strong><br>
+                        📧 cesar.augusto@ifrn.edu.br
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 2: Tópicos da Aula -->
+        <div class="slide">
+            <div class="content">
+                <h2>📋 Tópicos da Aula</h2>
+                
+                <div class="two-column">
+                    <div>
+                        <h3>🌟 Fundamentos</h3>
+                        <div class="bullet-point">O que é HTTP e sua importância</div>
+                        <div class="bullet-point">Relação com FTP e SMTP</div>
+                        <div class="bullet-point">Documentos estáticos vs dinâmicos</div>
+                        <div class="bullet-point">Porta 80 e protocolo TCP</div>
+                        
+                        <h3>📨 Mensagens HTTP</h3>
+                        <div class="bullet-point">Estrutura das mensagens</div>
+                        <div class="bullet-point">Linha de solicitação vs linha de status</div>
+                        <div class="bullet-point">Tipos de cabeçalhos</div>
+                        <div class="bullet-point">Corpo das mensagens</div>
+                    </div>
+                    <div>
+                        <h3>⚙️ Métodos e Códigos</h3>
+                        <div class="bullet-point">Métodos HTTP (GET, POST, PUT, etc.)</div>
+                        <div class="bullet-point">Códigos de status (200, 404, 500, etc.)</div>
+                        <div class="bullet-point">Cabeçalhos especializados</div>
+                        
+                        <h3>🔄 Conexões</h3>
+                        <div class="bullet-point">Conexões persistentes vs não persistentes</div>
+                        <div class="bullet-point">Vantagens e desvantagens</div>
+                        <div class="bullet-point">Servidores proxy</div>
+                        <div class="bullet-point">Cache e performance</div>
+                    </div>
+                </div>
+
+                <div class="highlight-box center-text">
+                    <h3>🎯 Objetivo Final</h3>
+                    <p>Compreender como o HTTP transporta conteúdo na Web<br>
+                    e como otimizar a comunicação cliente-servidor</p>
+                </div>
+
+                <div class="example-box center-text">
+                    <h3>🧠 + Quiz Interativo</h3>
+                    <p>Teste seus conhecimentos com 4 questões práticas!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: O que é HTTP -->
+        <div class="slide">
+            <div class="content">
+                <h2>🤔 O que é HTTP?</h2>
+                
+                <div class="bullet-point">Protocolo para acessar dados na Web</div>
+                <div class="bullet-point">Combinação de FTP + SMTP</div>
+                <div class="bullet-point">Usa TCP na porta 80</div>
+                <div class="bullet-point">Protocolo sem estados (stateless)</div>
+
+                <div class="example-box">
+                    <h3>💡 Como funciona:</h3>
+                    <div class="diagram">
+                        Cliente (Browser)<br>
+                        ⬇️ Solicitação HTTP<br>
+                        Servidor Web<br>
+                        ⬆️ Resposta HTTP<br>
+                        Página exibida no navegador
+                    </div>
+                </div>
+
+                <div class="highlight-box">
+                    <h3>🔗 Semelhanças com outros protocolos:</h3>
+                    <div class="bullet-point"><strong>Como FTP:</strong> Transfere arquivos via TCP</div>
+                    <div class="bullet-point"><strong>Como SMTP:</strong> Mensagens com cabeçalhos MIME</div>
+                    <div class="bullet-point"><strong>Diferença:</strong> Uma única conexão TCP</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Estrutura das Mensagens -->
+        <div class="slide">
+            <div class="content">
+                <h2>📨 Estrutura das Mensagens</h2>
+                
+                <div class="two-column">
+                    <div>
+                        <h3>📤 Mensagem de Solicitação</h3>
+                        <div class="bullet-point">Linha de solicitação</div>
+                        <div class="bullet-point">Cabeçalhos</div>
+                        <div class="bullet-point">Linha em branco</div>
+                        <div class="bullet-point">Corpo (opcional)</div>
+                        
+                        <div class="code-box">
+GET /index.html HTTP/1.1<br>
+Host: www.exemplo.com<br>
+Accept: text/html<br>
+<br>
+(corpo opcional)
+                        </div>
+                    </div>
+                    <div>
+                        <h3>📥 Mensagem de Resposta</h3>
+                        <div class="bullet-point">Linha de status</div>
+                        <div class="bullet-point">Cabeçalhos</div>
+                        <div class="bullet-point">Linha em branco</div>
+                        <div class="bullet-point">Corpo (opcional)</div>
+                        
+                        <div class="code-box">
+HTTP/1.1 200 OK<br>
+Content-Type: text/html<br>
+Content-Length: 1234<br>
+<br>
+&lt;html&gt;...&lt;/html&gt;
+                        </div>
+                    </div>
+                </div>
+
+                <div class="highlight-box center-text">
+                    <h3>🎯 Comunicação Cliente-Servidor</h3>
+                    <p>Cada transação HTTP é independente<br>
+                    Protocolo sem estados = sem memória entre requisições</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: Métodos HTTP -->
+        <div class="slide">
+            <div class="content">
+                <h2>⚙️ Métodos HTTP</h2>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Método</th>
+                            <th>Ação</th>
+                            <th>Uso Comum</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>GET</strong></td>
+                            <td>Solicita um documento</td>
+                            <td>Navegar páginas, baixar arquivos</td>
+                        </tr>
+                        <tr>
+                            <td><strong>POST</strong></td>
+                            <td>Envia dados para o servidor</td>
+                            <td>Formulários, upload de arquivos</td>
+                        </tr>
+                        <tr>
+                            <td><strong>PUT</strong></td>
+                            <td>Envia documento do servidor para cliente</td>
+                            <td>Atualizar/criar recursos</td>
+                        </tr>
+                        <tr>
+                            <td><strong>HEAD</strong></td>
+                            <td>Solicita info sobre documento</td>
+                            <td>Verificar se arquivo existe</td>
+                        </tr>
+                        <tr>
+                            <td><strong>TRACE</strong></td>
+                            <td>Ecoa a solicitação</td>
+                            <td>Debugging, testes</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="example-box">
+                    <h3>🌟 Métodos Mais Utilizados:</h3>
+                    <div class="bullet-point"><strong>GET:</strong> 90% do tráfego web (navegação)</div>
+                    <div class="bullet-point"><strong>POST:</strong> Envio de formulários e dados</div>
+                    <div class="bullet-point"><strong>HEAD:</strong> Verificação sem download</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: Códigos de Status -->
+        <div class="slide">
+            <div class="content">
+                <h2>🏷️ Códigos de Status</h2>
+                
+                <div class="two-column">
+                    <div>
+                        <h3>✅ Códigos de Sucesso (2xx)</h3>
+                        <div class="bullet-point"><span class="status-code">200 OK</span> Sucesso</div>
+                        <div class="bullet-point"><span class="status-code">201 Created</span> Recurso criado</div>
+                        <div class="bullet-point"><span class="status-code">204 No Content</span> Sem conteúdo</div>
+                        
+                        <h3>↩️ Redirecionamento (3xx)</h3>
+                        <div class="bullet-point"><span class="status-code">301 Moved Permanently</span> Movido</div>
+                        <div class="bullet-point"><span class="status-code">302 Found</span> Temporário</div>
+                        <div class="bullet-point"><span class="status-code">304 Not Modified</span> Não modificado</div>
+                    </div>
+                    <div>
+                        <h3>❌ Erro do Cliente (4xx)</h3>
+                        <div class="bullet-point"><span class="status-code">400 Bad Request</span> Erro de sintaxe</div>
+                        <div class="bullet-point"><span class="status-code">401 Unauthorized</span> Não autorizado</div>
+                        <div class="bullet-point"><span class="status-code">404 Not Found</span> Não encontrado</div>
+                        
+                        <h3>💥 Erro do Servidor (5xx)</h3>
+                        <div class="bullet-point"><span class="status-code">500 Internal Server Error</span> Erro interno</div>
+                        <div class="bullet-point"><span class="status-code">503 Service Unavailable</span> Indisponível</div>
+                    </div>
+                </div>
+
+                <div class="highlight-box center-text">
+                    <h3>🎯 Dica Prática</h3>
+                    <p>O primeiro dígito indica a categoria:<br>
+                    2xx = Sucesso | 3xx = Redirecionamento | 4xx = Erro do cliente | 5xx = Erro do servidor</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7: Tipos de Cabeçalhos -->
+        <div class="slide">
+            <div class="content">
+                <h2>📋 Tipos de Cabeçalhos</h2>
+                
+                <div class="two-column">
+                    <div>
+                        <h3>🌐 Cabeçalho Geral</h3>
+                        <div class="bullet-point">Cache-Control</div>
+                        <div class="bullet-point">Connection</div>
+                        <div class="bullet-point">Date</div>
+                        <div class="bullet-point">MIME-version</div>
+                        
+                        <h3>📤 Cabeçalho de Solicitação</h3>
+                        <div class="bullet-point">Accept (formatos aceitos)</div>
+                        <div class="bullet-point">Host (servidor destino)</div>
+                        <div class="bullet-point">User-Agent (navegador)</div>
+                        <div class="bullet-point">Authorization (credenciais)</div>
+                    </div>
+                    <div>
+                        <h3>📥 Cabeçalho de Resposta</h3>
+                        <div class="bullet-point">Server (nome do servidor)</div>
+                        <div class="bullet-point">Accept-Range</div>
+                        <div class="bullet-point">Age (idade do documento)</div>
+                        
+                        <h3>📄 Cabeçalho de Entidade</h3>
+                        <div class="bullet-point">Content-Type (tipo de conteúdo)</div>
+                        <div class="bullet-point">Content-Length (tamanho)</div>
+                        <div class="bullet-point">Last-Modified (última modificação)</div>
+                        <div class="bullet-point">Expires (validade)</div>
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>📝 Formato dos Cabeçalhos:</h3>
+                    <div class="code-box">
+Nome-do-Cabeçalho: Valor<br>
+Content-Type: text/html<br>
+Content-Length: 1234<br>
+Host: www.exemplo.com
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: Exemplo Prático GET -->
+        <div class="slide">
+            <div class="content">
+                <h2>💻 Exemplo Prático - Método GET</h2>
+                
+                <div class="example-box">
+                    <h3>📤 Solicitação do Cliente:</h3>
+                    <div class="code-box">
+GET /usr/bin/image1 HTTP/1.1<br>
+Accept: image/gif<br>
+Accept: image/jpeg<br>
+<br>
+(sem corpo na mensagem)
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>📥 Resposta do Servidor:</h3>
+                    <div class="code-box">
+HTTP/1.1 200 OK<br>
+Date: Mon, 07-Jan-05 13:15:14 GMT<br>
+Server: Challenger<br>
+MIME-version: 1.0<br>
+Content-length: 2048<br>
+<br>
+(dados da imagem aqui)
+                    </div>
+                </div>
+
+                <div class="highlight-box">
+                    <h3>🔍 Análise do Exemplo:</h3>
+                    <div class="bullet-point">Cliente pede uma imagem específica</div>
+                    <div class="bullet-point">Aceita formatos GIF ou JPEG</div>
+                    <div class="bullet-point">Servidor responde com sucesso (200 OK)</div>
+                    <div class="bullet-point">Informa tamanho e tipo do arquivo</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 9: Exemplo Prático POST -->
+        <div class="slide">
+            <div class="content">
+                <h2>📝 Exemplo Prático - Método POST</h2>
+                
+                <div class="example-box">
+                    <h3>📤 Solicitação do Cliente:</h3>
+                    <div class="code-box">
+POST /cgi-bin/doc.pl HTTP/1.1<br>
+Accept: */*<br>
+Accept: image/gif<br>
+Accept: image/jpeg<br>
+Content-length: 50<br>
+<br>
+(dados do formulário aqui)
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>📥 Resposta do Servidor:</h3>
+                    <div class="code-box">
+HTTP/1.1 200 OK<br>
+Date: Mon, 07-Jan-02 13:15:14 GMT<br>
+Server: Challenger<br>
+MIME-version: 1.0<br>
+Content-length: 2000<br>
+<br>
+(página HTML gerada dinamicamente)
+                    </div>
+                </div>
+
+                <div class="highlight-box">
+                    <h3>🔍 Diferenças do GET:</h3>
+                    <div class="bullet-point">POST envia dados no corpo da mensagem</div>
+                    <div class="bullet-point">Content-length indica tamanho dos dados</div>
+                    <div class="bullet-point">Servidor processa dados e gera resposta</div>
+                    <div class="bullet-point">Usado em formulários e uploads</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 10: Conexões Não Persistentes -->
+        <div class="slide">
+            <div class="content">
+                <h2>🔌 Conexões Não Persistentes</h2>
+                
+                <div class="bullet-point">HTTP anterior à versão 1.1</div>
+                <div class="bullet-point">Uma conexão TCP por solicitação/resposta</div>
+                <div class="bullet-point">Conexão fechada após cada transação</div>
+
+                <div class="example-box">
+                    <h3>🔄 Processo Não Persistente:</h3>
+                    <div class="process-step">1. Cliente abre conexão TCP</div>
+                    <div class="process-step">2. Cliente envia solicitação HTTP</div>
+                    <div class="process-step">3. Servidor envia resposta HTTP</div>
+                    <div class="process-step">4. Servidor fecha conexão TCP</div>
+                    <div class="process-step">5. Cliente lê dados e fecha conexão</div>
+                </div>
+
+                <div class="highlight-box">
+                    <h3>⚠️ Problemas:</h3>
+                    <div class="bullet-point">Alto overhead para múltiplas requisições</div>
+                    <div class="bullet-point">Inicialização lenta a cada conexão</div>
+                    <div class="bullet-point">Muitos buffers no servidor</div>
+                    <div class="bullet-point">Ineficiente para páginas com muitas imagens</div>
+                </div>
+
+                <div class="diagram">
+                    Para 10 imagens = 10 conexões TCP diferentes!
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 11: Conexões Persistentes -->
+        <div class="slide">
+            <div class="content">
+                <h2>🔗 Conexões Persistentes</h2>
+                
+                <div class="bullet-point">Padrão no HTTP 1.1</div>
+                <div class="bullet-point">Servidor mantém conexão aberta</div>
+                <div class="bullet-point">Múltiplas solicitações na mesma conexão</div>
+                <div class="bullet-point">Fechamento por timeout ou solicitação</div>
+
+                <div class="example-box">
+                    <h3>⚡ Vantagens:</h3>
+                    <div class="bullet-point">Menor overhead de rede</div>
+                    <div class="bullet-point">Reduz latência</div>
+                    <div class="bullet-point">Menos recursos do servidor</div>
+                    <div class="bullet-point">Melhor para páginas complexas</div>
+                </div>
+
+                <div class="highlight-box">
+                    <h3>🔧 Como funciona:</h3>
+                    <div class="bullet-point">Servidor informa tamanho dos dados</div>
+                    <div class="bullet-point">Cliente sabe quando parar de ler</div>
+                    <div class="bullet-point">Se tamanho desconhecido: fecha conexão</div>
+                    <div class="bullet-point">Usado em documentos dinâmicos</div>
+                </div>
+
+                <div class="diagram">
+                    1 conexão TCP → múltiplas solicitações HTTP
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 12: Servidores Proxy -->
+        <div class="slide">
+            <div class="content">
+                <h2>🔄 Servidores Proxy</h2>
+                
+                <div class="bullet-point">Intermediário entre cliente e servidor</div>
+                <div class="bullet-point">Mantém cache de respostas</div>
+                <div class="bullet-point">Reduz carga nos servidores originais</div>
+                <div class="bullet-point">Diminui latência e tráfego</div>
+
+                <div class="example-box">
+                    <h3>⚡ Funcionamento do Proxy:</h3>
+                    <div class="process-step">1. Cliente envia solicitação ao proxy</div>
+                    <div class="process-step">2. Proxy verifica cache local</div>
+                    <div class="process-step">3. Se não tem: solicita ao servidor web</div>
+                    <div class="process-step">4. Proxy recebe e armazena resposta</div>
+                    <div class="process-step">5. Proxy envia resposta ao cliente</div>
+                    <div class="process-step">6. Próximas solicitações: resposta do cache</div>
+                </div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>✅ Vantagens:</h3>
+                        <div class="bullet-point">Reduz carga no servidor</div>
+                        <div class="bullet-point">Menor latência</div>
+                        <div class="bullet-point">Economia de largura de banda</div>
+                        <div class="bullet-point">Controle de acesso</div>
+                    </div>
+                    <div>
+                        <h3>⚠️ Considerações:</h3>
+                        <div class="bullet-point">Cliente precisa ser configurado</div>
+                        <div class="bullet-point">Cache pode ficar desatualizado</div>
+                        <div class="bullet-point">Proxy pode ser gargalo</div>
+                        <div class="bullet-point">Questões de privacidade</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 13: Documentos Dinâmicos -->
+        <div class="slide">
+            <div class="content">
+                <h2>🎭 Documentos Estáticos vs Dinâmicos</h2>
+                
+                <div class="two-column">
+                    <div>
+                        <h3>📄 Documentos Estáticos</h3>
+                        <div class="bullet-point">Conteúdo pré-criado</div>
+                        <div class="bullet-point">Mesmo para todos os usuários</div>
+                        <div class="bullet-point">HTML, CSS, imagens</div>
+                        <div class="bullet-point">Servidor apenas entrega arquivo</div>
+                        
+                        <div class="example-box">
+                            <strong>Exemplos:</strong><br>
+                            • Páginas institucionais<br>
+                            • Documentação<br>
+                            • Imagens e vídeos
+                        </div>
+                    </div>
+                    <div>
+                        <h3>⚡ Documentos Dinâmicos</h3>
+                        <div class="bullet-point">Conteúdo gerado em tempo real</div>
+                        <div class="bullet-point">Personalizado por usuário</div>
+                        <div class="bullet-point">CGI, PHP, ASP, JSP</div>
+                        <div class="bullet-point">Servidor processa e gera conteúdo</div>
+                        
+                        <div class="example-box">
+                            <strong>Exemplos:</strong><br>
+                            • Redes sociais<br>
+                            • E-commerce<br>
+                            • Formulários<br>
+                            • Resultados de busca
+                        </div>
+                    </div>
+                </div>
+
+                <div class="highlight-box center-text">
+                    <h3>🎯 Documentos Ativos</h3>
+                    <p>JavaScript executado no cliente (browser)<br>
+                    Também chamados de "documentos dinâmicos no cliente"</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 14: Exemplo TELNET -->
+        <div class="slide">
+            <div class="content">
+                <h2>💻 Testando HTTP com TELNET</h2>
+                
+                <div class="bullet-point">HTTP usa caracteres ASCII</div>
+                <div class="bullet-point">Possível conectar diretamente com TELNET</div>
+                <div class="bullet-point">Útil para debug e testes</div>
+
+                <div class="example-box">
+                    <h3>🔧 Exemplo de Conexão TELNET:</h3>
+                    <div class="code-box">
+$ telnet www.mhhe.com 80<br>
+Trying 198.45.24.104...<br>
+Connected to www.mhhe.com (198.45.24.104).<br>
+Escape character is '^]'.<br>
+<br>
+GET /engcs/compsci/forouzan HTTP/1.1<br>
+From: forouzanbehrouz@fhda.edu<br>
+<br>
+HTTP/1.1 200 OK<br>
+Date: Thu, 28 Oct 2004 16:27:46 GMT<br>
+Server: Apache/1.3.9 (Unix)<br>
+Content-Type: text/html<br>
+Content-length: 14230<br>
+<br>
+(14.230 linhas de HTML seguem...)
+                    </div>
+                </div>
+
+                <div class="highlight-box">
+                    <h3>📝 Passos do Teste:</h3>
+                    <div class="bullet-point">Conectar na porta 80 do servidor</div>
+                    <div class="bullet-point">Digitar linha de solicitação</div>
+                    <div class="bullet-point">Adicionar cabeçalhos necessários</div>
+                    <div class="bullet-point">Linha em branco para finalizar</div>
+                    <div class="bullet-point">Servidor responde com status e conteúdo</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 15: Resumo Final -->
+        <div class="slide">
+            <div class="content">
+                <h2>🎯 Resumo Final</h2>
+                
+                <div class="highlight-box large-text center-text">
+                    <strong>HTTP é o protocolo que faz a Web funcionar</strong>
+                </div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>✅ Características Principais:</h3>
+                        <div class="bullet-point">Protocolo simples e eficiente</div>
+                        <div class="bullet-point">Baseado em TCP porta 80</div>
+                        <div class="bullet-point">Stateless (sem estado)</div>
+                        <div class="bullet-point">Mensagens legíveis (ASCII)</div>
+                        <div class="bullet-point">Suporte a cache e proxy</div>
+                    </div>
+                    <div>
+                        <h3>🎯 Componentes Essenciais:</h3>
+                        <div class="bullet-point">Métodos (GET, POST, PUT...)</div>
+                        <div class="bullet-point">Códigos de status</div>
+                        <div class="bullet-point">Cabeçalhos especializados</div>
+                        <div class="bullet-point">Conexões persistentes</div>
+                        <div class="bullet-point">Documentos dinâmicos</div>
+                    </div>
+                </div>
+
+                <div class="example-box center-text">
+                    <h3>🌐 Sem HTTP, não existiria a Web moderna!</h3>
+                    <p>Cada clique, cada página, cada imagem depende do HTTP</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 16: Quiz -->
+        <div class="slide">
+            <div class="content">
+                <h2>🧠 Quiz - Teste seus conhecimentos!</h2>
+                
+                <div class="quiz-container">
+                    <!-- Questão 1 -->
+                    <div class="quiz-question" id="question1">
+                        <h3>📝 Questão 1</h3>
+                        <p><strong>Qual porta padrão o HTTP utiliza?</strong></p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(1, 'a', false)">
+                                <span class="option-letter">A)</span> Porta 21
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(1, 'b', false)">
+                                <span class="option-letter">B)</span> Porta 25
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(1, 'c', true)">
+                                <span class="option-letter">C)</span> Porta 80
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(1, 'd', false)">
+                                <span class="option-letter">D)</span> Porta 443
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback1"></div>
+                    </div>
+
+                    <!-- Questão 2 -->
+                    <div class="quiz-question" id="question2" style="display: none;">
+                        <h3>📝 Questão 2</h3>
+                        <p><strong>O que significa o código de status 404?</strong></p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(2, 'a', false)">
+                                <span class="option-letter">A)</span> Servidor sobrecarregado
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(2, 'b', true)">
+                                <span class="option-letter">B)</span> Documento não encontrado
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(2, 'c', false)">
+                                <span class="option-letter">C)</span> Solicitação bem-sucedida
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(2, 'd', false)">
+                                <span class="option-letter">D)</span> Erro de autenticação
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback2"></div>
+                    </div>
+
+                    <!-- Questão 3 -->
+                    <div class="quiz-question" id="question3" style="display: none;">
+                        <h3>📝 Questão 3</h3>
+                        <p><strong>Qual método HTTP é usado para enviar dados de formulários?</strong></p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(3, 'a', false)">
+                                <span class="option-letter">A)</span> GET
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(3, 'b', true)">
+                                <span class="option-letter">B)</span> POST
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(3, 'c', false)">
+                                <span class="option-letter">C)</span> HEAD
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(3, 'd', false)">
+                                <span class="option-letter">D)</span> PUT
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback3"></div>
+                    </div>
+
+                    <!-- Questão 4 -->
+                    <div class="quiz-question" id="question4" style="display: none;">
+                        <h3>📝 Questão 4</h3>
+                        <p><strong>Qual a principal vantagem das conexões persistentes?</strong></p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(4, 'a', false)">
+                                <span class="option-letter">A)</span> Maior segurança
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(4, 'b', true)">
+                                <span class="option-letter">B)</span> Redução do overhead de rede
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(4, 'c', false)">
+                                <span class="option-letter">C)</span> Melhor qualidade de imagem
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(4, 'd', false)">
+                                <span class="option-letter">D)</span> Suporte a mais navegadores
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback4"></div>
+                    </div>
+
+                    <!-- Resultado Final -->
+                    <div class="quiz-result" id="quizResult" style="display: none;">
+                        <h3>🎉 Parabéns! Quiz Concluído!</h3>
+                        <div class="result-box">
+                            <p><strong>Sua pontuação: <span id="finalScore">0</span>/4</strong></p>
+                            <p id="resultMessage"></p>
+                        </div>
+                        <button class="nav-btn" onclick="restartQuiz()">🔄 Refazer Quiz</button>
+                    </div>
+                </div>
+
+                <div class="quiz-navigation">
+                    <button class="nav-btn" id="nextQuizBtn" onclick="nextQuestion()" style="display: none;">
+                        Próxima Questão ➡️
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 17: Referências -->
+        <div class="slide">
+            <div class="content">
+                <h2>📚 Referências Bibliográficas</h2>
+                
+                <div class="highlight-box">
+                    <h3>📖 Fonte Principal:</h3>
+                    <div class="bullet-point"><strong>Capítulo 27 - WWW e HTTP</strong></div>
+                    <div class="bullet-point">Livro de Redes de Computadores</div>
+                    <div class="bullet-point">Páginas 861-869</div>
+                </div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>🌐 Sites Recomendados:</h3>
+                        <div class="bullet-point">www.ietf.org/rfc.html (RFCs relacionadas)</div>
+                        <div class="bullet-point">www.w3.org (World Wide Web Consortium)</div>
+                        <div class="bullet-point">docs.anthropic.com (Documentação técnica)</div>
+                    </div>
+                    <div>
+                        <h3>📋 RFCs Principais:</h3>
+                        <div class="bullet-point">RFC 2068 - HTTP/1.1</div>
+                        <div class="bullet-point">RFC 2109 - HTTP State Management</div>
+                        <div class="bullet-point">RFC 1630 - URI Specification</div>
+                        <div class="bullet-point">RFC 1738 - URL Specification</div>
+                    </div>
+                </div>
+
+                <div class="example-box center-text">
+                    <h3>🤖 Metodologia de Criação</h3>
+                    <p>Apresentação desenvolvida com assistência de IA Claude Sonnet 4<br>
+                    Baseada integralmente no material didático fornecido<br>
+                    Adaptação pedagógica com foco em simplicidade e clareza</p>
+                </div>
+
+                <div class="highlight-box center-text">
+                    <h3>🎯 Objetivo Educacional</h3>
+                    <p>Facilitar o aprendizado do HTTP através de<br>
+                    linguagem simples, analogias e exemplos práticos</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="navigation">
+            <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">⬅️ Anterior</button>
+            <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">Próximo ➡️</button>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        document.getElementById('total-slides').textContent = totalSlides;
+
+        // Quiz variables
+        let currentQuestion = 1;
+        let score = 0;
+        let quizAnswered = [false, false, false, false];
+
+        function showSlide(index) {
+            slides.forEach((slide, i) => {
+                slide.classList.toggle('active', i === index);
+            });
+            
+            document.getElementById('current-slide').textContent = index + 1;
+            document.getElementById('prevBtn').disabled = index === 0;
+            document.getElementById('nextBtn').disabled = index === totalSlides - 1;
+        }
+
+        function changeSlide(direction) {
+            const newSlide = currentSlide + direction;
+            if (newSlide >= 0 && newSlide < totalSlides) {
+                currentSlide = newSlide;
+                showSlide(currentSlide);
+            }
+        }
+
+        // Quiz Functions
+        function selectOption(questionNum, option, isCorrect) {
+            if (quizAnswered[questionNum - 1]) return; // Já respondida
+            
+            const options = document.querySelectorAll(`#question${questionNum} .quiz-option`);
+            const feedback = document.getElementById(`feedback${questionNum}`);
+            
+            // Marcar todas as opções
+            options.forEach(opt => {
+                opt.style.pointerEvents = 'none';
+                if (opt.onclick.toString().includes('true')) {
+                    opt.classList.add('correct');
+                } else if (opt === event.currentTarget) {
+                    opt.classList.add(isCorrect ? 'correct' : 'incorrect');
+                }
+            });
+            
+            // Mostrar feedback
+            if (isCorrect) {
+                feedback.innerHTML = '✅ Correto! Muito bem!';
+                feedback.className = 'quiz-feedback correct';
+                score++;
+            } else {
+                feedback.innerHTML = '❌ Incorreto. A resposta correta está destacada em verde.';
+                feedback.className = 'quiz-feedback incorrect';
+            }
+            
+            quizAnswered[questionNum - 1] = true;
+            
+            // Mostrar botão para próxima questão
+            if (questionNum < 4) {
+                document.getElementById('nextQuizBtn').style.display = 'inline-block';
+            } else {
+                // Última questão - mostrar resultado
+                setTimeout(() => {
+                    showQuizResult();
+                }, 2000);
+            }
+        }
+
+        function nextQuestion() {
+            document.getElementById(`question${currentQuestion}`).style.display = 'none';
+            currentQuestion++;
+            document.getElementById(`question${currentQuestion}`).style.display = 'block';
+            document.getElementById('nextQuizBtn').style.display = 'none';
+        }
+
+        function showQuizResult() {
+            // Esconder última questão
+            document.getElementById('question4').style.display = 'none';
+            
+            // Mostrar resultado
+            document.getElementById('quizResult').style.display = 'block';
+            document.getElementById('finalScore').textContent = score;
+            
+            const resultMessage = document.getElementById('resultMessage');
+            if (score === 4) {
+                resultMessage.innerHTML = '🏆 Excelente! Você domina o HTTP!';
+            } else if (score === 3) {
+                resultMessage.innerHTML = '👏 Muito bom! Quase perfeito!';
+            } else if (score === 2) {
+                resultMessage.innerHTML = '👍 Bom trabalho! Continue estudando!';
+            } else if (score === 1) {
+                resultMessage.innerHTML = '📚 Estude um pouco mais sobre HTTP!';
+            } else {
+                resultMessage.innerHTML = '📖 Recomendo revisar o conteúdo!';
+            }
+        }
+
+        function restartQuiz() {
+            // Reset variables
+            currentQuestion = 1;
+            score = 0;
+            quizAnswered = [false, false, false, false];
+            
+            // Reset interface
+            for (let i = 1; i <= 4; i++) {
+                const question = document.getElementById(`question${i}`);
+                const options = question.querySelectorAll('.quiz-option');
+                const feedback = document.getElementById(`feedback${i}`);
+                
+                // Reset options
+                options.forEach(opt => {
+                    opt.className = 'quiz-option';
+                    opt.style.pointerEvents = 'auto';
+                });
+                
+                // Hide feedback
+                feedback.style.display = 'none';
+                
+                // Hide all questions except first
+                question.style.display = i === 1 ? 'block' : 'none';
+            }
+            
+            // Hide result and buttons
+            document.getElementById('quizResult').style.display = 'none';
+            document.getElementById('nextQuizBtn').style.display = 'none';
+        }
+
+        // Navegação por teclado
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') changeSlide(-1);
+            if (e.key === 'ArrowRight') changeSlide(1);
+            if (e.key === 'Home') {
+                currentSlide = 0;
+                showSlide(currentSlide);
+            }
+            if (e.key === 'End') {
+                currentSlide = totalSlides - 1;
+                showSlide(currentSlide);
+            }
+        });
+
+        // Inicializar
+        showSlide(0);
+        
+        // Inicializar quiz no slide 16
+        document.getElementById('question1').style.display = 'block';
+    </script>
+</body>
+</html>
