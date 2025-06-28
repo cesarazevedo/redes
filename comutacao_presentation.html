@@ -77,6 +77,13 @@
             align-items: start;
         }
 
+        .three-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 30px;
+            align-items: start;
+        }
+
         .bullet-point {
             display: flex;
             align-items: flex-start;
@@ -105,6 +112,51 @@
             border-radius: 15px;
             margin: 20px 0;
             border-left: 5px solid #20b2aa;
+        }
+
+        .qos-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #5a67d8;
+        }
+
+        .performance-box {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #0ea5e9;
+        }
+
+        .protocol-box {
+            background: linear-gradient(135deg, #8e2de2 0%, #4a00e0 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #7c3aed;
+        }
+
+        .future-box {
+            background: linear-gradient(135deg, #fd746c 0%, #ff9068 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #ef4444;
+        }
+
+        .multiplexing-box {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #ec4899;
         }
 
         .navigation {
@@ -258,6 +310,75 @@
             font-size: 1.3em;
         }
 
+        .multiplexing-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .multiplexing-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            border: 2px solid #e2e8f0;
+            text-align: center;
+        }
+
+        .multiplexing-card h4 {
+            color: #f093fb;
+            margin-bottom: 10px;
+            font-size: 1.3em;
+        }
+
+        .latency-bar {
+            background: #e2e8f0;
+            height: 20px;
+            border-radius: 10px;
+            margin: 10px 0;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .latency-fill {
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        .latency-fiber { background: #22c55e; width: 5%; }
+        .latency-wifi { background: #3b82f6; width: 15%; }
+        .latency-4g { background: #f59e0b; width: 50%; }
+        .latency-bt { background: #8b5cf6; width: 40%; }
+        .latency-5g { background: #06b6d4; width: 8%; }
+
+        .protocol-comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 20px 0;
+        }
+
+        .protocol-card {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            border: 2px solid #e2e8f0;
+        }
+
+        .protocol-card h4 {
+            color: #8e2de2;
+            margin-bottom: 15px;
+            font-size: 1.6em;
+            text-align: center;
+        }
+
         /* Quiz Styles */
         .quiz-container {
             max-width: 100%;
@@ -402,31 +523,32 @@
             border-radius: 15px;
             margin: 20px 0;
         }
-		.home-btn {
-    position: fixed;
-    top: 30px;
-    left: 30px;
-    background: #667eea;
-    color: white;
-    border: none;
-    border-radius: 25px;
-    padding: 12px 20px;
-    font-size: 1em;
-    font-weight: bold;
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    transition: all 0.3s ease;
-    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
-    z-index: 1001;
-}
 
-.home-btn:hover {
-    background: #5a67d8;
-    transform: translateY(-2px);
-    box-shadow: 0 7px 20px rgba(102, 126, 234, 0.4);
-}
+        .home-btn {
+            position: fixed;
+            top: 30px;
+            left: 30px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            padding: 12px 20px;
+            font-size: 1em;
+            font-weight: bold;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+            z-index: 1001;
+        }
+
+        .home-btn:hover {
+            background: #5a67d8;
+            transform: translateY(-2px);
+            box-shadow: 0 7px 20px rgba(102, 126, 234, 0.4);
+        }
     </style>
 </head>
 <body>
@@ -435,7 +557,7 @@
 </a>
     <div class="presentation">
         <div class="slide-counter">
-            <span id="current-slide">1</span> / <span id="total-slides">18</span>
+            <span id="current-slide">1</span> / <span id="total-slides">26</span>
         </div>
 
         <!-- Slide 1: Título -->
@@ -469,6 +591,7 @@
                         <h3>🔌 Comutação de Circuitos</h3>
                         <div class="bullet-point">O que é comutação</div>
                         <div class="bullet-point">Sistema telefônico tradicional</div>
+                        <div class="bullet-point">Multiplexação (FDM, TDM, WDM)</div>
                         <div class="bullet-point">3 fases do processo</div>
                         <div class="bullet-point">Vantagens e desvantagens</div>
                         
@@ -479,23 +602,25 @@
                         <div class="bullet-point">Uso eficiente de recursos</div>
                     </div>
                     <div>
-                        <h3>⚖️ Comparação</h3>
+                        <h3>⚖️ Comparação e Aplicações</h3>
                         <div class="bullet-point">Circuitos vs Pacotes</div>
+                        <div class="bullet-point">TCP vs UDP na prática</div>
+                        <div class="bullet-point">QoS - Quality of Service</div>
                         <div class="bullet-point">Quando usar cada um</div>
-                        <div class="bullet-point">Tabela comparativa</div>
                         
-                        <h3>🐌 Atrasos e Performance</h3>
+                        <h3>🚀 Performance e Futuro</h3>
                         <div class="bullet-point">Tipos de atraso</div>
-                        <div class="bullet-point">Perda de pacotes</div>
-                        <div class="bullet-point">Vazão (throughput)</div>
-                        <div class="bullet-point">Softswitch (ponte entre mundos)</div>
+                        <div class="bullet-point">Latências em números reais</div>
+                        <div class="bullet-point">Perda de pacotes e vazão</div>
+                        <div class="bullet-point">5G e convergência</div>
+                        <div class="bullet-point">Softswitch</div>
                     </div>
                 </div>
 
                 <div class="highlight-box center-text">
                     <h3>🎯 Objetivo Final</h3>
                     <p>Entender como telefones e Internet transportam dados<br>
-                    e por que cada tecnologia tem suas aplicações ideais</p>
+                    e escolher a tecnologia ideal para cada aplicação</p>
                 </div>
             </div>
         </div>
@@ -579,7 +704,57 @@
             </div>
         </div>
 
-        <!-- Slide 5: 3 Fases da Comutação de Circuitos -->
+        <!-- Slide 5: NOVO - Multiplexação em Circuitos -->
+        <div class="slide">
+            <div class="content">
+                <h2>🔀 Multiplexação em Circuitos</h2>
+                
+                <div class="multiplexing-box">
+                    <h3>💡 Como Otimizar o Uso dos Recursos</h3>
+                    <div class="bullet-point">Um cabo pode carregar múltiplas conversas simultâneas</div>
+                    <div class="bullet-point">Cada conversa fica "isolada" das outras</div>
+                    <div class="bullet-point">Três técnicas principais de separação</div>
+                </div>
+
+                <div class="multiplexing-grid">
+                    <div class="multiplexing-card">
+                        <h4>📻 FDM - Frequency</h4>
+                        <div class="bullet-point">Cada conversa em frequência diferente</div>
+                        <div class="bullet-point">Como estações de rádio FM</div>
+                        <div class="bullet-point">Usado em telefonia analógica</div>
+                    </div>
+                    
+                    <div class="multiplexing-card">
+                        <h4>⏰ TDM - Time</h4>
+                        <div class="bullet-point">Cada conversa fala em momento diferente</div>
+                        <div class="bullet-point">Como semáforo com fases</div>
+                        <div class="bullet-point">Usado em telefonia digital</div>
+                    </div>
+                    
+                    <div class="multiplexing-card">
+                        <h4>🌈 WDM - Wavelength</h4>
+                        <div class="bullet-point">Cada conversa em "cor" diferente</div>
+                        <div class="bullet-point">Como cores do arco-íris</div>
+                        <div class="bullet-point">Usado em fibra óptica</div>
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>🚗 Analogias Práticas</h3>
+                    <div class="bullet-point"><strong>FDM:</strong> Estrada com faixas para carros, motos, caminhões</div>
+                    <div class="bullet-point"><strong>TDM:</strong> Cruzamento onde cada direção tem sua vez</div>
+                    <div class="bullet-point"><strong>WDM:</strong> Feixe de luz branca separado em cores</div>
+                </div>
+
+                <div class="highlight-box center-text">
+                    <h3>🎯 Resultado</h3>
+                    <p>Um único cabo físico pode carregar centenas ou milhares<br>
+                    de conversas simultâneas, cada uma com qualidade garantida</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: 3 Fases da Comutação de Circuitos -->
         <div class="slide">
             <div class="content">
                 <h2>📋 3 Fases da Comutação de Circuitos</h2>
@@ -617,7 +792,7 @@
             </div>
         </div>
 
-        <!-- Slide 6: Vantagens e Desvantagens dos Circuitos -->
+        <!-- Slide 7: Vantagens e Desvantagens dos Circuitos -->
         <div class="slide">
             <div class="content">
                 <h2>⚖️ Circuitos: Prós e Contras</h2>
@@ -630,6 +805,7 @@
                         <div class="bullet-point">Dados chegam em ordem</div>
                         <div class="bullet-point">Previsibilidade total</div>
                         <div class="bullet-point">Ideal para voz em tempo real</div>
+                        <div class="bullet-point">Baixa latência (depois de estabelecido)</div>
                     </div>
                     <div>
                         <h3>❌ Desvantagens</h3>
@@ -638,6 +814,7 @@
                         <div class="bullet-point">Recursos "presos" mesmo sem uso</div>
                         <div class="bullet-point">Custo elevado</div>
                         <div class="bullet-point">Setup necessário antes de transmitir</div>
+                        <div class="bullet-point">Falha no caminho = perda total</div>
                     </div>
                 </div>
 
@@ -663,7 +840,7 @@
             </div>
         </div>
 
-        <!-- Slide 7: Comutação de Pacotes - Conceito -->
+        <!-- Slide 8: Comutação de Pacotes - Conceito -->
         <div class="slide">
             <div class="content">
                 <h2>📦 Comutação de Pacotes</h2>
@@ -707,7 +884,7 @@
             </div>
         </div>
 
-        <!-- Slide 8: Store-and-Forward -->
+        <!-- Slide 9: Store-and-Forward -->
         <div class="slide">
             <div class="content">
                 <h2>📥 Processo Store-and-Forward</h2>
@@ -751,7 +928,7 @@
             </div>
         </div>
 
-        <!-- Slide 9: Vantagens e Desvantagens dos Pacotes -->
+        <!-- Slide 10: Vantagens e Desvantagens dos Pacotes -->
         <div class="slide">
             <div class="content">
                 <h2>⚖️ Pacotes: Prós e Contras</h2>
@@ -765,6 +942,7 @@
                         <div class="bullet-point">Roteamento dinâmico</div>
                         <div class="bullet-point">Custo menor</div>
                         <div class="bullet-point">Escalabilidade</div>
+                        <div class="bullet-point">Flexibilidade de protocolos</div>
                     </div>
                     <div>
                         <h3>❌ Desvantagens</h3>
@@ -773,6 +951,7 @@
                         <div class="bullet-point">Possibilidade de atrasos (jitter)</div>
                         <div class="bullet-point">Perda de pacotes em congestionamento</div>
                         <div class="bullet-point">Qualidade variável</div>
+                        <div class="bullet-point">Overhead de cabeçalhos</div>
                     </div>
                 </div>
 
@@ -798,7 +977,110 @@
             </div>
         </div>
 
-        <!-- Slide 10: Comparação Completa -->
+        <!-- Slide 11: NOVO - TCP vs UDP -->
+        <div class="slide">
+            <div class="content">
+                <h2>🔗 TCP vs UDP: Protocolos na Prática</h2>
+                
+                <div class="protocol-box">
+                    <h3>💡 Como os Protocolos Implementam as Filosofias</h3>
+                    <div class="bullet-point">TCP tenta dar "qualidade de circuitos" aos pacotes</div>
+                    <div class="bullet-point">UDP mantém a eficiência pura dos pacotes</div>
+                    <div class="bullet-point">Cada um serve para aplicações diferentes</div>
+                </div>
+
+                <div class="protocol-comparison">
+                    <div class="protocol-card">
+                        <h4>🛡️ TCP - Confiável como Circuitos</h4>
+                        <div class="bullet-point">Garante entrega e ordem</div>
+                        <div class="bullet-point">Retransmite pacotes perdidos</div>
+                        <div class="bullet-point">Controla fluxo e congestionamento</div>
+                        <div class="bullet-point">Conexão estabelecida antes de enviar</div>
+                        
+                        <h3 style="margin-top: 20px;">🎯 Usado em:</h3>
+                        <div class="bullet-point">Navegação web (HTTP/HTTPS)</div>
+                        <div class="bullet-point">E-mail (SMTP, POP, IMAP)</div>
+                        <div class="bullet-point">Transferência de arquivos (FTP)</div>
+                        <div class="bullet-point">SSH, Telnet</div>
+                    </div>
+                    
+                    <div class="protocol-card">
+                        <h4>⚡ UDP - Rápido como Pacotes Puros</h4>
+                        <div class="bullet-point">Sem garantias, mas veloz</div>
+                        <div class="bullet-point">Não retransmite perdas</div>
+                        <div class="bullet-point">Sem controle de ordem</div>
+                        <div class="bullet-point">Envio direto, sem conexão</div>
+                        
+                        <h3 style="margin-top: 20px;">🎯 Usado em:</h3>
+                        <div class="bullet-point">Jogos online</div>
+                        <div class="bullet-point">Streaming ao vivo</div>
+                        <div class="bullet-point">DNS (consultas de nomes)</div>
+                        <div class="bullet-point">Videoconferências</div>
+                    </div>
+                </div>
+
+                <div class="example-box center-text">
+                    <h3>🎮 Exemplo Prático: Por que Games Usam UDP?</h3>
+                    <p>Em um jogo, se você perdeu onde estava há 100ms,<br>
+                    não adianta retransmitir - o importante é saber onde está AGORA!<br>
+                    Melhor perder um pacote do que ter atraso</p>
+                </div>
+
+                <div class="highlight-box">
+                    <h3>🤔 Quando Usar Cada Um?</h3>
+                    <div class="bullet-point"><strong>TCP:</strong> Quando dados precisam chegar completos e corretos</div>
+                    <div class="bullet-point"><strong>UDP:</strong> Quando velocidade é mais importante que perfeição</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 12: NOVO - QoS (Quality of Service) -->
+        <div class="slide">
+            <div class="content">
+                <h2>🎯 QoS: Dando "Qualidade de Circuito" aos Pacotes</h2>
+                
+                <div class="qos-box">
+                    <h3>💡 O Melhor dos Dois Mundos</h3>
+                    <div class="bullet-point">Como dar prioridade e garantias em redes de pacotes</div>
+                    <div class="bullet-point">Simula características de circuitos quando necessário</div>
+                    <div class="bullet-point">Eficiência dos pacotes + qualidade dos circuitos</div>
+                </div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>🚦 Técnicas de QoS</h3>
+                        <div class="bullet-point"><strong>Priorização:</strong> Voz > vídeo > email > download</div>
+                        <div class="bullet-point"><strong>Reserva de banda:</strong> Garantir mínimo para aplicações críticas</div>
+                        <div class="bullet-point"><strong>Traffic Shaping:</strong> Suavizar rajadas de dados</div>
+                        <div class="bullet-point"><strong>MPLS:</strong> "Túneis" dedicados sobre redes de pacotes</div>
+                    </div>
+                    <div>
+                        <h3>🎯 Aplicações que PRECISAM de QoS</h3>
+                        <div class="bullet-point">🎮 <strong>Jogos online:</strong> >100ms = lag insuportável</div>
+                        <div class="bullet-point">🏥 <strong>Cirurgia remota:</strong> Atraso pode ser fatal</div>
+                        <div class="bullet-point">💹 <strong>Trading financeiro:</strong> Milissegundos = milhões</div>
+                        <div class="bullet-point">🥽 <strong>VR/AR:</strong> >20ms = enjoo</div>
+                        <div class="bullet-point">📞 <strong>VoIP:</strong> Conversas empresariais</div>
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>🚨 Analogia do Hospital</h3>
+                    <div class="bullet-point">Emergência tem prioridade sobre consulta de rotina</div>
+                    <div class="bullet-point">UTI sempre tem leitos reservados</div>
+                    <div class="bullet-point">Ambulância não pega trânsito (faixa exclusiva)</div>
+                    <div class="bullet-point">QoS faz o mesmo com dados da rede</div>
+                </div>
+
+                <div class="highlight-box center-text">
+                    <h3>🌐 QoS na Prática</h3>
+                    <p>Seu roteador doméstico pode priorizar Netflix sobre downloads<br>
+                    Empresas garantem que Zoom funcione mesmo com rede congestionada</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 13: Comparação Completa -->
         <div class="slide">
             <div class="content">
                 <h2>📊 Comparação: Circuitos vs Pacotes</h2>
@@ -830,7 +1112,7 @@
                         <tr>
                             <td><strong>Ordem garantida</strong></td>
                             <td>Sim</td>
-                            <td>Não</td>
+                            <td>Não (mas TCP garante)</td>
                         </tr>
                         <tr>
                             <td><strong>Reserva de largura</strong></td>
@@ -839,7 +1121,7 @@
                         </tr>
                         <tr>
                             <td><strong>Desperdício de recursos</strong></td>
-                            <td>Sim</td>
+                            <td>Sim (60% em conversas)</td>
                             <td>Não</td>
                         </tr>
                         <tr>
@@ -852,18 +1134,23 @@
                             <td>Tempo + Distância</td>
                             <td>Volume de dados</td>
                         </tr>
+                        <tr>
+                            <td><strong>QoS</strong></td>
+                            <td>Nativo</td>
+                            <td>Precisa ser implementado</td>
+                        </tr>
                     </tbody>
                 </table>
 
                 <div class="highlight-box center-text">
                     <h3>🎯 Em Resumo</h3>
                     <p><strong>Circuitos:</strong> Qualidade garantida, mas caro e rígido<br>
-                    <strong>Pacotes:</strong> Eficiente e flexível, mas sem garantias</p>
+                    <strong>Pacotes:</strong> Eficiente e flexível, mas precisa de QoS para qualidade</p>
                 </div>
             </div>
         </div>
 
-        <!-- Slide 11: Quando Usar Cada Um -->
+        <!-- Slide 14: Quando Usar Cada Um -->
         <div class="slide">
             <div class="content">
                 <h2>🤔 Quando Usar Cada Tecnologia?</h2>
@@ -876,6 +1163,7 @@
                         <div class="bullet-point">Transmissões que exigem qualidade constante</div>
                         <div class="bullet-point">Aplicações sensíveis a atraso</div>
                         <div class="bullet-point">Quando qualidade > custo</div>
+                        <div class="bullet-point">Ambientes controlados (empresas)</div>
                     </div>
                     
                     <div class="packet-box">
@@ -885,27 +1173,96 @@
                         <div class="bullet-point">Transferência de arquivos</div>
                         <div class="bullet-point">Redes sociais</div>
                         <div class="bullet-point">Quando eficiência > qualidade garantida</div>
+                        <div class="bullet-point">Internet pública</div>
                     </div>
                 </div>
 
                 <div class="example-box">
                     <h3>🌐 Mundo Real: Convergência</h3>
-                    <div class="bullet-point"><strong>VoIP:</strong> Voz sobre pacotes (Skype, WhatsApp)</div>
-                    <div class="bullet-point"><strong>Video streaming:</strong> Netflix usa pacotes, mas simula qualidade constante</div>
-                    <div class="bullet-point"><strong>5G:</strong> Combina benefícios das duas tecnologias</div>
+                    <div class="bullet-point"><strong>VoIP:</strong> Voz sobre pacotes (Skype, WhatsApp, Teams)</div>
+                    <div class="bullet-point"><strong>Video streaming:</strong> Netflix usa pacotes + buffering</div>
+                    <div class="bullet-point"><strong>5G:</strong> Network slicing combina ambas tecnologias</div>
+                    <div class="bullet-point"><strong>SD-WAN:</strong> Redes empresariais inteligentes</div>
                 </div>
 
                 <div class="highlight-box">
                     <h3>🔮 Tendência Atual</h3>
                     <div class="bullet-point">Mundo caminha para "tudo sobre pacotes"</div>
-                    <div class="bullet-point">Melhorias em QoS (Quality of Service)</div>
-                    <div class="bullet-point">Protocolos inteligentes compensam limitações</div>
+                    <div class="bullet-point">Melhorias em QoS compensam limitações</div>
+                    <div class="bullet-point">Protocolos inteligentes simulam circuitos</div>
                     <div class="bullet-point">Custo e flexibilidade vencem na maioria dos casos</div>
                 </div>
             </div>
         </div>
 
-        <!-- Slide 12: Tipos de Atraso -->
+        <!-- Slide 15: NOVO - Performance em Números Reais -->
+        <div class="slide">
+            <div class="content">
+                <h2>📊 Latências em Números Reais</h2>
+                
+                <div class="performance-box">
+                    <h3>⚡ Para Contextualizar Performance</h3>
+                    <div class="bullet-point">Latência = tempo que leva para um bit sair de A e chegar em B</div>
+                    <div class="bullet-point">Medida fundamental para aplicações em tempo real</div>
+                    <div class="bullet-point">Cada tecnologia tem suas limitações físicas</div>
+                </div>
+
+                <div style="margin: 30px 0;">
+                    <h3>📡 Latências Típicas por Tecnologia:</h3>
+                    
+                    <div style="margin: 15px 0;">
+                        <strong>🌟 Fibra óptica (100km): ~0.5ms</strong>
+                        <div class="latency-bar"><div class="latency-fill latency-fiber">0.5ms</div></div>
+                    </div>
+                    
+                    <div style="margin: 15px 0;">
+                        <strong>📶 WiFi doméstico: ~2-5ms</strong>
+                        <div class="latency-bar"><div class="latency-fill latency-wifi">5ms</div></div>
+                    </div>
+                    
+                    <div style="margin: 15px 0;">
+                        <strong>📱 Bluetooth: ~40ms</strong>
+                        <div class="latency-bar"><div class="latency-fill latency-bt">40ms</div></div>
+                    </div>
+                    
+                    <div style="margin: 15px 0;">
+                        <strong>📲 4G: ~50ms</strong>
+                        <div class="latency-bar"><div class="latency-fill latency-4g">50ms</div></div>
+                    </div>
+                    
+                    <div style="margin: 15px 0;">
+                        <strong>🚀 5G: ~1ms</strong>
+                        <div class="latency-bar"><div class="latency-fill latency-5g">1ms</div></div>
+                    </div>
+                </div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>🌍 Distâncias Geográficas</h3>
+                        <div class="bullet-point">Brasil - EUA: ~150ms</div>
+                        <div class="bullet-point">Brasil - Europa: ~200ms</div>
+                        <div class="bullet-point">Brasil - Japão: ~300ms</div>
+                        <div class="bullet-point">Satélite geoestacionário: ~500ms</div>
+                    </div>
+                    <div>
+                        <h3>👀 Para Comparação</h3>
+                        <div class="bullet-point">Piscar de olhos: ~300ms</div>
+                        <div class="bullet-point">Reflexo humano: ~200ms</div>
+                        <div class="bullet-point">Fala humana: pause ~100ms</div>
+                        <div class="bullet-point">Limite perceção: ~20ms</div>
+                    </div>
+                </div>
+
+                <div class="highlight-box center-text">
+                    <h3>🎯 Impacto nas Aplicações</h3>
+                    <p><strong>Games competitivos:</strong> >50ms é desvantagem<br>
+                    <strong>Videoconferência:</strong> >200ms é desconfortável<br>
+                    <strong>Navegação web:</strong> >500ms é lento</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 16: Tipos de Atraso -->
         <div class="slide">
             <div class="content">
                 <h2>🐌 Tipos de Atraso em Redes de Pacotes</h2>
@@ -920,6 +1277,7 @@
                         <div class="bullet-point">Tempo para examinar o pacote</div>
                         <div class="bullet-point">Verificar erros</div>
                         <div class="bullet-point">Decidir próximo destino</div>
+                        <div class="bullet-point">Típico: < 1ms</div>
                     </div>
 
                     <div class="delay-card">
@@ -927,6 +1285,7 @@
                         <div class="bullet-point">Tempo esperando na fila</div>
                         <div class="bullet-point">Depende do congestionamento</div>
                         <div class="bullet-point">Varia muito</div>
+                        <div class="bullet-point">Pode ser: 0ms a 100ms+</div>
                     </div>
 
                     <div class="delay-card">
@@ -934,6 +1293,7 @@
                         <div class="bullet-point">Tempo para "empurrar" bits no cabo</div>
                         <div class="bullet-point">Tamanho do pacote ÷ Velocidade do link</div>
                         <div class="bullet-point">Previsível</div>
+                        <div class="bullet-point">Ex: 1500 bytes a 1Mbps = 12ms</div>
                     </div>
 
                     <div class="delay-card">
@@ -941,6 +1301,7 @@
                         <div class="bullet-point">Tempo da viagem física</div>
                         <div class="bullet-point">Distância ÷ Velocidade da luz</div>
                         <div class="bullet-point">Limitado pela física</div>
+                        <div class="bullet-point">Ex: São Paulo-Rio = ~1ms</div>
                     </div>
                 </div>
 
@@ -954,7 +1315,7 @@
             </div>
         </div>
 
-        <!-- Slide 13: Perda de Pacotes -->
+        <!-- Slide 17: Perda de Pacotes -->
         <div class="slide">
             <div class="content">
                 <h2>💀 Perda de Pacotes</h2>
@@ -971,13 +1332,15 @@
                         <div class="bullet-point">Congestionamento na rede</div>
                         <div class="bullet-point">Falha de equipamentos</div>
                         <div class="bullet-point">Interferência no meio físico</div>
+                        <div class="bullet-point">Ataques DDoS</div>
                     </div>
                     <div>
                         <h3>🛠️ Como Lidar</h3>
-                        <div class="bullet-point">Retransmissão automática</div>
+                        <div class="bullet-point">Retransmissão automática (TCP)</div>
                         <div class="bullet-point">Protocolos de confirmação</div>
                         <div class="bullet-point">Controle de congestionamento</div>
                         <div class="bullet-point">Buffering no destinatário</div>
+                        <div class="bullet-point">Forward Error Correction (FEC)</div>
                     </div>
                 </div>
 
@@ -994,16 +1357,17 @@
                     <div class="bullet-point">Internet residencial: 0,1% a 1%</div>
                     <div class="bullet-point">Redes corporativas: < 0,1%</div>
                     <div class="bullet-point">WiFi congestionado: pode chegar a 5%</div>
+                    <div class="bullet-point">Streaming ao vivo: tolerável até 2%</div>
                 </div>
 
                 <div class="diagram">
                     Pacotes chegando → [Buffer cheio] → Pacote descartado<br>
-                    Aplicação detecta perda → Retransmite
+                    Aplicação detecta perda → Retransmite (TCP) ou ignora (UDP)
                 </div>
             </div>
         </div>
 
-        <!-- Slide 14: Vazão (Throughput) -->
+        <!-- Slide 18: Vazão (Throughput) -->
         <div class="slide">
             <div class="content">
                 <h2>🚀 Vazão (Throughput)</h2>
@@ -1019,12 +1383,14 @@
                         <div class="bullet-point">Taxa em um momento específico</div>
                         <div class="bullet-point">Varia conforme congestionamento</div>
                         <div class="bullet-point">Pode oscilar muito</div>
+                        <div class="bullet-point">Usada para diagnóstico</div>
                     </div>
                     <div>
                         <h3>📊 Vazão Média</h3>
                         <div class="bullet-point">Taxa ao longo do tempo</div>
                         <div class="bullet-point">Mais relevante para usuários</div>
                         <div class="bullet-point">Medida em downloads</div>
+                        <div class="bullet-point">Base para SLAs</div>
                     </div>
                 </div>
 
@@ -1036,21 +1402,73 @@
                 </div>
 
                 <div class="example-box">
-                    <h3>🏠 Exemplo Doméstico</h3>
-                    <div class="bullet-point">Internet contratada: 100 Mbps</div>
-                    <div class="bullet-point">WiFi: 50 Mbps (gargalo!)</div>
-                    <div class="bullet-point">Vazão real: máximo 50 Mbps</div>
+                    <h3>🏠 Exemplo Doméstico Atualizado</h3>
+                    <div class="bullet-point">Internet contratada: 500 Mbps</div>
+                    <div class="bullet-point">Cabo Ethernet: 1 Gbps</div>
+                    <div class="bullet-point">WiFi 6: 300 Mbps (gargalo!)</div>
+                    <div class="bullet-point">Vazão real no WiFi: máximo 300 Mbps</div>
                     <div class="bullet-point">Compartilhado entre todos os dispositivos</div>
                 </div>
 
                 <div class="diagram">
-                    Servidor [1 Gbps] → Internet [100 Mbps] → WiFi [50 Mbps] → Seu PC<br>
-                    Vazão real: 50 Mbps (limitado pelo WiFi)
+                    Servidor [10 Gbps] → Internet [500 Mbps] → WiFi [300 Mbps] → Seu PC<br>
+                    Vazão real: 300 Mbps (limitado pelo WiFi)
                 </div>
             </div>
         </div>
 
-        <!-- Slide 15: Softswitch - Ponte Entre Mundos -->
+        <!-- Slide 19: NOVO - 5G e Convergência -->
+        <div class="slide">
+            <div class="content">
+                <h2>🚀 5G e a Convergência das Tecnologias</h2>
+                
+                <div class="future-box">
+                    <h3>🌟 O Futuro que Combina Ambos os Mundos</h3>
+                    <div class="bullet-point">5G usa pacotes, mas oferece garantias de circuitos</div>
+                    <div class="bullet-point">Network Slicing: múltiplas redes virtuais em uma infraestrutura</div>
+                    <div class="bullet-point">Edge Computing: processamento próximo ao usuário</div>
+                </div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>🎯 Network Slicing</h3>
+                        <div class="bullet-point">Fatia da rede para cada tipo de serviço</div>
+                        <div class="bullet-point">Slice para carros autônomos: ultra-baixa latência</div>
+                        <div class="bullet-point">Slice para IoT: muitos dispositivos, pouco dados</div>
+                        <div class="bullet-point">Slice para vídeo: alta largura de banda</div>
+                    </div>
+                    <div>
+                        <h3>📡 Edge Computing</h3>
+                        <div class="bullet-point">Servidores próximos aos usuários</div>
+                        <div class="bullet-point">Reduz latência drasticamente</div>
+                        <div class="bullet-point">Possibilita aplicações críticas</div>
+                        <div class="bullet-point">Base para carros autônomos</div>
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>🚗 Exemplo: Carro Autônomo</h3>
+                    <div class="bullet-point">Precisa de latência < 1ms para frear</div>
+                    <div class="bullet-point">5G cria "slice" dedicado com garantias</div>
+                    <div class="bullet-point">Edge server no semáforo processa dados</div>
+                    <div class="bullet-point">Combina eficiência de pacotes + garantias de circuitos</div>
+                </div>
+
+                <div class="highlight-box">
+                    <h3>📊 Comparação de Gerações</h3>
+                    <div class="bullet-point"><strong>4G:</strong> 50ms latência, 100 Mbps</div>
+                    <div class="bullet-point"><strong>5G:</strong> 1ms latência, 10 Gbps</div>
+                    <div class="bullet-point"><strong>WiFi 7:</strong> Sub-ms latência, 30+ Gbps</div>
+                </div>
+
+                <div class="diagram">
+                    5G = Pacotes + QoS extremo + Edge Computing<br>
+                    "Circuitos virtuais" sobre infraestrutura de pacotes
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 20: Softswitch - Ponte Entre Mundos -->
         <div class="slide">
             <div class="content">
                 <h2>🌉 Softswitch: Ponte Entre Mundos</h2>
@@ -1086,11 +1504,12 @@
                 </div>
 
                 <div class="highlight-box">
-                    <h3>🔮 Importância</h3>
-                    <div class="bullet-point">Permite migração gradual para IP</div>
+                    <h3>🔮 Importância Histórica</h3>
+                    <div class="bullet-point">Permitiu migração gradual para IP</div>
                     <div class="bullet-point">Aproveitamento da infraestrutura existente</div>
                     <div class="bullet-point">Base para VoIP comercial</div>
                     <div class="bullet-point">Convergência de voz e dados</div>
+                    <div class="bullet-point">Hoje evolui para SD-WAN e 5G Core</div>
                 </div>
 
                 <div class="diagram">
@@ -1099,7 +1518,58 @@
             </div>
         </div>
 
-        <!-- Slide 16: Resumo Final -->
+        <!-- Slide 21: NOVO - Exercício Prático -->
+        <div class="slide">
+            <div class="content">
+                <h2>🛠️ Exercício Prático: Escolhendo a Tecnologia</h2>
+                
+                <div class="highlight-box center-text">
+                    <h3>🏢 Cenário: Empresa de Telemedicina</h3>
+                    <p>Você precisa projetar a rede para uma empresa que oferece:<br>
+                    Consultas por vídeo, cirurgias remotas e armazenamento de exames</p>
+                </div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>📋 Requisitos por Aplicação:</h3>
+                        <div class="bullet-point"><strong>🎥 Consultas:</strong> Boa qualidade, tolerante a pequenos atrasos</div>
+                        <div class="bullet-point"><strong>🏥 Cirurgia remota:</strong> Latência < 5ms, sem perda</div>
+                        <div class="bullet-point"><strong>💾 Upload exames:</strong> Grandes arquivos, sem pressa</div>
+                        <div class="bullet-point"><strong>📊 Prontuários:</strong> Dados críticos, confiabilidade total</div>
+                    </div>
+                    <div>
+                        <h3>💡 Suas Decisões:</h3>
+                        <div class="bullet-point">Que tecnologia para cada aplicação?</div>
+                        <div class="bullet-point">TCP ou UDP onde?</div>
+                        <div class="bullet-point">Que tipo de QoS implementar?</div>
+                        <div class="bullet-point">Como garantir redundância?</div>
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>🎯 Solução Sugerida:</h3>
+                    <div class="bullet-point"><strong>Consultas:</strong> Pacotes + QoS médio + UDP (streaming)</div>
+                    <div class="bullet-point"><strong>Cirurgia:</strong> Slice 5G dedicado + Edge computing</div>
+                    <div class="bullet-point"><strong>Upload exames:</strong> Pacotes + TCP (confiabilidade)</div>
+                    <div class="bullet-point"><strong>Prontuários:</strong> Pacotes + TCP + backup múltiplo</div>
+                </div>
+
+                <div class="qos-box center-text">
+                    <h3>🚨 Prioridades de QoS</h3>
+                    <p><strong>1º:</strong> Cirurgia remota (crítica)<br>
+                    <strong>2º:</strong> Consultas (importante)<br>
+                    <strong>3º:</strong> Prontuários (seguro)<br>
+                    <strong>4º:</strong> Upload exames (quando sobrar banda)</p>
+                </div>
+
+                <div class="process-step center-text">
+                    <strong>🎓 Lição:</strong> Não existe solução única!<br>
+                    Cada aplicação tem necessidades diferentes e deve usar a tecnologia apropriada.
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 22: Resumo Final -->
         <div class="slide">
             <div class="content">
                 <h2>🎯 Resumo Final</h2>
@@ -1114,6 +1584,7 @@
                         <div class="bullet-point">Telefonia tradicional</div>
                         <div class="bullet-point">Qualidade garantida</div>
                         <div class="bullet-point">Recursos dedicados</div>
+                        <div class="bullet-point">Multiplexação (FDM/TDM/WDM)</div>
                         <div class="bullet-point">Mais cara, menos eficiente</div>
                     </div>
                     
@@ -1122,25 +1593,32 @@
                         <div class="bullet-point">Internet moderna</div>
                         <div class="bullet-point">Uso eficiente de recursos</div>
                         <div class="bullet-point">Tolerante a falhas</div>
+                        <div class="bullet-point">TCP (confiável) vs UDP (rápido)</div>
                         <div class="bullet-point">Mais barata, qualidade variável</div>
                     </div>
                 </div>
 
+                <div class="qos-box center-text">
+                    <h3>🌉 O Futuro: Convergência Inteligente</h3>
+                    <p>QoS • 5G Network Slicing • Edge Computing<br>
+                    Eficiência dos pacotes + Garantias dos circuitos</p>
+                </div>
+
                 <div class="example-box center-text">
-                    <h3>🌐 Convergência Digital</h3>
-                    <p>O futuro combina o melhor dos dois mundos<br>
-                    VoIP, streaming e 5G usam pacotes com qualidade de circuitos</p>
+                    <h3>🎓 Conceitos Dominados</h3>
+                    <p>Comutação • Multiplexação • Store-and-Forward • Atrasos<br>
+                    Perdas • Vazão • QoS • TCP vs UDP • Softswitch</p>
                 </div>
 
                 <div class="process-step center-text">
-                    <strong>🔄 Conceitos Aprendidos:</strong><br>
-                    Comutação • Atrasos • Perdas • Vazão • Softswitch<br>
-                    Base para entender performance de redes
+                    <strong>🚀 Próximo Passo:</strong><br>
+                    Entender os modelos em camadas (OSI e TCP/IP)<br>
+                    que organizam todos esses conceitos!
                 </div>
             </div>
         </div>
 
-        <!-- Slide 17: Quiz -->
+        <!-- Slide 23: Quiz EXPANDIDO -->
         <div class="slide">
             <div class="content">
                 <h2>🧠 Quiz - Teste seus conhecimentos!</h2>
@@ -1170,19 +1648,19 @@
                     <!-- Questão 2 -->
                     <div class="quiz-question" id="question2" style="display: none;">
                         <h3>📝 Questão 2</h3>
-                        <p><strong>Na comutação de pacotes, o que significa "store-and-forward"?</strong></p>
+                        <p><strong>Por que jogos online usam UDP em vez de TCP?</strong></p>
                         <div class="quiz-options">
-                            <div class="quiz-option" onclick="selectOption(2, 'a', false)">
-                                <span class="option-letter">A)</span> Pacotes são enviados diretamente
+                            <div class="quiz-option" onclick="selectOption(2, 'a', true)">
+                                <span class="option-letter">A)</span> Velocidade é mais importante que perfeição
                             </div>
-                            <div class="quiz-option" onclick="selectOption(2, 'b', true)">
-                                <span class="option-letter">B)</span> Recebe, armazena e depois encaminha
+                            <div class="quiz-option" onclick="selectOption(2, 'b', false)">
+                                <span class="option-letter">B)</span> UDP garante a ordem dos pacotes
                             </div>
                             <div class="quiz-option" onclick="selectOption(2, 'c', false)">
-                                <span class="option-letter">C)</span> Apenas armazena os pacotes
+                                <span class="option-letter">C)</span> UDP retransmite pacotes perdidos
                             </div>
                             <div class="quiz-option" onclick="selectOption(2, 'd', false)">
-                                <span class="option-letter">D)</span> Descarta pacotes desnecessários
+                                <span class="option-letter">D)</span> UDP é mais confiável
                             </div>
                         </div>
                         <div class="quiz-feedback" id="feedback2"></div>
@@ -1212,29 +1690,71 @@
                     <!-- Questão 4 -->
                     <div class="quiz-question" id="question4" style="display: none;">
                         <h3>📝 Questão 4</h3>
-                        <p><strong>O que é um softswitch?</strong></p>
+                        <p><strong>Qual técnica de multiplexação separa conversas por frequência?</strong></p>
                         <div class="quiz-options">
-                            <div class="quiz-option" onclick="selectOption(4, 'a', false)">
-                                <span class="option-letter">A)</span> Um tipo de roteador
+                            <div class="quiz-option" onclick="selectOption(4, 'a', true)">
+                                <span class="option-letter">A)</span> FDM (Frequency Division Multiplexing)
                             </div>
                             <div class="quiz-option" onclick="selectOption(4, 'b', false)">
-                                <span class="option-letter">B)</span> Um protocolo de rede
+                                <span class="option-letter">B)</span> TDM (Time Division Multiplexing)
                             </div>
-                            <div class="quiz-option" onclick="selectOption(4, 'c', true)">
-                                <span class="option-letter">C)</span> Ponte entre circuitos e pacotes
+                            <div class="quiz-option" onclick="selectOption(4, 'c', false)">
+                                <span class="option-letter">C)</span> WDM (Wavelength Division Multiplexing)
                             </div>
                             <div class="quiz-option" onclick="selectOption(4, 'd', false)">
-                                <span class="option-letter">D)</span> Um cabo especial
+                                <span class="option-letter">D)</span> CDM (Code Division Multiplexing)
                             </div>
                         </div>
                         <div class="quiz-feedback" id="feedback4"></div>
+                    </div>
+
+                    <!-- Questão 5 - NOVA -->
+                    <div class="quiz-question" id="question5" style="display: none;">
+                        <h3>📝 Questão 5</h3>
+                        <p><strong>O que é QoS (Quality of Service)?</strong></p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(5, 'a', false)">
+                                <span class="option-letter">A)</span> Um tipo de protocolo
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(5, 'b', true)">
+                                <span class="option-letter">B)</span> Técnicas para dar prioridade e garantias em redes de pacotes
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(5, 'c', false)">
+                                <span class="option-letter">C)</span> Um equipamento de rede
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(5, 'd', false)">
+                                <span class="option-letter">D)</span> Uma medida de velocidade
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback5"></div>
+                    </div>
+
+                    <!-- Questão 6 - NOVA -->
+                    <div class="quiz-question" id="question6" style="display: none;">
+                        <h3>📝 Questão 6</h3>
+                        <p><strong>Qual é a latência típica do 5G em condições ideais?</strong></p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(6, 'a', false)">
+                                <span class="option-letter">A)</span> 50ms
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(6, 'b', false)">
+                                <span class="option-letter">B)</span> 10ms
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(6, 'c', true)">
+                                <span class="option-letter">C)</span> 1ms
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(6, 'd', false)">
+                                <span class="option-letter">D)</span> 100ms
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback6"></div>
                     </div>
 
                     <!-- Resultado Final -->
                     <div class="quiz-result" id="quizResult" style="display: none;">
                         <h3>🎉 Parabéns! Quiz Concluído!</h3>
                         <div class="result-box">
-                            <p><strong>Sua pontuação: <span id="finalScore">0</span>/4</strong></p>
+                            <p><strong>Sua pontuação: <span id="finalScore">0</span>/6</strong></p>
                             <p id="resultMessage"></p>
                         </div>
                         <button class="nav-btn" onclick="restartQuiz()">🔄 Refazer Quiz</button>
@@ -1249,7 +1769,60 @@
             </div>
         </div>
 
-        <!-- Slide 18: Referências -->
+        <!-- Slide 24: NOVO - Aplicações do Mundo Real -->
+        <div class="slide">
+            <div class="content">
+                <h2>🌐 Aplicações do Mundo Real</h2>
+                
+                <div class="highlight-box center-text">
+                    <h3>💡 Como as Tecnologias são Usadas Hoje</h3>
+                    <p>Entendendo onde cada conceito se aplica na prática</p>
+                </div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>🔌 Ainda Usam Circuitos:</h3>
+                        <div class="bullet-point">🏦 <strong>Bancos:</strong> Transações críticas entre filiais</div>
+                        <div class="bullet-point">✈️ <strong>Aviação:</strong> Controle de tráfego aéreo</div>
+                        <div class="bullet-point">🏥 <strong>Hospitais:</strong> Equipamentos médicos críticos</div>
+                        <div class="bullet-point">🎤 <strong>Broadcasting:</strong> Transmissão ao vivo de TV</div>
+                        <div class="bullet-point">🏭 <strong>Indústria:</strong> Controle de processos críticos</div>
+                    </div>
+                    <div>
+                        <h3>📦 Migraram para Pacotes:</h3>
+                        <div class="bullet-point">📞 <strong>Telefonia:</strong> VoIP (Skype, Teams, WhatsApp)</div>
+                        <div class="bullet-point">📺 <strong>TV:</strong> Netflix, YouTube, streaming</div>
+                        <div class="bullet-point">🎮 <strong>Games:</strong> Multiplayer online</div>
+                        <div class="bullet-point">🏪 <strong>Varejo:</strong> Sistemas de PDV e estoque</div>
+                        <div class="bullet-point">🎓 <strong>Educação:</strong> Aulas remotas e EAD</div>
+                    </div>
+                </div>
+
+                <div class="qos-box">
+                    <h3>🌟 Casos Híbridos (Pacotes + QoS)</h3>
+                    <div class="bullet-point">🚗 <strong>Carros conectados:</strong> 5G com slices dedicados</div>
+                    <div class="bullet-point">🏭 <strong>Indústria 4.0:</strong> IoT com garantias de tempo real</div>
+                    <div class="bullet-point">🏥 <strong>Telemedicina:</strong> Cirurgias remotas sobre IP</div>
+                    <div class="bullet-point">🎯 <strong>E-sports:</strong> Games profissionais com latência garantida</div>
+                </div>
+
+                <div class="example-box">
+                    <h3>🔮 Tendências 2025-2030</h3>
+                    <div class="bullet-point">🤖 <strong>IA distribuída:</strong> Processamento em edge com baixa latência</div>
+                    <div class="bullet-point">🥽 <strong>Metaverso:</strong> Realidade virtual/aumentada em tempo real</div>
+                    <div class="bullet-point">🚁 <strong>Drones:</strong> Controle remoto com precisão</div>
+                    <div class="bullet-point">🌐 <strong>Internet Starlink:</strong> Cobertura global via satélite</div>
+                </div>
+
+                <div class="process-step center-text">
+                    <strong>💼 Lição para a Carreira:</strong><br>
+                    Entender os trade-offs ajuda a escolher a tecnologia certa<br>
+                    para cada problema de negócio!
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 25: Referências ABNT -->
         <div class="slide">
             <div class="content">
                 <h2>📚 Referências Bibliográficas</h2>
@@ -1261,20 +1834,52 @@
                     <div class="bullet-point">Material didático oficial da disciplina</div>
                 </div>
 
+                <div style="font-size: 1.1em; line-height: 1.8; margin: 30px 0;">
+                    <h3>📚 Referências Acadêmicas (ABNT):</h3>
+                    
+                    <div style="margin: 15px 0; text-align: justify;">
+                        <strong>KUROSE, J. F.; ROSS, K. W.</strong> <em>Redes de computadores e a Internet: uma abordagem top-down</em>. 6. ed. São Paulo: Pearson, 2013.
+                    </div>
+                    
+                    <div style="margin: 15px 0; text-align: justify;">
+                        <strong>TANENBAUM, A. S.; WETHERALL, D.</strong> <em>Redes de computadores</em>. 5. ed. São Paulo: Pearson, 2011.
+                    </div>
+                    
+                    <div style="margin: 15px 0; text-align: justify;">
+                        <strong>STALLINGS, W.</strong> <em>Comunicação de dados e redes de computadores</em>. 10. ed. São Paulo: Pearson, 2016.
+                    </div>
+                    
+                    <div style="margin: 15px 0; text-align: justify;">
+                        <strong>ITU-T.</strong> <em>Recommendation Y.1541: Network performance objectives for IP-based services</em>. Geneva: International Telecommunication Union, 2011.
+                    </div>
+                    
+                    <div style="margin: 15px 0; text-align: justify;">
+                        <strong>IEEE.</strong> <em>IEEE 802.11 Standard for Wireless LAN Medium Access Control and Physical Layer Specifications</em>. New York: Institute of Electrical and Electronics Engineers, 2020.
+                    </div>
+                    
+                    <div style="margin: 15px 0; text-align: justify;">
+                        <strong>POSTEL, J.</strong> <em>RFC 793: Transmission Control Protocol</em>. Marina del Rey: Information Sciences Institute, 1981.
+                    </div>
+                    
+                    <div style="margin: 15px 0; text-align: justify;">
+                        <strong>POSTEL, J.</strong> <em>RFC 768: User Datagram Protocol</em>. Marina del Rey: Information Sciences Institute, 1980.
+                    </div>
+                </div>
+
                 <div class="two-column">
                     <div>
-                        <h3>📚 Bibliografia Complementar:</h3>
-                        <div class="bullet-point">Kurose & Ross - Redes de Computadores</div>
-                        <div class="bullet-point">Tanenbaum - Computer Networks</div>
-                        <div class="bullet-point">Site Teleco.com.br</div>
-                        <div class="bullet-point">RFCs da IETF sobre QoS</div>
+                        <h3>🌐 Organizações e Padrões:</h3>
+                        <div class="bullet-point">IETF - Internet Engineering Task Force</div>
+                        <div class="bullet-point">ITU-T - International Telecommunication Union</div>
+                        <div class="bullet-point">IEEE 802 Standards Committee</div>
+                        <div class="bullet-point">3GPP - 3rd Generation Partnership Project</div>
                     </div>
                     <div>
-                        <h3>🔗 Conceitos Relacionados:</h3>
+                        <h3>🔗 Conceitos Técnicos:</h3>
                         <div class="bullet-point">Quality of Service (QoS)</div>
                         <div class="bullet-point">Voice over IP (VoIP)</div>
-                        <div class="bullet-point">Multiplexação (FDM, TDM)</div>
-                        <div class="bullet-point">Protocolos de transporte</div>
+                        <div class="bullet-point">Network Slicing (5G)</div>
+                        <div class="bullet-point">Software-Defined Networking (SDN)</div>
                     </div>
                 </div>
 
@@ -1282,13 +1887,52 @@
                     <h3>🤖 Metodologia de Criação</h3>
                     <p>Apresentação desenvolvida com assistência de IA Claude Sonnet 4<br>
                     Baseada integralmente no material didático fornecido<br>
-                    Foco em analogias práticas e comparações visuais</p>
+                    Expandida com conceitos atuais: QoS, 5G, TCP/UDP, performance<br>
+                    Foco em analogias práticas e aplicações do mundo real</p>
                 </div>
 
                 <div class="highlight-box center-text">
                     <h3>🎯 Objetivo Educacional</h3>
                     <p>Facilitar a compreensão das diferenças entre comutação<br>
-                    de circuitos e pacotes através de exemplos do cotidiano</p>
+                    de circuitos e pacotes através de exemplos atuais e relevantes<br>
+                    Conectar teoria clássica com tecnologias emergentes</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 26: Agradecimentos e Próximos Passos -->
+        <div class="slide">
+            <div class="content center-text">
+                <h1>🎉 Parabéns!</h1>
+                <h2 style="border: none; color: #ff6b35;">Você Dominou Comutação de Redes!</h2>
+                
+                <div class="highlight-box large-text">
+                    <strong>Conceitos Aprendidos:</strong><br>
+                    Circuitos • Pacotes • Multiplexação • Store-and-Forward<br>
+                    TCP vs UDP • QoS • Performance • 5G • Convergência
+                </div>
+                
+                <div class="future-box">
+                    <h3>🚀 Próximos Tópicos da Disciplina:</h3>
+                    <div class="bullet-point">Modelo OSI e TCP/IP em camadas</div>
+                    <div class="bullet-point">Protocolos de aplicação (HTTP, DNS, SMTP)</div>
+                    <div class="bullet-point">Camada de transporte (TCP e UDP detalhados)</div>
+                    <div class="bullet-point">Roteamento e algoritmos</div>
+                    <div class="bullet-point">Camada física e tecnologias de acesso</div>
+                </div>
+
+                <div class="example-box">
+                    <h3>💼 Aplicabilidade Profissional</h3>
+                    <div class="bullet-point">Arquitetura de sistemas distribuídos</div>
+                    <div class="bullet-point">Design de aplicações de rede</div>
+                    <div class="bullet-point">Troubleshooting de performance</div>
+                    <div class="bullet-point">Escolha de tecnologias adequadas</div>
+                </div>
+
+                <div class="qos-box center-text">
+                    <h3>🎯 Continue Estudando!</h3>
+                    <p>Estes fundamentos são a base para entender<br>
+                    como toda a Internet funciona hoje</p>
                 </div>
             </div>
         </div>
@@ -1309,7 +1953,7 @@
         // Quiz variables
         let currentQuestion = 1;
         let score = 0;
-        let quizAnswered = [false, false, false, false];
+        let quizAnswered = [false, false, false, false, false, false];
 
         function showSlide(index) {
             slides.forEach((slide, i) => {
@@ -1346,20 +1990,41 @@
                 }
             });
             
-            // Mostrar feedback
+            // Mostrar feedback detalhado
             if (isCorrect) {
                 feedback.innerHTML = '✅ Correto! Muito bem!';
                 feedback.className = 'quiz-feedback correct';
                 score++;
             } else {
-                feedback.innerHTML = '❌ Incorreto. A resposta correta está destacada em verde.';
+                let correctAnswer = '';
+                switch(questionNum) {
+                    case 1:
+                        correctAnswer = 'Circuitos garantem qualidade e taxa constante - sua principal vantagem.';
+                        break;
+                    case 2:
+                        correctAnswer = 'Em jogos, velocidade é crucial. Melhor perder um pacote que ter atraso.';
+                        break;
+                    case 3:
+                        correctAnswer = 'A vazão é sempre limitada pelo link mais lento (gargalo) do caminho.';
+                        break;
+                    case 4:
+                        correctAnswer = 'FDM separa sinais por frequência, como estações de rádio.';
+                        break;
+                    case 5:
+                        correctAnswer = 'QoS implementa técnicas para dar qualidade de circuitos aos pacotes.';
+                        break;
+                    case 6:
+                        correctAnswer = '5G promete latência ultra-baixa de ~1ms em condições ideais.';
+                        break;
+                }
+                feedback.innerHTML = `❌ Incorreto. ${correctAnswer}`;
                 feedback.className = 'quiz-feedback incorrect';
             }
             
             quizAnswered[questionNum - 1] = true;
             
             // Mostrar botão para próxima questão
-            if (questionNum < 4) {
+            if (questionNum < 6) {
                 document.getElementById('nextQuizBtn').style.display = 'inline-block';
             } else {
                 // Última questão - mostrar resultado
@@ -1378,23 +2043,27 @@
 
         function showQuizResult() {
             // Esconder última questão
-            document.getElementById('question4').style.display = 'none';
+            document.getElementById('question6').style.display = 'none';
             
             // Mostrar resultado
             document.getElementById('quizResult').style.display = 'block';
             document.getElementById('finalScore').textContent = score;
             
             const resultMessage = document.getElementById('resultMessage');
-            if (score === 4) {
-                resultMessage.innerHTML = '🏆 Excelente! Você domina comutação de redes!';
+            if (score === 6) {
+                resultMessage.innerHTML = '🏆 Perfeito! Você domina completamente comutação de redes!';
+            } else if (score === 5) {
+                resultMessage.innerHTML = '🌟 Excelente! Quase perfeito, continue assim!';
+            } else if (score === 4) {
+                resultMessage.innerHTML = '👏 Muito bom! Você entendeu bem os conceitos!';
             } else if (score === 3) {
-                resultMessage.innerHTML = '👏 Muito bom! Quase perfeito!';
+                resultMessage.innerHTML = '👍 Bom trabalho! Continue estudando para melhorar!';
             } else if (score === 2) {
-                resultMessage.innerHTML = '👍 Bom trabalho! Continue estudando!';
-            } else if (score === 1) {
                 resultMessage.innerHTML = '📚 Estude um pouco mais sobre comutação!';
+            } else if (score === 1) {
+                resultMessage.innerHTML = '📖 Recomendo revisar o conteúdo da aula!';
             } else {
-                resultMessage.innerHTML = '📖 Recomendo revisar o conteúdo!';
+                resultMessage.innerHTML = '🔄 Que tal rever a apresentação e tentar novamente?';
             }
         }
 
@@ -1402,10 +2071,10 @@
             // Reset variables
             currentQuestion = 1;
             score = 0;
-            quizAnswered = [false, false, false, false];
+            quizAnswered = [false, false, false, false, false, false];
             
             // Reset interface
-            for (let i = 1; i <= 4; i++) {
+            for (let i = 1; i <= 6; i++) {
                 const question = document.getElementById(`question${i}`);
                 const options = question.querySelectorAll('.quiz-option');
                 const feedback = document.getElementById(`feedback${i}`);
@@ -1445,8 +2114,20 @@
         // Inicializar
         showSlide(0);
         
-        // Inicializar quiz no slide 17
+        // Inicializar quiz no slide 23
         document.getElementById('question1').style.display = 'block';
+
+        // Animação das barras de latência
+        window.addEventListener('load', () => {
+            const latencyBars = document.querySelectorAll('.latency-fill');
+            latencyBars.forEach(bar => {
+                const width = bar.style.width || window.getComputedStyle(bar).width;
+                bar.style.width = '0%';
+                setTimeout(() => {
+                    bar.style.width = width;
+                }, 500);
+            });
+        });
     </script>
 </body>
 </html>
