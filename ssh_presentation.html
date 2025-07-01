@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Protocolo SSH - Acesso Remoto Seguro</title>
+    <title>SSH - Acesso Remoto Seguro (Foco Windows 11)</title>
     <style>
         * {
             margin: 0;
@@ -77,13 +77,6 @@
             align-items: start;
         }
 
-        .three-column {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 30px;
-            align-items: start;
-        }
-
         .bullet-point {
             display: flex;
             align-items: flex-start;
@@ -99,19 +92,19 @@
         }
 
         .highlight-box {
-            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
             padding: 25px;
             border-radius: 15px;
             margin: 20px 0;
-            border-left: 5px solid #667eea;
+            border-left: 5px solid #ff7f50;
         }
 
         .example-box {
-            background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%);
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
             padding: 25px;
             border-radius: 15px;
             margin: 20px 0;
-            border-left: 5px solid #9c27b0;
+            border-left: 5px solid #20b2aa;
         }
 
         .navigation {
@@ -161,6 +154,11 @@
             z-index: 1000;
         }
 
+        .icon {
+            font-size: 1.5em;
+            margin-right: 10px;
+        }
+
         .center-text {
             text-align: center;
         }
@@ -176,9 +174,11 @@
             border-radius: 15px;
             padding: 20px;
             margin: 20px 0;
-            text-align: center;
+            text-align: left;
             font-family: monospace;
             font-size: 1.2em;
+            white-space: pre-wrap;
+            word-wrap: break-word;
         }
 
         table {
@@ -201,25 +201,13 @@
         }
 
         .process-step {
-            background: #e8f5e8;
+            background: #e6fffa;
             margin: 10px 0;
             padding: 15px;
             border-radius: 10px;
-            border-left: 4px solid #4caf50;
+            border-left: 4px solid #38b2ac;
         }
 
-        .code-box {
-            background: #2d3748;
-            color: #e2e8f0;
-            padding: 20px;
-            border-radius: 10px;
-            font-family: monospace;
-            font-size: 1em;
-            margin: 20px 0;
-            overflow-x: auto;
-        }
-
-        /* Quiz Styles */
         .quiz-container {
             max-width: 100%;
             margin: 20px 0;
@@ -355,61 +343,7 @@
             font-size: 1.4em;
             margin: 10px 0;
         }
-
-        .protocol-code {
-            display: inline-block;
-            background: #2d3748;
-            color: #e2e8f0;
-            padding: 5px 10px;
-            border-radius: 5px;
-            font-family: monospace;
-            margin: 2px;
-        }
-
-        .architecture-diagram {
-            background: #f0f4ff;
-            border: 2px solid #667eea;
-            border-radius: 15px;
-            padding: 30px;
-            margin: 20px 0;
-            text-align: center;
-        }
-
-        .flow-step {
-            background: #e3f2fd;
-            padding: 15px;
-            border-radius: 10px;
-            margin: 10px 0;
-            border-left: 4px solid #2196f3;
-        }
-
-        .warning-box {
-            background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
-            padding: 25px;
-            border-radius: 15px;
-            margin: 20px 0;
-            border-left: 5px solid #ffc107;
-        }
-
-        .security-box {
-            background: #e8f5e8;
-            padding: 20px;
-            border-radius: 10px;
-            margin: 10px 0;
-            border-left: 4px solid #4caf50;
-            text-align: center;
-        }
-
-        .crypto-diagram {
-            background: #f0f8ff;
-            border: 2px solid #4169e1;
-            border-radius: 15px;
-            padding: 20px;
-            margin: 20px 0;
-            font-family: monospace;
-        }
-
-        .home-btn {
+		.home-btn {
             position: fixed;
             top: 30px;
             left: 30px;
@@ -434,7 +368,6 @@
             transform: translateY(-2px);
             box-shadow: 0 7px 20px rgba(102, 126, 234, 0.4);
         }
-
     </style>
 </head>
 <body>
@@ -443,18 +376,16 @@
 </a>
     <div class="presentation">
         <div class="slide-counter">
-            <span id="current-slide">1</span> / <span id="total-slides">16</span>
+            <span id="current-slide">1</span> / <span id="total-slides">18</span>
         </div>
 
-        <!-- Slide 1: Título -->
         <div class="slide active">
             <div class="content center-text">
-                <h1>🔐 Protocolo SSH</h1>
-                <h2 style="border: none; color: #667eea;">Secure Shell - Acesso Remoto Seguro</h2>
+                <h1>💻 Protocolo SSH</h1>
+                <h2 style="border: none; color: #667eea;">Secure Shell (Windows 11)</h2>
                 <div class="highlight-box large-text">
-                    <strong>Aula 10</strong><br>
-                    Administração Remota com Segurança<br>
-                    Do Telnet inseguro ao SSH criptografado
+                    <strong>Aula com 70% de Foco Prático</strong><br>
+                    Aprenda a acessar e gerenciar servidores de forma segura no seu Windows
                 </div>
                 
                 <div class="example-box" style="margin-top: 40px;">
@@ -467,1164 +398,455 @@
             </div>
         </div>
 
-        <!-- Slide 2: Tópicos da Aula -->
         <div class="slide">
             <div class="content">
-                <h2>📋 Tópicos da Aula</h2>
+                <h2>📋 Tópicos da Aula (Foco em Windows 11)</h2>
                 
                 <div class="two-column">
                     <div>
-                        <h3>🎯 Fundamentos</h3>
-                        <div class="bullet-point">O que é SSH</div>
-                        <div class="bullet-point">Problemas do acesso remoto</div>
-                        <div class="bullet-point">Evolução do Telnet para SSH</div>
-                        <div class="bullet-point">Arquitetura cliente/servidor</div>
+                        <h3>📘 Fundamentos (Teoria)</h3>
+                        <div class="bullet-point">O que é SSH e sua importância</div>
+                        <div class="bullet-point">A Criptografia por trás da segurança</div>
+                        <div class="bullet-point">Arquitetura Cliente-Servidor</div>
                         
-                        <h3>🔒 Segurança e Criptografia</h3>
-                        <div class="bullet-point">Criptografia simétrica/assimétrica</div>
-                        <div class="bullet-point">Chaves públicas e privadas</div>
-                        <div class="bullet-point">Processo de handshake</div>
-                        <div class="bullet-point">Integridade e autenticação</div>
+                        <h3>🔧 Mão na Massa (Prática)</h3>
+                        <div class="bullet-point"><strong>Habilitando o Cliente SSH no Windows</strong></div>
+                        <div class="bullet-point">Conexão básica e verificação de chave</div>
+                        <div class="bullet-point">Autenticação com Senha vs. Chaves</div>
+                        <div class="bullet-point">Gerando seu par de chaves com `ssh-keygen`</div>
                     </div>
                     <div>
-                        <h3>⚙️ Aspectos Técnicos</h3>
-                        <div class="bullet-point">Métodos de autenticação</div>
-                        <div class="bullet-point">Configuração do servidor</div>
-                        <div class="bullet-point">Gerenciamento de chaves</div>
-                        <div class="bullet-point">Tunelamento e port forwarding</div>
-                        
-                        <h3>🔧 Uso Prático</h3>
-                        <div class="bullet-point">Comandos básicos SSH</div>
-                        <div class="bullet-point">Transferência de arquivos</div>
-                        <div class="bullet-point">Configuração de cliente</div>
-                        <div class="bullet-point">Troubleshooting comum</div>
-                    </div>
-                </div>
+                        <h3>🚀 Comandos Essenciais (Prática)</h3>
+                        <div class="bullet-point">Autorizando acesso no servidor</div>
+                        <div class="bullet-point">Executando comandos remotos</div>
+                        <div class="bullet-point">Copiando arquivos com `scp`</div>
+                        <div class="bullet-point">Túneis SSH (Port Forwarding)</div>
+                        <div class="bullet-point">Otimizando com o arquivo de configuração</div>
 
-                <div class="highlight-box center-text">
-                    <h3>🎯 Objetivo Final</h3>
-                    <p>Dominar o SSH para administração remota segura<br>
-                    e transferência de dados protegida</p>
+                        <h3>🎯 Objetivo Final</h3>
+                        <div class="bullet-point">Dominar o acesso remoto seguro para gerenciar servidores a partir do Windows.</div>
+                    </div>
                 </div>
 
                 <div class="example-box center-text">
                     <h3>🧠 + Quiz Interativo</h3>
-                    <p>Teste seus conhecimentos com 4 questões sobre SSH!</p>
+                    <p>Teste seus conhecimentos com 4 questões práticas!</p>
                 </div>
             </div>
         </div>
 
-        <!-- Slide 3: O que é SSH -->
         <div class="slide">
             <div class="content">
                 <h2>🤔 O que é SSH?</h2>
+                <div class="bullet-point">SSH (Secure Shell) é um protocolo que cria um "túnel" seguro entre dois computadores.</div>
+                <div class="bullet-point">Permite administrar máquinas remotamente, como se estivesse sentado na frente delas.</div>
+                <div class="bullet-point">Essencial para segurança, pois toda a comunicação é criptografada.</div>
                 
-                <div class="bullet-point"><strong>Secure Shell</strong> - Protocolo para acesso remoto seguro</div>
-                <div class="bullet-point">Substitui protocolos inseguros como Telnet, rlogin, rsh</div>
-                <div class="bullet-point">Criptografia forte para confidencialidade</div>
-                <div class="bullet-point">Protocolo TCP na porta 22</div>
-
-                <div class="example-box">
-                    <h3>💡 Analogia Simples:</h3>
-                    <div class="diagram">
-                        Telegrama comum (todos podem ler)<br>
-                        ⬇️<br>
-                        Carta lacrada e assinada<br>
-                        ⬇️<br>
-                        Só o destinatário consegue ler
-                    </div>
-                    <p><strong>SSH transforma comandos "telegrama" em "cartas lacradas"!</strong></p>
-                </div>
-
-                <div class="two-column">
-                    <div>
-                        <h3>❌ Problemas do Telnet</h3>
-                        <div class="warning-box">
-                            <strong>Texto claro:</strong><br>
-                            Senhas visíveis na rede<br>
-                            Comandos interceptáveis<br>
-                            Zero proteção
-                        </div>
-                    </div>
-                    <div>
-                        <h3>✅ Vantagens do SSH</h3>
-                        <div class="highlight-box">
-                            <strong>Criptografado:</strong><br>
-                            Senhas protegidas<br>
-                            Dados invioláveis<br>
-                            Autenticação forte
-                        </div>
-                    </div>
-                </div>
-
                 <div class="highlight-box">
-                    <h3>🎯 Aplicações Principais:</h3>
-                    <div class="bullet-point">Administração remota de servidores</div>
-                    <div class="bullet-point">Transferência segura de arquivos (SCP, SFTP)</div>
-                    <div class="bullet-point">Tunelamento de conexões (port forwarding)</div>
-                    <div class="bullet-point">Execução remota de comandos</div>
-                </div>
-
-                <div class="warning-box">
-                    <h3>⚠️ Importância Crítica</h3>
-                    <p>Em redes públicas, usar Telnet é como gritar sua senha na rua!</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Slide 4: Evolução: Telnet vs SSH -->
-        <div class="slide">
-            <div class="content">
-                <h2>📈 Evolução: Do Telnet ao SSH</h2>
-                
-                <div class="bullet-point">Telnet criado nos anos 70 - Internet era "confiável"</div>
-                <div class="bullet-point">SSH criado em 1995 após ataques de password sniffing</div>
-                <div class="bullet-point">SSH se tornou padrão para acesso remoto seguro</div>
-                <div class="bullet-point">Versões SSH-1 e SSH-2 (atual)</div>
-
-                <div class="architecture-diagram">
-                    <h3>🔄 Comparação: Telnet vs SSH</h3>
-                    <div style="display: flex; justify-content: space-around; margin: 30px 0;">
-                        
-                        <div style="background: #ffebee; padding: 20px; border-radius: 10px; width: 45%;">
-                            <h4 style="color: #d32f2f; margin-bottom: 15px;">📡 Telnet (Inseguro)</h4>
-                            <div class="code-box" style="background: #ffcdd2; color: #c62828;">
-Cliente ──── "login: admin" ──── Servidor<br>
-Cliente ──── "password: 123456" ── Servidor<br>
-Cliente ──── "rm -rf /" ──────── Servidor<br><br>
-<strong>🚨 TUDO EM TEXTO CLARO!</strong><br>
-Qualquer um na rede pode ver!
-                            </div>
-                        </div>
-                        
-                        <div style="background: #e8f5e8; padding: 20px; border-radius: 10px; width: 45%;">
-                            <h4 style="color: #2e7d32; margin-bottom: 15px;">🔐 SSH (Seguro)</h4>
-                            <div class="code-box" style="background: #c8e6c9; color: #1b5e20;">
-Cliente ──── "ç∞≈∂∫∆ø" ──── Servidor<br>
-Cliente ──── "µ≤≥÷…¿¡" ──── Servidor<br>
-Cliente ──── "∑∏π∂∫∆" ──── Servidor<br><br>
-<strong>🔒 TUDO CRIPTOGRAFADO!</strong><br>
-Impossível entender sem a chave!
-                            </div>
-                        </div>
-                    </div>
+                    <h3>Por que não usar Telnet ou FTP?</h3>
+                    <p class="large-text">Esses protocolos antigos enviam seus dados, inclusive <strong>usuário e senha</strong>, em texto plano. Qualquer um na rede pode ler!</p>
                 </div>
 
                 <div class="example-box">
-                    <h3>📊 Estatísticas de Uso</h3>
-                    <div class="two-column" style="margin: 20px 0;">
-                        <div>
-                            <strong>Telnet hoje:</strong><br>
-                            • Apenas equipamentos antigos<br>
-                            • Redes totalmente isoladas<br>
-                            • Debugging local<br>
-                            • &lt; 1% do tráfego remoto
-                        </div>
-                        <div>
-                            <strong>SSH hoje:</strong><br>
-                            • 99% da administração remota<br>
-                            • Padrão em Linux/Unix<br>
-                            • Integrado no Windows 10+<br>
-                            • Milhões de conexões diárias
-                        </div>
-                    </div>
-                </div>
-
-                <div class="highlight-box center-text">
-                    <h3>⚖️ Comparação de Recursos</h3>
-                    <table style="margin: 0 auto;">
-                        <tr><th>Recurso</th><th>Telnet</th><th>SSH</th></tr>
-                        <tr><td>Criptografia</td><td>❌ Não</td><td>✅ Sim</td></tr>
-                        <tr><td>Autenticação</td><td>❌ Fraca</td><td>✅ Forte</td></tr>
-                        <tr><td>Integridade</td><td>❌ Não</td><td>✅ Sim</td></tr>
-                        <tr><td>Porta padrão</td><td>23</td><td>22</td></tr>
-                    </table>
+                    <h3>💡 Casos de Uso Comuns:</h3>
+                    <div class="bullet-point">Acessar um servidor na nuvem (AWS, Google Cloud, etc.).</div>
+                    <div class="bullet-point">Executar um comando de atualização no servidor.</div>
+                    <div class="bullet-point">Enviar ou baixar arquivos de forma segura.</div>
                 </div>
             </div>
         </div>
 
-        <!-- Slide 5: Criptografia no SSH -->
         <div class="slide">
             <div class="content">
-                <h2>🔐 Criptografia no SSH</h2>
+                <h2>🔐 Como a Segurança Funciona?</h2>
+                <div class="bullet-point">SSH combina três técnicas criptográficas para garantir a segurança.</div>
                 
-                <div class="bullet-point">SSH usa combinação de criptografia simétrica e assimétrica</div>
-                <div class="bullet-point">Chaves públicas para autenticação e troca inicial</div>
-                <div class="bullet-point">Chaves simétricas para dados da sessão</div>
-                <div class="bullet-point">Algoritmos modernos e seguros</div>
-
-                <div class="crypto-diagram">
-                    <h3>🔑 Processo de Criptografia SSH</h3>
-                    <div style="margin: 20px 0; font-size: 1.1em; text-align: left;">
-                        <strong>1. Handshake inicial:</strong><br>
-                        Cliente ←→ Servidor: Versões e algoritmos suportados<br><br>
-                        
-                        <strong>2. Troca de chaves (Diffie-Hellman):</strong><br>
-                        Cliente + Servidor = Chave compartilhada secreta<br><br>
-                        
-                        <strong>3. Autenticação:</strong><br>
-                        Servidor: Prova identidade com chave privada<br>
-                        Cliente: Senha ou chave privada<br><br>
-                        
-                        <strong>4. Sessão criptografada:</strong><br>
-                        Todos os dados com AES/ChaCha20<br>
-                        Hash HMAC para integridade
-                    </div>
-                </div>
-
                 <div class="two-column">
                     <div>
                         <h3>🔑 Criptografia Assimétrica</h3>
-                        <div class="security-box">
-                            <strong>Para que serve:</strong><br>
-                            • Autenticação inicial<br>
-                            • Troca segura de chaves<br>
-                            • Verificação de identidade
-                        </div>
-                        
-                        <div class="security-box">
-                            <strong>Algoritmos:</strong><br>
-                            • RSA (2048-4096 bits)<br>
-                            • ECDSA (Elliptic Curve)<br>
-                            • Ed25519 (moderno)
-                        </div>
+                        <div class="bullet-point">Usa um par de chaves (pública/privada).</div>
+                        <div class="bullet-point">Verifica a identidade do servidor e do cliente.</div>
+                        <div class="bullet-point">Usada para criar um canal seguro inicial.</div>
                     </div>
                     <div>
-                        <h3>🔒 Criptografia Simétrica</h3>
-                        <div class="security-box">
-                            <strong>Para que serve:</strong><br>
-                            • Dados da sessão<br>
-                            • Comandos e respostas<br>
-                            • Velocidade alta
-                        </div>
-                        
-                        <div class="security-box">
-                            <strong>Algoritmos:</strong><br>
-                            • AES-128/256<br>
-                            • ChaCha20-Poly1305<br>
-                            • 3DES (legado)
-                        </div>
+                        <h3>📦 Criptografia Simétrica</h3>
+                        <div class="bullet-point">Usa uma única chave secreta.</div>
+                        <div class="bullet-point">Criptografa todos os dados da sessão.</div>
+                        <div class="bullet-point">Muito mais rápida que a assimétrica.</div>
                     </div>
                 </div>
 
+                <div class="highlight-box">
+                    <h3>#️⃣ Hashing (Integridade)</h3>
+                    <p class="large-text">Gera uma "assinatura" para cada pacote de dados, garantindo que nada foi alterado no caminho entre o cliente e o servidor.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="slide">
+            <div class="content">
+                <h2>🏗️ Arquitetura Cliente-Servidor</h2>
+                <div class="bullet-point">O SSH funciona com dois programas que se comunicam.</div>
+                
+                <div class="diagram">
+                    <strong>{Seu Computador Windows 11}</strong>     <strong>{Servidor Remoto}</strong>
+                    +---------------------+                      +-------------------+
+                    |                     |                      |                   |
+                    |    Cliente SSH      |  <---- Túnel Seguro ---->  |    SSH Server     |
+                    | (OpenSSH Client)    |      (Criptografado)     | (ex: sshd daemon) |
+                    |                     |                      |                   |
+                    +---------------------+                      +-------------------+
+                </div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>💻 Cliente SSH (Windows 11)</h3>
+                        <div class="bullet-point">O programa que você usa para iniciar a conexão.</div>
+                        <div class="bullet-point"><strong>Precisa ser habilitado no Windows 11.</strong></div>
+                    </div>
+                    <div>
+                        <h3>☁️ Servidor SSH (Daemon)</h3>
+                        <div class="bullet-point">O programa que "escuta" por conexões no servidor.</div>
+                        <div class="bullet-point">Geralmente chamado de `sshd`.</div>
+                        <div class="bullet-point">Ele que autentica o usuário e permite o acesso.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="content">
+                <h2>🚀 PRÁTICA: Habilitando o Cliente SSH no Windows</h2>
+                <div class="bullet-point">O Windows 11 já vem com o cliente SSH, mas ele precisa ser habilitado como um "Recurso Opcional".</div>
+
+                <h3>Passo a Passo:</h3>
+                <div class="process-step">1. Pressione a tecla <strong>Windows</strong>, digite <strong>Recursos Opcionais</strong> e tecle Enter.</div>
+                <div class="process-step">2. Verifique na lista de "Recursos instalados" se o <strong>"Cliente OpenSSH"</strong> já está lá.</div>
+                <div class="process-step">3. Se não estiver, clique em <strong>"Exibir recursos"</strong> no topo.</div>
+                <div class="process-step">4. Procure por <strong>"Cliente OpenSSH"</strong>, marque a caixa e clique em "Avançar" e depois "Instalar".</div>
+                
+                <div class="highlight-box">
+                    <p>Após a instalação, você poderá usar o comando `ssh` no <strong>Terminal</strong>, <strong>PowerShell</strong> ou no antigo <strong>Prompt de Comando</strong>.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="content">
+                <h2>🚀 PRÁTICA: Sua Primeira Conexão</h2>
+                <div class="bullet-point">Abra o <strong>Terminal</strong> do Windows (Menu Iniciar > Terminal).</div>
+                <div class="bullet-point">O comando para conectar é simples e universal.</div>
+
+                <div class="diagram">
+                    C:\Users\SeuNome> ssh usuario@endereco.do.servidor
+                </div>
+                
+                <div class="highlight-box">
+                    <h3>⚠️ Verificação da Chave do Host</h3>
+                    <p>Na primeira vez, você verá esta mensagem. É o SSH pedindo para confirmar a "identidade" do servidor. É um passo de segurança importante. Digite <strong>yes</strong> e pressione Enter.</p>
+                    <div class="diagram" style="background: #333; color: white; border-color: #ff7f50;">
+                        The authenticity of host 'servidor.com (123.45.67.89)' can't be established.
+                        ED25519 key fingerprint is SHA256:AbCdEf123456...
+                        Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="content">
+                <h2>🔑 Autenticação: Senha vs. Chaves</h2>
+                <div class="two-column">
+                    <div>
+                        <h3>🔒 Com Senha</h3>
+                        <div class="bullet-point">Método mais simples, porém menos seguro.</div>
+                        <div class="bullet-point">O servidor pede sua senha após a conexão.</div>
+                        <div class="bullet-point">Vulnerável a ataques de força bruta.</div>
+                        <div class="bullet-point">Não é ideal para automação.</div>
+                    </div>
+                    <div>
+                        <h3>✨ Com Chaves (Recomendado)</h3>
+                        <div class="bullet-point">Método mais seguro e prático.</div>
+                        <div class="bullet-point">Você prova sua identidade com um arquivo (chave privada) que só você tem.</div>
+                        <div class="bullet-point">Permite login sem digitar senha.</div>
+                        <div class="bullet-point">Padrão da indústria para segurança.</div>
+                    </div>
+                </div>
+                <div class="example-box center-text">
+                    <p class="large-text">Vamos focar no método de chaves, que é o mais profissional e seguro.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="slide">
+            <div class="content">
+                <h2>🚀 PRÁTICA: Gerando Suas Chaves no Windows</h2>
+                <div class="bullet-point">Abra o <strong>Terminal</strong> do Windows.</div>
+                <div class="bullet-point">Use o comando `ssh-keygen` para criar seu par de chaves.</div>
+
+                <div class="diagram">
+                    C:\Users\SeuNome> ssh-keygen -t ed25519 -C "seu_email@exemplo.com"
+                </div>
+
+                <h3>O que acontece?</h3>
+                <div class="process-step">1. O comando sugere salvar em `C:\Users\SeuNome\.ssh\id_ed25519`. Apenas pressione Enter.</div>
+                <div class="process-step">2. Ele pedirá uma `passphrase` (senha para a chave). É opcional, mas recomendado. Se não quiser, apenas pressione Enter duas vezes.</div>
+                <div class="process-step">3. Duas chaves são criadas no diretório `C:\Users\SeuNome\.ssh\`:
+                    <ul>
+                        <li>`id_ed25519`: <strong>Sua chave PRIVADA. Guarde com segurança!</strong></li>
+                        <li>`id_ed25519.pub`: Sua chave PÚBLICA. É esta que você pode compartilhar.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="slide">
+            <div class="content">
+                <h2>🚀 PRÁTICA: Autorizando Seu Acesso no Servidor</h2>
+                <div class="bullet-point">Você precisa copiar o conteúdo da sua chave <strong>pública</strong> para o servidor.</div>
+                <div class="bullet-point">O jeito mais fácil no Windows é usar um único comando para ler e enviar a chave.</div>
+
+                <h3>Comando Mágico (PowerShell):</h3>
+                <div class="diagram">
+                    Get-Content $env:USERPROFILE\.ssh\id_ed25519.pub | ssh usuario@servidor "cat >> .ssh/authorized_keys"
+                </div>
+                
+                <h3>Como funciona?</h3>
+                <div class="process-step">1. `Get-Content ...` lê o conteúdo do seu arquivo de chave pública.</div>
+                <div class="process-step">2. O `|` (pipe) envia esse conteúdo para o comando seguinte.</div>
+                <div class="process-step">3. `ssh usuario@servidor "..."` conecta ao servidor e executa o comando entre aspas.</div>
+                <div class="process-step">4. `cat >> .ssh/authorized_keys` adiciona a sua chave ao final do arquivo de chaves autorizadas do servidor.</div>
+
+                <div class="highlight-box">
+                    <p>O servidor pedirá sua senha <strong>uma última vez</strong> para autorizar a adição da chave.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="content">
+                <h2>✨ O Resultado: Login Automático</h2>
+                <div class="bullet-point">Depois de autorizar a chave, feche e abra o <strong>Terminal</strong>. Tente se conectar novamente.</div>
+                
+                <div class="diagram">
+                    C:\Users\SeuNome> ssh usuario@endereco.do.servidor
+                </div>
+
+                <div class="example-box center-text">
+                    <h3>🎉 Conectado!</h3>
+                    <p class="large-text">Você será logado diretamente no terminal do servidor, sem precisar digitar a senha.</p>
+                    <div class="diagram" style="background: #333; color: lightgreen; border-color: #20b2aa;">
+                        Last login: Tue Jul 1 10:00:00 2025 from 192.168.1.50
+                        usuario@servidor:~$ _
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="content">
+                <h2>🚀 PRÁTICA: Executando um Comando Remoto</h2>
+                <div class="bullet-point">Você pode executar um único comando no servidor sem abrir uma sessão interativa.</div>
+
+                <div class="diagram">
+                    ssh usuario@servidor "comando para executar"
+                </div>
+
+                <h3>Exemplos práticos no Terminal do Windows:</h3>
                 <div class="example-box">
-                    <h3>🔐 Analogia da Criptografia</h3>
+                    <p><strong>Verificar o uso de disco no servidor:</strong></p>
+                    <div class="diagram">C:\Users\SeuNome> ssh app@servidor "df -h"</div>
+                </div>
+                <div class="example-box">
+                    <p><strong>Listar os arquivos em um diretório do servidor:</strong></p>
+                    <div class="diagram">C:\Users\SeuNome> ssh admin@servidor "ls -l /var/www"</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="slide">
+            <div class="content">
+                <h2>🚀 PRÁTICA: Transferindo Arquivos com `scp`</h2>
+                <div class="bullet-point">`scp` (Secure Copy) usa SSH para transferir arquivos de forma segura.</div>
+                
+                <div class="two-column">
+                    <div>
+                        <h3>📤 Enviar arquivo para o Servidor</h3>
+                        <div class="diagram">
+                            scp C:\caminho\local\arquivo.txt usuario@servidor:/caminho/remoto/
+                        </div>
+                        <p><strong>Exemplo:</strong> Enviar um backup da sua pasta Documentos.</p>
+                        <div class="diagram">scp C:\Users\SeuNome\Documents\backup.sql user@db:/opt/</div>
+                    </div>
+                    <div>
+                        <h3>📥 Baixar arquivo do Servidor</h3>
+                        <div class="diagram">
+                            scp usuario@servidor:/caminho/remoto/arquivo.txt C:\caminho\local\
+                        </div>
+                        <p><strong>Exemplo:</strong> Baixar um log para a sua pasta de Downloads.</p>
+                        <div class="diagram">scp admin@web:/var/log/error.log C:\Users\SeuNome\Downloads\</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="slide">
+            <div class="content">
+                <h2>🚀 PRÁTICA: Túnel SSH (Port Forwarding)</h2>
+                <div class="bullet-point">Permite acessar um serviço na rede do servidor como se estivesse na sua máquina local.</div>
+                
+                <div class="diagram">
+                    ssh -L porta_local:host_destino:porta_remota usuario@servidor
+                </div>
+
+                <div class="example-box">
+                    <h3>Exemplo: Acessar um painel web restrito</h3>
+                    <p>Um painel de administração web roda na porta `8080` do servidor, mas só é acessível pela própria máquina. Você quer acessá-lo no seu navegador.</p>
+                    
                     <div class="diagram">
-                        Cofre com duas fechaduras:<br>
-                        🔑 Chave pública = Abrir para colocar<br>
-                        🗝️ Chave privada = Abrir para retirar<br><br>
-                        Só quem tem a chave privada consegue ler!
+                        ssh -L 9999:localhost:8080 admin@servidor
                     </div>
-                </div>
 
-                <div class="highlight-box center-text">
-                    <h3>⚡ Por que Criptografia Híbrida?</h3>
-                    <p><strong>Assimétrica:</strong> Segura mas lenta<br>
-                    <strong>Simétrica:</strong> Rápida mas precisa trocar chave<br>
-                    <strong>SSH:</strong> Usa assimétrica para trocar simétrica = Melhor dos dois!</p>
+                    <p><strong>Resultado:</strong> Mantenha esse terminal aberto. Agora, abra seu navegador no Windows e acesse `http://localhost:9999`. Você verá o painel que está rodando no servidor!</p>
                 </div>
             </div>
         </div>
-
-        <!-- Slide 6: Processo de Conexão SSH -->
+        
         <div class="slide">
             <div class="content">
-                <h2>🤝 Processo de Conexão SSH</h2>
-                
-                <div class="bullet-point">Handshake em múltiplas etapas para máxima segurança</div>
-                <div class="bullet-point">Verificação da identidade do servidor</div>
-                <div class="bullet-point">Negociação de algoritmos criptográficos</div>
-                <div class="bullet-point">Estabelecimento de canal seguro</div>
+                <h2>🚀 PRÁTICA: Otimizando com Arquivo de Configuração</h2>
+                <div class="bullet-point">Crie atalhos para suas conexões no arquivo `C:\Users\SeuNome\.ssh\config`.</div>
+                <div class="bullet-point">Se o arquivo ou a pasta `.ssh` não existirem, crie-os.</div>
 
-                <div class="flow-step">1. <strong>Identificação:</strong> Cliente conecta na porta 22</div>
-                <div class="flow-step">2. <strong>Versão:</strong> Troca de versões SSH suportadas</div>
-                <div class="flow-step">3. <strong>Algoritmos:</strong> Negociação de métodos de criptografia</div>
-                <div class="flow-step">4. <strong>Chave do servidor:</strong> Servidor apresenta sua chave pública</div>
-                <div class="flow-step">5. <strong>Diffie-Hellman:</strong> Geração de chave compartilhada</div>
-                <div class="flow-step">6. <strong>Verificação:</strong> Cliente verifica identidade do servidor</div>
-                <div class="flow-step">7. <strong>Autenticação:</strong> Cliente prova sua identidade</div>
-                <div class="flow-step">8. <strong>Canal seguro:</strong> Comunicação criptografada iniciada</div>
+                <h3>Exemplo de configuração:</h3>
+                <div class="diagram">
+                    # Servidor de trabalho (webserver)
+                    Host web
+                        HostName 192.168.1.10
+                        User admin
+                        Port 2222
 
-                <div class="example-box">
-                    <h3>🔍 Exemplo de Handshake</h3>
-                    <div class="code-box">
-# 1. Conexão inicial<br>
-Cliente → Servidor: SSH-2.0-OpenSSH_8.9<br>
-Servidor → Cliente: SSH-2.0-OpenSSH_8.9<br><br>
-# 2. Algoritmos suportados<br>
-Cliente → Servidor: [AES-256, RSA-2048, HMAC-SHA256]<br>
-Servidor → Cliente: [AES-256, RSA-2048, HMAC-SHA256] ✅<br><br>
-# 3. Chave do servidor<br>
-Servidor → Cliente: Minha chave pública RSA é...<br>
-Cliente: ⚠️ Verificando se confio nesta chave...<br><br>
-# 4. Diffie-Hellman<br>
-Cliente + Servidor: Calculando chave compartilhada secreta<br><br>
-# 5. Pronto!<br>
-🔒 Canal seguro estabelecido!
-                    </div>
-                </div>
-
-                <div class="warning-box">
-                    <h3>⚠️ "Host Key Verification Failed"</h3>
-                    <p><strong>Primeira conexão:</strong> SSH pergunta se você confia no servidor<br>
-                    <strong>Chave mudou:</strong> Pode indicar ataque "man-in-the-middle"<br>
-                    <strong>Ação:</strong> Sempre verificar com administrador antes de aceitar!</p>
-                </div>
-
-                <div class="highlight-box center-text">
-                    <h3>🛡️ Proteções Implementadas</h3>
-                    <p><strong>Confidencialidade:</strong> Dados criptografados<br>
-                    <strong>Integridade:</strong> Detecta modificações<br>
-                    <strong>Autenticação:</strong> Confirma identidades<br>
-                    <strong>Anti-replay:</strong> Previne ataques de repetição</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Slide 7: Autenticação SSH -->
-        <div class="slide">
-            <div class="content">
-                <h2>🔑 Métodos de Autenticação SSH</h2>
-                
-                <div class="bullet-point">SSH oferece múltiplos métodos de autenticação</div>
-                <div class="bullet-point">Cada método com diferentes níveis de segurança</div>
-                <div class="bullet-point">Possível combinar métodos (autenticação multifator)</div>
-                <div class="bullet-point">Configurável no servidor e cliente</div>
-
-                <div class="three-column">
-                    <div>
-                        <h3>🔐 Password</h3>
-                        <div class="bullet-point">Método mais comum</div>
-                        <div class="bullet-point">Senha tradicional</div>
-                        <div class="bullet-point">Criptografada no SSH</div>
-                        <div class="bullet-point">Vulnerável a ataques</div>
-                        
-                        <div class="example-box">
-                            <strong>Uso:</strong><br>
-                            ssh usuario@servidor<br>
-                            Password: ********
-                        </div>
-                    </div>
-                    <div>
-                        <h3>🗝️ Public Key</h3>
-                        <div class="bullet-point">Mais seguro</div>
-                        <div class="bullet-point">Par de chaves</div>
-                        <div class="bullet-point">Sem senha na rede</div>
-                        <div class="bullet-point">Ideal para automação</div>
-                        
-                        <div class="example-box">
-                            <strong>Configuração:</strong><br>
-                            ssh-keygen -t rsa<br>
-                            ssh-copy-id servidor
-                        </div>
-                    </div>
-                    <div>
-                        <h3>🏢 Outros Métodos</h3>
-                        <div class="bullet-point">Kerberos</div>
-                        <div class="bullet-point">LDAP/Active Directory</div>
-                        <div class="bullet-point">Certificados X.509</div>
-                        <div class="bullet-point">Two-factor (2FA)</div>
-                        
-                        <div class="example-box">
-                            <strong>Empresariais:</strong><br>
-                            Integração com<br>
-                            sistemas corporativos
-                        </div>
-                    </div>
-                </div>
-
-                <div class="crypto-diagram">
-                    <h3>🔄 Autenticação por Chave Pública</h3>
-                    <div style="margin: 20px 0; font-size: 1.1em;">
-                        <strong>1. Preparação:</strong><br>
-                        Cliente gera par de chaves (pública/privada)<br>
-                        Chave pública é copiada para o servidor<br><br>
-                        
-                        <strong>2. Durante conexão:</strong><br>
-                        Servidor: "Prove que tem a chave privada!"<br>
-                        Cliente: Assina mensagem com chave privada<br>
-                        Servidor: Verifica assinatura com chave pública<br>
-                        Servidor: "OK, você é quem diz ser!" ✅
-                    </div>
-                </div>
-
-                <div class="two-column">
-                    <div>
-                        <h3>✅ Vantagens da Chave Pública</h3>
-                        <div class="highlight-box">
-                            • Sem senha na rede<br>
-                            • Impossível interceptar<br>
-                            • Ideal para scripts<br>
-                            • Pode ter passphrase adicional<br>
-                            • Muito mais seguro
-                        </div>
-                    </div>
-                    <div>
-                        <h3>⚙️ Configuração Prática</h3>
-                        <div class="code-box">
-# Gerar chave<br>
-$ ssh-keygen -t ed25519<br><br>
-# Copiar para servidor<br>
-$ ssh-copy-id user@server<br><br>
-# Conectar (sem senha!)<br>
-$ ssh user@server
-                        </div>
-                    </div>
-                </div>
-
-                <div class="warning-box center-text">
-                    <h3>🔒 Dica de Segurança</h3>
-                    <p>Sempre use passphrase nas chaves privadas!<br>
-                    Se alguém roubar o arquivo, ainda precisará da passphrase.</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Slide 8: Configuração do SSH -->
-        <div class="slide">
-            <div class="content">
-                <h2>🔧 Configuração do SSH</h2>
-                
-                <div class="bullet-point">Configuração do servidor em /etc/ssh/sshd_config</div>
-                <div class="bullet-point">Configuração do cliente em ~/.ssh/config</div>
-                <div class="bullet-point">Múltiplas opções de segurança</div>
-                <div class="bullet-point">Logs detalhados para monitoramento</div>
-
-                <div class="two-column">
-                    <div>
-                        <h3>🖥️ Configuração do Servidor</h3>
-                        <div class="code-box">
-# /etc/ssh/sshd_config<br><br>
-# Porta do SSH<br>
-Port 22<br><br>
-# Versão do protocolo<br>
-Protocol 2<br><br>
-# Autenticação<br>
-PasswordAuthentication yes<br>
-PubkeyAuthentication yes<br>
-PermitRootLogin no<br><br>
-# Segurança<br>
-MaxAuthTries 3<br>
-ClientAliveInterval 300<br>
-ClientAliveCountMax 2<br><br>
-# Logs<br>
-LogLevel INFO<br>
-SyslogFacility AUTH
-                        </div>
-                    </div>
-                    <div>
-                        <h3>💻 Configuração do Cliente</h3>
-                        <div class="code-box">
-# ~/.ssh/config<br><br>
-# Servidor de trabalho<br>
-Host trabalho<br>
-    HostName servidor.empresa.com<br>
-    User meuusuario<br>
-    Port 2222<br>
-    IdentityFile ~/.ssh/trabalho_rsa<br><br>
-# Servidor pessoal<br>
-Host casa<br>
-    HostName 192.168.1.100<br>
-    User admin<br>
-    IdentityFile ~/.ssh/casa_ed25519<br><br>
-# Configurações globais<br>
-Host *<br>
-    ServerAliveInterval 60<br>
-    ServerAliveCountMax 3
-                        </div>
-                    </div>
-                </div>
-
-                <div class="example-box">
-                    <h3>🔒 Hardening de Segurança</h3>
-                    <div class="code-box">
-# Configurações recomendadas para produção<br><br>
-# Desabilitar senha para root<br>
-PermitRootLogin no<br><br>
-# Apenas autenticação por chave<br>
-PasswordAuthentication no<br>
-ChallengeResponseAuthentication no<br><br>
-# Limitar usuários<br>
-AllowUsers admin backup<br>
-DenyUsers root nobody<br><br>
-# Mudar porta padrão<br>
-Port 2222<br><br>
-# Desabilitar recursos desnecessários<br>
-X11Forwarding no<br>
-AllowTcpForwarding no<br>
-PermitTunnel no
-                    </div>
+                    # Servidor de banco de dados
+                    Host db
+                        HostName db.empresa.com
+                        User cazevedo
                 </div>
 
                 <div class="highlight-box">
-                    <h3>📊 Monitoramento e Logs</h3>
-                    <div class="flow-step"><strong>/var/log/auth.log:</strong> Tentativas de login</div>
-                    <div class="flow-step"><strong>/var/log/secure:</strong> Eventos de segurança</div>
-                    <div class="flow-step"><strong>journalctl -u ssh:</strong> Logs do systemd</div>
-                    <div class="flow-step"><strong>fail2ban:</strong> Bloqueio automático de IPs suspeitos</div>
-                </div>
-
-                <div class="warning-box center-text">
-                    <h3>⚠️ Reiniciar Após Mudanças</h3>
-                    <p>systemctl restart sshd<br>
-                    Sempre teste em nova sessão antes de fechar a atual!</p>
+                    <h3>Como usar:</h3>
+                    <p class="large-text">Agora, no seu <strong>Terminal</strong>, use os atalhos:</p>
+                    <div class="diagram">
+                        C:\Users\SeuNome> ssh web
+                        # (em vez de ssh -p 2222 admin@192.168.1.10)
+                        
+                        C:\Users\SeuNome> ssh db
+                        # (em vez de ssh cazevedo@db.empresa.com)
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Slide 9: Comandos SSH Essenciais -->
         <div class="slide">
             <div class="content">
-                <h2>💻 Comandos SSH Essenciais</h2>
+                <h2>🎯 Resumo Final</h2>
                 
-                <div class="bullet-point">SSH oferece muito mais que apenas acesso remoto</div>
-                <div class="bullet-point">Transferência de arquivos com SCP e SFTP</div>
-                <div class="bullet-point">Tunelamento e port forwarding</div>
-                <div class="bullet-point">Execução de comandos únicos</div>
-
-                <div class="two-column">
-                    <div>
-                        <h3>🔗 Conexão Básica</h3>
-                        <div class="code-box">
-# Conexão simples<br>
-$ ssh usuario@servidor<br><br>
-# Especificar porta<br>
-$ ssh -p 2222 usuario@servidor<br><br>
-# Usar arquivo de chave específico<br>
-$ ssh -i ~/.ssh/chave usuario@servidor<br><br>
-# Conexão com comando único<br>
-$ ssh usuario@servidor 'ls -la'<br><br>
-# Debug de conexão<br>
-$ ssh -v usuario@servidor
-                        </div>
-                    </div>
-                    <div>
-                        <h3>📁 Transferência de Arquivos</h3>
-                        <div class="code-box">
-# SCP - Secure Copy<br>
-$ scp arquivo.txt user@server:~/<br>
-$ scp user@server:~/arquivo.txt .<br>
-$ scp -r pasta/ user@server:~/backup/<br><br>
-# SFTP - Interactive<br>
-$ sftp user@server<br>
-sftp> ls<br>
-sftp> get arquivo.txt<br>
-sftp> put local.txt<br>
-sftp> exit<br><br>
-# rsync sobre SSH<br>
-$ rsync -avz -e ssh pasta/ user@server:~/
-                        </div>
-                    </div>
-                </div>
-
-                <div class="example-box">
-                    <h3>🔄 Port Forwarding (Tunelamento)</h3>
-                    <div class="code-box">
-# Forward local → remoto<br>
-# Acessa serviço remoto via localhost<br>
-$ ssh -L 8080:localhost:80 user@server<br>
-# Agora localhost:8080 → server:80<br><br>
-# Forward remoto → local<br>
-# Servidor acessa serviço local<br>
-$ ssh -R 9000:localhost:3000 user@server<br>
-# Agora server:9000 → localhost:3000<br><br>
-# SOCKS Proxy<br>
-$ ssh -D 1080 user@server<br>
-# Proxy SOCKS em localhost:1080
-                    </div>
-                </div>
-
-                <div class="three-column">
-                    <div>
-                        <h3>🔑 Gerenciamento de Chaves</h3>
-                        <div class="code-box">
-# Gerar nova chave<br>
-$ ssh-keygen -t ed25519<br><br>
-# Copiar chave pública<br>
-$ ssh-copy-id user@server<br><br>
-# Listar chaves carregadas<br>
-$ ssh-add -l<br><br>
-# Carregar chave no agent<br>
-$ ssh-add ~/.ssh/chave
-                        </div>
-                    </div>
-                    <div>
-                        <h3>📋 Informações</h3>
-                        <div class="code-box">
-# Versão SSH<br>
-$ ssh -V<br><br>
-# Algoritmos suportados<br>
-$ ssh -Q cipher<br>
-$ ssh -Q mac<br>
-$ ssh -Q kex<br><br>
-# Testar configuração<br>
-$ ssh -T git@github.com
-                        </div>
-                    </div>
-                    <div>
-                        <h3>🔧 Utilitários</h3>
-                        <div class="code-box">
-# Verificar chave do servidor<br>
-$ ssh-keyscan servidor<br><br>
-# Fingerprint da chave<br>
-$ ssh-keygen -lf chave.pub<br><br>
-# Converter formato de chave<br>
-$ ssh-keygen -p -f chave<br><br>
-# Remover chave conhecida<br>
-$ ssh-keygen -R servidor
-                        </div>
-                    </div>
-                </div>
-
-                <div class="highlight-box center-text">
-                    <h3>🎯 Dica Avançada</h3>
-                    <p>Use ~/.ssh/config para simplificar comandos complexos<br>
-                    ssh trabalho → ssh -p 2222 -i ~/.ssh/chave user@servidor.empresa.com</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Slide 10: Segurança e Melhores Práticas -->
-        <div class="slide">
-            <div class="content">
-                <h2>🛡️ Segurança e Melhores Práticas</h2>
-                
-                <div class="bullet-point">SSH é seguro, mas precisa ser bem configurado</div>
-                <div class="bullet-point">Ataques comuns e como preveni-los</div>
-                <div class="bullet-point">Monitoramento e detecção de intrusão</div>
-                <div class="bullet-point">Atualizações e patches de segurança</div>
-
-                <div class="two-column">
-                    <div>
-                        <h3>🚨 Ameaças Comuns</h3>
-                        <div class="warning-box">
-                            <strong>Brute Force:</strong><br>
-                            Tentativas massivas de senha<br>
-                            Robôs testam senhas comuns<br>
-                            Porta 22 é muito visada
-                        </div>
-                        
-                        <div class="warning-box">
-                            <strong>Man-in-the-Middle:</strong><br>
-                            Interceptação da conexão<br>
-                            Certificados falsos<br>
-                            Redes WiFi inseguras
-                        </div>
-                        
-                        <div class="warning-box">
-                            <strong>Chaves Comprometidas:</strong><br>
-                            Chaves privadas vazadas<br>
-                            Sem passphrase<br>
-                            Não revogadas
-                        </div>
-                    </div>
-                    <div>
-                        <h3>✅ Contramedidas</h3>
-                        <div class="highlight-box">
-                            <strong>Contra Brute Force:</strong><br>
-                            • Mudar porta padrão<br>
-                            • Fail2ban<br>
-                            • Senhas fortes<br>
-                            • Rate limiting
-                        </div>
-                        
-                        <div class="highlight-box">
-                            <strong>Contra MITM:</strong><br>
-                            • Verificar fingerprints<br>
-                            • Certificate pinning<br>
-                            • VPN para redes públicas<br>
-                            • Known_hosts atualizado
-                        </div>
-                        
-                        <div class="highlight-box">
-                            <strong>Gestão de Chaves:</strong><br>
-                            • Rotação regular<br>
-                            • Passphrase sempre<br>
-                            • Revogação imediata<br>
-                            • Hardware tokens
-                        </div>
-                    </div>
-                </div>
-
-                <div class="example-box">
-                    <h3>🔒 Configuração de Segurança Máxima</h3>
-                    <div class="code-box">
-# /etc/ssh/sshd_config - Configuração hardened<br><br>
-# Protocolo e porta<br>
-Protocol 2<br>
-Port 2222  # Não usar 22<br><br>
-# Autenticação<br>
-PasswordAuthentication no<br>
-PubkeyAuthentication yes<br>
-AuthenticationMethods publickey<br>
-PermitRootLogin no<br>
-MaxAuthTries 2<br><br>
-# Criptografia forte<br>
-Ciphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com<br>
-MACs hmac-sha2-256-etm@openssh.com,hmac-sha2-512-etm@openssh.com<br>
-KexAlgorithms curve25519-sha256@libssh.org,diffie-hellman-group16-sha512<br><br>
-# Limites de tempo<br>
-ClientAliveInterval 300<br>
-ClientAliveCountMax 2<br>
-LoginGraceTime 30<br><br>
-# Controle de acesso<br>
-AllowUsers admin backup<br>
-DenyUsers root nobody<br>
-AllowGroups ssh-users
-                    </div>
-                </div>
-
-                <div class="highlight-box">
-                    <h3>📊 Monitoramento Essencial</h3>
-                    <div class="flow-step"><strong>fail2ban:</strong> Bloqueio automático de IPs maliciosos</div>
-                    <div class="flow-step"><strong>logwatch:</strong> Relatórios diários de logs</div>
-                    <div class="flow-step"><strong>ossec/AIDE:</strong> Detecção de intrusão</div>
-                    <div class="flow-step"><strong>auditd:</strong> Auditoria detalhada do sistema</div>
-                </div>
-
-                <div class="warning-box center-text">
-                    <h3>⚠️ Regra de Ouro</h3>
-                    <p>Sempre mantenha uma sessão SSH ativa quando modificar configurações<br>
-                    Se algo der errado, você ainda consegue acessar o servidor!</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Slide 11: Troubleshooting SSH -->
-        <div class="slide">
-            <div class="content">
-                <h2>🔧 Troubleshooting SSH</h2>
-                
-                <div class="bullet-point">Problemas comuns e suas soluções</div>
-                <div class="bullet-point">Ferramentas de diagnóstico</div>
-                <div class="bullet-point">Interpretação de logs de erro</div>
-                <div class="bullet-point">Debug passo a passo</div>
-
-                <div class="two-column">
-                    <div>
-                        <h3>❌ Problemas Comuns</h3>
-                        <div class="warning-box">
-                            <strong>"Connection refused"</strong><br>
-                            • SSH daemon não rodando<br>
-                            • Porta errada<br>
-                            • Firewall bloqueando<br>
-                            • Rede inacessível
-                        </div>
-                        
-                        <div class="warning-box">
-                            <strong>"Permission denied"</strong><br>
-                            • Senha incorreta<br>
-                            • Chave pública incorreta<br>
-                            • Usuário sem permissão<br>
-                            • Autenticação desabilitada
-                        </div>
-                        
-                        <div class="warning-box">
-                            <strong>"Host key verification failed"</strong><br>
-                            • Chave do servidor mudou<br>
-                            • Possível ataque MITM<br>
-                            • Known_hosts incorreto<br>
-                            • Primeiro acesso
-                        </div>
-                    </div>
-                    <div>
-                        <h3>🔍 Comandos de Diagnóstico</h3>
-                        <div class="code-box">
-# Debug da conexão<br>
-$ ssh -v user@server<br>
-$ ssh -vv user@server<br>
-$ ssh -vvv user@server<br><br>
-# Testar conectividade<br>
-$ telnet server 22<br>
-$ nc -zv server 22<br><br>
-# Verificar serviço<br>
-$ systemctl status sshd<br>
-$ sudo sshd -T  # Teste config<br><br>
-# Logs do servidor<br>
-$ tail -f /var/log/auth.log<br>
-$ journalctl -u sshd -f<br><br>
-# Testar chaves<br>
-$ ssh-keygen -lf ~/.ssh/id_rsa.pub<br>
-$ ssh-add -l
-                        </div>
-                    </div>
-                </div>
-
-                <div class="example-box">
-                    <h3>🔍 Exemplo de Debug Passo a Passo</h3>
-                    <div class="code-box">
-# Problema: Não consegue conectar no servidor<br><br>
-$ ssh -vvv admin@servidor.empresa.com<br>
-OpenSSH_8.9p1, OpenSSL 1.1.1  11 Sep 2021<br>
-debug1: Reading configuration data /home/user/.ssh/config<br>
-debug1: Reading configuration data /etc/ssh/ssh_config<br>
-debug1: Connecting to servidor.empresa.com [192.168.1.100] port 22.<br>
-debug1: connect to address 192.168.1.100 port 22: Connection refused<br><br>
-# Diagnóstico: Porta 22 recusando conexão<br>
-# Possíveis causas:<br>
-# 1. SSH daemon não está rodando<br>
-# 2. Porta alterada para segurança<br>
-# 3. Firewall bloqueando<br><br>
-# Teste: Verificar se porta está aberta<br>
-$ nmap -p 22,2222 servidor.empresa.com<br>
-PORT     STATE    SERVICE<br>
-22/tcp   filtered ssh<br>
-2222/tcp open     ssh<br><br>
-# Solução: Usar porta 2222<br>
-$ ssh -p 2222 admin@servidor.empresa.com<br>
-✅ Conexão bem-sucedida!
-                    </div>
-                </div>
-
-                <div class="highlight-box">
-                    <h3>🛠️ Checklist de Troubleshooting</h3>
-                    <div class="flow-step">1. Conectividade de rede (ping, traceroute)</div>
-                    <div class="flow-step">2. Porta SSH aberta (nmap, telnet)</div>
-                    <div class="flow-step">3. Serviço SSH rodando (systemctl status)</div>
-                    <div class="flow-step">4. Configuração válida (sshd -T)</div>
-                    <div class="flow-step">5. Firewall permitindo (iptables, ufw)</div>
-                    <div class="flow-step">6. Chaves e permissões corretas</div>
-                    <div class="flow-step">7. Logs de erro detalhados (-vvv)</div>
-                </div>
-
-                <div class="warning-box center-text">
-                    <h3>🚨 Emergência: Acesso Perdido</h3>
-                    <p>Se perdeu acesso SSH ao servidor:<br>
-                    1. Console físico/virtual (VMware, AWS Console)<br>
-                    2. SSH de emergência em porta alternativa<br>
-                    3. Resetar via painel de controle do provider</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Slide 12: SSH no Mundo Real -->
-        <div class="slide">
-            <div class="content">
-                <h2>🌍 SSH no Mundo Real</h2>
-                
-                <div class="bullet-point">Casos de uso em diferentes ambientes</div>
-                <div class="bullet-point">Integração com DevOps e Cloud</div>
-                <div class="bullet-point">Automação e scripts</div>
-                <div class="bullet-point">Tendências e futuro do SSH</div>
-
-                <div class="two-column">
-                    <div>
-                        <h3>🏢 Ambiente Corporativo</h3>
-                        <div class="highlight-box">
-                            <strong>Infraestrutura:</strong><br>
-                            • Centenas de servidores<br>
-                            • Acesso centralizado<br>
-                            • Jump servers/Bastion hosts<br>
-                            • Integração com LDAP/AD
-                        </div>
-                        
-                        <div class="highlight-box">
-                            <strong>Segurança:</strong><br>
-                            • Certificados corporativos<br>
-                            • Hardware tokens (YubiKey)<br>
-                            • Auditoria completa<br>
-                            • Políticas rígidas
-                        </div>
-                    </div>
-                    <div>
-                        <h3>☁️ Cloud e DevOps</h3>
-                        <div class="highlight-box">
-                            <strong>Automação:</strong><br>
-                            • Ansible, Terraform<br>
-                            • CI/CD pipelines<br>
-                            • Deploy automatizado<br>
-                            • Infrastructure as Code
-                        </div>
-                        
-                        <div class="highlight-box">
-                            <strong>Containers:</strong><br>
-                            • Docker exec vs SSH<br>
-                            • Kubernetes debugging<br>
-                            • Sidecar containers<br>
-                            • Ephemeral access
-                        </div>
-                    </div>
-                </div>
-
-                <div class="example-box">
-                    <h3>🤖 Automação com SSH</h3>
-                    <div class="code-box">
-# Script para deploy em múltiplos servidores<br>
-#!/bin/bash<br><br>
-SERVERS="web1 web2 web3 db1"<br>
-DEPLOY_DIR="/var/www/app"<br><br>
-for server in $SERVERS; do<br>
-    echo "🚀 Deploy em $server..."<br>
-    <br>
-    # Upload do código<br>
-    rsync -avz --delete app/ $server:$DEPLOY_DIR/<br>
-    <br>
-    # Reiniciar serviços<br>
-    ssh $server "sudo systemctl restart nginx php-fpm"<br>
-    <br>
-    # Verificar status<br>
-    ssh $server "curl -s http://localhost/health" || echo "❌ Falha em $server"<br>
-done<br><br>
-echo "✅ Deploy concluído!"
-                    </div>
-                </div>
-
-                <div class="crypto-diagram">
-                    <h3>🔮 Tendências e Futuro</h3>
-                    <div style="margin: 20px 0; font-size: 1.1em; text-align: left;">
-                        <strong>🔐 Quantum-Resistant Crypto:</strong><br>
-                        Algoritmos resistentes a computadores quânticos<br><br>
-                        
-                        <strong>🆔 Identity-Based Access:</strong><br>
-                        Certificados efêmeros, zero-trust networks<br><br>
-                        
-                        <strong>🛡️ SSH Certificates:</strong><br>
-                        Autoridades certificadoras, gestão centralizada<br><br>
-                        
-                        <strong>🔄 Convergência:</strong><br>
-                        SSH + OIDC + RBAC + Just-in-time access
-                    </div>
-                </div>
-
-                <div class="three-column">
-                    <div>
-                        <h3>📊 Estatísticas</h3>
-                        <div class="security-box">
-                            <strong>Uso Global:</strong><br>
-                            • 99% dos servidores Linux<br>
-                            • Milhões de conexões/dia<br>
-                            • Padrão de facto<br>
-                            • 25+ anos de evolução
-                        </div>
-                    </div>
-                    <div>
-                        <h3>🎯 Aplicações</h3>
-                        <div class="security-box">
-                            <strong>Principais usos:</strong><br>
-                            • DevOps (80%)<br>
-                            • Administração (15%)<br>
-                            • Desenvolvimento (3%)<br>
-                            • Outros (2%)
-                        </div>
-                    </div>
-                    <div>
-                        <h3>🔧 Ferramentas</h3>
-                        <div class="security-box">
-                            <strong>Ecossistema:</strong><br>
-                            • OpenSSH (líder)<br>
-                            • PuTTY (Windows)<br>
-                            • Ansible over SSH<br>
-                            • Git over SSH
-                        </div>
-                    </div>
-                </div>
-
-                <div class="warning-box center-text">
-                    <h3>🎯 SSH é Essencial</h3>
-                    <p>Aprender SSH bem é investimento para a carreira<br>
-                    Fundamental em DevOps, SysAdmin, Cloud, Segurança</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Slide 13: Exemplo Prático -->
-        <div class="slide">
-            <div class="content">
-                <h2>💻 Exemplo Prático com SSH</h2>
-                
-                <div class="bullet-point">Configuração completa de um ambiente SSH</div>
-                <div class="bullet-point">Do zero até produção</div>
-                <div class="bullet-point">Melhores práticas aplicadas</div>
-
-                <div class="example-box">
-                    <h3>🎯 Cenário: Servidor Web em Produção</h3>
-                    <p><strong>Objetivo:</strong> Configurar acesso SSH seguro para um servidor web Ubuntu 22.04<br>
-                    <strong>Requisitos:</strong> Apenas chaves públicas, porta personalizada, logs auditados</p>
+                <div class="highlight-box large-text center-text">
+                    <strong>SSH no Windows 11: Seu portal seguro para servidores remotos.</strong>
                 </div>
 
                 <div class="two-column">
                     <div>
-                        <h3>🔧 1. Configuração Inicial</h3>
-                        <div class="code-box">
-# No servidor (como root inicialmente)<br>
-$ apt update && apt upgrade -y<br>
-$ apt install fail2ban ufw -y<br><br>
-# Criar usuário administrativo<br>
-$ adduser admin<br>
-$ usermod -aG sudo admin<br><br>
-# Configurar firewall<br>
-$ ufw default deny incoming<br>
-$ ufw default allow outgoing<br>
-$ ufw allow 2222/tcp  # SSH customizado<br>
-$ ufw allow 80/tcp    # HTTP<br>
-$ ufw allow 443/tcp   # HTTPS<br>
-$ ufw enable
-                        </div>
+                        <h3>✅ O que aprendemos:</h3>
+                        <div class="bullet-point">Habilitar o Cliente SSH é o primeiro passo.</div>
+                        <div class="bullet-point">Autenticação com chaves é o padrão ouro.</div>
+                        <div class="bullet-point">`ssh-keygen` cria as chaves no seu perfil.</div>
+                        <div class="bullet-point">É fácil autorizar sua chave no servidor.</div>
                     </div>
                     <div>
-                        <h3>🔑 2. Configuração SSH</h3>
-                        <div class="code-box">
-# /etc/ssh/sshd_config<br>
-$ sudo nano /etc/ssh/sshd_config<br><br>
-# Mudanças importantes:<br>
-Port 2222<br>
-PermitRootLogin no<br>
-PasswordAuthentication no<br>
-PubkeyAuthentication yes<br>
-AuthorizedKeysFile .ssh/authorized_keys<br>
-MaxAuthTries 3<br>
-MaxSessions 10<br>
-ClientAliveInterval 300<br>
-ClientAliveCountMax 2<br>
-LogLevel VERBOSE<br><br>
-# Reiniciar SSH<br>
-$ sudo systemctl restart sshd
-                        </div>
+                        <h3>🚀 O que você pode fazer:</h3>
+                        <div class="bullet-point">Logar em servidores sem senha.</div>
+                        <div class="bullet-point">Executar comandos remotamente.</div>
+                        <div class="bullet-point">Transferir arquivos com `scp`.</div>
+                        <div class="bullet-point">Criar túneis para serviços restritos.</div>
+                        <div class="bullet-point">Simplificar tudo com o arquivo `config`.</div>
                     </div>
-                </div>
-
-                <div class="flow-step">3. <strong>No cliente:</strong> Gerar e configurar chaves</div>
-                <div class="code-box">
-# Gerar chave Ed25519 (moderna e segura)<br>
-$ ssh-keygen -t ed25519 -C "admin@servidor-web"<br>
-Enter file in which to save the key: /home/user/.ssh/servidor_web<br>
-Enter passphrase: **************<br><br>
-# Copiar chave pública (ainda com senha, última vez)<br>
-$ ssh-copy-id -i ~/.ssh/servidor_web.pub -p 2222 admin@servidor.empresa.com<br><br>
-# Configurar ~/.ssh/config<br>
-Host servidor-web<br>
-    HostName servidor.empresa.com<br>
-    Port 2222<br>
-    User admin<br>
-    IdentityFile ~/.ssh/servidor_web<br>
-    ServerAliveInterval 60
-</div>
-
-                <div class="flow-step">4. <strong>Teste e verificação:</strong></div>
-                <div class="code-box">
-# Teste de conexão<br>
-$ ssh servidor-web<br>
-✅ Conectado sem senha!<br><br>
-# Verificar configuração<br>
-admin@servidor:~$ sudo sshd -T | grep -E "(port|permit|password)"<br>
-port 2222<br>
-permitrootlogin no<br>
-passwordauthentication no<br><br>
-# Monitorar logs<br>
-admin@servidor:~$ sudo tail -f /var/log/auth.log<br>
-Jun 28 15:30:25 servidor sshd[1234]: Accepted publickey for admin from 203.0.113.10 port 52341 ssh2: ED25519 SHA256:abc123...
-</div>
-
-                <div class="highlight-box center-text">
-                    <h3>✅ Resultado Final</h3>
-                    <p>🔒 Acesso apenas por chave pública<br>
-                    🛡️ Porta não-padrão (2222)<br>
-                    📊 Logs detalhados<br>
-                    🚫 Root login desabilitado<br>
-                    🔥 Firewall configurado</p>
-                </div>
-
-                <div class="warning-box center-text">
-                    <h3>⚠️ Checklist Final</h3>
-                    <p>✅ Backup da chave privada<br>
-                    ✅ Teste de nova sessão<br>
-                    ✅ fail2ban configurado<br>
-                    ✅ Documentação atualizada</p>
                 </div>
             </div>
         </div>
 
-        <!-- Slide 14: Quiz -->
         <div class="slide">
             <div class="content">
                 <h2>🧠 Quiz - Teste seus conhecimentos!</h2>
                 
                 <div class="quiz-container">
-                    <!-- Questão 1 -->
                     <div class="quiz-question" id="question1">
                         <h3>📝 Questão 1</h3>
-                        <p><strong>Qual a principal vantagem do SSH sobre o Telnet?</strong></p>
+                        <p><strong>Qual o principal objetivo do protocolo SSH?</strong></p>
                         <div class="quiz-options">
                             <div class="quiz-option" onclick="selectOption(1, 'a', false)">
-                                <span class="option-letter">A)</span> É mais rápido para transferir dados
+                                <span class="option-letter">A)</span> Acelerar a velocidade da internet
                             </div>
                             <div class="quiz-option" onclick="selectOption(1, 'b', true)">
-                                <span class="option-letter">B)</span> Criptografa toda a comunicação
+                                <span class="option-letter">B)</span> Fornecer acesso remoto seguro e criptografado
                             </div>
                             <div class="quiz-option" onclick="selectOption(1, 'c', false)">
-                                <span class="option-letter">C)</span> Consome menos recursos do servidor
-                            </div>
-                            <div class="quiz-option" onclick="selectOption(1, 'd', false)">
-                                <span class="option-letter">D)</span> Funciona apenas em redes locais
+                                <span class="option-letter">C)</span> Hospedar sites e aplicações web
                             </div>
                         </div>
                         <div class="quiz-feedback" id="feedback1"></div>
                     </div>
 
-                    <!-- Questão 2 -->
                     <div class="quiz-question" id="question2" style="display: none;">
                         <h3>📝 Questão 2</h3>
-                        <p><strong>Qual a porta padrão do protocolo SSH?</strong></p>
+                        <p><strong>No sistema de chaves SSH, qual chave você instala no servidor para o qual deseja se conectar?</strong></p>
                         <div class="quiz-options">
-                            <div class="quiz-option" onclick="selectOption(2, 'a', false)">
-                                <span class="option-letter">A)</span> 21
+                            <div class="quiz-option" onclick="selectOption(2, 'a', true)">
+                                <span class="option-letter">A)</span> A chave PÚBLICA (`.pub`)
                             </div>
-                            <div class="quiz-option" onclick="selectOption(2, 'b', true)">
-                                <span class="option-letter">B)</span> 22
+                            <div class="quiz-option" onclick="selectOption(2, 'b', false)">
+                                <span class="option-letter">B)</span> A chave PRIVADA
                             </div>
                             <div class="quiz-option" onclick="selectOption(2, 'c', false)">
-                                <span class="option-letter">C)</span> 23
-                            </div>
-                            <div class="quiz-option" onclick="selectOption(2, 'd', false)">
-                                <span class="option-letter">D)</span> 25
+                                <span class="option-letter">C)</span> Ambas as chaves, pública e privada
                             </div>
                         </div>
                         <div class="quiz-feedback" id="feedback2"></div>
                     </div>
 
-                    <!-- Questão 3 -->
                     <div class="quiz-question" id="question3" style="display: none;">
                         <h3>📝 Questão 3</h3>
-                        <p><strong>Qual método de autenticação SSH é considerado mais seguro?</strong></p>
+                        <p><strong>Qual comando é usado no Terminal do Windows para copiar um arquivo LOCAL para um servidor REMOTO?</strong></p>
                         <div class="quiz-options">
                             <div class="quiz-option" onclick="selectOption(3, 'a', false)">
-                                <span class="option-letter">A)</span> Senha simples
+                                <span class="option-letter">A)</span> `copy arquivo.txt \\servidor\pasta`
                             </div>
-                            <div class="quiz-option" onclick="selectOption(3, 'b', true)">
-                                <span class="option-letter">B)</span> Par de chaves pública/privada
+                             <div class="quiz-option" onclick="selectOption(3, 'b', true)">
+                                <span class="option-letter">B)</span> `scp C:\Users\user\doc.txt user@server:/home/`
                             </div>
                             <div class="quiz-option" onclick="selectOption(3, 'c', false)">
-                                <span class="option-letter">C)</span> Pergunta secreta
-                            </div>
-                            <div class="quiz-option" onclick="selectOption(3, 'd', false)">
-                                <span class="option-letter">D)</span> Endereço IP fixo
+                                <span class="option-letter">C)</span> `ftp -upload arquivo.txt`
                             </div>
                         </div>
                         <div class="quiz-feedback" id="feedback3"></div>
                     </div>
 
-                    <!-- Questão 4 -->
                     <div class="quiz-question" id="question4" style="display: none;">
                         <h3>📝 Questão 4</h3>
-                        <p><strong>Qual comando é usado para transferir arquivos de forma segura via SSH?</strong></p>
+                        <p><strong>Onde o Windows armazena as chaves SSH por padrão após usar `ssh-keygen`?</strong></p>
                         <div class="quiz-options">
                             <div class="quiz-option" onclick="selectOption(4, 'a', false)">
-                                <span class="option-letter">A)</span> ftp
+                                <span class="option-letter">A)</span> Na pasta `C:\Windows\System32`
                             </div>
-                            <div class="quiz-option" onclick="selectOption(4, 'b', true)">
-                                <span class="option-letter">B)</span> scp
+                             <div class="quiz-option" onclick="selectOption(4, 'b', true)">
+                                <span class="option-letter">B)</span> Na pasta `.ssh` dentro do seu perfil de usuário (`C:\Users\SeuNome\.ssh`)
                             </div>
                             <div class="quiz-option" onclick="selectOption(4, 'c', false)">
-                                <span class="option-letter">C)</span> telnet
-                            </div>
-                            <div class="quiz-option" onclick="selectOption(4, 'd', false)">
-                                <span class="option-letter">D)</span> wget
+                                <span class="option-letter">C)</span> Na pasta `Meus Documentos`
                             </div>
                         </div>
                         <div class="quiz-feedback" id="feedback4"></div>
                     </div>
 
-                    <!-- Resultado Final -->
                     <div class="quiz-result" id="quizResult" style="display: none;">
                         <h3>🎉 Parabéns! Quiz Concluído!</h3>
                         <div class="result-box">
@@ -1643,118 +865,36 @@ Jun 28 15:30:25 servidor sshd[1234]: Accepted publickey for admin from 203.0.113
             </div>
         </div>
 
-        <!-- Slide 15: Resumo Final -->
         <div class="slide">
             <div class="content">
-                <h2>🎯 Resumo Final</h2>
-                
-                <div class="highlight-box large-text center-text">
-                    <strong>SSH: O protocolo que revolucionou o acesso remoto seguro</strong>
-                </div>
-
-                <div class="two-column">
-                    <div>
-                        <h3>✅ Características Principais</h3>
-                        <div class="bullet-point">Criptografia forte e confiável</div>
-                        <div class="bullet-point">Autenticação por chaves públicas</div>
-                        <div class="bullet-point">Túneis seguros (port forwarding)</div>
-                        <div class="bullet-point">Transferência de arquivos (SCP/SFTP)</div>
-                        <div class="bullet-point">Protocolo TCP porta 22</div>
-                    </div>
-                    <div>
-                        <h3>🎯 Componentes Essenciais</h3>
-                        <div class="bullet-point">Handshake criptográfico</div>
-                        <div class="bullet-point">Verificação de identidade</div>
-                        <div class="bullet-point">Sessões criptografadas</div>
-                        <div class="bullet-point">Múltiplos métodos de autenticação</div>
-                        <div class="bullet-point">Configuração flexível e segura</div>
-                    </div>
-                </div>
-
-                <div class="example-box center-text">
-                    <h3>🏆 Importância Crítica</h3>
-                    <p>SSH é padrão universal para administração remota<br>
-                    Essencial em DevOps, Cloud Computing e Segurança</p>
-                </div>
-
-                <div class="warning-box center-text">
-                    <h3>🔒 Segurança em Primeiro Lugar</h3>
-                    <p>Configuração adequada é crucial<br>
-                    Chaves públicas > senhas | Monitoramento contínuo</p>
-                </div>
-
-                <div class="highlight-box center-text">
-                    <h3>🚀 Aplicações Modernas</h3>
-                    <p>DevOps automation, Infrastructure as Code,<br>
-                    Container management, CI/CD pipelines, Cloud computing</p>
-                </div>
-
-                <div class="crypto-diagram center-text">
-                    <h3>📈 Evolução Contínua</h3>
-                    <p><strong>1995:</strong> SSH-1 criado<br>
-                    <strong>2006:</strong> SSH-2 padronizado<br>
-                    <strong>2023:</strong> Quantum-resistant algorithms<br>
-                    <strong>Futuro:</strong> Zero-trust + Identity-based access</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Slide 16: Referências -->
-        <div class="slide">
-            <div class="content">
-                <h2>📚 Referências Bibliográficas</h2>
+                <h2>📚 Referências</h2>
                 
                 <div class="highlight-box">
-                    <h3>📖 Fonte Principal:</h3>
-                    <div class="bullet-point"><strong>Seção sobre Secure Shell (SSH)</strong></div>
-                    <div class="bullet-point">Livro de Redes de Computadores</div>
-                    <div class="bullet-point">Material didático da disciplina</div>
+                    <h3>📖 Documentação Oficial (Microsoft):</h3>
+                    <div class="bullet-point"><strong>OpenSSH in Windows</strong></div>
+                    <div class="bullet-point">docs.microsoft.com/windows-server/administration/openssh/</div>
                 </div>
 
                 <div class="two-column">
                     <div>
-                        <h3>🌐 RFCs Fundamentais:</h3>
-                        <div class="bullet-point">RFC 4251 - SSH Protocol Architecture</div>
-                        <div class="bullet-point">RFC 4252 - SSH Authentication Protocol</div>
-                        <div class="bullet-point">RFC 4253 - SSH Transport Layer Protocol</div>
-                        <div class="bullet-point">RFC 4254 - SSH Connection Protocol</div>
+                        <h3>🌐 Sites Recomendados:</h3>
+                        <div class="bullet-point">www.openssh.com (Site oficial do OpenSSH)</div>
+                        <div class="bullet-point">DigitalOcean Community Tutorials (Guias práticos)</div>
+                         <div class="bullet-point">PuTTY (Cliente SSH alternativo popular)</div>
                     </div>
                     <div>
-                        <h3>📋 Documentação Adicional:</h3>
-                        <div class="bullet-point">OpenSSH Manual Pages</div>
-                        <div class="bullet-point">ssh.com - SSH Academy</div>
-                        <div class="bullet-point">NIST SP 800-77 - SSH Guidelines</div>
-                        <div class="bullet-point">Linux man pages (ssh, sshd, ssh-keygen)</div>
+                        <h3>📋 RFCs Principais:</h3>
+                        <div class="bullet-point">RFC 4251 - The Secure Shell (SSH) Protocol Architecture</div>
+                        <div class="bullet-point">RFC 4252 - The SSH Authentication Protocol</div>
+                        <div class="bullet-point">RFC 4253 - The SSH Transport Layer Protocol</div>
                     </div>
                 </div>
 
                 <div class="example-box center-text">
                     <h3>🤖 Metodologia de Criação</h3>
-                    <p>Apresentação desenvolvida com assistência de IA Claude Sonnet 4<br>
-                    Baseada em conhecimento consolidado sobre protocolos de segurança<br>
-                    Adaptação pedagógica com foco em exemplos práticos e aplicações reais</p>
-                </div>
-
-                <div class="highlight-box center-text">
-                    <h3>🎯 Objetivo Educacional</h3>
-                    <p>Facilitar a compreensão do protocolo SSH através de<br>
-                    explicações detalhadas, exemplos práticos e configurações seguras</p>
-                </div>
-
-                <div class="example-box center-text">
-                    <h3>🔗 Recursos Online Úteis</h3>
-                    <p><strong>github.com</strong> - SSH para Git<br>
-                    <strong>openssh.com</strong> - Documentação oficial<br>
-                    <strong>ssh-audit.com</strong> - Auditoria de configuração SSH<br>
-                    <strong>ssh.com</strong> - Tutoriais e guias avançados</p>
-                </div>
-
-                <div class="crypto-diagram center-text">
-                    <h3>⚡ Ferramentas Recomendadas</h3>
-                    <p><strong>Cliente:</strong> OpenSSH, PuTTY, Termius<br>
-                    <strong>Servidor:</strong> OpenSSH, Dropbear<br>
-                    <strong>Gestão:</strong> ssh-agent, KeePass, 1Password<br>
-                    <strong>Auditoria:</strong> ssh-audit, lynis, nmap</p>
+                    <p>Apresentação desenvolvida com assistência de IA Gemini<br>
+                    Layout clonado e conteúdo adaptado para Windows 11<br>
+                    Foco em simplicidade e exemplos práticos</p>
                 </div>
             </div>
         </div>
@@ -1801,18 +941,19 @@ Jun 28 15:30:25 servidor sshd[1234]: Accepted publickey for admin from 203.0.113
             
             const options = document.querySelectorAll(`#question${questionNum} .quiz-option`);
             const feedback = document.getElementById(`feedback${questionNum}`);
+            const eventTarget = event.currentTarget;
             
-            // Marcar todas as opções
             options.forEach(opt => {
                 opt.style.pointerEvents = 'none';
-                if (opt.onclick.toString().includes('true')) {
+                const optIsCorrect = opt.onclick.toString().includes(', true)');
+
+                if(optIsCorrect) {
                     opt.classList.add('correct');
-                } else if (opt === event.currentTarget) {
-                    opt.classList.add(isCorrect ? 'correct' : 'incorrect');
+                } else if (opt === eventTarget) {
+                    opt.classList.add('incorrect');
                 }
             });
             
-            // Mostrar feedback
             if (isCorrect) {
                 feedback.innerHTML = '✅ Correto! Muito bem!';
                 feedback.className = 'quiz-feedback correct';
@@ -1824,11 +965,9 @@ Jun 28 15:30:25 servidor sshd[1234]: Accepted publickey for admin from 203.0.113
             
             quizAnswered[questionNum - 1] = true;
             
-            // Mostrar botão para próxima questão
             if (questionNum < 4) {
                 document.getElementById('nextQuizBtn').style.display = 'inline-block';
             } else {
-                // Última questão - mostrar resultado
                 setTimeout(() => {
                     showQuizResult();
                 }, 2000);
@@ -1843,59 +982,47 @@ Jun 28 15:30:25 servidor sshd[1234]: Accepted publickey for admin from 203.0.113
         }
 
         function showQuizResult() {
-            // Esconder última questão
             document.getElementById('question4').style.display = 'none';
-            
-            // Mostrar resultado
             document.getElementById('quizResult').style.display = 'block';
             document.getElementById('finalScore').textContent = score;
             
             const resultMessage = document.getElementById('resultMessage');
             if (score === 4) {
-                resultMessage.innerHTML = '🏆 Excelente! Você domina o SSH!';
-            } else if (score === 3) {
-                resultMessage.innerHTML = '👏 Muito bom! Quase perfeito!';
-            } else if (score === 2) {
-                resultMessage.innerHTML = '👍 Bom trabalho! Continue estudando!';
-            } else if (score === 1) {
-                resultMessage.innerHTML = '📚 Estude um pouco mais sobre SSH!';
+                resultMessage.innerHTML = '🏆 Excelente! Você domina o SSH no Windows!';
+            } else if (score >= 2) {
+                resultMessage.innerHTML = '👏 Muito bom! Continue praticando!';
             } else {
-                resultMessage.innerHTML = '📖 Recomendo revisar o conteúdo sobre SSH!';
+                resultMessage.innerHTML = '📖 Recomendo revisar o conteúdo e praticar os comandos!';
             }
         }
 
         function restartQuiz() {
-            // Reset variables
             currentQuestion = 1;
             score = 0;
             quizAnswered = [false, false, false, false];
             
-            // Reset interface
             for (let i = 1; i <= 4; i++) {
                 const question = document.getElementById(`question${i}`);
                 const options = question.querySelectorAll('.quiz-option');
                 const feedback = document.getElementById(`feedback${i}`);
                 
-                // Reset options
                 options.forEach(opt => {
                     opt.className = 'quiz-option';
                     opt.style.pointerEvents = 'auto';
                 });
                 
-                // Hide feedback
                 feedback.style.display = 'none';
+                feedback.className = 'quiz-feedback';
                 
-                // Hide all questions except first
                 question.style.display = i === 1 ? 'block' : 'none';
             }
             
-            // Hide result and buttons
             document.getElementById('quizResult').style.display = 'none';
             document.getElementById('nextQuizBtn').style.display = 'none';
         }
 
-        // Navegação por teclado
         document.addEventListener('keydown', (e) => {
+            if (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA') return;
             if (e.key === 'ArrowLeft') changeSlide(-1);
             if (e.key === 'ArrowRight') changeSlide(1);
             if (e.key === 'Home') {
@@ -1908,11 +1035,8 @@ Jun 28 15:30:25 servidor sshd[1234]: Accepted publickey for admin from 203.0.113
             }
         });
 
-        // Inicializar
         showSlide(0);
-        
-        // Inicializar quiz no slide 14
-        document.getElementById('question1').style.display = 'block';
+
     </script>
 </body>
 </html>
