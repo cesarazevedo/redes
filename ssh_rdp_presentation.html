@@ -547,24 +547,29 @@
             </div>
         </div>
 
-        <!-- Slide 6: Instalando PuTTY -->
+        <!-- Slide 6: Baixando PuTTY -->
         <div class="slide">
             <div class="content">
-                <h2>🚀 PRÁTICA: Instalando o PuTTY</h2>
+                <h2>🚀 PRÁTICA: Baixando o PuTTY (Versão Portable)</h2>
                 
-                <div class="bullet-point">PuTTY é o cliente SSH mais popular no Windows - gratuito e confiável.</div>
+                <div class="bullet-point">PuTTY é o cliente SSH mais popular no Windows - gratuito, confiável e sem necessidade de instalação.</div>
 
                 <h3>Passo a Passo:</h3>
-                <div class="process-step">1. Vá para <strong>putty.org</strong> e baixe o "64-bit x86" MSI Windows Installer.</div>
-                <div class="process-step">2. Execute o instalador como administrador.</div>
-                <div class="process-step">3. Instale com as opções padrão.</div>
-                <div class="process-step">4. Pronto! Agora você tem: PuTTY, PuTTYgen, e WinSCP.</div>
+                <div class="process-step">1. Vá para <strong>putty.org</strong> e role até "Alternative binary files".</div>
+                <div class="process-step">2. Em <strong>"putty.exe"</strong>, baixe a versão <strong>"64-bit x86"</strong>.</div>
+                <div class="process-step">3. Salve o arquivo na pasta <strong>Downloads</strong> ou crie uma pasta "PuTTY".</div>
+                <div class="process-step">4. <strong>Não precisa instalar!</strong> É só clicar duas vezes no arquivo .exe para executar.</div>
                 
                 <div class="highlight-box">
-                    <h3>🎁 Bônus: O que você ganhou</h3>
-                    <div class="bullet-point"><strong>PuTTY:</strong> Para conectar via SSH</div>
-                    <div class="bullet-point"><strong>PuTTYgen:</strong> Para gerar chaves SSH</div>
-                    <div class="bullet-point"><strong>WinSCP:</strong> Para transferir arquivos</div>
+                    <h3>✨ Vantagens da Versão Portable:</h3>
+                    <div class="bullet-point"><strong>Sem instalação:</strong> Executa direto do arquivo</div>
+                    <div class="bullet-point"><strong>Portável:</strong> Pode copiar para pendrive</div>
+                    <div class="bullet-point"><strong>Sem alterações no sistema:</strong> Não modifica registro do Windows</div>
+                </div>
+
+                <div class="example-box">
+                    <h3>📁 Opcional: Organize melhor</h3>
+                    <p>Crie uma pasta <code>C:\Ferramentas\PuTTY\</code> e coloque o arquivo lá. Assim fica mais fácil de encontrar!</p>
                 </div>
             </div>
         </div>
@@ -577,7 +582,7 @@
                 <div class="bullet-point">Vamos conectar em um servidor usando PuTTY.</div>
 
                 <h3>Passo a Passo:</h3>
-                <div class="process-step">1. Abra o <strong>PuTTY</strong> (Menu Iniciar > PuTTY).</div>
+                <div class="process-step">1. Execute o <strong>putty.exe</strong> (clique duas vezes no arquivo baixado).</div>
                 <div class="process-step">2. Em "Host Name", digite o IP ou nome do servidor (ex: <code>192.168.1.100</code>).</div>
                 <div class="process-step">3. Deixe "Port" como <code>22</code> e "Connection type" como <code>SSH</code>.</div>
                 <div class="process-step">4. Clique em <strong>"Open"</strong>.</div>
@@ -605,8 +610,13 @@
                 
                 <div class="bullet-point">Chaves SSH são mais seguras que senhas. Vamos criar sua "impressão digital digital".</div>
 
+                <div class="highlight-box">
+                    <h3>💾 Primeiro: Baixe o PuTTYgen</h3>
+                    <p>Vá em <strong>putty.org</strong> > "Alternative binary files" > <strong>puttygen.exe</strong> (64-bit x86). Salve na mesma pasta do PuTTY.</p>
+                </div>
+
                 <h3>Passo a Passo:</h3>
-                <div class="process-step">1. Abra o <strong>PuTTYgen</strong> (Menu Iniciar > PuTTYgen).</div>
+                <div class="process-step">1. Execute o <strong>puttygen.exe</strong> (clique duas vezes).</div>
                 <div class="process-step">2. Escolha "RSA" e 2048 bits (padrão).</div>
                 <div class="process-step">3. Clique em <strong>"Generate"</strong>.</div>
                 <div class="process-step">4. <strong>Mova o mouse aleatoriamente</strong> sobre a área branca para gerar aleatoriedade.</div>
@@ -615,7 +625,7 @@
                 <div class="process-step">7. Clique em <strong>"Save private key"</strong> e salve como <code>minha_chave.ppk</code>.</div>
                 <div class="process-step">8. Copie o texto da "Public key" (a chave pública).</div>
 
-                <div class="highlight-box">
+                <div class="example-box">
                     <p><strong>Resultado:</strong> Você tem um arquivo .ppk (chave privada) e uma chave pública (texto copiado).</p>
                 </div>
             </div>
@@ -646,31 +656,36 @@
         <!-- Slide 10: Transferindo Arquivos -->
         <div class="slide">
             <div class="content">
-                <h2>🚀 PRÁTICA: Transferindo Arquivos com WinSCP</h2>
+                <h2>🚀 PRÁTICA: Transferindo Arquivos</h2>
                 
-                <div class="bullet-point">WinSCP é como um "Windows Explorer" que funciona via SSH.</div>
-
-                <h3>Passo a Passo:</h3>
-                <div class="process-step">1. Abra o <strong>WinSCP</strong>.</div>
-                <div class="process-step">2. Digite o IP do servidor e seu usuário.</div>
-                <div class="process-step">3. Clique em <strong>"Advanced"</strong> > <strong>"SSH"</strong> > <strong>"Authentication"</strong>.</div>
-                <div class="process-step">4. Em "Private key file", selecione seu arquivo <code>.ppk</code>.</div>
-                <div class="process-step">5. Clique <strong>"OK"</strong> e depois <strong>"Login"</strong>.</div>
+                <div class="bullet-point">Para transferir arquivos via SSH, temos duas opções principais.</div>
 
                 <div class="two-column">
                     <div>
-                        <h3>💡 Resultado:</h3>
-                        <div class="bullet-point">Lado esquerdo: Seus arquivos Windows</div>
-                        <div class="bullet-point">Lado direito: Arquivos do servidor</div>
-                        <div class="bullet-point">Arraste e solte entre os lados!</div>
+                        <h3>💎 Opção 1: WinSCP (Recomendado)</h3>
+                        <div class="process-step">1. Baixe o WinSCP em <strong>winscp.net</strong> (versão portable).</div>
+                        <div class="process-step">2. Execute o <strong>WinSCP.exe</strong>.</div>
+                        <div class="process-step">3. Digite IP do servidor e usuário.</div>
+                        <div class="process-step">4. Em <strong>"Advanced"</strong> > <strong>"SSH"</strong> > <strong>"Authentication"</strong>, selecione seu arquivo <code>.ppk</code>.</div>
+                        <div class="process-step">5. Clique <strong>"Login"</strong>.</div>
+                        <div class="process-step">6. <strong>Arraste e solte</strong> arquivos entre as janelas!</div>
                     </div>
                     <div>
-                        <h3>🎯 Teste Prático:</h3>
-                        <div class="bullet-point">Crie um arquivo .txt no Windows</div>
-                        <div class="bullet-point">Arraste para o servidor</div>
-                        <div class="bullet-point">Vá no PuTTY e digite <code>ls</code></div>
-                        <div class="bullet-point">Seu arquivo estará lá!</div>
+                        <h3>⚡ Opção 2: SCP no Terminal</h3>
+                        <div class="bullet-point">Use o PowerShell do Windows (mais avançado)</div>
+                        <div class="diagram">
+# Enviar arquivo
+scp C:\arquivo.txt user@servidor:/home/
+
+# Baixar arquivo  
+scp user@servidor:/arquivo.txt C:\Downloads\</div>
+                        <p><strong>Nota:</strong> Precisa converter a chave .ppk para OpenSSH primeiro.</p>
                     </div>
+                </div>
+
+                <div class="example-box center-text">
+                    <h3>💡 Dica:</h3>
+                    <p>O WinSCP é mais fácil para iniciantes - interface gráfica como Windows Explorer!</p>
                 </div>
             </div>
         </div>
@@ -879,11 +894,11 @@
                             <div class="quiz-option" onclick="selectOption(4, 'a', false)">
                                 <span class="option-letter">A)</span> PuTTY
                             </div>
-                            <div class="quiz-option" onclick="selectOption(4, 'b', false)">
-                                <span class="option-letter">B)</span> Remote Desktop
+                             <div class="quiz-option" onclick="selectOption(4, 'b', true)">
+                                <span class="option-letter">B)</span> WinSCP
                             </div>
-							<div class="quiz-option" onclick="selectOption(4, 'c', true)">
-                                <span class="option-letter">C)</span> WinSCP
+                            <div class="quiz-option" onclick="selectOption(4, 'c', false)">
+                                <span class="option-letter">C)</span> Remote Desktop
                             </div>
                         </div>
                         <div class="quiz-feedback" id="feedback4"></div>
