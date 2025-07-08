@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SSH - Acesso Remoto Seguro (Foco Windows 11)</title>
+    <title>SSH e RDP - Acesso Remoto Seguro (Windows 11)</title>
     <style>
         * {
             margin: 0;
@@ -181,25 +181,6 @@
             word-wrap: break-word;
         }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0;
-            font-size: 1.1em;
-        }
-
-        th, td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #e2e8f0;
-        }
-
-        th {
-            background: #667eea;
-            color: white;
-            font-weight: bold;
-        }
-
         .process-step {
             background: #e6fffa;
             margin: 10px 0;
@@ -343,7 +324,8 @@
             font-size: 1.4em;
             margin: 10px 0;
         }
-		.home-btn {
+
+        .home-btn {
             position: fixed;
             top: 30px;
             left: 30px;
@@ -368,24 +350,45 @@
             transform: translateY(-2px);
             box-shadow: 0 7px 20px rgba(102, 126, 234, 0.4);
         }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 1.1em;
+        }
+
+        .comparison-table th, .comparison-table td {
+            padding: 15px;
+            text-align: left;
+            border: 1px solid #e2e8f0;
+        }
+
+        .comparison-table th {
+            background: #667eea;
+            color: white;
+            font-weight: bold;
+        }
+
+        .comparison-table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
     </style>
 </head>
 <body>
-<a href="index.html" class="home-btn">
-    🏠 Voltar ao Índice
-</a>
     <div class="presentation">
         <div class="slide-counter">
             <span id="current-slide">1</span> / <span id="total-slides">18</span>
         </div>
 
+        <!-- Slide 1: Título -->
         <div class="slide active">
             <div class="content center-text">
-                <h1>💻 Protocolo SSH</h1>
-                <h2 style="border: none; color: #667eea;">Secure Shell (Windows 11)</h2>
+                <h1>💻 SSH e RDP</h1>
+                <h2 style="border: none; color: #667eea;">Acesso Remoto no Windows 11</h2>
                 <div class="highlight-box large-text">
-                    <strong>Aula com Foco Prático</strong><br>
-                    Aprenda a acessar e gerenciar servidores de forma segura no seu Windows
+                    <strong>Aula Prática</strong><br>
+                    Domine o acesso remoto com PuTTY (SSH) e Remote Desktop (RDP)
                 </div>
                 
                 <div class="example-box" style="margin-top: 40px;">
@@ -398,33 +401,35 @@
             </div>
         </div>
 
+        <!-- Slide 2: Tópicos -->
         <div class="slide">
             <div class="content">
-                <h2>📋 Tópicos da Aula (Foco em Windows 11)</h2>
+                <h2>📋 Tópicos da Aula</h2>
                 
                 <div class="two-column">
                     <div>
-                        <h3>📘 Fundamentos (Teoria)</h3>
-                        <div class="bullet-point">O que é SSH e sua importância</div>
-                        <div class="bullet-point">A Criptografia por trás da segurança</div>
-                        <div class="bullet-point">Arquitetura Cliente-Servidor</div>
+                        <h3>📘 Fundamentos</h3>
+                        <div class="bullet-point">SSH vs RDP: Quando usar cada um</div>
+                        <div class="bullet-point">Como funciona a segurança</div>
+                        <div class="bullet-point">Arquitetura cliente-servidor</div>
                         
-                        <h3>🔧 Mão na Massa (Prática)</h3>
-                        <div class="bullet-point"><strong>Habilitando o Cliente SSH no Windows</strong></div>
-                        <div class="bullet-point">Conexão básica e verificação de chave</div>
-                        <div class="bullet-point">Autenticação com Senha vs. Chaves</div>
-                        <div class="bullet-point">Gerando seu par de chaves com `ssh-keygen`</div>
+                        <h3>🔧 Prática SSH</h3>
+                        <div class="bullet-point"><strong>Instalação e configuração do PuTTY</strong></div>
+                        <div class="bullet-point">Primeira conexão SSH</div>
+                        <div class="bullet-point">Gerando chaves SSH com PuTTYgen</div>
+                        <div class="bullet-point">Login sem senha</div>
+                        <div class="bullet-point">Transferindo arquivos com WinSCP</div>
                     </div>
                     <div>
-                        <h3>🚀 Comandos Essenciais (Prática)</h3>
-                        <div class="bullet-point">Autorizando acesso no servidor</div>
-                        <div class="bullet-point">Executando comandos remotos</div>
-                        <div class="bullet-point">Copiando arquivos com `scp`</div>
-                        <div class="bullet-point">Túneis SSH (Port Forwarding)</div>
-                        <div class="bullet-point">Otimizando com o arquivo de configuração</div>
+                        <h3>🖥️ Prática RDP</h3>
+                        <div class="bullet-point"><strong>Habilitando RDP no Windows</strong></div>
+                        <div class="bullet-point">Conexão com Remote Desktop nativo</div>
+                        <div class="bullet-point">Configurações de segurança</div>
+                        <div class="bullet-point">Acesso pela internet</div>
+                        <div class="bullet-point">Troubleshooting comum</div>
 
-                        <h3>🎯 Objetivo Final</h3>
-                        <div class="bullet-point">Dominar o acesso remoto seguro para gerenciar servidores a partir do Windows.</div>
+                        <h3>🎯 Objetivo</h3>
+                        <div class="bullet-point">Conectar em qualquer computador remotamente de forma segura.</div>
                     </div>
                 </div>
 
@@ -435,345 +440,382 @@
             </div>
         </div>
 
+        <!-- Slide 3: SSH vs RDP -->
         <div class="slide">
             <div class="content">
-                <h2>🤔 O que é SSH?</h2>
-                <div class="bullet-point">SSH (Secure Shell) é um protocolo que cria um "túnel" seguro entre dois computadores.</div>
-                <div class="bullet-point">Permite administrar máquinas remotamente, como se estivesse sentado na frente delas.</div>
-                <div class="bullet-point">Essencial para segurança, pois toda a comunicação é criptografada.</div>
+                <h2>🤔 SSH vs RDP: Qual Escolher?</h2>
                 
+                <table class="comparison-table">
+                    <tr>
+                        <th></th>
+                        <th>🔧 SSH</th>
+                        <th>🖥️ RDP</th>
+                    </tr>
+                    <tr>
+                        <td><strong>O que é</strong></td>
+                        <td>Terminal texto (linha de comando)</td>
+                        <td>Desktop gráfico completo</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Melhor para</strong></td>
+                        <td>Servidores Linux, comandos, scripts</td>
+                        <td>Computadores Windows, uso normal</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Velocidade</strong></td>
+                        <td>Muito rápido (só texto)</td>
+                        <td>Mais lento (gráficos)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Segurança</strong></td>
+                        <td>Excelente (criptografia forte)</td>
+                        <td>Boa (criptografia do Windows)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Uso de dados</strong></td>
+                        <td>Mínimo</td>
+                        <td>Alto</td>
+                    </tr>
+                </table>
+
                 <div class="highlight-box">
-                    <h3>Por que não usar Telnet ou FTP?</h3>
-                    <p class="large-text">Esses protocolos antigos enviam seus dados, inclusive <strong>usuário e senha</strong>, em texto plano. Qualquer um na rede pode ler!</p>
+                    <h3>💡 Dica Simples:</h3>
+                    <p class="large-text"><strong>SSH:</strong> Para mexer em servidores como um "hacker do bem"<br>
+                    <strong>RDP:</strong> Para usar outro Windows como se fosse seu</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Como Funciona a Segurança -->
+        <div class="slide">
+            <div class="content">
+                <h2>🔐 Como Funciona a Segurança?</h2>
+                
+                <div class="two-column">
+                    <div>
+                        <h3>🔑 SSH</h3>
+                        <div class="bullet-point">Criptografia super forte</div>
+                        <div class="bullet-point">Pode usar senha ou chaves</div>
+                        <div class="bullet-point">Chaves são como "impressão digital digital"</div>
+                        <div class="bullet-point">Impossível de interceptar</div>
+                    </div>
+                    <div>
+                        <h3>🖥️ RDP</h3>
+                        <div class="bullet-point">Criptografia do Windows</div>
+                        <div class="bullet-point">Usa senhas do usuário Windows</div>
+                        <div class="bullet-point">Pode usar certificados</div>
+                        <div class="bullet-point">Seguro para redes locais</div>
+                    </div>
                 </div>
 
                 <div class="example-box">
-                    <h3>💡 Casos de Uso Comuns:</h3>
-                    <div class="bullet-point">Acessar um servidor na nuvem (AWS, Google Cloud, etc.).</div>
-                    <div class="bullet-point">Executar um comando de atualização no servidor.</div>
-                    <div class="bullet-point">Enviar ou baixar arquivos de forma segura.</div>
+                    <h3>🏰 Analogia da Fortaleza:</h3>
+                    <p class="large-text">Imagine que cada computador é uma fortaleza. SSH e RDP são túneis seguros que você escava para entrar. A diferença é que SSH te leva para a "sala de comando" (terminal) e RDP te teletransporta diretamente para dentro da fortaleza (desktop).</p>
                 </div>
             </div>
         </div>
 
+        <!-- Slide 5: Arquitetura -->
         <div class="slide">
             <div class="content">
-                <h2>🔐 Como a Segurança Funciona?</h2>
-                <div class="bullet-point">SSH combina três técnicas criptográficas para garantir a segurança.</div>
-                
-                <div class="two-column">
-                    <div>
-                        <h3>🔑 Criptografia Assimétrica</h3>
-                        <div class="bullet-point">Usa um par de chaves (pública/privada).</div>
-                        <div class="bullet-point">Verifica a identidade do servidor e do cliente.</div>
-                        <div class="bullet-point">Usada para criar um canal seguro inicial.</div>
-                    </div>
-                    <div>
-                        <h3>📦 Criptografia Simétrica</h3>
-                        <div class="bullet-point">Usa uma única chave secreta.</div>
-                        <div class="bullet-point">Criptografa todos os dados da sessão.</div>
-                        <div class="bullet-point">Muito mais rápida que a assimétrica.</div>
-                    </div>
-                </div>
-
-                <div class="highlight-box">
-                    <h3>#️⃣ Hashing (Integridade)</h3>
-                    <p class="large-text">Gera uma "assinatura" para cada pacote de dados, garantindo que nada foi alterado no caminho entre o cliente e o servidor.</p>
-                </div>
-            </div>
-        </div>
-        
-        <div class="slide">
-            <div class="content">
-                <h2>🏗️ Arquitetura Cliente-Servidor</h2>
-                <div class="bullet-point">O SSH funciona com dois programas que se comunicam.</div>
+                <h2>🏗️ Como os Dois Funcionam</h2>
                 
                 <div class="diagram">
-                    <strong>{Seu Computador Windows 11}</strong>     <strong>{Servidor Remoto}</strong>
-                    +---------------------+                      +-------------------+
-                    |                     |                      |                   |
-                    |    Cliente SSH      |  <---- Túnel Seguro ---->  |    SSH Server     |
-                    | (OpenSSH Client)    |      (Criptografado)     | (ex: sshd daemon) |
-                    |                     |                      |                   |
-                    +---------------------+                      +-------------------+
+                    <strong>SSH (PuTTY)</strong>
+                    [Seu PC] ←→ [PuTTY] ←→ [Servidor Linux/Unix]
+                              Terminal    Comandos de texto
+                    
+                    <strong>RDP (Remote Desktop)</strong>
+                    [Seu PC] ←→ [Remote Desktop] ←→ [PC Windows]
+                              Tela gráfica      Desktop completo
                 </div>
 
                 <div class="two-column">
                     <div>
-                        <h3>💻 Cliente SSH (Windows 11)</h3>
-                        <div class="bullet-point">O programa que você usa para iniciar a conexão.</div>
-                        <div class="bullet-point"><strong>Precisa ser habilitado no Windows 11.</strong></div>
+                        <h3>🔧 Lado Cliente (Seu PC)</h3>
+                        <div class="bullet-point"><strong>PuTTY:</strong> Cliente SSH gratuito</div>
+                        <div class="bullet-point"><strong>Remote Desktop:</strong> Já vem no Windows</div>
+                        <div class="bullet-point">Ambos criam conexão segura</div>
                     </div>
                     <div>
-                        <h3>☁️ Servidor SSH (Daemon)</h3>
-                        <div class="bullet-point">O programa que "escuta" por conexões no servidor.</div>
-                        <div class="bullet-point">Geralmente chamado de `sshd`.</div>
-                        <div class="bullet-point">Ele que autentica o usuário e permite o acesso.</div>
+                        <h3>☁️ Lado Servidor</h3>
+                        <div class="bullet-point"><strong>SSH:</strong> Daemon rodando (sshd)</div>
+                        <div class="bullet-point"><strong>RDP:</strong> Serviço do Windows ativado</div>
+                        <div class="bullet-point">Escutam por conexões</div>
                     </div>
                 </div>
             </div>
         </div>
 
+        <!-- Slide 6: Instalando PuTTY -->
         <div class="slide">
             <div class="content">
-                <h2>🚀 PRÁTICA: Habilitando o Cliente SSH no Windows</h2>
-                <div class="bullet-point">O Windows 11 já vem com o cliente SSH, mas ele precisa ser habilitado como um "Recurso Opcional".</div>
+                <h2>🚀 PRÁTICA: Instalando o PuTTY</h2>
+                
+                <div class="bullet-point">PuTTY é o cliente SSH mais popular no Windows - gratuito e confiável.</div>
 
                 <h3>Passo a Passo:</h3>
-                <div class="process-step">1. Pressione a tecla <strong>Windows</strong>, digite <strong>Recursos Opcionais</strong> e tecle Enter.</div>
-                <div class="process-step">2. Verifique na lista de "Recursos instalados" se o <strong>"Cliente OpenSSH"</strong> já está lá.</div>
-                <div class="process-step">3. Se não estiver, clique em <strong>"Exibir recursos"</strong> no topo.</div>
-                <div class="process-step">4. Procure por <strong>"Cliente OpenSSH"</strong>, marque a caixa e clique em "Avançar" e depois "Instalar".</div>
+                <div class="process-step">1. Vá para <strong>putty.org</strong> e baixe o "64-bit x86" MSI Windows Installer.</div>
+                <div class="process-step">2. Execute o instalador como administrador.</div>
+                <div class="process-step">3. Instale com as opções padrão.</div>
+                <div class="process-step">4. Pronto! Agora você tem: PuTTY, PuTTYgen, e WinSCP.</div>
                 
                 <div class="highlight-box">
-                    <p>Após a instalação, você poderá usar o comando `ssh` no <strong>Terminal</strong>, <strong>PowerShell</strong> ou no antigo <strong>Prompt de Comando</strong>.</p>
+                    <h3>🎁 Bônus: O que você ganhou</h3>
+                    <div class="bullet-point"><strong>PuTTY:</strong> Para conectar via SSH</div>
+                    <div class="bullet-point"><strong>PuTTYgen:</strong> Para gerar chaves SSH</div>
+                    <div class="bullet-point"><strong>WinSCP:</strong> Para transferir arquivos</div>
                 </div>
             </div>
         </div>
 
+        <!-- Slide 7: Primeira Conexão SSH -->
         <div class="slide">
             <div class="content">
-                <h2>🚀 PRÁTICA: Sua Primeira Conexão</h2>
-                <div class="bullet-point">Abra o <strong>Terminal</strong> do Windows (Menu Iniciar > Terminal).</div>
-                <div class="bullet-point">O comando para conectar é simples e universal.</div>
+                <h2>🚀 PRÁTICA: Primeira Conexão SSH</h2>
+                
+                <div class="bullet-point">Vamos conectar em um servidor usando PuTTY.</div>
 
-                <div class="diagram">
-                    C:\Users\SeuNome> ssh usuario@endereco.do.servidor
-                </div>
+                <h3>Passo a Passo:</h3>
+                <div class="process-step">1. Abra o <strong>PuTTY</strong> (Menu Iniciar > PuTTY).</div>
+                <div class="process-step">2. Em "Host Name", digite o IP ou nome do servidor (ex: <code>192.168.1.100</code>).</div>
+                <div class="process-step">3. Deixe "Port" como <code>22</code> e "Connection type" como <code>SSH</code>.</div>
+                <div class="process-step">4. Clique em <strong>"Open"</strong>.</div>
                 
                 <div class="highlight-box">
-                    <h3>⚠️ Verificação da Chave do Host</h3>
-                    <p>Na primeira vez, você verá esta mensagem. É o SSH pedindo para confirmar a "identidade" do servidor. É um passo de segurança importante. Digite <strong>yes</strong> e pressione Enter.</p>
+                    <h3>⚠️ Primeira Vez: Verificação de Segurança</h3>
+                    <p>O PuTTY mostrará um alerta sobre a "chave do host". É normal! Clique em <strong>"Accept"</strong> para confiar no servidor.</p>
                     <div class="diagram" style="background: #333; color: white; border-color: #ff7f50;">
-                        The authenticity of host 'servidor.com (123.45.67.89)' can't be established.
-                        ED25519 key fingerprint is SHA256:AbCdEf123456...
-                        Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+                        PuTTY Security Alert
+                        The host key is not cached...
+                        Do you trust this host? [Yes] [No] [Cancel]
                     </div>
+                </div>
+
+                <div class="example-box">
+                    <p><strong>Agora:</strong> Digite seu usuário e senha quando solicitado. Você estará dentro do servidor!</p>
                 </div>
             </div>
         </div>
 
+        <!-- Slide 8: Gerando Chaves SSH -->
         <div class="slide">
             <div class="content">
-                <h2>🔑 Autenticação: Senha vs. Chaves</h2>
-                <div class="two-column">
-                    <div>
-                        <h3>🔒 Com Senha</h3>
-                        <div class="bullet-point">Método mais simples, porém menos seguro.</div>
-                        <div class="bullet-point">O servidor pede sua senha após a conexão.</div>
-                        <div class="bullet-point">Vulnerável a ataques de força bruta.</div>
-                        <div class="bullet-point">Não é ideal para automação.</div>
-                    </div>
-                    <div>
-                        <h3>✨ Com Chaves (Recomendado)</h3>
-                        <div class="bullet-point">Método mais seguro e prático.</div>
-                        <div class="bullet-point">Você prova sua identidade com um arquivo (chave privada) que só você tem.</div>
-                        <div class="bullet-point">Permite login sem digitar senha.</div>
-                        <div class="bullet-point">Padrão da indústria para segurança.</div>
-                    </div>
-                </div>
-                <div class="example-box center-text">
-                    <p class="large-text">Vamos focar no método de chaves, que é o mais profissional e seguro.</p>
-                </div>
-            </div>
-        </div>
-        
-        <div class="slide">
-            <div class="content">
-                <h2>🚀 PRÁTICA: Gerando Suas Chaves no Windows</h2>
-                <div class="bullet-point">Abra o <strong>Terminal</strong> do Windows.</div>
-                <div class="bullet-point">Use o comando `ssh-keygen` para criar seu par de chaves.</div>
-
-                <div class="diagram">
-                    C:\Users\SeuNome> ssh-keygen -t ed25519 -C "seu_email@exemplo.com"
-                </div>
-
-                <h3>O que acontece?</h3>
-                <div class="process-step">1. O comando sugere salvar em `C:\Users\SeuNome\.ssh\id_ed25519`. Apenas pressione Enter.</div>
-                <div class="process-step">2. Ele pedirá uma `passphrase` (senha para a chave). É opcional, mas recomendado. Se não quiser, apenas pressione Enter duas vezes.</div>
-                <div class="process-step">3. Duas chaves são criadas no diretório `C:\Users\SeuNome\.ssh\`:
-                    <ul>
-                        <li>`id_ed25519`: <strong>Sua chave PRIVADA. Guarde com segurança!</strong></li>
-                        <li>`id_ed25519.pub`: Sua chave PÚBLICA. É esta que você pode compartilhar.</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-        
-        <div class="slide">
-            <div class="content">
-                <h2>🚀 PRÁTICA: Autorizando Seu Acesso no Servidor</h2>
-                <div class="bullet-point">Você precisa copiar o conteúdo da sua chave <strong>pública</strong> para o servidor.</div>
-                <div class="bullet-point">O jeito mais fácil no Windows é usar um único comando para ler e enviar a chave.</div>
-
-                <h3>Comando Mágico (PowerShell):</h3>
-                <div class="diagram">
-                    Get-Content $env:USERPROFILE\.ssh\id_ed25519.pub | ssh usuario@servidor "cat >> .ssh/authorized_keys"
-                </div>
+                <h2>🚀 PRÁTICA: Criando Chaves SSH com PuTTYgen</h2>
                 
-                <h3>Como funciona?</h3>
-                <div class="process-step">1. `Get-Content ...` lê o conteúdo do seu arquivo de chave pública.</div>
-                <div class="process-step">2. O `|` (pipe) envia esse conteúdo para o comando seguinte.</div>
-                <div class="process-step">3. `ssh usuario@servidor "..."` conecta ao servidor e executa o comando entre aspas.</div>
-                <div class="process-step">4. `cat >> .ssh/authorized_keys` adiciona a sua chave ao final do arquivo de chaves autorizadas do servidor.</div>
+                <div class="bullet-point">Chaves SSH são mais seguras que senhas. Vamos criar sua "impressão digital digital".</div>
+
+                <h3>Passo a Passo:</h3>
+                <div class="process-step">1. Abra o <strong>PuTTYgen</strong> (Menu Iniciar > PuTTYgen).</div>
+                <div class="process-step">2. Escolha "RSA" e 2048 bits (padrão).</div>
+                <div class="process-step">3. Clique em <strong>"Generate"</strong>.</div>
+                <div class="process-step">4. <strong>Mova o mouse aleatoriamente</strong> sobre a área branca para gerar aleatoriedade.</div>
+                <div class="process-step">5. Digite um comentário (ex: "Minha chave SSH").</div>
+                <div class="process-step">6. Opcionalmente, digite uma senha para proteger a chave.</div>
+                <div class="process-step">7. Clique em <strong>"Save private key"</strong> e salve como <code>minha_chave.ppk</code>.</div>
+                <div class="process-step">8. Copie o texto da "Public key" (a chave pública).</div>
 
                 <div class="highlight-box">
-                    <p>O servidor pedirá sua senha <strong>uma última vez</strong> para autorizar a adição da chave.</p>
+                    <p><strong>Resultado:</strong> Você tem um arquivo .ppk (chave privada) e uma chave pública (texto copiado).</p>
                 </div>
             </div>
         </div>
 
+        <!-- Slide 9: Configurando Chaves no Servidor -->
         <div class="slide">
             <div class="content">
-                <h2>✨ O Resultado: Login Automático</h2>
-                <div class="bullet-point">Depois de autorizar a chave, feche e abra o <strong>Terminal</strong>. Tente se conectar novamente.</div>
+                <h2>🚀 PRÁTICA: Instalando sua Chave no Servidor</h2>
                 
-                <div class="diagram">
-                    C:\Users\SeuNome> ssh usuario@endereco.do.servidor
-                </div>
+                <div class="bullet-point">Agora vamos "autorizar" sua chave no servidor para login sem senha.</div>
 
-                <div class="example-box center-text">
-                    <h3>🎉 Conectado!</h3>
-                    <p class="large-text">Você será logado diretamente no terminal do servidor, sem precisar digitar a senha.</p>
-                    <div class="diagram" style="background: #333; color: lightgreen; border-color: #20b2aa;">
-                        Last login: Tue Jul 1 10:00:00 2025 from 192.168.1.50
-                        usuario@servidor:~$ _
-                    </div>
+                <h3>Método Simples:</h3>
+                <div class="process-step">1. Conecte no servidor via PuTTY (com senha, como antes).</div>
+                <div class="process-step">2. Digite: <code>mkdir -p ~/.ssh</code> e pressione Enter.</div>
+                <div class="process-step">3. Digite: <code>nano ~/.ssh/authorized_keys</code> e pressione Enter.</div>
+                <div class="process-step">4. <strong>Cole sua chave pública</strong> (botão direito do mouse no PuTTY).</div>
+                <div class="process-step">5. Pressione <code>Ctrl+X</code>, depois <code>Y</code>, depois <code>Enter</code> para salvar.</div>
+                <div class="process-step">6. Digite: <code>chmod 600 ~/.ssh/authorized_keys</code> para definir permissões.</div>
+
+                <div class="example-box">
+                    <h3>🎯 Teste:</h3>
+                    <p>Feche o PuTTY, abra novamente, mas agora em "Connection > SSH > Auth > Credentials", clique em "Browse" e selecione seu arquivo <code>.ppk</code>. Conecte - não pedirá mais senha!</p>
                 </div>
             </div>
         </div>
 
+        <!-- Slide 10: Transferindo Arquivos -->
         <div class="slide">
             <div class="content">
-                <h2>🚀 PRÁTICA: Executando um Comando Remoto</h2>
-                <div class="bullet-point">Você pode executar um único comando no servidor sem abrir uma sessão interativa.</div>
-
-                <div class="diagram">
-                    ssh usuario@servidor "comando para executar"
-                </div>
-
-                <h3>Exemplos práticos no Terminal do Windows:</h3>
-                <div class="example-box">
-                    <p><strong>Verificar o uso de disco no servidor:</strong></p>
-                    <div class="diagram">C:\Users\SeuNome> ssh app@servidor "df -h"</div>
-                </div>
-                <div class="example-box">
-                    <p><strong>Listar os arquivos em um diretório do servidor:</strong></p>
-                    <div class="diagram">C:\Users\SeuNome> ssh admin@servidor "ls -l /var/www"</div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="slide">
-            <div class="content">
-                <h2>🚀 PRÁTICA: Transferindo Arquivos com `scp`</h2>
-                <div class="bullet-point">`scp` (Secure Copy) usa SSH para transferir arquivos de forma segura.</div>
+                <h2>🚀 PRÁTICA: Transferindo Arquivos com WinSCP</h2>
                 
+                <div class="bullet-point">WinSCP é como um "Windows Explorer" que funciona via SSH.</div>
+
+                <h3>Passo a Passo:</h3>
+                <div class="process-step">1. Abra o <strong>WinSCP</strong>.</div>
+                <div class="process-step">2. Digite o IP do servidor e seu usuário.</div>
+                <div class="process-step">3. Clique em <strong>"Advanced"</strong> > <strong>"SSH"</strong> > <strong>"Authentication"</strong>.</div>
+                <div class="process-step">4. Em "Private key file", selecione seu arquivo <code>.ppk</code>.</div>
+                <div class="process-step">5. Clique <strong>"OK"</strong> e depois <strong>"Login"</strong>.</div>
+
                 <div class="two-column">
                     <div>
-                        <h3>📤 Enviar arquivo para o Servidor</h3>
-                        <div class="diagram">
-                            scp C:\caminho\local\arquivo.txt usuario@servidor:/caminho/remoto/
-                        </div>
-                        <p><strong>Exemplo:</strong> Enviar um backup da sua pasta Documentos.</p>
-                        <div class="diagram">scp C:\Users\SeuNome\Documents\backup.sql user@db:/opt/</div>
+                        <h3>💡 Resultado:</h3>
+                        <div class="bullet-point">Lado esquerdo: Seus arquivos Windows</div>
+                        <div class="bullet-point">Lado direito: Arquivos do servidor</div>
+                        <div class="bullet-point">Arraste e solte entre os lados!</div>
                     </div>
                     <div>
-                        <h3>📥 Baixar arquivo do Servidor</h3>
-                        <div class="diagram">
-                            scp usuario@servidor:/caminho/remoto/arquivo.txt C:\caminho\local\
-                        </div>
-                        <p><strong>Exemplo:</strong> Baixar um log para a sua pasta de Downloads.</p>
-                        <div class="diagram">scp admin@web:/var/log/error.log C:\Users\SeuNome\Downloads\</div>
+                        <h3>🎯 Teste Prático:</h3>
+                        <div class="bullet-point">Crie um arquivo .txt no Windows</div>
+                        <div class="bullet-point">Arraste para o servidor</div>
+                        <div class="bullet-point">Vá no PuTTY e digite <code>ls</code></div>
+                        <div class="bullet-point">Seu arquivo estará lá!</div>
                     </div>
                 </div>
             </div>
         </div>
-        
+
+        <!-- Slide 11: Habilitando RDP -->
         <div class="slide">
             <div class="content">
-                <h2>🚀 PRÁTICA: Túnel SSH (Port Forwarding)</h2>
-                <div class="bullet-point">Permite acessar um serviço na rede do servidor como se estivesse na sua máquina local.</div>
+                <h2>🚀 PRÁTICA: Habilitando RDP no Windows</h2>
                 
-                <div class="diagram">
-                    ssh -L porta_local:host_destino:porta_remota usuario@servidor
+                <div class="bullet-point">RDP permite controlar outro PC Windows como se você estivesse na frente dele.</div>
+
+                <h3>No PC que você quer acessar remotamente:</h3>
+                <div class="process-step">1. Clique com botão direito em <strong>"Este Computador"</strong> > <strong>"Propriedades"</strong>.</div>
+                <div class="process-step">2. Clique em <strong>"Configurações avançadas do sistema"</strong>.</div>
+                <div class="process-step">3. Na aba <strong>"Remoto"</strong>, marque <strong>"Habilitar Área de Trabalho Remota"</strong>.</div>
+                <div class="process-step">4. Clique em <strong>"OK"</strong>.</div>
+
+                <div class="highlight-box">
+                    <h3>⚠️ Importante para Segurança:</h3>
+                    <div class="bullet-point">Anote o <strong>nome do computador</strong> (aparece na tela)</div>
+                    <div class="bullet-point">Certifique-se de que o usuário tem <strong>senha forte</strong></div>
+                    <div class="bullet-point">Considere adicionar o usuário ao grupo "Usuários da Área de Trabalho Remota"</div>
                 </div>
+            </div>
+        </div>
+
+        <!-- Slide 12: Conectando via RDP -->
+        <div class="slide">
+            <div class="content">
+                <h2>🚀 PRÁTICA: Conectando via Remote Desktop</h2>
+                
+                <div class="bullet-point">Agora vamos conectar do seu PC para o PC que habilitou RDP.</div>
+
+                <h3>Passo a Passo:</h3>
+                <div class="process-step">1. No seu PC, pressione <strong>Windows + R</strong>.</div>
+                <div class="process-step">2. Digite <code>mstsc</code> e pressione Enter.</div>
+                <div class="process-step">3. Em "Computador", digite o nome do PC ou IP (ex: <code>DESKTOP-ABC123</code> ou <code>192.168.1.50</code>).</div>
+                <div class="process-step">4. Digite seu usuário e senha.</div>
+                <div class="process-step">5. Clique em <strong>"Conectar"</strong>.</div>
 
                 <div class="example-box">
-                    <h3>Exemplo: Acessar um painel web restrito</h3>
-                    <p>Um painel de administração web roda na porta `8080` do servidor, mas só é acessível pela própria máquina. Você quer acessá-lo no seu navegador.</p>
-                    
-                    <div class="diagram">
-                        ssh -L 9999:localhost:8080 admin@servidor
-                    </div>
-
-                    <p><strong>Resultado:</strong> Mantenha esse terminal aberto. Agora, abra seu navegador no Windows e acesse `http://localhost:9999`. Você verá o painel que está rodando no servidor!</p>
-                </div>
-            </div>
-        </div>
-        
-        <div class="slide">
-            <div class="content">
-                <h2>🚀 PRÁTICA: Otimizando com Arquivo de Configuração</h2>
-                <div class="bullet-point">Crie atalhos para suas conexões no arquivo `C:\Users\SeuNome\.ssh\config`.</div>
-                <div class="bullet-point">Se o arquivo ou a pasta `.ssh` não existirem, crie-os.</div>
-
-                <h3>Exemplo de configuração:</h3>
-                <div class="diagram">
-                    # Servidor de trabalho (webserver)
-                    Host web
-                        HostName 192.168.1.10
-                        User admin
-                        Port 2222
-
-                    # Servidor de banco de dados
-                    Host db
-                        HostName db.empresa.com
-                        User cazevedo
+                    <h3>🎉 Resultado:</h3>
+                    <p class="large-text">Uma nova janela abrirá mostrando o desktop do outro computador! Você pode usar normalmente como se estivesse sentado na frente dele.</p>
                 </div>
 
                 <div class="highlight-box">
-                    <h3>Como usar:</h3>
-                    <p class="large-text">Agora, no seu <strong>Terminal</strong>, use os atalhos:</p>
-                    <div class="diagram">
-                        C:\Users\SeuNome> ssh web
-                        # (em vez de ssh -p 2222 admin@192.168.1.10)
-                        
-                        C:\Users\SeuNome> ssh db
-                        # (em vez de ssh cazevedo@db.empresa.com)
-                    </div>
+                    <p><strong>Dica:</strong> Para sair, simplesmente feche a janela ou clique no X no topo da barra de conexão.</p>
                 </div>
             </div>
         </div>
 
+        <!-- Slide 13: RDP pela Internet -->
+        <div class="slide">
+            <div class="content">
+                <h2>🚀 PRÁTICA: RDP pela Internet (Avançado)</h2>
+                
+                <div class="bullet-point">Para acessar de qualquer lugar, precisa configurar o roteador.</div>
+
+                <h3>Configuração no Roteador:</h3>
+                <div class="process-step">1. Acesse seu roteador (geralmente <code>192.168.1.1</code> no navegador).</div>
+                <div class="process-step">2. Procure por <strong>"Port Forwarding"</strong> ou <strong>"Redirecionamento de Porta"</strong>.</div>
+                <div class="process-step">3. Crie uma regra: Porta <code>3389</code> (RDP) → IP do seu PC.</div>
+                <div class="process-step">4. Descubra seu IP público em <code>whatismyip.com</code>.</div>
+
+                <div class="highlight-box">
+                    <h3>⚠️ Cuidados de Segurança:</h3>
+                    <div class="bullet-point">Mude a porta padrão (3389 → outra, como 3390)</div>
+                    <div class="bullet-point">Use senhas muito fortes</div>
+                    <div class="bullet-point">Considere usar VPN em vez de RDP direto</div>
+                    <div class="bullet-point">Monitore tentativas de login suspeitas</div>
+                </div>
+
+                <div class="example-box">
+                    <p><strong>Para conectar:</strong> Use o IP público + porta (ex: <code>203.45.67.89:3390</code>)</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 14: Troubleshooting -->
+        <div class="slide">
+            <div class="content">
+                <h2>🔧 Resolvendo Problemas Comuns</h2>
+                
+                <div class="two-column">
+                    <div>
+                        <h3>🔧 Problemas SSH/PuTTY:</h3>
+                        <div class="bullet-point"><strong>Connection refused:</strong> Servidor SSH não está rodando</div>
+                        <div class="bullet-point"><strong>Permission denied:</strong> Usuário/senha incorretos</div>
+                        <div class="bullet-point"><strong>Key não funciona:</strong> Verifique se está no arquivo <code>authorized_keys</code></div>
+                        <div class="bullet-point"><strong>Timeout:</strong> Firewall bloqueando porta 22</div>
+                    </div>
+                    <div>
+                        <h3>🖥️ Problemas RDP:</h3>
+                        <div class="bullet-point"><strong>RDP não habilitado:</strong> Verifique se está ativado</div>
+                        <div class="bullet-point"><strong>Usuário sem permissão:</strong> Adicione ao grupo RDP</div>
+                        <div class="bullet-point"><strong>Firewall:</strong> Libere porta 3389</div>
+                        <div class="bullet-point"><strong>"Usuário logado":</strong> Só um usuário por vez no Windows Home</div>
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>🛠️ Comandos Úteis para Diagnóstico:</h3>
+                    <div class="bullet-point"><strong>Testar conexão:</strong> <code>telnet IP 22</code> (SSH) ou <code>telnet IP 3389</code> (RDP)</div>
+                    <div class="bullet-point"><strong>Ver logs:</strong> Visualizador de Eventos do Windows</div>
+                    <div class="bullet-point"><strong>IP do PC:</strong> <code>ipconfig</code> no cmd</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 15: Resumo -->
         <div class="slide">
             <div class="content">
                 <h2>🎯 Resumo Final</h2>
                 
                 <div class="highlight-box large-text center-text">
-                    <strong>SSH no Windows 11: Seu portal seguro para servidores remotos.</strong>
+                    <strong>SSH + RDP: Acesso total a qualquer computador, de qualquer lugar.</strong>
                 </div>
 
                 <div class="two-column">
                     <div>
-                        <h3>✅ O que aprendemos:</h3>
-                        <div class="bullet-point">Habilitar o Cliente SSH é o primeiro passo.</div>
-                        <div class="bullet-point">Autenticação com chaves é o padrão ouro.</div>
-                        <div class="bullet-point">`ssh-keygen` cria as chaves no seu perfil.</div>
-                        <div class="bullet-point">É fácil autorizar sua chave no servidor.</div>
+                        <h3>✅ SSH (PuTTY):</h3>
+                        <div class="bullet-point">PuTTY para conectar</div>
+                        <div class="bullet-point">PuTTYgen para chaves</div>
+                        <div class="bullet-point">WinSCP para arquivos</div>
+                        <div class="bullet-point">Ideal para servidores Linux</div>
+                        <div class="bullet-point">Seguro e rápido</div>
                     </div>
                     <div>
-                        <h3>🚀 O que você pode fazer:</h3>
-                        <div class="bullet-point">Logar em servidores sem senha.</div>
-                        <div class="bullet-point">Executar comandos remotamente.</div>
-                        <div class="bullet-point">Transferir arquivos com `scp`.</div>
-                        <div class="bullet-point">Criar túneis para serviços restritos.</div>
-                        <div class="bullet-point">Simplificar tudo com o arquivo `config`.</div>
+                        <h3>✅ RDP (Remote Desktop):</h3>
+                        <div class="bullet-point">mstsc para conectar</div>
+                        <div class="bullet-point">Habilitar no PC de destino</div>
+                        <div class="bullet-point">Port forwarding para internet</div>
+                        <div class="bullet-point">Ideal para PCs Windows</div>
+                        <div class="bullet-point">Interface gráfica completa</div>
                     </div>
+                </div>
+
+                <div class="example-box center-text">
+                    <h3>🚀 Próximos Passos:</h3>
+                    <p>Pratique conectando em diferentes máquinas. Configure chaves SSH para login automático. Teste RDP em rede local primeiro, depois pela internet com segurança.</p>
                 </div>
             </div>
         </div>
 
+        <!-- Slide 16: Quiz -->
         <div class="slide">
             <div class="content">
                 <h2>🧠 Quiz - Teste seus conhecimentos!</h2>
@@ -781,16 +823,16 @@
                 <div class="quiz-container">
                     <div class="quiz-question" id="question1">
                         <h3>📝 Questão 1</h3>
-                        <p><strong>Qual o principal objetivo do protocolo SSH?</strong></p>
+                        <p><strong>Qual a principal diferença entre SSH e RDP?</strong></p>
                         <div class="quiz-options">
                             <div class="quiz-option" onclick="selectOption(1, 'a', false)">
-                                <span class="option-letter">A)</span> Acelerar a velocidade da internet
+                                <span class="option-letter">A)</span> SSH é mais seguro que RDP
                             </div>
                             <div class="quiz-option" onclick="selectOption(1, 'b', true)">
-                                <span class="option-letter">B)</span> Fornecer acesso remoto seguro e criptografado
+                                <span class="option-letter">B)</span> SSH é terminal texto, RDP é desktop gráfico
                             </div>
                             <div class="quiz-option" onclick="selectOption(1, 'c', false)">
-                                <span class="option-letter">C)</span> Hospedar sites e aplicações web
+                                <span class="option-letter">C)</span> SSH só funciona no Windows, RDP no Linux
                             </div>
                         </div>
                         <div class="quiz-feedback" id="feedback1"></div>
@@ -798,16 +840,16 @@
 
                     <div class="quiz-question" id="question2" style="display: none;">
                         <h3>📝 Questão 2</h3>
-                        <p><strong>No sistema de chaves SSH, qual chave você instala no servidor para o qual deseja se conectar?</strong></p>
+                        <p><strong>Qual arquivo você salva com PuTTYgen para usar no PuTTY?</strong></p>
                         <div class="quiz-options">
-                            <div class="quiz-option" onclick="selectOption(2, 'a', true)">
-                                <span class="option-letter">A)</span> A chave PÚBLICA (`.pub`)
+                            <div class="quiz-option" onclick="selectOption(2, 'a', false)">
+                                <span class="option-letter">A)</span> A chave pública (.pub)
                             </div>
-                            <div class="quiz-option" onclick="selectOption(2, 'b', false)">
-                                <span class="option-letter">B)</span> A chave PRIVADA
+                            <div class="quiz-option" onclick="selectOption(2, 'b', true)">
+                                <span class="option-letter">B)</span> A chave privada (.ppk)
                             </div>
                             <div class="quiz-option" onclick="selectOption(2, 'c', false)">
-                                <span class="option-letter">C)</span> Ambas as chaves, pública e privada
+                                <span class="option-letter">C)</span> Ambas as chaves
                             </div>
                         </div>
                         <div class="quiz-feedback" id="feedback2"></div>
@@ -815,16 +857,16 @@
 
                     <div class="quiz-question" id="question3" style="display: none;">
                         <h3>📝 Questão 3</h3>
-                        <p><strong>Qual comando é usado no Terminal do Windows para copiar um arquivo LOCAL para um servidor REMOTO?</strong></p>
+                        <p><strong>Para acessar RDP pela internet, você precisa configurar:</strong></p>
                         <div class="quiz-options">
-                            <div class="quiz-option" onclick="selectOption(3, 'a', false)">
-                                <span class="option-letter">A)</span> `copy arquivo.txt \\servidor\pasta`
+                            <div class="quiz-option" onclick="selectOption(3, 'a', true)">
+                                <span class="option-letter">A)</span> Port forwarding no roteador (porta 3389)
                             </div>
-                             <div class="quiz-option" onclick="selectOption(3, 'b', true)">
-                                <span class="option-letter">B)</span> `scp C:\Users\user\doc.txt user@server:/home/`
+                             <div class="quiz-option" onclick="selectOption(3, 'b', false)">
+                                <span class="option-letter">B)</span> Apenas habilitar RDP no Windows
                             </div>
                             <div class="quiz-option" onclick="selectOption(3, 'c', false)">
-                                <span class="option-letter">C)</span> `ftp -upload arquivo.txt`
+                                <span class="option-letter">C)</span> Instalar um software especial
                             </div>
                         </div>
                         <div class="quiz-feedback" id="feedback3"></div>
@@ -832,16 +874,16 @@
 
                     <div class="quiz-question" id="question4" style="display: none;">
                         <h3>📝 Questão 4</h3>
-                        <p><strong>Onde o Windows armazena as chaves SSH por padrão após usar `ssh-keygen`?</strong></p>
+                        <p><strong>Para transferir arquivos via SSH, qual ferramenta usar?</strong></p>
                         <div class="quiz-options">
                             <div class="quiz-option" onclick="selectOption(4, 'a', false)">
-                                <span class="option-letter">A)</span> Na pasta `C:\Windows\System32`
+                                <span class="option-letter">A)</span> PuTTY
                             </div>
-                             <div class="quiz-option" onclick="selectOption(4, 'b', true)">
-                                <span class="option-letter">B)</span> Na pasta `.ssh` dentro do seu perfil de usuário (`C:\Users\SeuNome\.ssh`)
+                            <div class="quiz-option" onclick="selectOption(4, 'b', false)">
+                                <span class="option-letter">B)</span> Remote Desktop
                             </div>
-                            <div class="quiz-option" onclick="selectOption(4, 'c', false)">
-                                <span class="option-letter">C)</span> Na pasta `Meus Documentos`
+							<div class="quiz-option" onclick="selectOption(4, 'c', true)">
+                                <span class="option-letter">C)</span> WinSCP
                             </div>
                         </div>
                         <div class="quiz-feedback" id="feedback4"></div>
@@ -865,40 +907,42 @@
             </div>
         </div>
 
+        <!-- Slide 17: Referências -->
         <div class="slide">
             <div class="content">
                 <h2>📚 Referências</h2>
                 
-                <div class="highlight-box">
-                    <h3>📖 Documentação Oficial (Microsoft):</h3>
-                    <div class="bullet-point"><strong>OpenSSH in Windows</strong></div>
-                    <div class="bullet-point">docs.microsoft.com/windows-server/administration/openssh/</div>
-                </div>
-
                 <div class="two-column">
                     <div>
-                        <h3>🌐 Sites Recomendados:</h3>
-                        <div class="bullet-point">www.openssh.com (Site oficial do OpenSSH)</div>
-                        <div class="bullet-point">DigitalOcean Community Tutorials (Guias práticos)</div>
-                         <div class="bullet-point">PuTTY (Cliente SSH alternativo popular)</div>
+                        <h3>🔧 SSH/PuTTY:</h3>
+                        <div class="bullet-point"><strong>PuTTY Official:</strong> putty.org</div>
+                        <div class="bullet-point"><strong>WinSCP:</strong> winscp.net</div>
+                        <div class="bullet-point"><strong>OpenSSH:</strong> openssh.com</div>
+                        
+                        <h3>🖥️ RDP:</h3>
+                        <div class="bullet-point"><strong>Microsoft Docs:</strong> Remote Desktop</div>
+                        <div class="bullet-point"><strong>Port Forwarding:</strong> portforward.com</div>
                     </div>
                     <div>
-                        <h3>📋 RFCs Principais:</h3>
-                        <div class="bullet-point">RFC 4251 - The Secure Shell (SSH) Protocol Architecture</div>
-                        <div class="bullet-point">RFC 4252 - The SSH Authentication Protocol</div>
-                        <div class="bullet-point">RFC 4253 - The SSH Transport Layer Protocol</div>
+                        <h3>🛡️ Segurança:</h3>
+                        <div class="bullet-point">Sempre use senhas fortes</div>
+                        <div class="bullet-point">Prefira chaves SSH a senhas</div>
+                        <div class="bullet-point">Monitore logs de acesso</div>
+                        <div class="bullet-point">Considere usar VPN</div>
+                        <div class="bullet-point">Mantenha sistemas atualizados</div>
                     </div>
                 </div>
 
                 <div class="example-box center-text">
                     <h3>🤖 Metodologia de Criação</h3>
-                    <p>Apresentação desenvolvida com assistência de IA Gemini<br>
-                    Layout clonado e conteúdo adaptado para Windows 11<br>
-                    Foco em simplicidade e exemplos práticos</p>
+                    <p>Apresentação desenvolvida com assistência de IA Claude<br>
+                    Adaptada para foco prático com PuTTY e RDP nativo<br>
+                    Ênfase em exercícios hands-on e aplicação real</p>
                 </div>
             </div>
         </div>
 
+        <!-- Navegação -->
         <div class="navigation">
             <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">⬅️ Anterior</button>
             <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">Próximo ➡️</button>
@@ -988,11 +1032,11 @@
             
             const resultMessage = document.getElementById('resultMessage');
             if (score === 4) {
-                resultMessage.innerHTML = '🏆 Excelente! Você domina o SSH no Windows!';
+                resultMessage.innerHTML = '🏆 Excelente! Você domina SSH e RDP!';
             } else if (score >= 2) {
                 resultMessage.innerHTML = '👏 Muito bom! Continue praticando!';
             } else {
-                resultMessage.innerHTML = '📖 Recomendo revisar o conteúdo e praticar os comandos!';
+                resultMessage.innerHTML = '📖 Recomendo revisar o conteúdo e praticar as conexões!';
             }
         }
 
@@ -1021,6 +1065,7 @@
             document.getElementById('nextQuizBtn').style.display = 'none';
         }
 
+        // Keyboard navigation
         document.addEventListener('keydown', (e) => {
             if (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA') return;
             if (e.key === 'ArrowLeft') changeSlide(-1);
@@ -1036,7 +1081,6 @@
         });
 
         showSlide(0);
-
     </script>
 </body>
 </html>
