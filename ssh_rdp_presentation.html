@@ -342,11 +342,31 @@
             font-size: 1.4em;
             margin: 10px 0;
         }
-        .home-btn:hover {
-            background: #5a67d8;
-            transform: translateY(-2px);
-            box-shadow: 0 7px 20px rgba(102, 126, 234, 0.4);
-        }
+        .home-btn {
+    position: fixed;
+    top: 30px;
+    left: 30px;
+    background: #667eea;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    padding: 12px 20px;
+    font-size: 1em;
+    font-weight: bold;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+    z-index: 1001;
+}
+
+.home-btn:hover {
+    background: #5a67d8;
+    transform: translateY(-2px);
+    box-shadow: 0 7px 20px rgba(102, 126, 234, 0.4);
+}
     </style>
 </head>
 <body>
