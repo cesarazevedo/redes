@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Protocolos de Email - SMTP e POP3</title>
+    <title>SMTP e POP3 - Protocolos de Email</title>
     <style>
         * {
             margin: 0;
@@ -77,13 +77,6 @@
             align-items: start;
         }
 
-        .three-column {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 30px;
-            align-items: start;
-        }
-
         .bullet-point {
             display: flex;
             align-items: flex-start;
@@ -93,60 +86,153 @@
         }
 
         .bullet-point::before {
-            content: "🔸";
+            content: "📧";
             margin-right: 15px;
             font-size: 1.2em;
         }
 
         .highlight-box {
-            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
             padding: 25px;
             border-radius: 15px;
             margin: 20px 0;
-            border-left: 5px solid #667eea;
+            border-left: 5px solid #4a5568;
         }
 
         .example-box {
-            background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%);
+            background: linear-gradient(135deg, #00c9ff 0%, #92fe9d 100%);
+            color: #2d3748;
             padding: 25px;
             border-radius: 15px;
             margin: 20px 0;
-            border-left: 5px solid #9c27b0;
+            border-left: 5px solid #00b894;
         }
 
-        .navigation {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 15px;
-            z-index: 1000;
+        .config-box {
+            background: #2d3748;
+            color: #00ff41;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #00ff41;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1em;
+            position: relative;
         }
 
-        .nav-btn {
-            padding: 15px 25px;
+        .config-box::before {
+            content: "⚙️ Configuração";
+            position: absolute;
+            top: -15px;
+            left: 20px;
+            background: #2d3748;
+            color: #fff;
+            padding: 5px 15px;
+            border-radius: 8px;
+            font-size: 0.9em;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .windows-box {
+            background: #0078d4;
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #004c87;
+            position: relative;
+        }
+
+        .windows-box::before {
+            content: "🪟 Windows 10";
+            position: absolute;
+            top: -15px;
+            left: 20px;
+            background: #0078d4;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 8px;
+            font-size: 0.9em;
+        }
+
+        .gmail-box {
+            background: #ea4335;
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #d33b2c;
+            position: relative;
+        }
+
+        .gmail-box::before {
+            content: "📮 Gmail";
+            position: absolute;
+            top: -15px;
+            left: 20px;
+            background: #ea4335;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 8px;
+            font-size: 0.9em;
+        }
+
+        .outlook-box {
+            background: #0078d4;
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #106ebe;
+            position: relative;
+        }
+
+        .outlook-box::before {
+            content: "📧 Outlook";
+            position: absolute;
+            top: -15px;
+            left: 20px;
+            background: #0078d4;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 8px;
+            font-size: 0.9em;
+        }
+
+        .nav-button {
+            padding: 15px 30px;
             background: #667eea;
             color: white;
             border: none;
             border-radius: 25px;
             cursor: pointer;
-            font-size: 1.1em;
+            font-size: 1.2em;
             font-weight: bold;
+            margin: 10px;
             transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
         }
 
-        .nav-btn:hover {
+        .nav-button:hover {
             background: #5a67d8;
             transform: translateY(-2px);
-            box-shadow: 0 7px 20px rgba(102, 126, 234, 0.4);
         }
 
-        .nav-btn:disabled {
-            background: #a0a0a0;
-            cursor: not-allowed;
-            transform: none;
+        .nav-button.start {
+            background: #27ae60;
+            font-size: 1.4em;
+            padding: 20px 40px;
+        }
+
+        .nav-button.start:hover {
+            background: #229954;
+        }
+
+        .slide-navigation {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #e2e8f0;
         }
 
         .slide-counter {
@@ -170,1737 +256,1211 @@
             line-height: 1.6;
         }
 
-        .diagram {
-            background: #f7fafc;
-            border: 2px dashed #667eea;
-            border-radius: 15px;
-            padding: 20px;
-            margin: 20px 0;
-            text-align: center;
-            font-family: monospace;
-            font-size: 1.2em;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0;
-            font-size: 1.1em;
-        }
-
-        th, td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #e2e8f0;
-        }
-
-        th {
-            background: #667eea;
-            color: white;
-            font-weight: bold;
-        }
-
-        .process-step {
-            background: #e8f5e8;
-            margin: 10px 0;
-            padding: 15px;
-            border-radius: 10px;
-            border-left: 4px solid #4caf50;
-        }
-
-        .code-box {
-            background: #2d3748;
-            color: #e2e8f0;
+        .warning-box {
+            background: #ffeaa7;
+            color: #2d3436;
             padding: 20px;
             border-radius: 10px;
-            font-family: monospace;
-            font-size: 1em;
+            margin: 15px 0;
+            border-left: 4px solid #fdcb6e;
+        }
+
+        .info-box {
+            background: #d1ecf1;
+            color: #0c5460;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+
+        .success-box {
+            background: #c6f6d5;
+            color: #22543d;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 4px solid #48bb78;
+        }
+
+        .comparison-table {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
             margin: 20px 0;
             overflow-x: auto;
         }
 
-        /* Quiz Styles */
-        .quiz-container {
-            max-width: 100%;
-            margin: 20px 0;
-        }
-
-        .quiz-question {
-            background: #f8f9fa;
-            padding: 30px;
-            border-radius: 15px;
-            margin: 20px 0;
-            border: 2px solid #e2e8f0;
-        }
-
-        .quiz-question h3 {
-            color: #667eea;
-            margin-bottom: 20px;
-        }
-
-        .quiz-question p {
-            font-size: 1.3em;
-            margin-bottom: 25px;
-            font-weight: bold;
-        }
-
-        .quiz-options {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .quiz-option {
-            display: flex;
-            align-items: center;
-            padding: 15px 20px;
-            background: white;
-            border: 2px solid #e2e8f0;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.3s ease;
+        .comparison-table table {
+            width: 100%;
+            border-collapse: collapse;
             font-size: 1.1em;
         }
 
-        .quiz-option:hover {
-            border-color: #667eea;
-            background: #f0f4ff;
-            transform: translateX(5px);
+        .comparison-table th,
+        .comparison-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #dee2e6;
         }
 
-        .quiz-option.selected {
-            border-color: #667eea;
+        .comparison-table th {
             background: #667eea;
             color: white;
+            font-weight: bold;
         }
 
-        .quiz-option.correct {
-            border-color: #48bb78;
-            background: #48bb78;
-            color: white;
+        .comparison-table tr:nth-child(even) {
+            background: #f2f2f2;
         }
 
-        .quiz-option.incorrect {
-            border-color: #f56565;
-            background: #f56565;
-            color: white;
+        .steps-box {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 4px solid #667eea;
         }
 
-        .option-letter {
+        .step {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border-left: 3px solid #667eea;
+            font-size: 1.1em;
+        }
+
+        .step-number {
             background: #667eea;
             color: white;
             width: 30px;
             height: 30px;
             border-radius: 50%;
-            display: flex;
+            display: inline-flex;
             align-items: center;
             justify-content: center;
             margin-right: 15px;
             font-weight: bold;
-            flex-shrink: 0;
         }
-
-        .quiz-option.correct .option-letter {
-            background: #48bb78;
-        }
-
-        .quiz-option.incorrect .option-letter {
-            background: #f56565;
-        }
-
-        .quiz-feedback {
-            margin-top: 20px;
-            padding: 15px;
-            border-radius: 10px;
-            font-weight: bold;
-            display: none;
-        }
-
-        .quiz-feedback.correct {
-            background: #c6f6d5;
-            color: #22543d;
-            border: 2px solid #48bb78;
-            display: block;
-        }
-
-        .quiz-feedback.incorrect {
-            background: #fed7d7;
-            color: #742a2a;
-            border: 2px solid #f56565;
-            display: block;
-        }
-
-        .quiz-navigation {
-            text-align: center;
-            margin-top: 30px;
-        }
-
-        .quiz-result {
-            text-align: center;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 40px;
-            border-radius: 20px;
-            margin: 20px 0;
-        }
-
-        .result-box {
-            background: rgba(255,255,255,0.1);
-            padding: 25px;
-            border-radius: 15px;
-            margin: 20px 0;
-        }
-
-        .result-box p {
-            font-size: 1.4em;
-            margin: 10px 0;
-        }
-
-        .protocol-code {
-            display: inline-block;
-            background: #2d3748;
-            color: #e2e8f0;
-            padding: 5px 10px;
-            border-radius: 5px;
-            font-family: monospace;
-            margin: 2px;
-        }
-
-        .architecture-diagram {
-            background: #f0f4ff;
-            border: 2px solid #667eea;
-            border-radius: 15px;
-            padding: 30px;
-            margin: 20px 0;
-            text-align: center;
-        }
-
-        .flow-step {
-            background: #e3f2fd;
-            padding: 15px;
-            border-radius: 10px;
-            margin: 10px 0;
-            border-left: 4px solid #2196f3;
-        }
-
-        .warning-box {
-            background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
-            padding: 25px;
-            border-radius: 15px;
-            margin: 20px 0;
-            border-left: 5px solid #ffc107;
-        }
-
-        .mail-flow {
-            background: #f8f9fa;
-            border: 2px solid #28a745;
-            border-radius: 15px;
-            padding: 20px;
-            margin: 20px 0;
-            text-align: center;
-        }
-
-        .smtp-step {
-            background: #e8f5e8;
-            padding: 15px;
-            border-radius: 10px;
-            margin: 10px 0;
-            border-left: 4px solid #28a745;
-        }
-
-        .pop3-step {
-            background: #e3f2fd;
-            padding: 15px;
-            border-radius: 10px;
-            margin: 10px 0;
-            border-left: 4px solid #007bff;
-        }
-
-        .lab-box {
-            background: linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%);
-            padding: 25px;
-            border-radius: 15px;
-            margin: 20px 0;
-            border-left: 5px solid #4caf50;
-        }
-
-        .exercise-box {
-            background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
-            padding: 25px;
-            border-radius: 15px;
-            margin: 20px 0;
-            border-left: 5px solid #ff9800;
-        }
-
-        .troubleshoot-box {
-            background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
-            padding: 25px;
-            border-radius: 15px;
-            margin: 20px 0;
-            border-left: 5px solid #f44336;
-        }
-		.home-btn {
-    position: fixed;
-    top: 30px;
-    left: 30px;
-    background: #667eea;
-    color: white;
-    border: none;
-    border-radius: 25px;
-    padding: 12px 20px;
-    font-size: 1em;
-    font-weight: bold;
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    transition: all 0.3s ease;
-    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
-    z-index: 1001;
-}
-
-.home-btn:hover {
-    background: #5a67d8;
-    transform: translateY(-2px);
-    box-shadow: 0 7px 20px rgba(102, 126, 234, 0.4);
-}
     </style>
 </head>
 <body>
-<a href="index.html" class="home-btn">
-    🏠 Voltar ao Índice
-</a>
     <div class="presentation">
         <div class="slide-counter">
-            <span id="current-slide">1</span> / <span id="total-slides">16</span>
+            <span id="current-slide">1</span> / <span id="total-slides">10</span>
         </div>
 
         <!-- Slide 1: Título -->
-        <div class="slide active">
+        <div class="slide active" id="slide-1">
             <div class="content center-text">
-                <h1>📧 Protocolos de Email</h1>
-                <h2 style="border: none; color: #667eea;">SMTP e POP3 - Na Prática!</h2>
+                <h1>📧 SMTP e POP3</h1>
+                <h2 style="border: none; color: #667eea;">Protocolos de Email e Configuração</h2>
                 <div class="highlight-box large-text">
-                    <strong>Aula Prática</strong><br>
-                    Configure, teste e solucione problemas<br>
-                    Do Packet Tracer ao mundo real
+                    <strong>Como funciona o email na internet</strong><br>
+                    Entenda os protocolos que fazem seus emails chegarem ao destino<br>
+                    Configuração prática no Cisco Packet Tracer e Windows 10
                 </div>
                 
-                <div class="lab-box" style="margin-top: 40px;">
-                    <h3>🛠️ O que vamos fazer hoje:</h3>
-                    <p style="font-size: 1.3em; margin: 10px 0;">
-                        ✅ Configurar servidor de email no Packet Tracer<br>
-                        ✅ Configurar cliente de email real<br>
-                        ✅ Testar e resolver problemas comuns
+                <div class="example-box" style="margin-top: 40px;">
+                    <p style="font-size: 1.3em; margin: 0;">
+                        📮 <strong>SMTP:</strong> Envia emails (como o carteiro)<br>
+                        📬 <strong>POP3:</strong> Recebe emails (como sua caixa de correio)
                     </p>
                 </div>
             </div>
-        </div>
-
-        <!-- Slide 2: O que você vai aprender -->
-        <div class="slide">
-            <div class="content">
-                <h2>🎯 O que você vai aprender hoje</h2>
-                
-                <div class="two-column">
-                    <div>
-                        <h3>🔧 Parte Prática</h3>
-                        <div class="lab-box">
-                            <strong>Lab 1: Packet Tracer</strong><br>
-                            • Montar rede com servidor de email<br>
-                            • Configurar SMTP e POP3<br>
-                            • Testar envio e recebimento
-                        </div>
-                        
-                        <div class="lab-box">
-                            <strong>Lab 2: Cliente Real</strong><br>
-                            • Configurar Thunderbird/Outlook<br>
-                            • Conectar com Gmail/Outlook.com<br>
-                            • Resolver problemas de conexão
-                        </div>
-                    </div>
-                    <div>
-                        <h3>📚 Teoria Essencial</h3>
-                        <div class="bullet-point">SMTP = Enviar emails</div>
-                        <div class="bullet-point">POP3 = Baixar emails</div>
-                        <div class="bullet-point">Portas principais: 25, 587, 110, 995</div>
-                        <div class="bullet-point">Comandos básicos para debug</div>
-                        
-                        <div class="exercise-box">
-                            <strong>💡 Foco da aula:</strong><br>
-                            80% prática + 20% teoria<br>
-                            Você vai sair sabendo configurar!
-                        </div>
-                    </div>
-                </div>
-
-                <div class="highlight-box center-text">
-                    <h3>🚨 Cenário Real</h3>
-                    <p>Imagine: Seu chefe te pede para configurar o email da empresa<br>
-                    <strong>Como você faria? Vamos descobrir!</strong></p>
-                </div>
-
-                <div class="warning-box center-text">
-                    <h3>📱 Por que isso importa?</h3>
-                    <p>Email é A aplicação mais usada no mundo<br>
-                    Todo técnico em informática PRECISA saber configurar!</p>
-                </div>
+            
+            <div class="slide-navigation">
+                <span style="margin: 0 20px; font-weight: bold; color: #667eea;">Slide 1 de 10</span>
+                <button class="nav-button start" onclick="showSlide(2)">
+                    Começar Aula ➡️
+                </button>
             </div>
         </div>
 
-        <!-- Slide 3: Email Básico -->
-        <div class="slide">
+        <!-- Slide 2: O que é SMTP -->
+        <div class="slide" id="slide-2">
             <div class="content">
-                <h2>📮 Como funciona o email?</h2>
+                <h2>📮 O que é SMTP?</h2>
                 
-                <div class="example-box">
-                    <h3>💡 Pense no correio normal:</h3>
-                    <div class="diagram">
-                        Você escreve carta → Leva ao correio → Carteiro entrega → Pessoa recebe<br>
-                        ⬇️<br>
-                        Você escreve email → SMTP envia → Internet → POP3 baixa → Você lê
-                    </div>
+                <div class="highlight-box">
+                    <h3>📬 Simple Mail Transfer Protocol</h3>
+                    <p>É como o serviço de correios da internet - responsável por entregar seus emails!</p>
                 </div>
 
                 <div class="two-column">
                     <div>
-                        <h3>📤 SMTP - Para ENVIAR</h3>
-                        <div class="smtp-step">
-                            <strong>O que faz:</strong> Envia seus emails<br>
-                            <strong>Porta:</strong> 587 (principal) ou 25<br>
-                            <strong>Como:</strong> "Empurra" email para servidor
+                        <h3>🚚 Analogia do Carteiro</h3>
+                        <div class="example-box">
+                            <p>Imagine o SMTP como um <strong>carteiro super eficiente:</strong></p>
+                            <div class="bullet-point">Você escreve uma carta (email)</div>
+                            <div class="bullet-point">Coloca no correio (servidor SMTP)</div>
+                            <div class="bullet-point">O carteiro busca a carta</div>
+                            <div class="bullet-point">Entrega na casa do destinatário</div>
+                            <div class="bullet-point">A carta chega na caixa de correio</div>
                         </div>
                         
-                        <div class="lab-box">
-                            <strong>Analogia:</strong><br>
-                            SMTP é como o carteiro que<br>
-                            pega sua carta e entrega
+                        <h3>⚙️ Como Funciona</h3>
+                        <div class="info-box">
+                            <p><strong>Porta padrão:</strong> 25 (não criptografado)<br>
+                            <strong>Porta segura:</strong> 587 (TLS/STARTTLS)<br>
+                            <strong>Porta SSL:</strong> 465 (SSL/TLS)<br>
+                            <strong>Função:</strong> Apenas enviar emails</p>
                         </div>
                     </div>
                     <div>
-                        <h3>📥 POP3 - Para RECEBER</h3>
-                        <div class="pop3-step">
-                            <strong>O que faz:</strong> Baixa emails para você<br>
-                            <strong>Porta:</strong> 995 (seguro) ou 110<br>
-                            <strong>Como:</strong> "Puxa" emails do servidor
+                        <h3>📊 Características do SMTP</h3>
+                        <div class="steps-box">
+                            <div class="step">
+                                <span class="step-number">1</span>
+                                <strong>Unidirecional:</strong> Só envia emails
+                            </div>
+                            <div class="step">
+                                <span class="step-number">2</span>
+                                <strong>Confiável:</strong> Confirma entrega
+                            </div>
+                            <div class="step">
+                                <span class="step-number">3</span>
+                                <strong>Autenticação:</strong> Login obrigatório
+                            </div>
+                            <div class="step">
+                                <span class="step-number">4</span>
+                                <strong>Criptografia:</strong> Suporte TLS/SSL
+                            </div>
                         </div>
                         
-                        <div class="lab-box">
-                            <strong>Analogia:</strong><br>
-                            POP3 é como você indo<br>
-                            buscar cartas na caixa postal
+                        <h3>🌍 Exemplos de Servidores SMTP</h3>
+                        <div class="gmail-box">
+                            <p><strong>Gmail:</strong> smtp.gmail.com:587</p>
+                        </div>
+                        <div class="outlook-box">
+                            <p><strong>Outlook:</strong> smtp-mail.outlook.com:587</p>
+                        </div>
+                        <div class="example-box">
+                            <p><strong>Yahoo:</strong> smtp.mail.yahoo.com:587<br>
+                            <strong>UOL:</strong> smtps.uol.com.br:587</p>
                         </div>
                     </div>
-                </div>
-
-                <div class="exercise-box">
-                    <h3>🤔 Pergunta rápida:</h3>
-                    <p><strong>Seu email não está enviando. Qual protocolo pode estar com problema?</strong><br>
-                    a) POP3 &nbsp;&nbsp; b) SMTP &nbsp;&nbsp; c) HTTP</p>
-                    <p style="margin-top: 10px;"><em>Resposta: b) SMTP - porque ele cuida do ENVIO!</em></p>
-                </div>
-
-                <div class="highlight-box center-text">
-                    <h3>⚡ Regra de Ouro</h3>
-                    <p><strong>SMTP = Saída</strong> &nbsp;|&nbsp; <strong>POP3 = Entrada</strong><br>
-                    Simples assim!</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Slide 4: LAB 1 - Packet Tracer -->
-        <div class="slide">
-            <div class="content">
-                <h2>🛠️ LAB 1: Servidor de Email no Packet Tracer</h2>
-                
-                <div class="lab-box">
-                    <h3>📋 Passo a passo do que vamos fazer:</h3>
-                    <div class="process-step">1. <strong>Montar rede:</strong> 1 Server + 2 PCs + 1 Switch</div>
-                    <div class="process-step">2. <strong>Configurar IPs:</strong> Server: 192.168.1.10, PCs: .11 e .12</div>
-                    <div class="process-step">3. <strong>Ativar Email Server:</strong> Habilitar SMTP e POP3</div>
-                    <div class="process-step">4. <strong>Criar usuários:</strong> joao@empresa.local e maria@empresa.local</div>
-                    <div class="process-step">5. <strong>Configurar clientes:</strong> Email nos PCs</div>
-                    <div class="process-step">6. <strong>Testar:</strong> Enviar email entre usuários</div>
-                </div>
-
-                <div class="two-column">
-                    <div>
-                        <h3>⚙️ Configurações do Servidor</h3>
-                        <div class="code-box">
-<strong>Email Server:</strong><br>
-IP: 192.168.1.10<br>
-Máscara: 255.255.255.0<br><br>
-
-<strong>Habilitar serviços:</strong><br>
-☑️ SMTP (porta 25)<br>
-☑️ POP3 (porta 110)<br><br>
-
-<strong>Criar usuários:</strong><br>
-joao / senha123<br>
-maria / senha456
-                        </div>
-                    </div>
-                    <div>
-                        <h3>💻 Configurações dos PCs</h3>
-                        <div class="code-box">
-<strong>PC1 (João):</strong><br>
-IP: 192.168.1.11<br>
-Email: joao@empresa.local<br>
-Servidor entrada: 192.168.1.10<br>
-Servidor saída: 192.168.1.10<br><br>
-
-<strong>PC2 (Maria):</strong><br>
-IP: 192.168.1.12<br>
-Email: maria@empresa.local<br>
-Mesmo servidor de email
-                        </div>
-                    </div>
-                </div>
-
-                <div class="exercise-box">
-                    <h3>👨‍💻 EXERCÍCIO PRÁTICO</h3>
-                    <p><strong>Agora é sua vez!</strong></p>
-                    <div class="bullet-point">Monte a rede no Packet Tracer</div>
-                    <div class="bullet-point">Configure conforme indicado acima</div>
-                    <div class="bullet-point">Teste enviando email do João para Maria</div>
-                    <div class="bullet-point">Verifique se Maria recebeu</div>
                 </div>
 
                 <div class="warning-box">
-                    <h3>⚠️ Dica importante:</h3>
-                    <p>No Packet Tracer, use <strong>@empresa.local</strong> como domínio<br>
-                    Não use .com ou .br - só funciona com .local!</p>
+                    <h3>⚠️ Importante Saber</h3>
+                    <p><strong>SMTP não armazena emails!</strong> Ele apenas entrega. É como um carteiro que não guarda cartas em casa.<br>
+                    <strong>Sempre use portas seguras</strong> (587 ou 465) para proteger suas credenciais.</p>
                 </div>
+            </div>
+            
+            <div class="slide-navigation">
+                <button class="nav-button" onclick="showSlide(1)">⬅️ Anterior</button>
+                <span style="margin: 0 20px; font-weight: bold; color: #667eea;">Slide 2 de 10</span>
+                <button class="nav-button" onclick="showSlide(3)">Próximo ➡️</button>
             </div>
         </div>
 
-        <!-- Slide 5: Comandos SMTP na Prática -->
-        <div class="slide">
+        <!-- Slide 3: O que é POP3 -->
+        <div class="slide" id="slide-3">
             <div class="content">
-                <h2>📤 SMTP na Prática - Como enviar email</h2>
+                <h2>📬 O que é POP3?</h2>
                 
-                <div class="bullet-point">SMTP usa comandos simples em texto</div>
-                <div class="bullet-point">Você pode "conversar" direto com o servidor</div>
-                <div class="bullet-point">Útil para testar e resolver problemas</div>
+                <div class="highlight-box">
+                    <h3>📥 Post Office Protocol version 3</h3>
+                    <p>É como sua caixa de correio pessoal - onde você busca e guarda seus emails!</p>
+                </div>
 
                 <div class="two-column">
                     <div>
-                        <h3>💬 Conversa com Servidor SMTP</h3>
-                        <div class="code-box">
-<strong>Você:</strong> Oi servidor, sou o João<br>
-<strong>Servidor:</strong> Oi João, pode falar<br>
-<strong>Você:</strong> Quero enviar email<br>
-<strong>Servidor:</strong> De quem?<br>
-<strong>Você:</strong> De joao@empresa.com<br>
-<strong>Servidor:</strong> Ok, para quem?<br>
-<strong>Você:</strong> Para maria@empresa.com<br>
-<strong>Servidor:</strong> Beleza, qual a mensagem?<br>
-<strong>Você:</strong> Oi Maria, tudo bem?<br>
-<strong>Servidor:</strong> Enviado!
+                        <h3>🏠 Analogia da Caixa de Correio</h3>
+                        <div class="example-box">
+                            <p>POP3 é como uma <strong>caixa de correio tradicional:</strong></p>
+                            <div class="bullet-point">Emails ficam guardados no servidor</div>
+                            <div class="bullet-point">Você vai até a caixa (conecta)</div>
+                            <div class="bullet-point">Pega todas as cartas (baixa emails)</div>
+                            <div class="bullet-point">Leva para casa (seu computador)</div>
+                            <div class="bullet-point">A caixa fica vazia (servidor limpo)</div>
+                        </div>
+                        
+                        <h3>🔧 Configurações Típicas</h3>
+                        <div class="info-box">
+                            <p><strong>Porta padrão:</strong> 110 (não criptografado)<br>
+                            <strong>Porta segura:</strong> 995 (SSL/TLS)<br>
+                            <strong>Função:</strong> Receber/baixar emails<br>
+                            <strong>Comportamento:</strong> Download local</p>
                         </div>
                     </div>
                     <div>
-                        <h3>⌨️ Comandos SMTP Reais</h3>
-                        <div class="code-box">
-C: HELO cliente.com<br>
-S: 250 OK<br>
-C: MAIL FROM: &lt;joao@empresa.com&gt;<br>
-S: 250 OK<br>
-C: RCPT TO: &lt;maria@empresa.com&gt;<br>
-S: 250 OK<br>
-C: DATA<br>
-S: 354 Send message<br>
-C: Oi Maria, tudo bem?<br>
-C: .<br>
-S: 250 Message sent<br>
-C: QUIT<br>
-S: 221 Bye
+                        <h3>⚡ Como Funciona o POP3</h3>
+                        <div class="steps-box">
+                            <div class="step">
+                                <span class="step-number">1</span>
+                                <strong>Conecta:</strong> Acessa servidor de email
+                            </div>
+                            <div class="step">
+                                <span class="step-number">2</span>
+                                <strong>Autentica:</strong> Login com usuário/senha
+                            </div>
+                            <div class="step">
+                                <span class="step-number">3</span>
+                                <strong>Lista:</strong> Vê emails disponíveis
+                            </div>
+                            <div class="step">
+                                <span class="step-number">4</span>
+                                <strong>Baixa:</strong> Transfere emails para o PC
+                            </div>
+                            <div class="step">
+                                <span class="step-number">5</span>
+                                <strong>Apaga:</strong> Remove do servidor (opcional)
+                            </div>
+                        </div>
+                        
+                        <h3>🌍 Servidores POP3 Conhecidos</h3>
+                        <div class="gmail-box">
+                            <p><strong>Gmail:</strong> pop.gmail.com:995</p>
+                        </div>
+                        <div class="outlook-box">
+                            <p><strong>Outlook:</strong> outlook.office365.com:995</p>
                         </div>
                     </div>
                 </div>
 
-                <div class="exercise-box">
-                    <h3>🧪 TESTE NO PACKET TRACER</h3>
-                    <p><strong>Vamos testar os comandos:</strong></p>
-                    <div class="bullet-point">No PC, abra Command Prompt</div>
-                    <div class="bullet-point">Digite: <code>telnet 192.168.1.10 25</code></div>
-                    <div class="bullet-point">Use os comandos acima para enviar email manual</div>
-                    <div class="bullet-point">Verifique se chegou no outro PC</div>
-                </div>
-
-                <div class="highlight-box">
-                    <h3>🎯 Comandos Essenciais</h3>
+                <div class="comparison-table">
+                    <h3>🆚 POP3 vs IMAP (Rápida Comparação)</h3>
                     <table>
                         <tr>
-                            <td><span class="protocol-code">HELO</span></td>
-                            <td>Cumprimentar o servidor</td>
+                            <th>Característica</th>
+                            <th>POP3</th>
+                            <th>IMAP</th>
                         </tr>
                         <tr>
-                            <td><span class="protocol-code">MAIL FROM</span></td>
-                            <td>Quem está enviando</td>
+                            <td><strong>Armazenamento</strong></td>
+                            <td>Local (no seu PC)</td>
+                            <td>No servidor</td>
                         </tr>
                         <tr>
-                            <td><span class="protocol-code">RCPT TO</span></td>
-                            <td>Para quem enviar</td>
+                            <td><strong>Acesso múltiplos dispositivos</strong></td>
+                            <td>Difícil</td>
+                            <td>Fácil</td>
                         </tr>
                         <tr>
-                            <td><span class="protocol-code">DATA</span></td>
-                            <td>Conteúdo da mensagem</td>
+                            <td><strong>Uso de espaço no servidor</strong></td>
+                            <td>Pouco (limpa depois)</td>
+                            <td>Muito (mantém tudo)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Trabalhar offline</strong></td>
+                            <td>Excelente</td>
+                            <td>Limitado</td>
                         </tr>
                     </table>
                 </div>
 
-                <div class="warning-box">
-                    <h3>💡 Dica de Debug</h3>
-                    <p>Se email não envia, teste com telnet!<br>
-                    Você vai ver exatamente onde está o erro</p>
+                <div class="success-box">
+                    <h3>✅ Quando Usar POP3</h3>
+                    <p><strong>Ideal quando:</strong> Usa email em apenas um computador, tem pouco espaço no servidor, quer trabalhar offline, ou prefere guardar emails localmente para maior privacidade.</p>
                 </div>
+            </div>
+            
+            <div class="slide-navigation">
+                <button class="nav-button" onclick="showSlide(2)">⬅️ Anterior</button>
+                <span style="margin: 0 20px; font-weight: bold; color: #667eea;">Slide 3 de 10</span>
+                <button class="nav-button" onclick="showSlide(4)">Próximo ➡️</button>
             </div>
         </div>
 
-        <!-- Slide 6: Comandos POP3 na Prática -->
-        <div class="slide">
+        <!-- Slide 4: Diferenças SMTP vs POP3 -->
+        <div class="slide" id="slide-4">
             <div class="content">
-                <h2>📥 POP3 na Prática - Como receber email</h2>
+                <h2>⚖️ SMTP vs POP3 - Entenda as Diferenças</h2>
                 
-                <div class="bullet-point">POP3 baixa emails do servidor para seu computador</div>
-                <div class="bullet-point">Depois de baixar, remove do servidor (padrão)</div>
-                <div class="bullet-point">Funciona bem para um dispositivo só</div>
-
-                <div class="two-column">
-                    <div>
-                        <h3>🔐 Login no POP3</h3>
-                        <div class="code-box">
-C: USER joao<br>
-S: +OK User accepted<br>
-C: PASS senha123<br>
-S: +OK Welcome joao<br><br>
-
-<strong>Pronto! Logado no servidor</strong>
-                        </div>
-                        
-                        <div class="pop3-step">
-                            <strong>Passo 1:</strong> Conectar (porta 110)<br>
-                            <strong>Passo 2:</strong> Login (USER + PASS)<br>
-                            <strong>Passo 3:</strong> Baixar emails
-                        </div>
-                    </div>
-                    <div>
-                        <h3>📧 Baixando Emails</h3>
-                        <div class="code-box">
-C: LIST<br>
-S: +OK 2 messages<br>
-S: 1 500 bytes<br>
-S: 2 300 bytes<br>
-S: .<br><br>
-
-C: RETR 1<br>
-S: +OK Message 1<br>
-S: From: maria@empresa.com<br>
-S: Subject: Reunião<br>
-S: Oi João, reunião às 14h<br>
-S: .<br><br>
-
-C: DELE 1<br>
-S: +OK Message deleted
-                        </div>
-                    </div>
-                </div>
-
-                <div class="exercise-box">
-                    <h3>🧪 TESTE POP3 NO PACKET TRACER</h3>
-                    <p><strong>Baixar email manual:</strong></p>
-                    <div class="bullet-point">Command Prompt: <code>telnet 192.168.1.10 110</code></div>
-                    <div class="bullet-point">Login: <code>USER joao</code> depois <code>PASS senha123</code></div>
-                    <div class="bullet-point">Listar: <code>LIST</code> para ver emails</div>
-                    <div class="bullet-point">Baixar: <code>RETR 1</code> para ver primeiro email</div>
-                </div>
-
                 <div class="highlight-box">
-                    <h3>🎯 Comandos POP3 Essenciais</h3>
+                    <h3>🎯 Resumo Simples</h3>
+                    <p><strong>SMTP = Enviar emails</strong> | <strong>POP3 = Receber emails</strong><br>
+                    Eles trabalham juntos como uma dupla perfeita!</p>
+                </div>
+
+                <div class="comparison-table">
                     <table>
                         <tr>
-                            <td><span class="protocol-code">USER</span></td>
-                            <td>Nome do usuário</td>
+                            <th>Aspecto</th>
+                            <th>📮 SMTP</th>
+                            <th>📬 POP3</th>
                         </tr>
                         <tr>
-                            <td><span class="protocol-code">PASS</span></td>
-                            <td>Senha do usuário</td>
+                            <td><strong>Função Principal</strong></td>
+                            <td>Enviar emails</td>
+                            <td>Receber emails</td>
                         </tr>
                         <tr>
-                            <td><span class="protocol-code">LIST</span></td>
-                            <td>Listar emails disponíveis</td>
+                            <td><strong>Direção</strong></td>
+                            <td>Saída (Outgoing)</td>
+                            <td>Entrada (Incoming)</td>
                         </tr>
                         <tr>
-                            <td><span class="protocol-code">RETR</span></td>
-                            <td>Baixar email específico</td>
+                            <td><strong>Porta Padrão</strong></td>
+                            <td>25, 587, 465</td>
+                            <td>110, 995</td>
                         </tr>
                         <tr>
-                            <td><span class="protocol-code">DELE</span></td>
-                            <td>Marcar para deletar</td>
+                            <td><strong>Analogia</strong></td>
+                            <td>Carteiro que entrega</td>
+                            <td>Caixa de correio</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Autenticação</strong></td>
+                            <td>Sempre necessária</td>
+                            <td>Sempre necessária</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Criptografia</strong></td>
+                            <td>TLS/SSL suportado</td>
+                            <td>SSL/TLS suportado</td>
                         </tr>
                     </table>
                 </div>
 
-                <div class="warning-box">
-                    <h3>⚠️ Cuidado!</h3>
-                    <p>DELE só marca para deletar<br>
-                    Só apaga mesmo quando você faz QUIT</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Slide 7: LAB 2 - Cliente Real -->
-        <div class="slide">
-            <div class="content">
-                <h2>🛠️ LAB 2: Configurar Cliente de Email Real</h2>
-                
-                <div class="lab-box">
-                    <h3>📋 Vamos configurar Thunderbird com Gmail</h3>
-                    <p>Por que Gmail? Porque é grátis e todo mundo tem!</p>
-                </div>
-
                 <div class="two-column">
                     <div>
-                        <h3>📤 Configuração SMTP (Envio)</h3>
-                        <div class="code-box">
-<strong>Servidor SMTP:</strong><br>
-smtp.gmail.com<br><br>
-
-<strong>Porta:</strong><br>
-587 (TLS) - Recomendado<br>
-465 (SSL) - Alternativa<br><br>
-
-<strong>Segurança:</strong><br>
-STARTTLS ou SSL/TLS<br><br>
-
-<strong>Autenticação:</strong><br>
-☑️ Obrigatória<br>
-Usuário: seuemail@gmail.com<br>
-Senha: App Password*
+                        <h3>📮 Processo de Envio (SMTP)</h3>
+                        <div class="steps-box">
+                            <div class="step">
+                                <span class="step-number">1</span>
+                                Você escreve email no cliente
+                            </div>
+                            <div class="step">
+                                <span class="step-number">2</span>
+                                Cliente conecta no servidor SMTP
+                            </div>
+                            <div class="step">
+                                <span class="step-number">3</span>
+                                Autentica com usuário/senha
+                            </div>
+                            <div class="step">
+                                <span class="step-number">4</span>
+                                Envia email para o servidor
+                            </div>
+                            <div class="step">
+                                <span class="step-number">5</span>
+                                Servidor entrega ao destinatário
+                            </div>
                         </div>
                     </div>
                     <div>
-                        <h3>📥 Configuração POP3 (Recebimento)</h3>
-                        <div class="code-box">
-<strong>Servidor POP3:</strong><br>
-pop.gmail.com<br><br>
-
-<strong>Porta:</strong><br>
-995 (SSL) - Obrigatório<br><br>
-
-<strong>Segurança:</strong><br>
-SSL/TLS<br><br>
-
-<strong>Opções:</strong><br>
-☑️ Deixar cópia no servidor<br>
-☐ Excluir após download<br>
-Verificar a cada: 10 min
-                        </div>
-                    </div>
-                </div>
-
-                <div class="exercise-box">
-                    <h3>👨‍💻 EXERCÍCIO PRÁTICO</h3>
-                    <div class="process-step">1. <strong>Baixe o Thunderbird</strong> (thunderbird.net)</div>
-                    <div class="process-step">2. <strong>Crie uma conta no Gmail</strong> (se não tiver)</div>
-                    <div class="process-step">3. <strong>Ative App Passwords</strong> no Google (2FA necessário)</div>
-                    <div class="process-step">4. <strong>Configure no Thunderbird</strong> com dados acima</div>
-                    <div class="process-step">5. <strong>Teste enviando</strong> email para você mesmo</div>
-                    <div class="process-step">6. <strong>Verifique se recebeu</strong> tanto no Thunderbird quanto no Gmail web</div>
-                </div>
-
-                <div class="warning-box">
-                    <h3>🔐 App Password - IMPORTANTE!</h3>
-                    <p>Gmail não aceita senha normal em clientes de email<br>
-                    <strong>Você PRECISA criar uma "App Password"</strong><br>
-                    Google Account → Security → 2-Step Verification → App passwords</p>
-                </div>
-
-                <div class="highlight-box center-text">
-                    <h3>💡 Por que essas portas?</h3>
-                    <p><strong>587:</strong> Porta moderna e segura para SMTP<br>
-                    <strong>995:</strong> Porta segura para POP3 com SSL</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Slide 8: Problemas Comuns e Soluções -->
-        <div class="slide">
-            <div class="content">
-                <h2>🚨 Problemas Comuns - Como Resolver</h2>
-                
-                <div class="troubleshoot-box">
-                    <h3>❌ "Não consegue enviar email"</h3>
-                    <p><strong>Problema:</strong> SMTP não funciona</p>
-                    <div class="bullet-point">Verifique porta: 587 ou 465</div>
-                    <div class="bullet-point">Confirme TLS/SSL ativado</div>
-                    <div class="bullet-point">Teste usuário e senha</div>
-                    <div class="bullet-point">Firewall pode estar bloqueando</div>
-                </div>
-
-                <div class="troubleshoot-box">
-                    <h3>❌ "Não consegue receber email"</h3>
-                    <p><strong>Problema:</strong> POP3 não funciona</p>
-                    <div class="bullet-point">Porta POP3: 995 (SSL) ou 110</div>
-                    <div class="bullet-point">SSL/TLS obrigatório (Gmail, Outlook)</div>
-                    <div class="bullet-point">Verifique se POP3 está habilitado na conta</div>
-                    <div class="bullet-point">Antivírus pode estar interferindo</div>
-                </div>
-
-                <div class="two-column">
-                    <div>
-                        <h3>🔧 Teste Rápido SMTP</h3>
-                        <div class="code-box">
-# Windows<br>
-telnet smtp.gmail.com 587<br><br>
-
-# Se conectar = OK<br>
-# Se timeout = Problema de rede<br>
-# Se recusar = Porta errada
-                        </div>
-                        
-                        <div class="exercise-box">
-                            <strong>Dica:</strong> Use nslookup para<br>
-                            verificar se servidor existe:<br>
-                            <code>nslookup smtp.gmail.com</code>
-                        </div>
-                    </div>
-                    <div>
-                        <h3>🔍 Logs de Email</h3>
-                        <div class="code-box">
-<strong>Thunderbird:</strong><br>
-Tools → Error Console<br><br>
-
-<strong>Outlook:</strong><br>
-File → Account Settings<br>
-→ Test Account Settings<br><br>
-
-<strong>Gmail Web:</strong><br>
-Settings → Forwarding and POP/IMAP<br>
-→ Configuration instructions
-                        </div>
-                    </div>
-                </div>
-
-                <div class="highlight-box">
-                    <h3>🎯 Checklist de Troubleshooting</h3>
-                    <div class="bullet-point">✅ Internet funcionando?</div>
-                    <div class="bullet-point">✅ Servidor e porta corretos?</div>
-                    <div class="bullet-point">✅ SSL/TLS configurado?</div>
-                    <div class="bullet-point">✅ Usuário e senha corretos?</div>
-                    <div class="bullet-point">✅ Firewall liberado?</div>
-                    <div class="bullet-point">✅ Antivírus não está bloqueando?</div>
-                </div>
-
-                <div class="warning-box center-text">
-                    <h3>📞 Dica Pro</h3>
-                    <p>Sempre teste com telnet primeiro<br>
-                    Se telnet funciona, problema é no cliente<br>
-                    Se telnet não funciona, problema é na rede</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Slide 9: Configuração para Provedores -->
-        <div class="slide">
-            <div class="content">
-                <h2>🌍 Configurações para Principais Provedores</h2>
-                
-                <div class="three-column">
-                    <div>
-                        <h3>📧 Gmail</h3>
-                        <div class="highlight-box">
-                            <strong>SMTP:</strong><br>
-                            smtp.gmail.com:587<br>
-                            TLS/STARTTLS<br><br>
-                            <strong>POP3:</strong><br>
-                            pop.gmail.com:995<br>
-                            SSL<br><br>
-                            <strong>Especial:</strong><br>
-                            App Password obrigatória
-                        </div>
-                    </div>
-                    <div>
-                        <h3>📧 Outlook/Hotmail</h3>
-                        <div class="highlight-box">
-                            <strong>SMTP:</strong><br>
-                            smtp.live.com:587<br>
-                            TLS/STARTTLS<br><br>
-                            <strong>POP3:</strong><br>
-                            pop3.live.com:995<br>
-                            SSL<br><br>
-                            <strong>Especial:</strong><br>
-                            OAuth2 recomendado
-                        </div>
-                    </div>
-                    <div>
-                        <h3>📧 Yahoo</h3>
-                        <div class="highlight-box">
-                            <strong>SMTP:</strong><br>
-                            smtp.mail.yahoo.com:587<br>
-                            TLS/STARTTLS<br><br>
-                            <strong>POP3:</strong><br>
-                            pop.mail.yahoo.com:995<br>
-                            SSL<br><br>
-                            <strong>Especial:</strong><br>
-                            Ativar POP3 nas configs
-                        </div>
-                    </div>
-                </div>
-
-                <div class="exercise-box">
-                    <h3>🧪 DESAFIO PRÁTICO</h3>
-                    <p><strong>Configure 3 contas diferentes:</strong></p>
-                    <div class="bullet-point">Crie conta Gmail, Outlook e Yahoo</div>
-                    <div class="bullet-point">Configure todas no Thunderbird</div>
-                    <div class="bullet-point">Envie email de uma para outra</div>
-                    <div class="bullet-point">Verifique se todas recebem</div>
-                </div>
-
-                <div class="two-column">
-                    <div>
-                        <h3>🏢 Email Corporativo</h3>
-                        <div class="code-box">
-<strong>Exemplo: empresa.com</strong><br><br>
-SMTP: mail.empresa.com:587<br>
-POP3: mail.empresa.com:995<br><br>
-Usuário: joao@empresa.com<br>
-Senha: (fornecida pelo TI)<br><br>
-<em>Configurações variam por empresa</em>
-                        </div>
-                    </div>
-                    <div>
-                        <h3>🆓 Alternativas Gratuitas</h3>
-                        <div class="highlight-box">
-                            <strong>ProtonMail:</strong> Foco em privacidade<br>
-                            <strong>Tutanota:</strong> Criptografia alemã<br>
-                            <strong>Zoho Mail:</strong> Para empresas pequenas<br>
-                            <strong>Guerrilla Mail:</strong> Email temporário
-                        </div>
-                    </div>
-                </div>
-
-                <div class="warning-box">
-                    <h3>⚠️ Dica para Empresas</h3>
-                    <p>Sempre peça ao TI/administrador:</p>
-                    <div class="bullet-point">Endereços dos servidores</div>
-                    <div class="bullet-point">Portas específicas</div>
-                    <div class="bullet-point">Tipo de segurança</div>
-                    <div class="bullet-point">Se precisa de VPN</div>
-                </div>
-
-                <div class="lab-box center-text">
-                    <h3>💡 Dica de Ouro</h3>
-                    <p>Sempre use <strong>SSL/TLS</strong> em produção<br>
-                    Portas sem segurança (25, 110) só para testes!</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Slide 10: SMTP vs POP3 vs IMAP -->
-        <div class="slide">
-            <div class="content">
-                <h2>⚖️ SMTP vs POP3 vs IMAP - Qual usar?</h2>
-                
-                <div class="three-column">
-                    <div>
-                        <h3>📤 SMTP</h3>
-                        <div class="smtp-step">
-                            <strong>Função:</strong> ENVIAR emails<br>
-                            <strong>Quando usar:</strong> Sempre! (obrigatório)<br>
-                            <strong>Vantagem:</strong> Padrão universal<br>
-                            <strong>Desvantagem:</strong> Só envia
-                        </div>
-                        
-                        <div class="lab-box">
-                            <strong>Cenário:</strong><br>
-                            Você SEMPRE precisa do SMTP<br>
-                            para enviar qualquer email
-                        </div>
-                    </div>
-                    <div>
-                        <h3>📥 POP3</h3>
-                        <div class="pop3-step">
-                            <strong>Função:</strong> BAIXAR emails<br>
-                            <strong>Quando usar:</strong> Um dispositivo só<br>
-                            <strong>Vantagem:</strong> Simples, rápido<br>
-                            <strong>Desvantagem:</strong> Não sincroniza
-                        </div>
-                        
-                        <div class="lab-box">
-                            <strong>Cenário:</strong><br>
-                            Só usa email no computador<br>
-                            de casa ou trabalho
-                        </div>
-                    </div>
-                    <div>
-                        <h3>📱 IMAP</h3>
-                        <div class="flow-step">
-                            <strong>Função:</strong> SINCRONIZAR emails<br>
-                            <strong>Quando usar:</strong> Múltiplos dispositivos<br>
-                            <strong>Vantagem:</strong> Sincroniza tudo<br>
-                            <strong>Desvantagem:</strong> Mais complexo
-                        </div>
-                        
-                        <div class="lab-box">
-                            <strong>Cenário:</strong><br>
-                            Usa email no celular, PC,<br>
-                            tablet e notebook
+                        <h3>📬 Processo de Recebimento (POP3)</h3>
+                        <div class="steps-box">
+                            <div class="step">
+                                <span class="step-number">1</span>
+                                Cliente conecta no servidor POP3
+                            </div>
+                            <div class="step">
+                                <span class="step-number">2</span>
+                                Autentica com usuário/senha
+                            </div>
+                            <div class="step">
+                                <span class="step-number">3</span>
+                                Lista emails disponíveis
+                            </div>
+                            <div class="step">
+                                <span class="step-number">4</span>
+                                Baixa emails para o computador
+                            </div>
+                            <div class="step">
+                                <span class="step-number">5</span>
+                                Opcionalmente apaga do servidor
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <div class="example-box">
-                    <h3>🤔 Qual escolher? Perguntas simples:</h3>
-                    <div class="bullet-point"><strong>Usa email só em um lugar?</strong> → POP3</div>
-                    <div class="bullet-point"><strong>Usa email em celular + PC?</strong> → IMAP</div>
-                    <div class="bullet-point"><strong>Quer ver mesmo email em todos dispositivos?</strong> → IMAP</div>
-                    <div class="bullet-point"><strong>Quer economizar espaço no servidor?</strong> → POP3</div>
-                </div>
-
-                <div class="two-column">
-                    <div>
-                        <h3>📊 Comparação Prática</h3>
-                        <table>
-                            <tr>
-                                <th></th>
-                                <th>POP3</th>
-                                <th>IMAP</th>
-                            </tr>
-                            <tr>
-                                <td>Múltiplos dispositivos</td>
-                                <td>❌ Não</td>
-                                <td>✅ Sim</td>
-                            </tr>
-                            <tr>
-                                <td>Velocidade inicial</td>
-                                <td>✅ Rápido</td>
-                                <td>⚠️ Médio</td>
-                            </tr>
-                            <tr>
-                                <td>Usa espaço servidor</td>
-                                <td>✅ Pouco</td>
-                                <td>❌ Muito</td>
-                            </tr>
-                            <tr>
-                                <td>Backup automático</td>
-                                <td>❌ Local só</td>
-                                <td>✅ Servidor</td>
-                            </tr>
-                        </table>
-                    </div>
-                    <div>
-                        <h3>💡 Dica Prática</h3>
-                        <div class="highlight-box">
-                            <strong>Uso doméstico/pessoal:</strong><br>
-                            IMAP (sincroniza celular + PC)<br><br>
-                            
-                            <strong>Empresa tradicional:</strong><br>
-                            POP3 (um PC por pessoa)<br><br>
-                            
-                            <strong>Empresa moderna:</strong><br>
-                            IMAP ou Exchange<br>
-                            (mobilidade + BYOD)
-                        </div>
-                    </div>
-                </div>
-
-                <div class="warning-box center-text">
-                    <h3>📱 Realidade Atual</h3>
-                    <p>90% das pessoas usam email no celular também<br>
-                    <strong>IMAP é o padrão moderno!</strong></p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Slide 11: Segurança - Parte Prática -->
-        <div class="slide">
-            <div class="content">
-                <h2>🔒 Segurança de Email - O que TODO técnico deve saber</h2>
-                
-                <div class="troubleshoot-box">
-                    <h3>🚨 Perigos REAIS do email sem segurança</h3>
-                    <div class="bullet-point">Senhas viajam em texto puro pela internet</div>
-                    <div class="bullet-point">Qualquer um pode ler seus emails</div>
-                    <div class="bullet-point">Hackers podem roubar suas credenciais</div>
-                    <div class="bullet-point">Empresa pode perder dados confidenciais</div>
-                </div>
-
-                <div class="two-column">
-                    <div>
-                        <h3>❌ Configuração INSEGURA</h3>
-                        <div class="code-box">
-<strong>SMTP:</strong><br>
-Porta: 25 (sem criptografia)<br>
-Segurança: Nenhuma<br>
-Resultado: 🚨 PERIGO!<br><br>
-
-<strong>POP3:</strong><br>
-Porta: 110 (sem criptografia)<br>
-Segurança: Nenhuma<br>
-Resultado: 🚨 SENHA VISÍVEL!
-                        </div>
-                    </div>
-                    <div>
-                        <h3>✅ Configuração SEGURA</h3>
-                        <div class="code-box">
-<strong>SMTP:</strong><br>
-Porta: 587 (TLS) ou 465 (SSL)<br>
-Segurança: Criptografia<br>
-Resultado: ✅ PROTEGIDO<br><br>
-
-<strong>POP3:</strong><br>
-Porta: 995 (SSL)<br>
-Segurança: Criptografia<br>
-Resultado: ✅ SENHA SEGURA
-                        </div>
-                    </div>
-                </div>
-
-                <div class="exercise-box">
-                    <h3>🧪 TESTE DE SEGURANÇA</h3>
-                    <p><strong>Configure DUAS contas iguais:</strong></p>
-                    <div class="process-step">1. <strong>Conta A:</strong> Gmail com porta 587 + TLS</div>
-                    <div class="process-step">2. <strong>Conta B:</strong> Gmail tentando porta 25 (vai falhar!)</div>
-                    <div class="process-step">3. <strong>Teste:</strong> Tente enviar email das duas</div>
-                    <div class="process-step">4. <strong>Resultado:</strong> Só a segura funciona</div>
-                </div>
-
-                <div class="highlight-box">
-                    <h3>🔐 Tecnologias de Proteção</h3>
-                    <div class="bullet-point"><strong>TLS/SSL:</strong> Criptografia de transporte (obrigatório)</div>
-                    <div class="bullet-point"><strong>App Passwords:</strong> Senhas específicas para aplicações</div>
-                    <div class="bullet-point"><strong>2FA:</strong> Autenticação de dois fatores</div>
-                    <div class="bullet-point"><strong>OAuth2:</strong> Login sem senha (mais seguro)</div>
+                    <h3>🏢 Exemplo Prático no Escritório</h3>
+                    <p><strong>Situação:</strong> João quer enviar um email para Maria</p>
+                    <p><strong>SMTP em ação:</strong></p>
+                    <p>1. João escreve email no Outlook</p>
+                    <p>2. Outlook conecta em smtp.empresa.com:587</p>
+                    <p>3. Envia email autenticado</p>
+                    <p>4. Servidor entrega na caixa de entrada da Maria</p>
+                    <p><strong>POP3 em ação:</strong></p>
+                    <p>1. Maria abre o Outlook</p>
+                    <p>2. Outlook conecta em pop3.empresa.com:995</p>
+                    <p>3. Baixa todos os emails novos</p>
+                    <p>4. Maria vê o email do João!</p>
                 </div>
 
                 <div class="warning-box">
-                    <h3>⚠️ REGRA DE OURO para Técnicos</h3>
-                    <p><strong>JAMAIS configure email sem TLS/SSL em produção!</strong><br>
-                    Portas 25 e 110 = SÓ para testes internos<br>
-                    Portas 587/465 e 995 = Produção real</p>
+                    <h3>💡 Dica Importante</h3>
+                    <p><strong>Os dois protocolos trabalham JUNTOS!</strong> Você precisa configurar ambos em seu cliente de email para ter funcionalidade completa de envio e recebimento.</p>
                 </div>
-
-                <div class="lab-box center-text">
-                    <h3>💼 Cenário Profissional</h3>
-                    <p>Chefe pergunta: "Por que não usar porta 25?"<br>
-                    <strong>Sua resposta:</strong> "Segurança! Dados da empresa ficariam expostos"</p>
-                </div>
+            </div>
+            
+            <div class="slide-navigation">
+                <button class="nav-button" onclick="showSlide(3)">⬅️ Anterior</button>
+                <span style="margin: 0 20px; font-weight: bold; color: #667eea;">Slide 4 de 10</span>
+                <button class="nav-button" onclick="showSlide(5)">Próximo ➡️</button>
             </div>
         </div>
 
-        <!-- Slide 12: Troubleshooting Avançado -->
-        <div class="slide">
+        <!-- Slide 5: Configuração no Cisco Packet Tracer - Parte 1 -->
+        <div class="slide" id="slide-5">
             <div class="content">
-                <h2>🔧 Troubleshooting Avançado - Técnicas Pro</h2>
+                <h2>🌐 Configuração no Cisco Packet Tracer - Parte 1</h2>
                 
-                <div class="lab-box">
-                    <h3>🕵️ Metodologia de Diagnóstico</h3>
-                    <p>Siga SEMPRE esta ordem para resolver problemas:</p>
+                <div class="highlight-box">
+                    <h3>🎯 Preparando o Ambiente</h3>
+                    <p>Vamos criar um servidor de email completo no Packet Tracer!</p>
                 </div>
 
                 <div class="two-column">
                     <div>
-                        <h3>📋 Checklist Sistemático</h3>
-                        <div class="process-step">
-                            <strong>1. Conectividade Básica</strong><br>
-                            ping servidor → Internet OK?
+                        <h3>🏗️ Componentes Necessários</h3>
+                        <div class="steps-box">
+                            <div class="step">
+                                <span class="step-number">1</span>
+                                <strong>1 Servidor</strong> (Server-PT)
+                            </div>
+                            <div class="step">
+                                <span class="step-number">2</span>
+                                <strong>2 PCs</strong> (para testar)
+                            </div>
+                            <div class="step">
+                                <span class="step-number">3</span>
+                                <strong>1 Switch</strong> (2960)
+                            </div>
+                            <div class="step">
+                                <span class="step-number">4</span>
+                                <strong>Cabos</strong> (Straight-through)
+                            </div>
                         </div>
-                        <div class="process-step">
-                            <strong>2. Resolução DNS</strong><br>
-                            nslookup smtp.gmail.com → Servidor existe?
-                        </div>
-                        <div class="process-step">
-                            <strong>3. Conectividade TCP</strong><br>
-                            telnet smtp.gmail.com 587 → Porta aberta?
-                        </div>
-                        <div class="process-step">
-                            <strong>4. Autenticação</strong><br>
-                            Usuário/senha corretos? App password?
-                        </div>
-                        <div class="process-step">
-                            <strong>5. Configuração Cliente</strong><br>
-                            TLS ativo? Porta correta?
+                        
+                        <h3>🔧 Configuração da Rede</h3>
+                        <div class="config-box">
+Servidor: 192.168.1.10/24<br>
+PC1: 192.168.1.20/24<br>
+PC2: 192.168.1.30/24<br>
+Gateway: 192.168.1.1
                         </div>
                     </div>
                     <div>
-                        <h3>⚡ Comandos Úteis</h3>
-                        <div class="code-box">
-# Teste conectividade<br>
-ping smtp.gmail.com<br><br>
-
-# Teste DNS<br>
-nslookup smtp.gmail.com<br><br>
-
-# Teste porta<br>
-telnet smtp.gmail.com 587<br><br>
-
-# Windows alternativo<br>
-Test-NetConnection smtp.gmail.com -Port 587<br><br>
-
-# Traçar rota<br>
-tracert smtp.gmail.com
+                        <h3>📋 Passo a Passo - Servidor</h3>
+                        <div class="info-box">
+                            <p><strong>1. Arraste um Server-PT</strong></p>
+                            <p><strong>2. Configure IP:</strong></p>
+                            <p>• Desktop → IP Configuration</p>
+                            <p>• IP: 192.168.1.10</p>
+                            <p>• Mask: 255.255.255.0</p>
+                            <p>• Gateway: 192.168.1.1</p>
+                            <p><strong>3. Conecte ao switch</strong></p>
+                        </div>
+                        
+                        <h3>💻 Configuração dos PCs</h3>
+                        <div class="info-box">
+                            <p><strong>PC1:</strong></p>
+                            <p>• IP: 192.168.1.20</p>
+                            <p>• Mask: 255.255.255.0</p>
+                            <p>• Gateway: 192.168.1.1</p>
+                            <p><strong>PC2:</strong></p>
+                            <p>• IP: 192.168.1.30</p>
+                            <p>• Mesmas configurações</p>
                         </div>
                     </div>
                 </div>
 
-                <div class="exercise-box">
-                    <h3>🎯 EXERCÍCIO DE DIAGNÓSTICO</h3>
-                    <p><strong>Simule estes problemas e resolva:</strong></p>
-                    <div class="troubleshoot-box">
-                        <strong>Problema 1:</strong> Configure porta SMTP errada (25 em vez de 587)<br>
-                        <strong>Diagnóstico:</strong> telnet smtp.gmail.com 25 (vai falhar)<br>
-                        <strong>Solução:</strong> Mudar para porta 587
-                    </div>
-                    <div class="troubleshoot-box">
-                        <strong>Problema 2:</strong> Desative TLS no cliente<br>
-                        <strong>Diagnóstico:</strong> Erro de autenticação<br>
-                        <strong>Solução:</strong> Reativar TLS/SSL
+                <div class="example-box">
+                    <h3>🎨 Layout Sugerido da Rede</h3>
+                    <div style="text-align: center; font-family: monospace; font-size: 1.2em; background: white; padding: 20px; border-radius: 10px; margin: 10px 0;">
+                        <p>PC1 [192.168.1.20] ———┐</p>
+                        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├— Switch —— Servidor [192.168.1.10]</p>
+                        <p>PC2 [192.168.1.30] ———┘&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Email Server)</p>
                     </div>
                 </div>
 
+                <div class="warning-box">
+                    <h3>⚠️ Importante Antes de Continuar</h3>
+                    <p><strong>Teste a conectividade!</strong> Faça ping entre os dispositivos para garantir que a rede está funcionando antes de configurar os serviços de email.</p>
+                </div>
+
+                <div class="success-box">
+                    <h3>✅ Checklist da Parte 1</h3>
+                    <p>☑️ Servidor com IP 192.168.1.10<br>
+                    ☑️ PCs com IPs corretos<br>
+                    ☑️ Todos conectados ao switch<br>
+                    ☑️ Ping funcionando entre dispositivos</p>
+                </div>
+            </div>
+            
+            <div class="slide-navigation">
+                <button class="nav-button" onclick="showSlide(4)">⬅️ Anterior</button>
+                <span style="margin: 0 20px; font-weight: bold; color: #667eea;">Slide 5 de 10</span>
+                <button class="nav-button" onclick="showSlide(6)">Próximo ➡️</button>
+            </div>
+        </div>
+
+        <!-- Slide 6: Configuração no Cisco Packet Tracer - Parte 2 -->
+        <div class="slide" id="slide-6">
+            <div class="content">
+                <h2>📧 Configuração no Packet Tracer - Parte 2 (Serviços)</h2>
+                
                 <div class="highlight-box">
-                    <h3>📊 Códigos de Erro Comuns</h3>
+                    <h3>⚙️ Configurando SMTP e POP3</h3>
+                    <p>Agora vamos ativar os serviços de email no servidor!</p>
+                </div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>📮 Configurando SMTP</h3>
+                        <div class="steps-box">
+                            <div class="step">
+                                <span class="step-number">1</span>
+                                Clique no <strong>Servidor</strong>
+                            </div>
+                            <div class="step">
+                                <span class="step-number">2</span>
+                                Vá na aba <strong>Services</strong>
+                            </div>
+                            <div class="step">
+                                <span class="step-number">3</span>
+                                Clique em <strong>EMAIL</strong>
+                            </div>
+                            <div class="step">
+                                <span class="step-number">4</span>
+                                Marque <strong>SMTP Service On</strong>
+                            </div>
+                            <div class="step">
+                                <span class="step-number">5</span>
+                                Verifique porta: <strong>25</strong>
+                            </div>
+                        </div>
+
+                        <h3>📬 Configurando POP3</h3>
+                        <div class="steps-box">
+                            <div class="step">
+                                <span class="step-number">1</span>
+                                Na mesma tela <strong>EMAIL</strong>
+                            </div>
+                            <div class="step">
+                                <span class="step-number">2</span>
+                                Marque <strong>POP3 Service On</strong>
+                            </div>
+                            <div class="step">
+                                <span class="step-number">3</span>
+                                Verifique porta: <strong>110</strong>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <h3>👥 Criando Usuários de Email</h3>
+                        <div class="config-box">
+<strong>Usuário 1:</strong><br>
+Username: joao<br>
+Password: 123456<br>
+<br>
+<strong>Usuário 2:</strong><br>
+Username: maria<br>
+Password: 123456
+                        </div>
+                        
+                        <h3>📋 Passos para Criar Usuários</h3>
+                        <div class="steps-box">
+                            <div class="step">
+                                <span class="step-number">1</span>
+                                No campo <strong>Username</strong>: joao
+                            </div>
+                            <div class="step">
+                                <span class="step-number">2</span>
+                                No campo <strong>Password</strong>: 123456
+                            </div>
+                            <div class="step">
+                                <span class="step-number">3</span>
+                                Clique no <strong>+</strong> para adicionar
+                            </div>
+                            <div class="step">
+                                <span class="step-number">4</span>
+                                Repita para usuário <strong>maria</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>📊 Configuração Final do Servidor</h3>
+                    <div style="background: white; padding: 15px; border-radius: 8px; margin: 10px 0;">
+                        <p><strong>✅ SMTP Service:</strong> Ativado (Porta 25)</p>
+                        <p><strong>✅ POP3 Service:</strong> Ativado (Porta 110)</p>
+                        <p><strong>✅ Usuários criados:</strong> joao e maria</p>
+                        <p><strong>✅ Domain Name:</strong> company.com (padrão)</p>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <h3>🔍 Verificando a Configuração</h3>
+                    <p><strong>Status dos Serviços:</strong></p>
+                    <p>• SMTP: deve mostrar "On" com porta 25</p>
+                    <p>• POP3: deve mostrar "On" com porta 110</p>
+                    <p>• Lista de usuários deve mostrar joao e maria</p>
+                </div>
+
+                <div class="warning-box">
+                    <h3>💡 Dicas Importantes</h3>
+                    <p><strong>Senhas simples:</strong> Para teste, use senhas fáceis como "123456"<br>
+                    <strong>Domain Name:</strong> O Packet Tracer usa "company.com" por padrão<br>
+                    <strong>Portas:</strong> Use as portas padrão para facilitar</p>
+                </div>
+
+                <div class="success-box">
+                    <h3>✅ Servidor Configurado!</h3>
+                    <p>Agora seu servidor está pronto para receber e enviar emails. Na próxima etapa, vamos configurar os clientes nos PCs.</p>
+                </div>
+            </div>
+            
+            <div class="slide-navigation">
+                <button class="nav-button" onclick="showSlide(5)">⬅️ Anterior</button>
+                <span style="margin: 0 20px; font-weight: bold; color: #667eea;">Slide 6 de 10</span>
+                <button class="nav-button" onclick="showSlide(7)">Próximo ➡️</button>
+            </div>
+        </div>
+
+        <!-- Slide 7: Testando Email no Packet Tracer -->
+        <div class="slide" id="slide-7">
+            <div class="content">
+                <h2>🧪 Testando Email no Packet Tracer</h2>
+                
+                <div class="highlight-box">
+                    <h3>📧 Configurando Cliente de Email</h3>
+                    <p>Vamos configurar os PCs para enviar e receber emails!</p>
+                </div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>💻 Configuração no PC1 (usuário: joao)</h3>
+                        <div class="steps-box">
+                            <div class="step">
+                                <span class="step-number">1</span>
+                                Clique no <strong>PC1</strong>
+                            </div>
+                            <div class="step">
+                                <span class="step-number">2</span>
+                                Vá em <strong>Desktop → Email</strong>
+                            </div>
+                            <div class="step">
+                                <span class="step-number">3</span>
+                                Configure <strong>Incoming Mail Server</strong>
+                            </div>
+                            <div class="step">
+                                <span class="step-number">4</span>
+                                Configure <strong>Outgoing Mail Server</strong>
+                            </div>
+                            <div class="step">
+                                <span class="step-number">5</span>
+                                Insira credenciais do usuário
+                            </div>
+                        </div>
+
+                        <h3>⚙️ Configuração Detalhada</h3>
+                        <div class="config-box">
+<strong>Incoming Mail Server (POP3):</strong><br>
+Server: 192.168.1.10<br>
+<br>
+<strong>Outgoing Mail Server (SMTP):</strong><br>
+Server: 192.168.1.10<br>
+<br>
+<strong>User Information:</strong><br>
+Username: joao<br>
+Password: 123456
+                        </div>
+                    </div>
+                    <div>
+                        <h3>📨 Enviando o Primeiro Email</h3>
+                        <div class="steps-box">
+                            <div class="step">
+                                <span class="step-number">1</span>
+                                Clique em <strong>Compose</strong>
+                            </div>
+                            <div class="step">
+                                <span class="step-number">2</span>
+                                <strong>To:</strong> maria@company.com
+                            </div>
+                            <div class="step">
+                                <span class="step-number">3</span>
+                                <strong>Subject:</strong> Teste de Email
+                            </div>
+                            <div class="step">
+                                <span class="step-number">4</span>
+                                Escreva uma mensagem
+                            </div>
+                            <div class="step">
+                                <span class="step-number">5</span>
+                                Clique em <strong>Send</strong>
+                            </div>
+                        </div>
+
+                        <h3>📬 Configurando PC2 (usuário: maria)</h3>
+                        <div class="config-box">
+<strong>Incoming Mail Server:</strong><br>
+Server: 192.168.1.10<br>
+<br>
+<strong>Outgoing Mail Server:</strong><br>
+Server: 192.168.1.10<br>
+<br>
+<strong>User Information:</strong><br>
+Username: maria<br>
+Password: 123456
+                        </div>
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>🎯 Exemplo de Email de Teste</h3>
+                    <div style="background: white; padding: 15px; border-radius: 8px; margin: 10px 0; border: 2px solid #ddd;">
+                        <p><strong>Para:</strong> maria@company.com</p>
+                        <p><strong>Assunto:</strong> Primeiro teste de email</p>
+                        <p><strong>Mensagem:</strong></p>
+                        <p style="font-style: italic; margin-left: 20px;">Olá Maria!<br><br>
+                        Este é nosso primeiro email usando SMTP e POP3.<br>
+                        Se você receber esta mensagem, nossa configuração está funcionando!<br><br>
+                        Abraços,<br>
+                        João</p>
+                    </div>
+                </div>
+
+                <div class="success-box">
+                    <h3>✅ Testando Recebimento</h3>
+                    <p><strong>No PC2 (Maria):</strong></p>
+                    <p>1. Abra o programa Email</p>
+                    <p>2. Configure com os dados da maria</p>
+                    <p>3. Clique em "Receive" para baixar emails</p>
+                    <p>4. Você deve ver o email do João!</p>
+                </div>
+
+                <div class="info-box">
+                    <h3>🔍 Troubleshooting</h3>
+                    <p><strong>Email não chegou?</strong> Verifique:</p>
+                    <p>• Serviços SMTP/POP3 estão ativos no servidor</p>
+                    <p>• IPs dos servidores estão corretos</p>
+                    <p>• Usuários foram criados corretamente</p>
+                    <p>• Conectividade de rede (ping) funciona</p>
+                </div>
+
+                <div class="warning-box">
+                    <h3>💡 Lembre-se</h3>
+                    <p><strong>Endereços completos:</strong> Sempre use formato usuario@company.com<br>
+                    <strong>Receive:</strong> No POP3, você precisa clicar "Receive" para baixar emails<br>
+                    <strong>Case sensitive:</strong> Usernames são sensíveis a maiúsculas/minúsculas</p>
+                </div>
+            </div>
+            
+            <div class="slide-navigation">
+                <button class="nav-button" onclick="showSlide(6)">⬅️ Anterior</button>
+                <span style="margin: 0 20px; font-weight: bold; color: #667eea;">Slide 7 de 10</span>
+                <button class="nav-button" onclick="showSlide(8)">Próximo ➡️</button>
+            </div>
+        </div>
+
+        <!-- Slide 8: Configuração Gmail no Windows 10 -->
+        <div class="slide" id="slide-8">
+            <div class="content">
+                <h2>📮 Configuração Gmail no Windows 10</h2>
+                
+                <div class="highlight-box">
+                    <h3>🌐 Configurando Gmail Real</h3>
+                    <p>Vamos configurar uma conta Gmail no aplicativo Mail do Windows 10!</p>
+                </div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>🔐 Preparação da Conta Gmail</h3>
+                        <div class="warning-box" style="margin: 0;">
+                            <p><strong>⚠️ Importante:</strong> Para usar Gmail com clientes externos, você precisa:</p>
+                        </div>
+                        <div class="steps-box">
+                            <div class="step">
+                                <span class="step-number">1</span>
+                                <strong>Ativar autenticação em 2 fatores</strong>
+                            </div>
+                            <div class="step">
+                                <span class="step-number">2</span>
+                                <strong>Gerar senha de app</strong>
+                            </div>
+                            <div class="step">
+                                <span class="step-number">3</span>
+                                <strong>Usar a senha de app</strong> (não sua senha normal)
+                            </div>
+                        </div>
+
+                        <h3>🔑 Como Gerar Senha de App</h3>
+                        <div class="gmail-box">
+                            <p>1. Acesse <strong>myaccount.google.com</strong></p>
+                            <p>2. Vá em <strong>Segurança</strong></p>
+                            <p>3. Ative <strong>Verificação em 2 etapas</strong></p>
+                            <p>4. Clique em <strong>Senhas de app</strong></p>
+                            <p>5. Selecione <strong>Email</strong> → <strong>Windows</strong></p>
+                            <p>6. Copie a senha gerada</p>
+                        </div>
+                    </div>
+                    <div>
+                        <h3>🪟 Configuração no Windows Mail</h3>
+                        <div class="steps-box">
+                            <div class="step">
+                                <span class="step-number">1</span>
+                                Abra o app <strong>Mail</strong>
+                            </div>
+                            <div class="step">
+                                <span class="step-number">2</span>
+                                Clique em <strong>Adicionar conta</strong>
+                            </div>
+                            <div class="step">
+                                <span class="step-number">3</span>
+                                Escolha <strong>Google</strong>
+                            </div>
+                            <div class="step">
+                                <span class="step-number">4</span>
+                                Digite seu <strong>email Gmail</strong>
+                            </div>
+                            <div class="step">
+                                <span class="step-number">5</span>
+                                Use a <strong>senha de app</strong>
+                            </div>
+                        </div>
+
+                        <h3>📧 Configuração Manual (Avançada)</h3>
+                        <div class="config-box">
+<strong>SMTP (Envio):</strong><br>
+Servidor: smtp.gmail.com<br>
+Porta: 587<br>
+Segurança: STARTTLS<br>
+<br>
+<strong>POP3 (Recebimento):</strong><br>
+Servidor: pop.gmail.com<br>
+Porta: 995<br>
+Segurança: SSL/TLS
+                        </div>
+                    </div>
+                </div>
+
+                <div class="windows-box">
+                    <h3>🎯 Passo a Passo Detalhado</h3>
+                    <p><strong>1. Abrir Mail:</strong> Pressione Win + S, digite "Mail" e abra</p>
+                    <p><strong>2. Primeira conta:</strong> Se for primeira vez, clique "Adicionar conta"</p>
+                    <p><strong>3. Conta adicional:</strong> Menu ⚙️ → Gerenciar contas → Adicionar conta</p>
+                    <p><strong>4. Escolher Google:</strong> Na lista de provedores, selecione Google</p>
+                    <p><strong>5. Login:</strong> Digite email e senha de app (NÃO a senha normal)</p>
+                    <p><strong>6. Permissões:</strong> Autorize o acesso quando solicitado</p>
+                    <p><strong>7. Concluir:</strong> Aguarde sincronização inicial</p>
+                </div>
+
+                <div class="success-box">
+                    <h3>✅ Teste de Funcionamento</h3>
+                    <p><strong>Envio:</strong> Compose um email e envie para outro endereço</p>
+                    <p><strong>Recebimento:</strong> Peça para alguém enviar email para você</p>
+                    <p><strong>Sincronização:</strong> Verifique se emails aparecem automaticamente</p>
+                </div>
+
+                <div class="info-box">
+                    <h3>🔧 Solução de Problemas</h3>
+                    <p><strong>Erro de autenticação:</strong> Verifique se usou senha de app</p>
+                    <p><strong>Não sincroniza:</strong> Verificar conexão com internet</p>
+                    <p><strong>Email não aparece:</strong> Aguardar alguns minutos ou forçar sincronização</p>
+                </div>
+            </div>
+            
+            <div class="slide-navigation">
+                <button class="nav-button" onclick="showSlide(7)">⬅️ Anterior</button>
+                <span style="margin: 0 20px; font-weight: bold; color: #667eea;">Slide 8 de 10</span>
+                <button class="nav-button" onclick="showSlide(9)">Próximo ➡️</button>
+            </div>
+        </div>
+
+        <!-- Slide 9: Configuração Outlook no Windows 10 -->
+        <div class="slide" id="slide-9">
+            <div class="content">
+                <h2>💼 Configuração Outlook no Windows 10</h2>
+                
+                <div class="highlight-box">
+                    <h3>📧 Configurando Outlook.com/Hotmail</h3>
+                    <p>Configuração mais simples que Gmail - vamos ver como fazer!</p>
+                </div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>🪟 Configuração Automática</h3>
+                        <div class="steps-box">
+                            <div class="step">
+                                <span class="step-number">1</span>
+                                Abra o app <strong>Mail</strong>
+                            </div>
+                            <div class="step">
+                                <span class="step-number">2</span>
+                                Clique <strong>Adicionar conta</strong>
+                            </div>
+                            <div class="step">
+                                <span class="step-number">3</span>
+                                Escolha <strong>Outlook.com</strong>
+                            </div>
+                            <div class="step">
+                                <span class="step-number">4</span>
+                                Digite email e senha normais
+                            </div>
+                            <div class="step">
+                                <span class="step-number">5</span>
+                                Aguarde configuração automática
+                            </div>
+                        </div>
+
+                        <h3>🎯 Vantagens do Outlook.com</h3>
+                        <div class="success-box" style="margin: 0;">
+                            <div class="bullet-point">Configuração automática</div>
+                            <div class="bullet-point">Não precisa senha de app</div>
+                            <div class="bullet-point">Integração nativa com Windows</div>
+                            <div class="bullet-point">Sincronização rápida</div>
+                        </div>
+                    </div>
+                    <div>
+                        <h3>⚙️ Configuração Manual (se necessário)</h3>
+                        <div class="config-box">
+<strong>SMTP (Envio):</strong><br>
+Servidor: smtp-mail.outlook.com<br>
+Porta: 587<br>
+Segurança: STARTTLS<br>
+<br>
+<strong>POP3 (Recebimento):</strong><br>
+Servidor: outlook.office365.com<br>
+Porta: 995<br>
+Segurança: SSL/TLS<br>
+<br>
+<strong>IMAP (Alternativa):</strong><br>
+Servidor: outlook.office365.com<br>
+Porta: 993<br>
+Segurança: SSL/TLS
+                        </div>
+
+                        <h3>🔧 Configuração Avançada</h3>
+                        <div class="outlook-box">
+                            <p><strong>Se automático falhar:</strong></p>
+                            <p>1. Escolha "Configuração avançada"</p>
+                            <p>2. Selecione "POP, IMAP"</p>
+                            <p>3. Insira configurações manuais</p>
+                            <p>4. Teste conexão</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>📱 Configuração no App Mail - Completa</h3>
+                    <div style="background: white; padding: 15px; border-radius: 8px; margin: 10px 0; border: 2px solid #0078d4;">
+                        <p><strong>Nome da conta:</strong> Meu Outlook</p>
+                        <p><strong>Seu nome:</strong> Seu Nome Completo</p>
+                        <p><strong>Email:</strong> seuemail@outlook.com</p>
+                        <p><strong>Senha:</strong> sua senha normal do Outlook</p>
+                        <p><strong>Nome da conta:</strong> aparecerá na lista de contas</p>
+                        <p><strong>Baixar email de:</strong> último mês (recomendado)</p>
+                        <p><strong>Sincronizar:</strong> conforme os itens chegam</p>
+                    </div>
+                </div>
+
+                <div class="comparison-table">
+                    <h3>⚖️ Outlook vs Gmail - Facilidade de Configuração</h3>
                     <table>
                         <tr>
-                            <td><span class="protocol-code">535</span></td>
-                            <td>Autenticação falhou - usuário/senha errado</td>
+                            <th>Aspecto</th>
+                            <th>📧 Outlook.com</th>
+                            <th>📮 Gmail</th>
                         </tr>
                         <tr>
-                            <td><span class="protocol-code">550</span></td>
-                            <td>Usuário não encontrado ou rejeitado</td>
+                            <td><strong>Configuração</strong></td>
+                            <td>Automática</td>
+                            <td>Manual (senha de app)</td>
                         </tr>
                         <tr>
-                            <td><span class="protocol-code">timeout</span></td>
-                            <td>Firewall bloqueando ou servidor offline</td>
+                            <td><strong>Segurança</strong></td>
+                            <td>Senha normal</td>
+                            <td>Requer 2FA + senha app</td>
                         </tr>
                         <tr>
-                            <td><span class="protocol-code">certificate error</span></td>
-                            <td>Problema com SSL/TLS</td>
+                            <td><strong>Facilidade</strong></td>
+                            <td>Muito fácil</td>
+                            <td>Complexa</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Tempo setup</strong></td>
+                            <td>2-3 minutos</td>
+                            <td>10-15 minutos</td>
                         </tr>
                     </table>
                 </div>
 
-                <div class="warning-box center-text">
-                    <h3>💡 Dica de Ouro para Técnicos</h3>
-                    <p>80% dos problemas de email são:<br>
-                    <strong>1. Porta errada &nbsp;|&nbsp; 2. TLS desabilitado &nbsp;|&nbsp; 3. Senha/usuário errado</strong></p>
+                <div class="windows-box">
+                    <h3>💡 Dicas para Melhor Experiência</h3>
+                    <p><strong>Notificações:</strong> Configure alertas para novos emails</p>
+                    <p><strong>Assinatura:</strong> Crie assinatura personalizada</p>
+                    <p><strong>Pastas:</strong> Organize emails em pastas</p>
+                    <p><strong>Regras:</strong> Configure filtros automáticos</p>
+                    <p><strong>Offline:</strong> Defina quantos emails manter offline</p>
                 </div>
+
+                <div class="info-box">
+                    <h3>🔍 Verificando se Funciona</h3>
+                    <p><strong>1. Envie email:</strong> Para outro endereço seu</p>
+                    <p><strong>2. Receba email:</strong> Peça para alguém enviar</p>
+                    <p><strong>3. Sincronização:</strong> Verifique se atualiza automaticamente</p>
+                    <p><strong>4. Anexos:</strong> Teste enviar arquivo anexo</p>
+                </div>
+            </div>
+            
+            <div class="slide-navigation">
+                <button class="nav-button" onclick="showSlide(8)">⬅️ Anterior</button>
+                <span style="margin: 0 20px; font-weight: bold; color: #667eea;">Slide 9 de 10</span>
+                <button class="nav-button" onclick="showSlide(10)">Próximo ➡️</button>
             </div>
         </div>
 
-        <!-- Slide 13: Quiz -->
-        <div class="slide">
+        <!-- Slide 10: Conclusão -->
+        <div class="slide" id="slide-10">
             <div class="content">
-                <h2>🧠 Quiz - Teste seus conhecimentos!</h2>
+                <h2>🎓 Parabéns! Você Domina SMTP e POP3!</h2>
                 
-                <div class="quiz-container">
-                    <!-- Questão 1 -->
-                    <div class="quiz-question" id="question1">
-                        <h3>📝 Questão 1</h3>
-                        <p><strong>Você configurou um cliente de email mas não consegue ENVIAR. Qual protocolo está com problema?</strong></p>
-                        <div class="quiz-options">
-                            <div class="quiz-option" onclick="selectOption(1, 'a', false)">
-                                <span class="option-letter">A)</span> POP3
-                            </div>
-                            <div class="quiz-option" onclick="selectOption(1, 'b', true)">
-                                <span class="option-letter">B)</span> SMTP
-                            </div>
-                            <div class="quiz-option" onclick="selectOption(1, 'c', false)">
-                                <span class="option-letter">C)</span> IMAP
-                            </div>
-                            <div class="quiz-option" onclick="selectOption(1, 'd', false)">
-                                <span class="option-letter">D)</span> HTTP
-                            </div>
-                        </div>
-                        <div class="quiz-feedback" id="feedback1"></div>
-                    </div>
-
-                    <!-- Questão 2 -->
-                    <div class="quiz-question" id="question2" style="display: none;">
-                        <h3>📝 Questão 2</h3>
-                        <p><strong>Qual porta você deve usar para SMTP seguro com Gmail?</strong></p>
-                        <div class="quiz-options">
-                            <div class="quiz-option" onclick="selectOption(2, 'a', false)">
-                                <span class="option-letter">A)</span> 25
-                            </div>
-                            <div class="quiz-option" onclick="selectOption(2, 'b', true)">
-                                <span class="option-letter">B)</span> 587
-                            </div>
-                            <div class="quiz-option" onclick="selectOption(2, 'c', false)">
-                                <span class="option-letter">C)</span> 110
-                            </div>
-                            <div class="quiz-option" onclick="selectOption(2, 'd', false)">
-                                <span class="option-letter">D)</span> 80
-                            </div>
-                        </div>
-                        <div class="quiz-feedback" id="feedback2"></div>
-                    </div>
-
-                    <!-- Questão 3 -->
-                    <div class="quiz-question" id="question3" style="display: none;">
-                        <h3>📝 Questão 3</h3>
-                        <p><strong>Qual comando você usaria para testar se a porta SMTP está funcionando?</strong></p>
-                        <div class="quiz-options">
-                            <div class="quiz-option" onclick="selectOption(3, 'a', false)">
-                                <span class="option-letter">A)</span> ping smtp.gmail.com
-                            </div>
-                            <div class="quiz-option" onclick="selectOption(3, 'b', true)">
-                                <span class="option-letter">B)</span> telnet smtp.gmail.com 587
-                            </div>
-                            <div class="quiz-option" onclick="selectOption(3, 'c', false)">
-                                <span class="option-letter">C)</span> nslookup smtp.gmail.com
-                            </div>
-                            <div class="quiz-option" onclick="selectOption(3, 'd', false)">
-                                <span class="option-letter">D)</span> ipconfig /all
-                            </div>
-                        </div>
-                        <div class="quiz-feedback" id="feedback3"></div>
-                    </div>
-
-                    <!-- Questão 4 -->
-                    <div class="quiz-question" id="question4" style="display: none;">
-                        <h3>📝 Questão 4</h3>
-                        <p><strong>Por que usar IMAP em vez de POP3 hoje em dia?</strong></p>
-                        <div class="quiz-options">
-                            <div class="quiz-option" onclick="selectOption(4, 'a', false)">
-                                <span class="option-letter">A)</span> IMAP é mais rápido
-                            </div>
-                            <div class="quiz-option" onclick="selectOption(4, 'b', true)">
-                                <span class="option-letter">B)</span> IMAP sincroniza entre dispositivos
-                            </div>
-                            <div class="quiz-option" onclick="selectOption(4, 'c', false)">
-                                <span class="option-letter">C)</span> IMAP é mais seguro
-                            </div>
-                            <div class="quiz-option" onclick="selectOption(4, 'd', false)">
-                                <span class="option-letter">D)</span> IMAP usa menos internet
-                            </div>
-                        </div>
-                        <div class="quiz-feedback" id="feedback4"></div>
-                    </div>
-
-                    <!-- Resultado Final -->
-                    <div class="quiz-result" id="quizResult" style="display: none;">
-                        <h3>🎉 Parabéns! Quiz Concluído!</h3>
-                        <div class="result-box">
-                            <p><strong>Sua pontuação: <span id="finalScore">0</span>/4</strong></p>
-                            <p id="resultMessage"></p>
-                        </div>
-                        <button class="nav-btn" onclick="restartQuiz()">🔄 Refazer Quiz</button>
-                    </div>
-                </div>
-
-                <div class="quiz-navigation">
-                    <button class="nav-btn" id="nextQuizBtn" onclick="nextQuestion()" style="display: none;">
-                        Próxima Questão ➡️
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Slide 14: Projeto Final -->
-        <div class="slide">
-            <div class="content">
-                <h2>🏆 Projeto Final - Desafio Completo</h2>
-                
-                <div class="lab-box">
-                    <h3>🎯 Desafio: Monte um sistema de email completo</h3>
-                    <p>Você é o técnico responsável por configurar email para uma empresa pequena</p>
-                </div>
-
-                <div class="exercise-box">
-                    <h3>📋 Especificações do Projeto</h3>
-                    <div class="process-step">
-                        <strong>Empresa:</strong> "TechFlow Ltda" com 5 funcionários<br>
-                        <strong>Domínio:</strong> @techflow.local (Packet Tracer)
-                    </div>
-                    <div class="process-step">
-                        <strong>Usuários:</strong><br>
-                        • joao@techflow.local (Diretor)<br>
-                        • maria@techflow.local (Vendas)<br>
-                        • pedro@techflow.local (TI)<br>
-                        • ana@techflow.local (RH)<br>
-                        • carlos@techflow.local (Contabilidade)
-                    </div>
-                </div>
-
-                <div class="two-column">
-                    <div>
-                        <h3>🛠️ Parte 1: Packet Tracer</h3>
-                        <div class="lab-box">
-                            <strong>Sua missão:</strong><br>
-                            1. Monte rede com 1 servidor + 5 PCs<br>
-                            2. Configure servidor de email<br>
-                            3. Crie os 5 usuários<br>
-                            4. Configure clientes nos PCs<br>
-                            5. Teste comunicação entre todos
-                        </div>
-                        
-                        <div class="warning-box">
-                            <strong>Critérios de sucesso:</strong><br>
-                            ✅ Todos conseguem enviar<br>
-                            ✅ Todos conseguem receber<br>
-                            ✅ Email de João chega para todos
-                        </div>
-                    </div>
-                    <div>
-                        <h3>💻 Parte 2: Cliente Real</h3>
-                        <div class="lab-box">
-                            <strong>Sua missão:</strong><br>
-                            1. Configure sua conta pessoal<br>
-                            2. Use Thunderbird ou Outlook<br>
-                            3. Configure tanto SMTP quanto POP3<br>
-                            4. Documente as configurações<br>
-                            5. Teste troubleshooting
-                        </div>
-                        
-                        <div class="warning-box">
-                            <strong>Bonus points:</strong><br>
-                            ✅ Configure 2 provedores diferentes<br>
-                            ✅ Teste com telnet<br>
-                            ✅ Resolva 1 problema simulado
-                        </div>
-                    </div>
-                </div>
-
-                <div class="exercise-box">
-                    <h3>📝 Entregáveis</h3>
-                    <div class="bullet-point"><strong>Arquivo Packet Tracer</strong> com rede funcionando</div>
-                    <div class="bullet-point"><strong>Screenshots</strong> dos clientes configurados</div>
-                    <div class="bullet-point"><strong>Documento</strong> com configurações usadas</div>
-                    <div class="bullet-point"><strong>Lista de problemas</strong> encontrados e soluções</div>
-                </div>
-
                 <div class="highlight-box center-text">
-                    <h3>⏰ Tempo: 2 aulas</h3>
-                    <p><strong>Aula 1:</strong> Packet Tracer + teoria<br>
-                    <strong>Aula 2:</strong> Cliente real + troubleshooting</p>
-                </div>
-
-                <div class="troubleshoot-box center-text">
-                    <h3>🏅 Critério de Avaliação</h3>
-                    <p><strong>Nota máxima:</strong> Sistema funcionando + documentação completa<br>
-                    <strong>Nota boa:</strong> Sistema funcionando com pequenos problemas<br>
-                    <strong>Nota regular:</strong> Sistema parcialmente funcionando</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Slide 15: Resumo Final -->
-        <div class="slide">
-            <div class="content">
-                <h2>🎯 Resumo - O que você aprendeu</h2>
-                
-                <div class="highlight-box large-text center-text">
-                    <strong>Agora você é capaz de configurar email do zero!</strong>
+                    <h3>🎯 Agora Você Sabe Como Funciona o Email!</h3>
+                    <p>Entende os protocolos por trás dos emails e sabe configurar servidores e clientes</p>
                 </div>
 
                 <div class="two-column">
                     <div>
-                        <h3>✅ Habilidades Práticas</h3>
-                        <div class="bullet-point">Configurar servidor no Packet Tracer</div>
-                        <div class="bullet-point">Configurar clientes (Thunderbird, Outlook)</div>
-                        <div class="bullet-point">Resolver problemas comuns</div>
-                        <div class="bullet-point">Usar telnet para debug</div>
-                        <div class="bullet-point">Aplicar segurança (TLS/SSL)</div>
+                        <h3>📚 O que Você Aprendeu</h3>
+                        <div class="bullet-point">Conceitos de SMTP e POP3</div>
+                        <div class="bullet-point">Diferenças entre os protocolos</div>
+                        <div class="bullet-point">Configuração no Packet Tracer</div>
+                        <div class="bullet-point">Setup de Gmail no Windows</div>
+                        <div class="bullet-point">Setup de Outlook no Windows</div>
+                        <div class="bullet-point">Troubleshooting de problemas</div>
+                        <div class="bullet-point">Portas e segurança</div>
                     </div>
                     <div>
-                        <h3>🧠 Conhecimento Técnico</h3>
-                        <div class="bullet-point">SMTP = Envio (porta 587/465)</div>
-                        <div class="bullet-point">POP3 = Download (porta 995)</div>
-                        <div class="bullet-point">IMAP = Sincronização</div>
-                        <div class="bullet-point">TLS/SSL = Segurança obrigatória</div>
-                        <div class="bullet-point">App Passwords para Gmail</div>
+                        <h3>🚀 Próximos Desafios</h3>
+                        <div class="bullet-point">Protocolo IMAP avançado</div>
+                        <div class="bullet-point">Servidores de email Linux</div>
+                        <div class="bullet-point">Configuração Exchange</div>
+                        <div class="bullet-point">Certificados SSL/TLS</div>
+                        <div class="bullet-point">Anti-spam e filtros</div>
+                        <div class="bullet-point">Backup de emails</div>
+                        <div class="bullet-point">Migração de servidores</div>
                     </div>
                 </div>
 
-                <div class="lab-box center-text">
-                    <h3>🚀 Próximos Passos</h3>
-                    <p>Agora você pode:</p>
-                    <div class="bullet-point">Ajudar amigos/família com email</div>
-                    <div class="bullet-point">Configurar email em empresas</div>
-                    <div class="bullet-point">Resolver problemas técnicos</div>
-                    <div class="bullet-point">Entender logs de servidor</div>
+                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 25px; border-radius: 15px; margin: 20px 0;">
+                    <h3>🎯 Exercícios Propostos</h3>
+                    <p><strong>1. Servidor Completo:</strong> Configure SMTP, POP3 e IMAP no mesmo servidor.</p>
+                    <p><strong>2. Multi-usuários:</strong> Crie 5 usuários e teste comunicação entre todos.</p>
+                    <p><strong>3. Troubleshooting:</strong> Simule problemas de conectividade e resolva.</p>
+                    <p><strong>4. Clientes Múltiplos:</strong> Configure diferentes clientes (Thunderbird, Apple Mail).</p>
                 </div>
 
-                <div class="two-column">
-                    <div>
-                        <h3>🔧 Comandos que Salvam</h3>
-                        <div class="code-box">
-# Teste básico<br>
-ping servidor.com<br><br>
-
-# Teste DNS<br>
-nslookup servidor.com<br><br>
-
-# Teste porta<br>
-telnet servidor.com 587<br><br>
-
-# Debug SMTP manual<br>
-HELO, MAIL FROM, RCPT TO, DATA
-                        </div>
-                    </div>
-                    <div>
-                        <h3>💡 Dicas para Não Esquecer</h3>
-                        <div class="highlight-box">
-                            <strong>1.</strong> Sempre use portas seguras em produção<br>
-                            <strong>2.</strong> Gmail precisa de App Password<br>
-                            <strong>3.</strong> telnet resolve 90% dos problemas<br>
-                            <strong>4.</strong> IMAP é melhor que POP3 hoje<br>
-                            <strong>5.</strong> Documente suas configurações!
-                        </div>
+                <div class="success-box center-text">
+                    <h3>🏆 Resumo dos Protocolos</h3>
+                    <div class="config-box">
+<strong>📮 SMTP - Simple Mail Transfer Protocol</strong><br>
+• Função: Enviar emails<br>
+• Portas: 25, 587 (TLS), 465 (SSL)<br>
+• Analogia: Carteiro que entrega<br>
+<br>
+<strong>📬 POP3 - Post Office Protocol v3</strong><br>
+• Função: Receber emails<br>
+• Portas: 110, 995 (SSL)<br>
+• Analogia: Caixa de correio<br>
+• Comportamento: Download local
                     </div>
                 </div>
 
-                <div class="exercise-box center-text">
-                    <h3>🎓 Você está preparado!</h3>
-                    <p>Email não tem mais segredos para você<br>
-                    <strong>Parabéns, futuro técnico em informática!</strong></p>
+                <div class="comparison-table">
+                    <h3>📋 Checklist de Configurações</h3>
+                    <table>
+                        <tr>
+                            <th>Serviço</th>
+                            <th>Gmail</th>
+                            <th>Outlook.com</th>
+                        </tr>
+                        <tr>
+                            <td><strong>SMTP</strong></td>
+                            <td>smtp.gmail.com:587</td>
+                            <td>smtp-mail.outlook.com:587</td>
+                        </tr>
+                        <tr>
+                            <td><strong>POP3</strong></td>
+                            <td>pop.gmail.com:995</td>
+                            <td>outlook.office365.com:995</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Autenticação</strong></td>
+                            <td>Senha de app</td>
+                            <td>Senha normal</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Configuração</strong></td>
+                            <td>Manual</td>
+                            <td>Automática</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="example-box center-text">
+                    <h3>⚡ Você Agora É um Expert em Protocolos de Email! ⚡</h3>
+                    <p>"Seus conhecimentos permitem configurar qualquer sistema de email!"<br>
+                    Continue explorando outros protocolos de rede! 🌐📧</p>
+                </div>
+
+                <div class="info-box center-text">
+                    <h3>📋 Recursos para Continuar Aprendendo</h3>
+                    <p>• RFC 5321 (SMTP Specification)<br>
+                    • RFC 1939 (POP3 Specification)<br>
+                    • Certificações de rede (CCNA, CompTIA)<br>
+                    • Laboratórios com servidores reais</p>
+                </div>
+
+                <div style="background: #d1ecf1; color: #0c5460; padding: 20px; border-radius: 10px; margin: 15px 0; text-align: center;">
+                    <p style="font-size: 1.1em; margin: 0;">
+                        <strong>Lembre-se:</strong> SMTP envia, POP3 recebe, portas seguras sempre!<br>
+                        <strong>Happy Email Configuring! 📧🔧</strong>
+                    </p>
                 </div>
             </div>
-        </div>
-
-        <!-- Slide 16: Referências -->
-        <div class="slide">
-            <div class="content">
-                <h2>📚 Onde aprender mais</h2>
-                
-                <div class="two-column">
-                    <div>
-                        <h3>🔗 Links Úteis</h3>
-                        <div class="highlight-box">
-                            <strong>Testes de configuração:</strong><br>
-                            • www.mxtoolbox.com<br>
-                            • mail-tester.com<br>
-                            • testconnectivity.microsoft.com<br><br>
-                            
-                            <strong>Clientes de email:</strong><br>
-                            • thunderbird.net<br>
-                            • outlook.live.com<br>
-                            • gmail.com
-                        </div>
-                    </div>
-                    <div>
-                        <h3>📖 Documentação Técnica</h3>
-                        <div class="highlight-box">
-                            <strong>Para estudar mais:</strong><br>
-                            • RFC 5321 (SMTP)<br>
-                            • RFC 1939 (POP3)<br>
-                            • RFC 3501 (IMAP)<br><br>
-                            
-                            <strong>Tutoriais práticos:</strong><br>
-                            • Como configurar Postfix<br>
-                            • Como configurar Dovecot<br>
-                            • Segurança de email servers
-                        </div>
-                    </div>
-                </div>
-
-                <div class="lab-box">
-                    <h3>🛠️ Ferramentas para Técnicos</h3>
-                    <div class="three-column">
-                        <div>
-                            <strong>Debug:</strong><br>
-                            • telnet<br>
-                            • nmap<br>
-                            • wireshark<br>
-                            • tcpdump
-                        </div>
-                        <div>
-                            <strong>Servidores:</strong><br>
-                            • Postfix (SMTP)<br>
-                            • Dovecot (POP3/IMAP)<br>
-                            • Exim<br>
-                            • Sendmail
-                        </div>
-                        <div>
-                            <strong>Monitoramento:</strong><br>
-                            • Nagios<br>
-                            • Zabbix<br>
-                            • PRTG<br>
-                            • LogAnalyzer
-                        </div>
-                    </div>
-                </div>
-
-                <div class="exercise-box center-text">
-                    <h3>💼 Carreira em Email</h3>
-                    <p>Especialistas em email são muito valorizados!<br>
-                    <strong>Exchange Administrator, Postmaster, Email Security Specialist</strong></p>
-                </div>
-
-                <div class="warning-box">
-                    <h3>⚠️ Mantenha-se Atualizado</h3>
-                    <div class="bullet-point">Protocolos evoluem (OAuth2, JMAP)</div>
-                    <div class="bullet-point">Segurança muda constantemente</div>
-                    <div class="bullet-point">Novas ameaças surgem (phishing, spoofing)</div>
-                    <div class="bullet-point">Cloud solutions dominam (Office 365, G Suite)</div>
-                </div>
-
-                <div class="highlight-box center-text">
-                    <h3>🎯 Mensagem Final</h3>
-                    <p><strong>Email é a base da comunicação digital</strong><br>
-                    Como técnico, você será o herói que resolve os problemas!<br>
-                    Continue praticando e estudando!</p>
-                </div>
+            
+            <div class="slide-navigation">
+                <button class="nav-button" onclick="showSlide(9)">⬅️ Anterior</button>
+                <span style="margin: 0 20px; font-weight: bold; color: #667eea;">Slide 10 de 10</span>
+                <button class="nav-button" onclick="showSlide(1)" style="background: #27ae60;">🏠 Início</button>
             </div>
-        </div>
-
-        <div class="navigation">
-            <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">⬅️ Anterior</button>
-            <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">Próximo ➡️</button>
         </div>
     </div>
 
     <script>
-        let currentSlide = 0;
-        const slides = document.querySelectorAll('.slide');
-        const totalSlides = slides.length;
-
-        document.getElementById('total-slides').textContent = totalSlides;
-
-        // Quiz variables
-        let currentQuestion = 1;
-        let score = 0;
-        let quizAnswered = [false, false, false, false];
-
-        function showSlide(index) {
-            slides.forEach((slide, i) => {
-                slide.classList.toggle('active', i === index);
+        // Variáveis globais
+        let currentSlide = 1;
+        
+        // Atualizar total de slides
+        document.getElementById('total-slides').textContent = '10';
+        
+        // Função para mostrar slide específico
+        function showSlide(slideNumber) {
+            // Esconder todos os slides
+            const slides = document.querySelectorAll('.slide');
+            slides.forEach(slide => {
+                slide.classList.remove('active');
             });
             
-            document.getElementById('current-slide').textContent = index + 1;
-            document.getElementById('prevBtn').disabled = index === 0;
-            document.getElementById('nextBtn').disabled = index === totalSlides - 1;
-        }
-
-        function changeSlide(direction) {
-            const newSlide = currentSlide + direction;
-            if (newSlide >= 0 && newSlide < totalSlides) {
-                currentSlide = newSlide;
-                showSlide(currentSlide);
-            }
-        }
-
-        // Quiz Functions
-        function selectOption(questionNum, option, isCorrect) {
-            if (quizAnswered[questionNum - 1]) return; // Já respondida
-            
-            const options = document.querySelectorAll(`#question${questionNum} .quiz-option`);
-            const feedback = document.getElementById(`feedback${questionNum}`);
-            
-            // Marcar todas as opções
-            options.forEach(opt => {
-                opt.style.pointerEvents = 'none';
-                if (opt.onclick.toString().includes('true')) {
-                    opt.classList.add('correct');
-                } else if (opt === event.currentTarget) {
-                    opt.classList.add(isCorrect ? 'correct' : 'incorrect');
-                }
-            });
-            
-            // Mostrar feedback
-            if (isCorrect) {
-                feedback.innerHTML = '✅ Correto! Muito bem!';
-                feedback.className = 'quiz-feedback correct';
-                score++;
-            } else {
-                feedback.innerHTML = '❌ Incorreto. A resposta correta está destacada em verde.';
-                feedback.className = 'quiz-feedback incorrect';
-            }
-            
-            quizAnswered[questionNum - 1] = true;
-            
-            // Mostrar botão para próxima questão
-            if (questionNum < 4) {
-                document.getElementById('nextQuizBtn').style.display = 'inline-block';
-            } else {
-                // Última questão - mostrar resultado
-                setTimeout(() => {
-                    showQuizResult();
-                }, 2000);
-            }
-        }
-
-        function nextQuestion() {
-            document.getElementById(`question${currentQuestion}`).style.display = 'none';
-            currentQuestion++;
-            document.getElementById(`question${currentQuestion}`).style.display = 'block';
-            document.getElementById('nextQuizBtn').style.display = 'none';
-        }
-
-        function showQuizResult() {
-            // Esconder última questão
-            document.getElementById('question4').style.display = 'none';
-            
-            // Mostrar resultado
-            document.getElementById('quizResult').style.display = 'block';
-            document.getElementById('finalScore').textContent = score;
-            
-            const resultMessage = document.getElementById('resultMessage');
-            if (score === 4) {
-                resultMessage.innerHTML = '🏆 Excelente! Você domina os protocolos de email!';
-            } else if (score === 3) {
-                resultMessage.innerHTML = '👏 Muito bom! Quase perfeito!';
-            } else if (score === 2) {
-                resultMessage.innerHTML = '👍 Bom trabalho! Continue estudando!';
-            } else if (score === 1) {
-                resultMessage.innerHTML = '📚 Estude um pouco mais sobre SMTP e POP3!';
-            } else {
-                resultMessage.innerHTML = '📖 Recomendo revisar o conteúdo sobre protocolos de email!';
-            }
-        }
-
-        function restartQuiz() {
-            // Reset variables
-            currentQuestion = 1;
-            score = 0;
-            quizAnswered = [false, false, false, false];
-            
-            // Reset interface
-            for (let i = 1; i <= 4; i++) {
-                const question = document.getElementById(`question${i}`);
-                const options = question.querySelectorAll('.quiz-option');
-                const feedback = document.getElementById(`feedback${i}`);
+            // Mostrar slide específico
+            const targetSlide = document.getElementById('slide-' + slideNumber);
+            if (targetSlide) {
+                targetSlide.classList.add('active');
+                currentSlide = slideNumber;
                 
-                // Reset options
-                options.forEach(opt => {
-                    opt.className = 'quiz-option';
-                    opt.style.pointerEvents = 'auto';
-                });
-                
-                // Hide feedback
-                feedback.style.display = 'none';
-                
-                // Hide all questions except first
-                question.style.display = i === 1 ? 'block' : 'none';
+                // Atualizar contador
+                document.getElementById('current-slide').textContent = slideNumber;
             }
-            
-            // Hide result and buttons
-            document.getElementById('quizResult').style.display = 'none';
-            document.getElementById('nextQuizBtn').style.display = 'none';
         }
-
+        
         // Navegação por teclado
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowLeft') changeSlide(-1);
-            if (e.key === 'ArrowRight') changeSlide(1);
-            if (e.key === 'Home') {
-                currentSlide = 0;
-                showSlide(currentSlide);
-            }
-            if (e.key === 'End') {
-                currentSlide = totalSlides - 1;
-                showSlide(currentSlide);
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowLeft' && currentSlide > 1) {
+                showSlide(currentSlide - 1);
+            } else if (e.key === 'ArrowRight' && currentSlide < 10) {
+                showSlide(currentSlide + 1);
             }
         });
-
-        // Inicializar
-        showSlide(0);
-        
-        // Inicializar quiz no slide 14
-        document.getElementById('question1').style.display = 'block';
     </script>
 </body>
 </html>
