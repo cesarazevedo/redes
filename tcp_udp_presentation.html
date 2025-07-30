@@ -1251,11 +1251,11 @@
                             <div class="quiz-option" onclick="selectOption(1, 'a', false)">
                                 <span class="option-letter">A)</span> UDP usa portas, TCP não usa
                             </div>
-                            <div class="quiz-option" onclick="selectOption(1, 'b', true)">
-                                <span class="option-letter">B)</span> UDP é sem conexão e não-confiável, TCP é orientado a conexão e confiável
+                            <div class="quiz-option" onclick="selectOption(1, 'b', false)">
+                                <span class="option-letter">B)</span> UDP é mais lento que TCP
                             </div>
-                            <div class="quiz-option" onclick="selectOption(1, 'c', false)">
-                                <span class="option-letter">C)</span> UDP é mais lento que TCP
+			    <div class="quiz-option" onclick="selectOption(1, 'c', true)">
+                                <span class="option-letter">C)</span> UDP é sem conexão e não-confiável, TCP é orientado a conexão e confiável
                             </div>
                             <div class="quiz-option" onclick="selectOption(1, 'd', false)">
                                 <span class="option-letter">D)</span> Não há diferença significativa
@@ -1272,14 +1272,14 @@
                             <div class="quiz-option" onclick="selectOption(2, 'a', false)">
                                 <span class="option-letter">A)</span> 2 passos: SYN, ACK
                             </div>
-                            <div class="quiz-option" onclick="selectOption(2, 'b', true)">
-                                <span class="option-letter">B)</span> 3 passos: SYN, SYN+ACK, ACK
+                            <div class="quiz-option" onclick="selectOption(2, 'b', false)">
+                                <span class="option-letter">B)</span> 4 passos: SYN, ACK, SYN, ACK
                             </div>
                             <div class="quiz-option" onclick="selectOption(2, 'c', false)">
-                                <span class="option-letter">C)</span> 4 passos: SYN, ACK, SYN, ACK
+                                <span class="option-letter">C)</span> 1 passo: apenas SYN
                             </div>
-                            <div class="quiz-option" onclick="selectOption(2, 'd', false)">
-                                <span class="option-letter">D)</span> 1 passo: apenas SYN
+			    <div class="quiz-option" onclick="selectOption(2, 'd', true)">
+                                <span class="option-letter">D)</span> 3 passos: SYN, SYN+ACK, ACK
                             </div>
                         </div>
                         <div class="quiz-feedback" id="feedback2"></div>
