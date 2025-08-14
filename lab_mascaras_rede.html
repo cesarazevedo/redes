@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laboratório - Máscara de Rede</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+
+
+        .content {
+            padding: 60px 40px 40px 40px;
+        }
+
+        .lab-title {
+            text-align: center;
+            font-size: 3em;
+            color: #2d3748;
+            margin-bottom: 40px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section h3 {
+            font-size: 1.8em;
+            color: #4a5568;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .topology-section {
+            background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+            border: 2px solid #667eea;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .image-placeholder {
+            background: rgba(102, 126, 234, 0.1);
+            border: 3px dashed #667eea;
+            border-radius: 10px;
+            padding: 60px 20px;
+            margin: 20px 0;
+            font-size: 1.2em;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .orientations {
+            background: linear-gradient(135deg, #fff5f5 0%, #fed7d7 100%);
+            border-left: 5px solid #f56565;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .orientations h4 {
+            color: #742a2a;
+            font-size: 1.4em;
+            margin-bottom: 15px;
+        }
+
+        .bullet-point {
+            display: flex;
+            align-items: flex-start;
+            margin: 15px 0;
+            font-size: 1.1em;
+            line-height: 1.5;
+        }
+
+        .bullet-point::before {
+            content: "🔸";
+            margin-right: 15px;
+            font-size: 1.2em;
+            flex-shrink: 0;
+        }
+
+        .test-section {
+            background: linear-gradient(135deg, #f0fff4 0%, #c6f6d5 100%);
+            border-left: 5px solid #48bb78;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .test-section h4 {
+            color: #22543d;
+            font-size: 1.4em;
+            margin-bottom: 15px;
+        }
+
+        .ping-command {
+            background: #2d3748;
+            color: #00ff00;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 15px 0;
+            font-size: 1.1em;
+        }
+
+        .question-box {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            border-left: 5px solid #ff7f50;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 30px 0;
+        }
+
+        .question-box h4 {
+            color: #c05621;
+            font-size: 1.4em;
+            margin-bottom: 15px;
+        }
+
+        .question {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #744210;
+            margin: 10px 0;
+        }
+
+        .config-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 1.1em;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .config-table th {
+            background: #667eea;
+            color: white;
+            padding: 15px;
+            font-weight: bold;
+        }
+
+        .config-table td {
+            padding: 12px 15px;
+            text-align: center;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .config-table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        .highlight-text {
+            background: #667eea;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        .steps {
+            counter-reset: step-counter;
+        }
+
+        .step {
+            counter-increment: step-counter;
+            margin: 20px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+            position: relative;
+        }
+
+        .step::before {
+            content: counter(step-counter);
+            background: #667eea;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            position: absolute;
+            left: -15px;
+            top: 20px;
+        }
+
+        .step-content {
+            margin-left: 30px;
+        }
+
+        .step h5 {
+            font-size: 1.3em;
+            color: #2d3748;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+
+
+        <!-- Conteúdo Principal -->
+        <div class="content">
+            <h2 class="lab-title">🎭 Máscara de rede</h2>
+
+            <!-- Seção da Topologia -->
+            <div class="section">
+                <h3>🗺️ Topologia da Rede</h3>
+                <div class="topology-section">
+                    <p style="font-size: 1.2em; margin-bottom: 20px;">
+                        Utilizando o <strong>Cisco Packet Tracer</strong>, monte a rede abaixo:
+                    </p>
+                    
+                    <div class="image-placeholder">
+                        [INSERIR IMAGEM DA TOPOLOGIA AQUI - arquivo: topologia_rede.png]
+                        <br><br>
+                        📝 A imagem deve mostrar a configuração dos PCs conectados ao switch 2960
+                    </div>
+
+                    <div style="margin-top: 30px;">
+                        <h4>📋 Configuração dos Dispositivos:</h4>
+                        <table class="config-table">
+                            <tr>
+                                <th>Dispositivo</th>
+                                <th>Endereço IP</th>
+                                <th>Máscara de Sub-rede</th>
+                                <th>Rede</th>
+                            </tr>
+                            <tr>
+                                <td><strong>PC0</strong></td>
+                                <td>192.168.0.1</td>
+                                <td>255.255.255.0</td>
+                                <td>192.168.0.0/24</td>
+                            </tr>
+                            <tr>
+                                <td><strong>PC1</strong></td>
+                                <td>192.168.1.1</td>
+                                <td>255.255.255.0</td>
+                                <td>192.168.1.0/24</td>
+                            </tr>
+                            <tr>
+                                <td><strong>PC2</strong></td>
+                                <td>192.168.1.2</td>
+                                <td>255.255.255.0</td>
+                                <td>192.168.1.0/24</td>
+                            </tr>
+                            <tr>
+                                <td><strong>PC3</strong></td>
+                                <td>192.168.2.1</td>
+                                <td>255.255.255.0</td>
+                                <td>192.168.2.0/24</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Orientações -->
+            <div class="section">
+                <h3>📝 Orientações:</h3>
+                
+                <div class="orientations">
+                    <h4>🔧 Montagem da Rede:</h4>
+                    <div class="bullet-point">Conecte os dispositivos utilizando o <span class="highlight-text">cabo de rede apropriado</span> para formar uma rede</div>
+                    <div class="bullet-point">Certifique-se de que todos os dispositivos estejam conectados a um <span class="highlight-text">switch (modelo 2960)</span></div>
+                    <div class="bullet-point">Configure os endereços IP conforme a tabela acima</div>
+                    <div class="bullet-point">Verifique se todas as conexões estão funcionando (luzes verdes nos cabos)</div>
+                </div>
+
+                <div class="steps">
+                    <div class="step">
+                        <div class="step-content">
+                            <h5>Adicionar Dispositivos</h5>
+                            <p>Arraste 4 PCs e 1 Switch 2960 para a área de trabalho do Packet Tracer</p>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-content">
+                            <h5>Conectar Cabos</h5>
+                            <p>Use cabos <strong>Copper Straight-Through</strong> para conectar todos os PCs ao switch</p>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-content">
+                            <h5>Configurar IPs</h5>
+                            <p>Em cada PC: Desktop → IP Configuration → Configure IP e máscara conforme a tabela</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Testes -->
+            <div class="section">
+                <h3>🧪 Testes de Conectividade</h3>
+                
+                <div class="test-section">
+                    <h4>⚡ Ao final, deve-se testar a rede:</h4>
+                    <div class="bullet-point">Verificar a conectividade entre os dispositivos usando o comando <span class="highlight-text">ping</span> entre os PCs</div>
+                    <div class="bullet-point">Acesse: Desktop → Command Prompt em qualquer PC</div>
+                    <div class="bullet-point">Execute os comandos de ping conforme os testes abaixo</div>
+                </div>
+
+                <div style="margin: 30px 0;">
+                    <h4>🔍 Teste 1: Ping entre PCs da mesma rede</h4>
+                    <p>No PC1, execute:</p>
+                    <div class="ping-command">C:\> ping 192.168.1.2</div>
+                    <p>(PC1 para PC2 - ambos na rede 192.168.1.0)</p>
+
+                    <h4 style="margin-top: 30px;">🔍 Teste 2: Ping entre PCs de redes diferentes</h4>
+                    <p>No PC1, execute:</p>
+                    <div class="ping-command">C:\> ping 192.168.0.1</div>
+                    <p>(PC1 para PC0 - redes diferentes: 192.168.1.0 e 192.168.0.0)</p>
+
+                    <p>No PC3, execute:</p>
+                    <div class="ping-command">C:\> ping 192.168.1.1</div>
+                    <p>(PC3 para PC1 - redes diferentes: 192.168.2.0 e 192.168.1.0)</p>
+                </div>
+            </div>
+
+            <!-- Questões de Reflexão -->
+            <div class="question-box">
+                <h4>🤔 Questões para Reflexão:</h4>
+                
+                <div class="question">
+                    1. Realize um ping entre os computadores de mesma rede e depois de redes diferentes: O que ocorre? Por quê?
+                </div>
+
+                <div class="question">
+                    2. Qual é o resultado do ping entre PC1 e PC2? Explique o motivo.
+                </div>
+
+                <div class="question">
+                    3. Qual é o resultado do ping entre PC1 e PC0? Explique o motivo.
+                </div>
+
+                <div class="question">
+                    4. Como a máscara de sub-rede 255.255.255.0 influencia na comunicação entre os dispositivos?
+                </div>
+
+                <div class="question">
+                    5. O que seria necessário para permitir comunicação entre redes diferentes?
+                </div>
+            </div>
+
+            <!-- Espaço para Respostas -->
+            <div style="border: 2px dashed #ccc; padding: 30px; margin: 30px 0; border-radius: 10px; background: #fafafa;">
+                <h4 style="color: #666; margin-bottom: 20px;">📝 Espaço para suas respostas e observações:</h4>
+                <div style="height: 200px; border: 1px solid #ddd; background: white; border-radius: 5px;"></div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
