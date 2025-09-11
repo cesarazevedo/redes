@@ -1,0 +1,1438 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IPv4 - Endereçamento e Sub-redes</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        .presentation {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .slide {
+            min-height: 100vh;
+            padding: 60px 40px;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            background: white;
+            margin: 20px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        .slide.active {
+            display: flex;
+        }
+
+        .slide h1 {
+            font-size: 3.5em;
+            color: #4a5568;
+            text-align: center;
+            margin-bottom: 40px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .slide h2 {
+            font-size: 2.8em;
+            color: #2d3748;
+            margin-bottom: 30px;
+            border-bottom: 4px solid #667eea;
+            padding-bottom: 15px;
+        }
+
+        .slide h3 {
+            font-size: 2.2em;
+            color: #4a5568;
+            margin: 25px 0 15px 0;
+        }
+
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: start;
+        }
+
+        .bullet-point {
+            display: flex;
+            align-items: flex-start;
+            margin: 15px 0;
+            font-size: 1.3em;
+            line-height: 1.5;
+        }
+
+        .bullet-point::before {
+            content: "🔢";
+            margin-right: 15px;
+            font-size: 1.2em;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #667eea;
+        }
+
+        .example-box {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #20b2aa;
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 1000;
+        }
+
+        .nav-btn {
+            padding: 15px 25px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .nav-btn:hover {
+            background: #5a67d8;
+            transform: translateY(-2px);
+            box-shadow: 0 7px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .nav-btn:disabled {
+            background: #a0a0a0;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .slide-counter {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: rgba(255,255,255,0.9);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            color: #4a5568;
+            z-index: 1000;
+        }
+
+        .center-text {
+            text-align: center;
+        }
+
+        .large-text {
+            font-size: 1.4em;
+            line-height: 1.6;
+        }
+
+        .diagram {
+            background: #f7fafc;
+            border: 2px dashed #667eea;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+            font-family: monospace;
+            font-size: 1.2em;
+        }
+
+        .process-step {
+            background: #e6fffa;
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #38b2ac;
+            font-size: 1.1em;
+        }
+
+        .process-step strong {
+            color: #38b2ac;
+        }
+
+        .code-box {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: monospace;
+            font-size: 1em;
+            margin: 20px 0;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 1.1em;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        th {
+            background: #667eea;
+            color: white;
+            font-weight: bold;
+        }
+
+        .subnet-table {
+            background: white;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .calculation-box {
+            background: #f8f9fa;
+            border: 2px solid #e2e8f0;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            font-family: monospace;
+        }
+
+        .formula-box {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #28a745;
+        }
+
+        /* Quiz Styles */
+        .quiz-container {
+            max-width: 100%;
+            margin: 20px 0;
+        }
+
+        .quiz-question {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border: 2px solid #e2e8f0;
+        }
+
+        .quiz-question h3 {
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+
+        .quiz-question p {
+            font-size: 1.3em;
+            margin-bottom: 25px;
+            font-weight: bold;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .quiz-option {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.1em;
+        }
+
+        .quiz-option:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+            transform: translateX(5px);
+        }
+
+        .quiz-option.selected {
+            border-color: #667eea;
+            background: #667eea;
+            color: white;
+        }
+
+        .quiz-option.correct {
+            border-color: #48bb78;
+            background: #48bb78;
+            color: white;
+        }
+
+        .quiz-option.incorrect {
+            border-color: #f56565;
+            background: #f56565;
+            color: white;
+        }
+
+        .option-letter {
+            background: #667eea;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .quiz-option.correct .option-letter {
+            background: #48bb78;
+        }
+
+        .quiz-option.incorrect .option-letter {
+            background: #f56565;
+        }
+
+        .quiz-feedback {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: bold;
+            display: none;
+        }
+
+        .quiz-feedback.correct {
+            background: #c6f6d5;
+            color: #22543d;
+            border: 2px solid #48bb78;
+            display: block;
+        }
+
+        .quiz-feedback.incorrect {
+            background: #fed7d7;
+            color: #742a2a;
+            border: 2px solid #f56565;
+            display: block;
+        }
+
+        .quiz-navigation {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .quiz-result {
+            text-align: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            margin: 20px 0;
+        }
+
+        .result-box {
+            background: rgba(255,255,255,0.1);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+
+        .result-box p {
+            font-size: 1.4em;
+            margin: 10px 0;
+        }
+
+        .comparison-box {
+            background: #f7fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .home-btn {
+            position: fixed;
+            top: 30px;
+            left: 30px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            padding: 12px 20px;
+            font-size: 1em;
+            font-weight: bold;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+            z-index: 1001;
+        }
+
+        .home-btn:hover {
+            background: #5a67d8;
+            transform: translateY(-2px);
+            box-shadow: 0 7px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .subnet-flow {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 20px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 15px;
+        }
+
+        .subnet-step {
+            background: #667eea;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 10px;
+            font-weight: bold;
+            text-align: center;
+            flex: 1;
+            margin: 0 5px;
+        }
+
+        .arrow {
+            font-size: 2em;
+            color: #667eea;
+        }
+    </style>
+</head>
+<body>
+<a href="index.html" class="home-btn">
+    🏠 Voltar ao Índice
+</a>
+    <div class="presentation">
+        <div class="slide-counter">
+            <span id="current-slide">1</span> / <span id="total-slides">16</span>
+        </div>
+
+        <!-- Slide 1: Título -->
+        <div class="slide active">
+            <div class="content center-text">
+                <h1>🔢 Endereçamento IPv4</h1>
+                <h2 style="border: none; color: #667eea;">Sub-redes - Dividindo Redes de Forma Inteligente</h2>
+                <div class="highlight-box large-text">
+                    <strong>Aula Prática</strong><br>
+                    Como dividir uma rede grande em várias redes menores<br>
+                    O segredo da organização e eficiência das redes modernas
+                </div>
+                
+                <div class="example-box" style="margin-top: 40px;">
+                    <h3>👨‍🏫 Autor da Apresentação</h3>
+                    <p style="font-size: 1.3em; margin: 10px 0;">
+                        <strong>César Azevedo</strong><br>
+                        📧 cesar.augusto@ifrn.edu.br
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 2: Tópicos da Aula -->
+        <div class="slide">
+            <div class="content">
+                <h2>📋 Tópicos da Aula</h2>
+                
+                <div class="two-column">
+                    <div>
+                        <h3>🌟 Fundamentos</h3>
+                        <div class="bullet-point">O que é Subnetting (sub-redes)</div>
+                        <div class="bullet-point">Por que dividir redes?</div>
+                        <div class="bullet-point">Organização e gerenciamento</div>
+                        <div class="bullet-point">Eficiência no uso de IPs</div>
+                        
+                        <h3>🔧 Máscaras de Sub-rede</h3>
+                        <div class="bullet-point">Máscaras padrão vs customizadas</div>
+                        <div class="bullet-point">Como funcionam as máscaras</div>
+                        <div class="bullet-point">Notação decimal e CIDR</div>
+                    </div>
+                    <div>
+                        <h3>📐 Cálculos Práticos</h3>
+                        <div class="bullet-point">Fórmulas essenciais</div>
+                        <div class="bullet-point">Número de sub-redes</div>
+                        <div class="bullet-point">Hosts por sub-rede</div>
+                        <div class="bullet-point">Endereços de rede e broadcast</div>
+                        
+                        <h3>💻 Exemplos Reais</h3>
+                        <div class="bullet-point">Subnetting de rede Classe C</div>
+                        <div class="bullet-point">Cálculos paso a paso</div>
+                        <div class="bullet-point">Operações AND e OR</div>
+                        <div class="bullet-point">Ferramentas online</div>
+                    </div>
+                </div>
+
+                <div class="highlight-box center-text">
+                    <h3>🎯 Objetivo Final</h3>
+                    <p>Dominar o conceito de sub-redes para organizar e<br>
+                    otimizar redes de computadores de forma eficiente</p>
+                </div>
+
+                <div class="example-box center-text">
+                    <h3>🧠 + Quiz Interativo</h3>
+                    <p>Teste seus conhecimentos com 4 questões práticas!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: O que é Subnetting -->
+        <div class="slide">
+            <div class="content">
+                <h2>🤔 O que é Subnetting?</h2>
+                
+                <div class="bullet-point"><strong>Subnetting</strong> = Dividir uma rede grande em redes menores</div>
+                <div class="bullet-point">Processo de criar <strong>sub-redes</strong> dentro de uma rede principal</div>
+                <div class="bullet-point">Permite melhor organização e controle</div>
+                <div class="bullet-point">Usa máscaras de sub-rede customizadas</div>
+
+                <div class="example-box">
+                    <h3>💡 Analogia simples:</h3>
+                    <p style="font-size: 1.3em;">
+                        <strong>Subnetting é como dividir um prédio em apartamentos:</strong><br>
+                        • Você tem um prédio grande (rede principal)<br>
+                        • Divide em apartamentos menores (sub-redes)<br>
+                        • Cada apartamento tem seu próprio "endereço" <br>
+                        • Mais fácil de gerenciar e organizar<br>
+                        • Cada família fica no seu espaço (segurança)
+                    </p>
+                </div>
+
+                <div class="highlight-box">
+                    <h3>📜 Motivos para usar Subnetting:</h3>
+                    <div class="subnet-flow">
+                        <div class="subnet-step">Organização</div>
+                        <div class="arrow">→</div>
+                        <div class="subnet-step">Segurança</div>
+                        <div class="arrow">→</div>
+                        <div class="subnet-step">Performance</div>
+                        <div class="arrow">→</div>
+                        <div class="subnet-step">Economia de IPs</div>
+                    </div>
+                </div>
+
+                <div class="diagram">
+                    <strong>Rede 192.168.1.0/24 (254 hosts)</strong><br>
+                    ↓ SUBNETTING ↓<br>
+                    <strong>4 sub-redes com 62 hosts cada</strong>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Por que usar Sub-redes -->
+        <div class="slide">
+            <div class="content">
+                <h2>🎯 Por que Dividir Redes em Sub-redes?</h2>
+                
+                <div class="two-column">
+                    <div class="comparison-box">
+                        <h3 style="color: #f56565;">🔴 Problema SEM Sub-redes:</h3>
+                        <div class="bullet-point">Todos os computadores na mesma rede</div>
+                        <div class="bullet-point">Muito tráfego de broadcast</div>
+                        <div class="bullet-point">Difícil de gerenciar e organizar</div>
+                        <div class="bullet-point">Problemas de segurança</div>
+                        <div class="bullet-point">Desperdício de endereços IP</div>
+                    </div>
+                    
+                    <div class="comparison-box">
+                        <h3 style="color: #48bb78;">✅ Solução COM Sub-redes:</h3>
+                        <div class="bullet-point">Redes organizadas por setor</div>
+                        <div class="bullet-point">Menos tráfego desnecessário</div>
+                        <div class="bullet-point">Administração simplificada</div>
+                        <div class="bullet-point">Melhor controle de acesso</div>
+                        <div class="bullet-point">Uso eficiente de IPs</div>
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>🏢 Exemplo: Empresa com 200 funcionários</h3>
+                    <p style="font-size: 1.2em;">
+                        <strong>Sem sub-redes:</strong> Todos os 200 PCs na mesma rede 😵<br>
+                        <strong>Com sub-redes:</strong><br>
+                        • Sub-rede 1: Administração (50 PCs)<br>
+                        • Sub-rede 2: Vendas (50 PCs)<br>
+                        • Sub-rede 3: Produção (70 PCs)<br>
+                        • Sub-rede 4: TI (30 PCs)<br>
+                        = Organização perfeita! 🎯
+                    </p>
+                </div>
+
+                <div class="highlight-box">
+                    <h3>🚀 Benefícios Práticos:</h3>
+                    <div class="bullet-point"><strong>Performance:</strong> Menos colisões e broadcast</div>
+                    <div class="bullet-point"><strong>Segurança:</strong> Isolamento entre departamentos</div>
+                    <div class="bullet-point"><strong>Gestão:</strong> Políticas específicas por setor</div>
+                    <div class="bullet-point"><strong>Economia:</strong> Melhor aproveitamento de IPs</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: Máscaras de Sub-rede -->
+        <div class="slide">
+            <div class="content">
+                <h2>🎭 Máscaras de Sub-rede</h2>
+                
+                <div class="highlight-box">
+                    <h3>📏 Máscaras Padrão (Classful):</h3>
+                    <div class="code-box">
+Classe A: 255.0.0.0     = /8<br>
+Classe B: 255.255.0.0   = /16<br>
+Classe C: 255.255.255.0 = /24
+                    </div>
+                </div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>🔧 Máscaras Customizadas:</h3>
+                        <div class="bullet-point">Permitem criar sub-redes</div>
+                        <div class="bullet-point">"Emprestam" bits da parte de host</div>
+                        <div class="bullet-point">Mais flexibilidade no design</div>
+                        <div class="bullet-point">Melhor uso do espaço de endereços</div>
+                        
+                        <div class="example-box" style="margin-top: 20px;">
+                            <h4>💡 Como funciona:</h4>
+                            <p>Máscara = "Molde" que separa<br>
+                            <strong>Parte da Rede</strong> vs <strong>Parte do Host</strong></p>
+                        </div>
+                    </div>
+                    <div>
+                        <h3>📊 Exemplo Prático:</h3>
+                        <div class="calculation-box">
+<strong>Rede Original:</strong><br>
+192.168.1.0/24<br>
+Máscara: 255.255.255.0<br><br>
+
+<strong>Após Subnetting:</strong><br>
+192.168.1.0/26<br>
+Máscara: 255.255.255.192<br><br>
+
+<strong>Resultado:</strong><br>
+4 sub-redes com 62 hosts cada
+                        </div>
+                    </div>
+                </div>
+
+                <div class="diagram">
+                    <strong>Máscara = Fronteira entre Rede e Host</strong><br>
+                    192.168.1.0/24 → RRRRRRR.RRRRRRRR.RRRRRRRR.HHHHHHHH<br>
+                    192.168.1.0/26 → RRRRRRR.RRRRRRRR.RRRRRRRR.RRHHHHHH
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: Fórmulas de Cálculo -->
+        <div class="slide">
+            <div class="content">
+                <h2>📐 Fórmulas de Cálculo</h2>
+                
+                <div class="formula-box center-text">
+                    <h3>🧮 Fórmulas Essenciais</h3>
+                    <div style="font-size: 1.4em; margin: 20px 0;">
+                        <strong>Número de Sub-redes:</strong> 2^n<br>
+                        <small>(n = bits "emprestados" da parte de host)</small><br><br>
+                        <strong>Hosts por Sub-rede:</strong> 2^h - 2<br>
+                        <small>(h = bits restantes para hosts, -2 para rede e broadcast)</small>
+                    </div>
+                </div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>🔢 Passo a Passo:</h3>
+                        <div class="process-step">
+                            <strong>1.</strong> Definir quantas sub-redes precisa
+                        </div>
+                        <div class="process-step">
+                            <strong>2.</strong> Calcular bits necessários (2^n ≥ sub-redes)
+                        </div>
+                        <div class="process-step">
+                            <strong>3.</strong> Determinar nova máscara
+                        </div>
+                        <div class="process-step">
+                            <strong>4.</strong> Calcular hosts por sub-rede
+                        </div>
+                        <div class="process-step">
+                            <strong>5.</strong> Definir faixas de endereços
+                        </div>
+                    </div>
+                    <div>
+                        <h3>📝 Exemplo Rápido:</h3>
+                        <div class="calculation-box">
+<strong>Quero 4 sub-redes:</strong><br>
+2^n ≥ 4<br>
+2^2 = 4 ✓<br>
+Preciso de 2 bits<br><br>
+
+<strong>Rede /24 vira /26:</strong><br>
+24 + 2 = 26<br>
+Máscara: 255.255.255.192<br><br>
+
+<strong>Hosts por sub-rede:</strong><br>
+2^6 - 2 = 62 hosts
+                        </div>
+                    </div>
+                </div>
+
+                <div class="highlight-box">
+                    <h3>💡 Dica Importante:</h3>
+                    <div class="bullet-point">Sempre reserve sub-redes extras para crescimento futuro</div>
+                    <div class="bullet-point">-2 hosts porque primeiro é rede e último é broadcast</div>
+                    <div class="bullet-point">Use calculadoras online para verificar seus cálculos</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7: Exemplo Prático Detalhado -->
+        <div class="slide">
+            <div class="content">
+                <h2>💻 Exemplo Prático: Rede Classe C</h2>
+                
+                <div class="highlight-box center-text">
+                    <h3>🎯 Cenário:</h3>
+                    <p><strong>Rede Inicial:</strong> 192.168.1.0/24<br>
+                    <strong>Objetivo:</strong> Criar 4 sub-redes</p>
+                </div>
+
+                <div class="process-step">
+                    <strong>Passo 1:</strong> Máscara original = 255.255.255.0 (/24)
+                </div>
+
+                <div class="process-step">
+                    <strong>Passo 2:</strong> Bits "emprestados" = 2 (para 4 sub-redes: 2² = 4)
+                </div>
+
+                <div class="process-step">
+                    <strong>Passo 3:</strong> Nova máscara = 255.255.255.192 (/26)
+                </div>
+
+                <div class="subnet-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Sub-rede</th>
+                                <th>Endereço da Rede</th>
+                                <th>Primeiro Host</th>
+                                <th>Último Host</th>
+                                <th>Broadcast</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Sub-rede 1</strong></td>
+                                <td>192.168.1.0/26</td>
+                                <td>192.168.1.1</td>
+                                <td>192.168.1.62</td>
+                                <td>192.168.1.63</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Sub-rede 2</strong></td>
+                                <td>192.168.1.64/26</td>
+                                <td>192.168.1.65</td>
+                                <td>192.168.1.126</td>
+                                <td>192.168.1.127</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Sub-rede 3</strong></td>
+                                <td>192.168.1.128/26</td>
+                                <td>192.168.1.129</td>
+                                <td>192.168.1.190</td>
+                                <td>192.168.1.191</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Sub-rede 4</strong></td>
+                                <td>192.168.1.192/26</td>
+                                <td>192.168.1.193</td>
+                                <td>192.168.1.254</td>
+                                <td>192.168.1.255</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="example-box center-text">
+                    <h3>🎉 Resultado Final:</h3>
+                    <p>4 sub-redes com 62 hosts utilizáveis cada uma!<br>
+                    Total: 248 hosts (vs 254 da rede original)</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: Cálculo de Endereços de Rede e Broadcast -->
+        <div class="slide">
+            <div class="content">
+                <h2>🧮 Calculando Endereços de Rede e Broadcast</h2>
+                
+                <div class="two-column">
+                    <div>
+                        <h3>🏠 Endereço de Rede:</h3>
+                        <div class="bullet-point">Identifica a sub-rede</div>
+                        <div class="bullet-point">Todos os bits de host = 0</div>
+                        <div class="bullet-point">Não pode ser atribuído a hosts</div>
+                        <div class="bullet-point">Usado para roteamento</div>
+                        
+                        <h4>📋 Método de Cálculo:</h4>
+                        <div class="process-step">
+                            <strong>1.</strong> IP em binário
+                        </div>
+                        <div class="process-step">
+                            <strong>2.</strong> Máscara em binário
+                        </div>
+                        <div class="process-step">
+                            <strong>3.</strong> Operação AND
+                        </div>
+                    </div>
+                    <div>
+                        <h3>📡 Endereço de Broadcast:</h3>
+                        <div class="bullet-point">Para transmissão a todos da sub-rede</div>
+                        <div class="bullet-point">Todos os bits de host = 1</div>
+                        <div class="bullet-point">Não pode ser atribuído a hosts</div>
+                        <div class="bullet-point">Último endereço da sub-rede</div>
+                        
+                        <h4>📋 Método de Cálculo:</h4>
+                        <div class="process-step">
+                            <strong>1.</strong> Endereço de rede
+                        </div>
+                        <div class="process-step">
+                            <strong>2.</strong> Máscara invertida (wildcard)
+                        </div>
+                        <div class="process-step">
+                            <strong>3.</strong> Operação OR
+                        </div>
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>💡 Exemplo: IP 192.168.10.25/26</h3>
+                    <div class="calculation-box">
+<strong>Cálculo do Endereço de Rede:</strong><br>
+IP:      192.168.10.25  → 11000000.10101000.00001010.00011001<br>
+Máscara: 255.255.255.192 → 11111111.11111111.11111111.11000000<br>
+AND:                      → 11000000.10101000.00001010.00000000<br>
+<strong>Resultado: 192.168.10.0</strong><br><br>
+
+<strong>Cálculo do Broadcast:</strong><br>
+Rede:    192.168.10.0   → 11000000.10101000.00001010.00000000<br>
+Wildcard: 0.0.0.63      → 00000000.00000000.00000000.00111111<br>
+OR:                     → 11000000.10101000.00001010.00111111<br>
+<strong>Resultado: 192.168.10.63</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 9: Operações Binárias -->
+        <div class="slide">
+            <div class="content">
+                <h2>🔄 Operações Binárias AND e OR</h2>
+                
+                <div class="highlight-box">
+                    <h3>⚡ Operação AND (para endereço de rede):</h3>
+                    <div class="diagram">
+                        <strong>Regra:</strong> 1 AND 1 = 1, qualquer outra combinação = 0<br>
+                        Resultado: Mantém apenas bits de rede, zera bits de host
+                    </div>
+                </div>
+
+                <div class="highlight-box">
+                    <h3>⚡ Operação OR (para broadcast):</h3>
+                    <div class="diagram">
+                        <strong>Regra:</strong> 0 OR 0 = 0, qualquer outra combinação = 1<br>
+                        Resultado: Liga todos os bits de host (=1)
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>🧠 Dica Prática:</h3>
+                    <p style="font-size: 1.3em;">
+                        <strong>Não precisa decorar operações binárias!</strong><br>
+                        • Use calculadoras online<br>
+                        • Foque em entender o conceito<br>
+                        • Na prática, use ferramentas automáticas<br>
+                        • O importante é saber QUANDO usar cada operação
+                    </p>
+                </div>
+
+                <div class="two-column">
+                    <div class="calculation-box">
+                        <h4>🏠 Para Endereço de Rede:</h4>
+                        <strong>IP AND Máscara</strong><br>
+                        = Remove parte do host<br>
+                        = Fica só a identificação da rede
+                    </div>
+                    <div class="calculation-box">
+                        <h4>📡 Para Broadcast:</h4>
+                        <strong>Rede OR Wildcard</strong><br>
+                        = Liga todos os bits de host<br>
+                        = Endereço para "todos"
+                    </div>
+                </div>
+
+                <div class="highlight-box center-text">
+                    <h3>💡 Resumo Simples:</h3>
+                    <p><strong>Endereço de Rede:</strong> Bits de host = 0<br>
+                    <strong>Endereço de Broadcast:</strong> Bits de host = 1</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 10: Ferramentas Práticas -->
+        <div class="slide">
+            <div class="content">
+                <h2>🛠️ Ferramentas Práticas</h2>
+                
+                <div class="highlight-box">
+                    <h3>🌐 Calculadoras Online Recomendadas:</h3>
+                    <div class="bullet-point"><strong>SolarWinds</strong> - FREE Advanced Subnet Calculator</div>
+                    <div class="bullet-point"><strong>SubnetOnline.com</strong> - IP Subnet Calculator</div>
+                    <div class="bullet-point"><strong>Calculator.net</strong> - IP Subnet Calculator</div>
+                    <div class="bullet-point">Qualquer "subnet calculator" no Google</div>
+                </div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>💻 Comandos Úteis:</h3>
+                        <div class="code-box">
+# Windows<br>
+ipconfig /all<br>
+route print<br>
+ping 192.168.1.1<br><br>
+# Linux<br>
+ip route show<br>
+ifconfig<br>
+netstat -rn
+                        </div>
+                        
+                        <h3>📱 Apps Mobile:</h3>
+                        <div class="bullet-point">Network Analyzer</div>
+                        <div class="bullet-point">IP Calculator</div>
+                        <div class="bullet-point">Subnet Calculator</div>
+                    </div>
+                    <div>
+                        <h3>🔧 Software Profissional:</h3>
+                        <div class="bullet-point"><strong>Cisco Packet Tracer</strong> - Simulação</div>
+                        <div class="bullet-point"><strong>GNS3</strong> - Emulação de redes</div>
+                        <div class="bullet-point"><strong>Wireshark</strong> - Análise de pacotes</div>
+                        <div class="bullet-point"><strong>Advanced IP Scanner</strong> - Descoberta</div>
+                        
+                        <div class="example-box" style="margin-top: 20px;">
+                            <h4>📚 Para Estudar:</h4>
+                            <p>• Cisco Networking Academy<br>
+                            • Cursos online de redes<br>
+                            • Laboratórios virtuais</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="highlight-box center-text">
+                    <h3>🎯 Dica de Ouro:</h3>
+                    <p>Pratique com calculadoras online primeiro,<br>
+                    depois tente fazer os cálculos manualmente para fixar o aprendizado!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 11: Exercício Prático -->
+        <div class="slide">
+            <div class="content">
+                <h2>📝 Exercício Prático</h2>
+                
+                <div class="highlight-box center-text">
+                    <h3>🎯 Desafio: Sua vez de calcular!</h3>
+                    <p><strong>Rede:</strong> 172.16.50.0/24<br>
+                    <strong>Requisito:</strong> Criar 8 sub-redes</p>
+                </div>
+
+                <div class="process-step">
+                    <strong>Pergunta 1:</strong> Quantos bits preciso "emprestar"?
+                </div>
+
+                <div class="process-step">
+                    <strong>Pergunta 2:</strong> Qual será a nova máscara de sub-rede?
+                </div>
+
+                <div class="process-step">
+                    <strong>Pergunta 3:</strong> Quantos hosts terá cada sub-rede?
+                </div>
+
+                <div class="example-box">
+                    <h3>💡 Resolução:</h3>
+                    <div class="calculation-box">
+<strong>1. Bits necessários:</strong><br>
+2^n ≥ 8 sub-redes<br>
+2^3 = 8 ✓<br>
+Preciso de 3 bits<br><br>
+
+<strong>2. Nova máscara:</strong><br>
+/24 + 3 = /27<br>
+255.255.255.224<br><br>
+
+<strong>3. Hosts por sub-rede:</strong><br>
+2^5 - 2 = 30 hosts<br>
+(5 bits restantes para hosts)
+                    </div>
+                </div>
+
+                <div class="highlight-box">
+                    <h3>🎉 Resultado Final:</h3>
+                    <div class="bullet-point">8 sub-redes criadas com sucesso</div>
+                    <div class="bullet-point">30 hosts utilizáveis por sub-rede</div>
+                    <div class="bullet-point">Total: 240 hosts (vs 254 original)</div>
+                    <div class="bullet-point">Economia: 14 endereços para futuro uso</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 12: Casos de Uso Reais -->
+        <div class="slide">
+            <div class="content">
+                <h2>🏢 Casos de Uso Reais</h2>
+                
+                <div class="example-box">
+                    <h3>🏫 Caso 1: Escola com 500 alunos</h3>
+                    <div class="subnet-flow">
+                        <div class="subnet-step">Lab 1<br>30 PCs</div>
+                        <div class="subnet-step">Lab 2<br>30 PCs</div>
+                        <div class="subnet-step">Administrativo<br>50 PCs</div>
+                        <div class="subnet-step">WiFi Alunos<br>300 devices</div>
+                        <div class="subnet-step">Servidores<br>10 PCs</div>
+                    </div>
+                    <p><strong>Solução:</strong> Rede 10.0.0.0/16 dividida em sub-redes /24 e /23 conforme necessidade</p>
+                </div>
+
+                <div class="two-column">
+                    <div class="comparison-box">
+                        <h3>🏭 Caso 2: Fábrica</h3>
+                        <div class="bullet-point"><strong>Escritório:</strong> /26 (62 hosts)</div>
+                        <div class="bullet-point"><strong>Produção:</strong> /25 (126 hosts)</div>
+                        <div class="bullet-point"><strong>IoT/Sensores:</strong> /24 (254 hosts)</div>
+                        <div class="bullet-point"><strong>Servidores:</strong> /28 (14 hosts)</div>
+                        <div class="bullet-point"><strong>Visitantes:</strong> /27 (30 hosts)</div>
+                    </div>
+                    
+                    <div class="comparison-box">
+                        <h3>🏥 Caso 3: Hospital</h3>
+                        <div class="bullet-point"><strong>Emergência:</strong> /26 (62 hosts)</div>
+                        <div class="bullet-point"><strong>Enfermarias:</strong> /25 (126 hosts)</div>
+                        <div class="bullet-point"><strong>Administrativo:</strong> /26 (62 hosts)</div>
+                        <div class="bullet-point"><strong>Equipamentos:</strong> /24 (254 hosts)</div>
+                        <div class="bullet-point"><strong>Visitantes:</strong> /27 (30 hosts)</div>
+                    </div>
+                </div>
+
+                <div class="highlight-box">
+                    <h3>🎯 Princípios de Design:</h3>
+                    <div class="bullet-point"><strong>Segmentação:</strong> Separe por função/departamento</div>
+                    <div class="bullet-point"><strong>Crescimento:</strong> Reserve espaço para expansão</div>
+                    <div class="bullet-point"><strong>Segurança:</strong> Isole sistemas críticos</div>
+                    <div class="bullet-point"><strong>Performance:</strong> Reduza domínios de broadcast</div>
+                </div>
+
+                <div class="diagram">
+                    <strong>Regra de Ouro: Planeje para o futuro!</strong><br>
+                    Sempre reserve 25-50% de IPs para crescimento
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 13: Resumo Final -->
+        <div class="slide">
+            <div class="content">
+                <h2>🎯 Resumo Final</h2>
+                
+                <div class="highlight-box large-text center-text">
+                    <strong>Subnetting = Organização inteligente de redes</strong>
+                </div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>✅ Conceitos Fundamentais:</h3>
+                        <div class="bullet-point">Divisão de redes grandes em pequenas</div>
+                        <div class="bullet-point">Uso de máscaras customizadas</div>
+                        <div class="bullet-point">Fórmulas: 2^n (sub-redes) e 2^h-2 (hosts)</div>
+                        <div class="bullet-point">Endereços de rede e broadcast</div>
+                        <div class="bullet-point">Operações AND e OR</div>
+                    </div>
+                    <div>
+                        <h3>🎯 Benefícios Práticos:</h3>
+                        <div class="bullet-point">Melhor organização e gestão</div>
+                        <div class="bullet-point">Maior segurança e isolamento</div>
+                        <div class="bullet-point">Performance otimizada</div>
+                        <div class="bullet-point">Uso eficiente de endereços IP</div>
+                        <div class="bullet-point">Facilita troubleshooting</div>
+                    </div>
+                </div>
+
+                <div class="example-box center-text">
+                    <h3>🌐 Na Prática:</h3>
+                    <p>De pequenos escritórios a grandes datacenters,<br>
+                    sub-redes são essenciais para redes modernas bem estruturadas!</p>
+                </div>
+
+                <div class="formula-box center-text">
+                    <h3>📚 Para Continuar Aprendendo:</h3>
+                    <p>• Pratique com calculadoras online<br>
+                    • Faça exercícios regulares<br>
+                    • Use simuladores como Packet Tracer<br>
+                    • Estude VLANs (próximo nível!)</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 14: Quiz -->
+        <div class="slide">
+            <div class="content">
+                <h2>🧠 Quiz - Teste seus conhecimentos!</h2>
+                
+                <div class="quiz-container">
+                    <!-- Questão 1 -->
+                    <div class="quiz-question" id="question1">
+                        <h3>📝 Questão 1</h3>
+                        <p><strong>Para criar 4 sub-redes de uma rede /24, quantos bits devo "emprestar"?</strong></p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(1, 'a', false)">
+                                <span class="option-letter">A)</span> 1 bit
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(1, 'b', true)">
+                                <span class="option-letter">B)</span> 2 bits
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(1, 'c', false)">
+                                <span class="option-letter">C)</span> 3 bits
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(1, 'd', false)">
+                                <span class="option-letter">D)</span> 4 bits
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback1"></div>
+                    </div>
+
+                    <!-- Questão 2 -->
+                    <div class="quiz-question" id="question2" style="display: none;">
+                        <h3>📝 Questão 2</h3>
+                        <p><strong>Em uma sub-rede /26, quantos hosts utilizáveis posso ter?</strong></p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(2, 'a', false)">
+                                <span class="option-letter">A)</span> 64 hosts
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(2, 'b', true)">
+                                <span class="option-letter">B)</span> 62 hosts
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(2, 'c', false)">
+                                <span class="option-letter">C)</span> 60 hosts
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(2, 'd', false)">
+                                <span class="option-letter">D)</span> 58 hosts
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback2"></div>
+                    </div>
+
+                    <!-- Questão 3 -->
+                    <div class="quiz-question" id="question3" style="display: none;">
+                        <h3>📝 Questão 3</h3>
+                        <p><strong>Qual operação binária uso para calcular o endereço de rede?</strong></p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(3, 'a', true)">
+                                <span class="option-letter">A)</span> IP AND Máscara
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(3, 'b', false)">
+                                <span class="option-letter">B)</span> IP OR Máscara
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(3, 'c', false)">
+                                <span class="option-letter">C)</span> IP XOR Máscara
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(3, 'd', false)">
+                                <span class="option-letter">D)</span> IP + Máscara
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback3"></div>
+                    </div>
+
+                    <!-- Questão 4 -->
+                    <div class="quiz-question" id="question4" style="display: none;">
+                        <h3>📝 Questão 4</h3>
+                        <p><strong>Qual é a máscara de sub-rede em decimal para /26?</strong></p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(4, 'a', false)">
+                                <span class="option-letter">A)</span> 255.255.255.0
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(4, 'b', true)">
+                                <span class="option-letter">B)</span> 255.255.255.192
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(4, 'c', false)">
+                                <span class="option-letter">C)</span> 255.255.255.224
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(4, 'd', false)">
+                                <span class="option-letter">D)</span> 255.255.255.240
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback4"></div>
+                    </div>
+
+                    <!-- Resultado Final -->
+                    <div class="quiz-result" id="quizResult" style="display: none;">
+                        <h3>🎉 Parabéns! Quiz Concluído!</h3>
+                        <div class="result-box">
+                            <p><strong>Sua pontuação: <span id="finalScore">0</span>/4</strong></p>
+                            <p id="resultMessage"></p>
+                        </div>
+                        <button class="nav-btn" onclick="restartQuiz()">🔄 Refazer Quiz</button>
+                    </div>
+                </div>
+
+                <div class="quiz-navigation">
+                    <button class="nav-btn" id="nextQuizBtn" onclick="nextQuestion()" style="display: none;">
+                        Próxima Questão ➡️
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 15: Referências -->
+        <div class="slide">
+            <div class="content">
+                <h2>📚 Referências Bibliográficas</h2>
+                
+                <div class="highlight-box">
+                    <h3>📖 Fonte Principal:</h3>
+                    <div class="bullet-point"><strong>Material Didático - Endereçamento IPv4 - Sub-redes</strong></div>
+                    <div class="bullet-point">Prof. César Azevedo - IFRN</div>
+                    <div class="bullet-point">Curso Técnico em Informática</div>
+                    <div class="bullet-point">Disciplina: Arquitetura de Redes de Computadores</div>
+                </div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>📋 RFCs e Padrões:</h3>
+                        <div class="bullet-point">RFC 950 - Internet Standard Subnetting Procedure</div>
+                        <div class="bullet-point">RFC 1519 - Classless Inter-Domain Routing (CIDR)</div>
+                        <div class="bullet-point">RFC 1878 - Variable Length Subnet Table</div>
+                        
+                        <h3>🛠️ Ferramentas Mencionadas:</h3>
+                        <div class="bullet-point">SolarWinds FREE Advanced Subnet Calculator</div>
+                        <div class="bullet-point">SubnetOnline.com - IP Calculator</div>
+                        <div class="bullet-point">Cisco Packet Tracer</div>
+                    </div>
+                    <div>
+                        <h3>📖 Bibliografia Complementar:</h3>
+                        <div class="bullet-point">TCP/IP Illustrated, Volume 1</div>
+                        <div class="bullet-point">W. Richard Stevens</div>
+                        <div class="bullet-point">Redes de Computadores - Andrew Tanenbaum</div>
+                        
+                        <h3>🌐 Recursos Online:</h3>
+                        <div class="bullet-point">Cisco Networking Academy</div>
+                        <div class="bullet-point">IANA - Internet Assigned Numbers Authority</div>
+                        <div class="bullet-point">Calculadoras online de sub-redes</div>
+                    </div>
+                </div>
+
+                <div class="example-box center-text">
+                    <h3>🤖 Metodologia de Criação</h3>
+                    <p>Apresentação desenvolvida com assistência de IA Claude Sonnet 4<br>
+                    Baseada no material didático do Prof. César Azevedo<br>
+                    Adaptação pedagógica com linguagem simples e exemplos práticos</p>
+                </div>
+
+                <div class="highlight-box center-text">
+                    <h3>🎯 Objetivo Educacional</h3>
+                    <p>Facilitar o aprendizado de sub-redes IPv4 através de<br>
+                    explicações didáticas, analogias simples e casos práticos</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="navigation">
+            <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">⬅️ Anterior</button>
+            <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">Próximo ➡️</button>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        document.getElementById('total-slides').textContent = totalSlides;
+
+        // Quiz variables
+        let currentQuestion = 1;
+        let score = 0;
+        let quizAnswered = [false, false, false, false];
+
+        function showSlide(index) {
+            slides.forEach((slide, i) => {
+                slide.classList.toggle('active', i === index);
+            });
+            
+            document.getElementById('current-slide').textContent = index + 1;
+            document.getElementById('prevBtn').disabled = index === 0;
+            document.getElementById('nextBtn').disabled = index === totalSlides - 1;
+        }
+
+        function changeSlide(direction) {
+            const newSlide = currentSlide + direction;
+            if (newSlide >= 0 && newSlide < totalSlides) {
+                currentSlide = newSlide;
+                showSlide(currentSlide);
+            }
+        }
+
+        // Quiz Functions
+        function selectOption(questionNum, option, isCorrect) {
+            if (quizAnswered[questionNum - 1]) return; // Já respondida
+            
+            const options = document.querySelectorAll(`#question${questionNum} .quiz-option`);
+            const feedback = document.getElementById(`feedback${questionNum}`);
+            
+            // Marcar todas as opções
+            options.forEach(opt => {
+                opt.style.pointerEvents = 'none';
+                if (opt.onclick.toString().includes('true')) {
+                    opt.classList.add('correct');
+                } else if (opt === event.currentTarget) {
+                    opt.classList.add(isCorrect ? 'correct' : 'incorrect');
+                }
+            });
+            
+            // Mostrar feedback
+            if (isCorrect) {
+                feedback.innerHTML = '✅ Correto! Muito bem!';
+                feedback.className = 'quiz-feedback correct';
+                score++;
+            } else {
+                feedback.innerHTML = '❌ Incorreto. A resposta correta está destacada em verde.';
+                feedback.className = 'quiz-feedback incorrect';
+            }
+            
+            quizAnswered[questionNum - 1] = true;
+            
+            // Mostrar botão para próxima questão
+            if (questionNum < 4) {
+                document.getElementById('nextQuizBtn').style.display = 'inline-block';
+            } else {
+                // Última questão - mostrar resultado
+                setTimeout(() => {
+                    showQuizResult();
+                }, 2000);
+            }
+        }
+
+        function nextQuestion() {
+            document.getElementById(`question${currentQuestion}`).style.display = 'none';
+            currentQuestion++;
+            document.getElementById(`question${currentQuestion}`).style.display = 'block';
+            document.getElementById('nextQuizBtn').style.display = 'none';
+        }
+
+        function showQuizResult() {
+            // Esconder última questão
+            document.getElementById('question4').style.display = 'none';
+            
+            // Mostrar resultado
+            document.getElementById('quizResult').style.display = 'block';
+            document.getElementById('finalScore').textContent = score;
+            
+            const resultMessage = document.getElementById('resultMessage');
+            if (score === 4) {
+                resultMessage.innerHTML = '🏆 Excelente! Você domina sub-redes IPv4!';
+            } else if (score === 3) {
+                resultMessage.innerHTML = '👏 Muito bom! Quase perfeito!';
+            } else if (score === 2) {
+                resultMessage.innerHTML = '👍 Bom trabalho! Continue praticando!';
+            } else if (score === 1) {
+                resultMessage.innerHTML = '📚 Estude um pouco mais sobre sub-redes!';
+            } else {
+                resultMessage.innerHTML = '📖 Recomendo revisar o conteúdo!';
+            }
+        }
+
+        function restartQuiz() {
+            // Reset variables
+            currentQuestion = 1;
+            score = 0;
+            quizAnswered = [false, false, false, false];
+            
+            // Reset interface
+            for (let i = 1; i <= 4; i++) {
+                const question = document.getElementById(`question${i}`);
+                const options = question.querySelectorAll('.quiz-option');
+                const feedback = document.getElementById(`feedback${i}`);
+                
+                // Reset options
+                options.forEach(opt => {
+                    opt.className = 'quiz-option';
+                    opt.style.pointerEvents = 'auto';
+                });
+                
+                // Hide feedback
+                feedback.style.display = 'none';
+                
+                // Hide all questions except first
+                question.style.display = i === 1 ? 'block' : 'none';
+            }
+            
+            // Hide result and buttons
+            document.getElementById('quizResult').style.display = 'none';
+            document.getElementById('nextQuizBtn').style.display = 'none';
+        }
+
+        // Navegação por teclado
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') changeSlide(-1);
+            if (e.key === 'ArrowRight') changeSlide(1);
+            if (e.key === 'Home') {
+                currentSlide = 0;
+                showSlide(currentSlide);
+            }
+            if (e.key === 'End') {
+                currentSlide = totalSlides - 1;
+                showSlide(currentSlide);
+            }
+        });
+
+        // Inicializar
+        showSlide(0);
+        
+        // Inicializar quiz no slide 14
+        document.getElementById('question1').style.display = 'block';
+    </script>
+</body>
+</html>
