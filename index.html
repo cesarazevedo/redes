@@ -140,12 +140,12 @@
             text-align: center;
         }
 
-       .chapters-grid {
-    	display: grid;
-    	grid-template-columns: repeat(auto-fit, minmax(350px, 400px));
-    	justify-content: center; /* Centraliza os cards */
-    	gap: 20px;
-		}
+    .chapters-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); /* Use esta linha */
+    justify-content: center;
+    gap: 20px;
+}
 
         .chapter-card {
             background: rgba(255, 255, 255, 0.95);
@@ -826,7 +826,7 @@
         </a>
     </div>
 </div>
-</div>
+
 
 	                            
 <script>
