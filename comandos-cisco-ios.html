@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comandos Cisco IOS - Guia Essencial</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        .presentation {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .slide {
+            min-height: 100vh;
+            padding: 60px 40px;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            background: white;
+            margin: 20px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        .slide.active {
+            display: flex;
+        }
+
+        .slide h1 {
+            font-size: 3.5em;
+            color: #4a5568;
+            text-align: center;
+            margin-bottom: 40px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .slide h2 {
+            font-size: 2.8em;
+            color: #2d3748;
+            margin-bottom: 30px;
+            border-bottom: 4px solid #667eea;
+            padding-bottom: 15px;
+        }
+
+        .slide h3 {
+            font-size: 2.2em;
+            color: #4a5568;
+            margin: 25px 0 15px 0;
+        }
+
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: start;
+        }
+
+        .bullet-point {
+            display: flex;
+            align-items: flex-start;
+            margin: 15px 0;
+            font-size: 1.3em;
+            line-height: 1.5;
+        }
+
+        .bullet-point::before {
+            content: "🔹";
+            margin-right: 15px;
+            font-size: 1.2em;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #667eea;
+        }
+
+        .example-box {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #20b2aa;
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 1000;
+        }
+
+        .nav-btn {
+            padding: 15px 25px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .nav-btn:hover {
+            background: #5a67d8;
+            transform: translateY(-2px);
+            box-shadow: 0 7px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .nav-btn:disabled {
+            background: #a0a0a0;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .slide-counter {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: rgba(255,255,255,0.9);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            color: #4a5568;
+            z-index: 1000;
+        }
+
+        .center-text {
+            text-align: center;
+        }
+
+        .large-text {
+            font-size: 1.4em;
+            line-height: 1.6;
+        }
+
+        .code-box {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: monospace;
+            font-size: 1em;
+            margin: 20px 0;
+            overflow-x: auto;
+        }
+
+        .code-box .comment {
+            color: #68d391;
+        }
+
+        .code-box .prompt {
+            color: #fbd38d;
+        }
+
+        .protocol-card {
+            background: white;
+            border: 2px solid #667eea;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 10px 0;
+        }
+
+        .protocol-card h4 {
+            color: #667eea;
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+
+        .warning-box {
+            background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #ffc107;
+        }
+
+        .formula-box {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #28a745;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 1.1em;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        th {
+            background: #667eea;
+            color: white;
+            font-weight: bold;
+        }
+
+        .command-row {
+            background: #f8f9fa;
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .command-row strong {
+            color: #667eea;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation">
+        <div class="slide-counter">
+            <span id="current-slide">1</span> / <span id="total-slides">6</span>
+        </div>
+
+        <!-- Slide 1: Título -->
+        <div class="slide active">
+            <div class="content center-text">
+                <h1>💻 Comandos Cisco IOS</h1>
+                <h2 style="border: none; color: #667eea;">Guia Essencial e Nomenclatura</h2>
+                <div class="highlight-box large-text">
+                    Comandos mais importantes para configurar<br>
+                    e gerenciar roteadores e switches Cisco<br>
+                    Aprenda a nomenclatura e os comandos essenciais
+                </div>
+                
+                <div class="example-box" style="margin-top: 40px;">
+                    <h3>👨‍🏫 Autor da Apresentação</h3>
+                    <p style="font-size: 1.3em; margin: 10px 0;">
+                        César Azevedo<br>
+                        📧 cesar.augusto@ifrn.edu.br
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 2: Nomenclatura de Roteadores e Interfaces -->
+        <div class="slide">
+            <div class="content">
+                <h2>🏷️ Nomenclatura de Roteadores e Interfaces</h2>
+                
+                <div class="highlight-box">
+                    <h3>🔤 Nomenclatura de Interfaces Cisco</h3>
+                    <p style="font-size: 1.3em; margin-top: 10px;">
+                        Formato: <strong>[TIPO][SLOT]/[PORTA]</strong> ou <strong>[TIPO][NÚMERO]</strong>
+                    </p>
+                </div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>📡 Tipos de Interfaces Comuns:</h3>
+                        
+                        <div class="protocol-card">
+                            <h4>FastEthernet (Fa)</h4>
+                            <div class="bullet-point">100 Mbps</div>
+                            <div class="bullet-point">Exemplo: <strong>FastEthernet0/0</strong></div>
+                            <div class="bullet-point">Abreviação: <strong>Fa0/0</strong></div>
+                        </div>
+
+                        <div class="protocol-card">
+                            <h4>GigabitEthernet (Gi)</h4>
+                            <div class="bullet-point">1000 Mbps (1 Gbps)</div>
+                            <div class="bullet-point">Exemplo: <strong>GigabitEthernet0/0</strong></div>
+                            <div class="bullet-point">Abreviação: <strong>Gi0/0</strong></div>
+                        </div>
+
+                        <div class="protocol-card">
+                            <h4>Serial (Se)</h4>
+                            <div class="bullet-point">Conexões WAN</div>
+                            <div class="bullet-point">Exemplo: <strong>Serial0/0/0</strong></div>
+                            <div class="bullet-point">Abreviação: <strong>Se0/0/0</strong></div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="protocol-card">
+                            <h4>Ethernet (Et)</h4>
+                            <div class="bullet-point">10 Mbps (legado)</div>
+                            <div class="bullet-point">Exemplo: <strong>Ethernet0</strong></div>
+                            <div class="bullet-point">Abreviação: <strong>Et0</strong></div>
+                        </div>
+
+                        <div class="protocol-card">
+                            <h4>VLAN</h4>
+                            <div class="bullet-point">Interface lógica</div>
+                            <div class="bullet-point">Exemplo: <strong>Vlan1</strong></div>
+                            <div class="bullet-point">Para roteamento entre VLANs</div>
+                        </div>
+
+                        <div class="protocol-card">
+                            <h4>Loopback</h4>
+                            <div class="bullet-point">Interface virtual</div>
+                            <div class="bullet-point">Exemplo: <strong>Loopback0</strong></div>
+                            <div class="bullet-point">Sempre ativa (não cai)</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>📝 Exemplos de Nomenclatura:</h3>
+                    <div class="code-box">
+<span class="comment"># Roteadores modulares (com slots)</span><br>
+GigabitEthernet0/0/0  → Slot 0, Módulo 0, Porta 0<br>
+Serial0/1/0           → Slot 0, Módulo 1, Porta 0<br><br>
+<span class="comment"># Roteadores fixos (sem slots)</span><br>
+FastEthernet0/0       → Porta 0<br>
+GigabitEthernet0/1    → Porta 1<br><br>
+<span class="comment"># Switches</span><br>
+FastEthernet0/1       → Porta 1<br>
+GigabitEthernet1/0/1  → Stack 1, Módulo 0, Porta 1
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: Modos de Operação e Comandos de Navegação -->
+        <div class="slide">
+            <div class="content">
+                <h2>🚪 Modos de Operação e Navegação</h2>
+                
+                <div class="protocol-card">
+                    <h4>1️⃣ Modo EXEC Usuário (User EXEC Mode)</h4>
+                    <div class="code-box">
+<span class="prompt">Router></span> <span class="comment"># Prompt com ></span><br>
+<span class="comment"># Comandos limitados - apenas visualização básica</span>
+                    </div>
+                    <div class="command-row">
+                        <strong>enable</strong> → Entra no modo privilegiado
+                    </div>
+                    <div class="command-row">
+                        <strong>show version</strong> → Mostra informações básicas do sistema
+                    </div>
+                </div>
+
+                <div class="protocol-card">
+                    <h4>2️⃣ Modo EXEC Privilegiado (Privileged EXEC Mode)</h4>
+                    <div class="code-box">
+<span class="prompt">Router#</span> <span class="comment"># Prompt com #</span><br>
+<span class="comment"># Acesso a todos os comandos show e debug</span>
+                    </div>
+                    <div class="command-row">
+                        <strong>configure terminal</strong> → Entra no modo de configuração global
+                    </div>
+                    <div class="command-row">
+                        <strong>disable</strong> → Volta para modo usuário
+                    </div>
+                    <div class="command-row">
+                        <strong>exit</strong> → Sai do roteador
+                    </div>
+                </div>
+
+                <div class="protocol-card">
+                    <h4>3️⃣ Modo de Configuração Global (Global Configuration Mode)</h4>
+                    <div class="code-box">
+<span class="prompt">Router(config)#</span> <span class="comment"># Prompt com (config)#</span><br>
+<span class="comment"># Configurações que afetam todo o dispositivo</span>
+                    </div>
+                    <div class="command-row">
+                        <strong>interface [tipo][número]</strong> → Entra em modo de configuração de interface
+                    </div>
+                    <div class="command-row">
+                        <strong>hostname [nome]</strong> → Define o nome do roteador
+                    </div>
+                    <div class="command-row">
+                        <strong>exit</strong> → Volta para modo privilegiado
+                    </div>
+                </div>
+
+                <div class="protocol-card">
+                    <h4>4️⃣ Modo de Configuração de Interface (Interface Configuration Mode)</h4>
+                    <div class="code-box">
+<span class="prompt">Router(config-if)#</span> <span class="comment"># Prompt com (config-if)#</span><br>
+<span class="comment"># Configurações específicas de uma interface</span>
+                    </div>
+                    <div class="command-row">
+                        <strong>ip address [IP] [máscara]</strong> → Define IP da interface
+                    </div>
+                    <div class="command-row">
+                        <strong>no shutdown</strong> → Ativa a interface
+                    </div>
+                    <div class="command-row">
+                        <strong>exit</strong> → Volta para modo de configuração global
+                    </div>
+                </div>
+
+                <div class="warning-box">
+                    <h3>⚡ Atalhos Importantes:</h3>
+                    <div class="bullet-point"><strong>Tab</strong> → Completa comandos automaticamente</div>
+                    <div class="bullet-point"><strong>Ctrl+Z</strong> → Volta para modo privilegiado de qualquer modo</div>
+                    <div class="bullet-point"><strong>?</strong> → Mostra ajuda de comandos disponíveis</div>
+                    <div class="bullet-point"><strong>comando ?</strong> → Mostra parâmetros do comando</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Comandos de Configuração Essenciais -->
+        <div class="slide">
+            <div class="content">
+                <h2>⚙️ Comandos de Configuração Essenciais</h2>
+                
+                <div class="protocol-card">
+                    <h4>🏷️ Configuração Básica do Dispositivo</h4>
+                    <div class="code-box">
+Router> <strong>enable</strong><br>
+Router# <strong>configure terminal</strong><br>
+Router(config)# <strong>hostname R1</strong><br>
+R1(config)# <strong>enable secret cisco123</strong>  <span class="comment"># Senha criptografada</span><br>
+R1(config)# <strong>banner motd # Acesso Restrito! #</strong><br>
+R1(config)# <strong>no ip domain-lookup</strong>  <span class="comment"># Desativa DNS</span>
+                    </div>
+                </div>
+
+                <div class="protocol-card">
+                    <h4>🔌 Configuração de Interface</h4>
+                    <div class="code-box">
+R1(config)# <strong>interface GigabitEthernet0/0</strong><br>
+R1(config-if)# <strong>ip address 192.168.1.1 255.255.255.0</strong><br>
+R1(config-if)# <strong>description LAN Setor A</strong><br>
+R1(config-if)# <strong>no shutdown</strong>  <span class="comment"># Ativa interface</span><br>
+R1(config-if)# <strong>exit</strong><br><br>
+<span class="comment"># Para interface serial (WAN)</span><br>
+R1(config)# <strong>interface Serial0/0/0</strong><br>
+R1(config-if)# <strong>ip address 10.0.0.1 255.255.255.252</strong><br>
+R1(config-if)# <strong>clock rate 64000</strong>  <span class="comment"># Apenas no lado DCE</span><br>
+R1(config-if)# <strong>no shutdown</strong>
+                    </div>
+                </div>
+
+                <div class="protocol-card">
+                    <h4>🛣️ Roteamento Estático</h4>
+                    <div class="code-box">
+R1(config)# <strong>ip route 192.168.2.0 255.255.255.0 10.0.0.2</strong><br>
+R1(config)# <strong>ip route 0.0.0.0 0.0.0.0 10.0.0.2</strong>  <span class="comment"># Rota padrão</span>
+                    </div>
+                </div>
+
+                <div class="protocol-card">
+                    <h4>💾 Salvar Configuração</h4>
+                    <div class="code-box">
+R1# <strong>copy running-config startup-config</strong><br>
+<span class="comment"># Ou use o atalho:</span><br>
+R1# <strong>write</strong>  <span class="comment"># Mesmo efeito</span><br>
+R1# <strong>wr</strong>     <span class="comment"># Atalho ainda mais curto</span>
+                    </div>
+                </div>
+
+                <div class="warning-box">
+                    <h3>⚠️ Importante!</h3>
+                    <div class="bullet-point">Sempre salve suas configurações com <strong>copy run start</strong></div>
+                    <div class="bullet-point">Se não salvar, as configurações são perdidas ao reiniciar</div>
+                    <div class="bullet-point">Use <strong>no</strong> antes do comando para desfazer configurações</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: Comandos de Verificação -->
+        <div class="slide">
+            <div class="content">
+                <h2>🔍 Comandos de Verificação (Show Commands)</h2>
+                
+                <div class="two-column">
+                    <div>
+                        <div class="protocol-card">
+                            <h4>📊 Informações do Sistema</h4>
+                            <div class="command-row">
+                                <strong>show version</strong><br>
+                                Versão IOS, modelo, memória, uptime
+                            </div>
+                            <div class="command-row">
+                                <strong>show running-config</strong><br>
+                                Configuração ativa (na RAM)
+                            </div>
+                            <div class="command-row">
+                                <strong>show startup-config</strong><br>
+                                Configuração salva (na NVRAM)
+                            </div>
+                            <div class="command-row">
+                                <strong>show flash</strong><br>
+                                Arquivos na memória flash
+                            </div>
+                        </div>
+
+                        <div class="protocol-card">
+                            <h4>🔌 Interfaces</h4>
+                            <div class="command-row">
+                                <strong>show ip interface brief</strong><br>
+                                Resumo de todas as interfaces
+                            </div>
+                            <div class="command-row">
+                                <strong>show interfaces</strong><br>
+                                Detalhes de todas as interfaces
+                            </div>
+                            <div class="command-row">
+                                <strong>show interface Gi0/0</strong><br>
+                                Detalhes de uma interface específica
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="protocol-card">
+                            <h4>🛣️ Roteamento</h4>
+                            <div class="command-row">
+                                <strong>show ip route</strong><br>
+                                Tabela de roteamento completa
+                            </div>
+                            <div class="command-row">
+                                <strong>show ip route static</strong><br>
+                                Apenas rotas estáticas
+                            </div>
+                            <div class="command-row">
+                                <strong>show ip protocols</strong><br>
+                                Protocolos de roteamento ativos
+                            </div>
+                        </div>
+
+                        <div class="protocol-card">
+                            <h4>🔍 Diagnóstico</h4>
+                            <div class="command-row">
+                                <strong>ping [IP]</strong><br>
+                                Testa conectividade
+                            </div>
+                            <div class="command-row">
+                                <strong>traceroute [IP]</strong><br>
+                                Mostra caminho dos pacotes
+                            </div>
+                            <div class="command-row">
+                                <strong>show arp</strong><br>
+                                Tabela ARP (IP → MAC)
+                            </div>
+                            <div class="command-row">
+                                <strong>show mac address-table</strong><br>
+                                Tabela MAC (apenas switches)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>💡 Exemplo Prático:</h3>
+                    <div class="code-box">
+R1# <strong>show ip interface brief</strong><br>
+Interface              IP-Address      Status      Protocol<br>
+GigabitEthernet0/0     192.168.1.1     up          up<br>
+GigabitEthernet0/1     unassigned      down        down<br>
+Serial0/0/0            10.0.0.1        up          up<br><br>
+<span class="comment"># Status = camada física | Protocol = camada de enlace</span><br>
+<span class="comment"># up/up = funcionando corretamente</span><br>
+<span class="comment"># administratively down = interface desligada com shutdown</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: Resumo e Comandos Rápidos -->
+        <div class="slide">
+            <div class="content">
+                <h2>📋 Resumo e Comandos Rápidos</h2>
+                
+                <div class="formula-box">
+                    <h3>🚀 Fluxo Básico de Configuração</h3>
+                    <div class="code-box">
+<span class="comment"># 1. Entrar no modo de configuração</span><br>
+Router> <strong>enable</strong><br>
+Router# <strong>configure terminal</strong><br><br>
+<span class="comment"># 2. Configurar hostname e senha</span><br>
+Router(config)# <strong>hostname R1</strong><br>
+R1(config)# <strong>enable secret minhasenha</strong><br><br>
+<span class="comment"># 3. Configurar interface</span><br>
+R1(config)# <strong>interface GigabitEthernet0/0</strong><br>
+R1(config-if)# <strong>ip address 192.168.1.1 255.255.255.0</strong><br>
+R1(config-if)# <strong>no shutdown</strong><br>
+R1(config-if)# <strong>exit</strong><br><br>
+<span class="comment"># 4. Adicionar rota estática</span><br>
+R1(config)# <strong>ip route 192.168.2.0 255.255.255.0 10.0.0.2</strong><br><br>
+<span class="comment"># 5. Salvar configuração</span><br>
+R1(config)# <strong>exit</strong><br>
+R1# <strong>copy running-config startup-config</strong>
+                    </div>
+                </div>
+
+                <div class="two-column">
+                    <div class="highlight-box">
+                        <h3>⚡ Comandos Mais Usados</h3>
+                        <div class="bullet-point"><strong>enable</strong> - Modo privilegiado</div>
+                        <div class="bullet-point"><strong>conf t</strong> - Modo configuração</div>
+                        <div class="bullet-point"><strong>int Gi0/0</strong> - Entra na interface</div>
+                        <div class="bullet-point"><strong>no shut</strong> - Ativa interface</div>
+                        <div class="bullet-point"><strong>show ip int brief</strong> - Lista interfaces</div>
+                        <div class="bullet-point"><strong>show ip route</strong> - Tabela roteamento</div>
+                        <div class="bullet-point"><strong>wr</strong> - Salva configuração</div>
+                    </div>
+
+                    <div class="highlight-box">
+                        <h3>🛠️ Comandos de Recuperação</h3>
+                        <div class="bullet-point"><strong>reload</strong> - Reinicia o dispositivo</div>
+                        <div class="bullet-point"><strong>erase startup-config</strong> - Apaga config salva</div>
+                        <div class="bullet-point"><strong>no [comando]</strong> - Remove configuração</div>
+                        <div class="bullet-point"><strong>show running-config</strong> - Ver config atual</div>
+                    </div>
+                </div>
+
+                <div class="warning-box">
+                    <h3>⚠️ Lembretes Importantes</h3>
+                    <div class="bullet-point">Sempre use <strong>?</strong> para ver ajuda disponível</div>
+                    <div class="bullet-point">Use <strong>Tab</strong> para completar comandos</div>
+                    <div class="bullet-point">Salve com <strong>wr</strong> ou <strong>copy run start</strong></div>
+                    <div class="bullet-point"><strong>Ctrl+Z</strong> volta para modo privilegiado</div>
+                    <div class="bullet-point"><strong>no shutdown</strong> ativa interfaces (não esqueça!)</div>
+                </div>
+
+                <div class="example-box center-text">
+                    <h3>📚 Referências</h3>
+                    <div class="bullet-point">Material Didático - Prof. César Azevedo - IFRN</div>
+                    <div class="bullet-point">Cisco IOS Command Reference</div>
+                    <div class="bullet-point">Cisco Networking Academy - CCNA</div>
+                    <div class="bullet-point">Pratique no Packet Tracer!</div>
+                </div>
+
+                <div class="formula-box center-text">
+                    <h3>💡 Dica Final</h3>
+                    <p style="font-size: 1.3em;">
+                        A melhor forma de aprender é <strong>praticando</strong>!<br>
+                        Use o Packet Tracer ou GNS3 para treinar esses comandos.<br>
+                        Quanto mais você usar, mais natural ficará!
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="navigation">
+            <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">⬅️ Anterior</button>
+            <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">Próximo ➡️</button>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        document.getElementById('total-slides').textContent = totalSlides;
+
+        function showSlide(index) {
+            slides.forEach((slide, i) => {
+                slide.classList.toggle('active', i === index);
+            });
+            
+            document.getElementById('current-slide').textContent = index + 1;
+            document.getElementById('prevBtn').disabled = index === 0;
+            document.getElementById('nextBtn').disabled = index === totalSlides - 1;
+        }
+
+        function changeSlide(direction) {
+            const newSlide = currentSlide + direction;
+            if (newSlide >= 0 && newSlide < totalSlides) {
+                currentSlide = newSlide;
+                showSlide(currentSlide);
+            }
+        }
+
+        // Navegação por teclado
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') changeSlide(-1);
+            if (e.key === 'ArrowRight') changeSlide(1);
+            if (e.key === 'Home') {
+                currentSlide = 0;
+                showSlide(currentSlide);
+            }
+            if (e.key === 'End') {
+                currentSlide = totalSlides - 1;
+                showSlide(currentSlide);
+            }
+        });
+
+        // Inicializar
+        showSlide(0);
+    </script>
+</body>
+</html>
