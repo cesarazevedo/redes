@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RIP - Routing Information Protocol</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        .presentation {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .slide {
+            min-height: 100vh;
+            padding: 60px 40px;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            background: white;
+            margin: 20px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        .slide.active {
+            display: flex;
+        }
+
+        .slide h1 {
+            font-size: 3.5em;
+            color: #4a5568;
+            text-align: center;
+            margin-bottom: 40px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .slide h2 {
+            font-size: 2.8em;
+            color: #2d3748;
+            margin-bottom: 30px;
+            border-bottom: 4px solid #667eea;
+            padding-bottom: 15px;
+        }
+
+        .slide h3 {
+            font-size: 2.2em;
+            color: #4a5568;
+            margin: 25px 0 15px 0;
+        }
+
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: start;
+        }
+
+        .bullet-point {
+            display: flex;
+            align-items: flex-start;
+            margin: 15px 0;
+            font-size: 1.3em;
+            line-height: 1.5;
+        }
+
+        .bullet-point::before {
+            content: "🔹";
+            margin-right: 15px;
+            font-size: 1.2em;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #667eea;
+        }
+
+        .example-box {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #20b2aa;
+        }
+
+        .warning-box {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #e17055;
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 1000;
+        }
+
+        .nav-btn {
+            padding: 15px 25px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .nav-btn:hover {
+            background: #5a67d8;
+            transform: translateY(-2px);
+            box-shadow: 0 7px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .nav-btn:disabled {
+            background: #a0a0a0;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .slide-counter {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: rgba(255,255,255,0.9);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            color: #4a5568;
+            z-index: 1000;
+        }
+
+        .center-text {
+            text-align: center;
+        }
+
+        .large-text {
+            font-size: 1.4em;
+            line-height: 1.6;
+        }
+
+        .diagram {
+            background: #f7fafc;
+            border: 2px dashed #667eea;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+            font-family: monospace;
+            font-size: 1.2em;
+        }
+
+        .code-box {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: monospace;
+            font-size: 1.1em;
+            margin: 20px 0;
+            overflow-x: auto;
+            line-height: 1.8;
+        }
+
+        .code-line {
+            margin: 5px 0;
+        }
+
+        .version-box {
+            background: #f0f4ff;
+            border: 2px solid #667eea;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+
+        .version-box h4 {
+            color: #667eea;
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 1.1em;
+        }
+
+        .comparison-table th {
+            background: #667eea;
+            color: white;
+            padding: 15px;
+            text-align: left;
+        }
+
+        .comparison-table td {
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .comparison-table tr:nth-child(even) {
+            background: #f7fafc;
+        }
+
+        /* Quiz Styles */
+        .quiz-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .quiz-question {
+            display: none;
+            margin-bottom: 30px;
+        }
+
+        .quiz-question h3 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .quiz-option {
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #e2e8f0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.2em;
+        }
+
+        .quiz-option:hover {
+            background: #e6f2ff;
+            border-color: #667eea;
+            transform: translateX(5px);
+        }
+
+        .quiz-option.correct {
+            background: #c6f6d5;
+            border-color: #38a169;
+        }
+
+        .quiz-option.incorrect {
+            background: #fed7d7;
+            border-color: #e53e3e;
+        }
+
+        .option-letter {
+            font-weight: bold;
+            color: #667eea;
+            margin-right: 10px;
+        }
+
+        .quiz-feedback {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 1.2em;
+            display: none;
+        }
+
+        .quiz-feedback.correct {
+            background: #c6f6d5;
+            color: #22543d;
+            display: block;
+        }
+
+        .quiz-feedback.incorrect {
+            background: #fed7d7;
+            color: #742a2a;
+            display: block;
+        }
+
+        .quiz-result {
+            text-align: center;
+        }
+
+        .result-box {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px 0;
+            font-size: 1.5em;
+        }
+
+        .quiz-navigation {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .formula-box {
+            background: #e6fffa;
+            border: 2px solid #38b2ac;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+        }
+
+        .formula-box h3 {
+            color: #38b2ac;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-counter">
+        <span id="current-slide">1</span> / <span id="total-slides">11</span>
+    </div>
+
+    <div class="presentation">
+        <!-- Slide 1: Título -->
+        <div class="slide active">
+            <div class="content center-text">
+                <h1>🌐 RIP</h1>
+                <h2>Routing Information Protocol</h2>
+                
+                <div class="highlight-box large-text">
+                    Roteamento Dinâmico com Vetor de Distância
+                </div>
+
+                <div class="example-box">
+                    <h3>📚 Curso</h3>
+                    <p style="font-size: 1.3em; line-height: 1.8;">
+                        <strong>Técnico Integrado em Informática</strong><br>
+                        Arquitetura de Redes de Computadores<br>
+                        Tecnologias de Implementação de Redes<br>
+                        Modelo TCP/IP - Camada de Rede
+                    </p>
+                </div>
+
+                <div class="warning-box center-text">
+                    <p style="font-size: 1.4em;">
+                        💡 <strong>Dica:</strong> Use as setas ⬅️ ➡️ do teclado para navegar
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 2: O que é RIP -->
+        <div class="slide">
+            <div class="content">
+                <h2>📡 O que é RIP?</h2>
+                
+                <div class="highlight-box large-text center-text">
+                    RIP = Routing Information Protocol
+                </div>
+
+                <div class="bullet-point">É um protocolo de roteamento dinâmico baseado em vetor de distância</div>
+                <div class="bullet-point">Permite que roteadores troquem informações automaticamente</div>
+                <div class="bullet-point">Ideal para redes pequenas e médias</div>
+
+                <div class="example-box">
+                    <h3>🎯 Características Principais</h3>
+                    <div class="bullet-point">Métrica: Contagem de saltos (hops)</div>
+                    <div class="bullet-point">Limite máximo: 15 saltos</div>
+                    <div class="bullet-point">Rotas com mais de 15 saltos são consideradas inalcançáveis</div>
+                </div>
+
+                <div class="diagram">
+                    Roteador A → Roteador B → Roteador C<br>
+                    (1 salto) → (2 saltos) → (3 saltos)<br><br>
+                    💡 Menor número de saltos = Melhor rota
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: Funcionamento do RIP -->
+        <div class="slide">
+            <div class="content">
+                <h2>⚙️ Como o RIP Funciona?</h2>
+
+                <div class="highlight-box">
+                    <h3>🔄 Atualizações Periódicas</h3>
+                    <div class="bullet-point">O RIP envia a tabela de roteamento completa a cada <strong>30 segundos</strong></div>
+                    <div class="bullet-point">Envia para todas as interfaces ativas do roteador</div>
+                    <div class="bullet-point">Permite que os vizinhos atualizem suas tabelas de roteamento</div>
+                </div>
+
+                <div class="warning-box">
+                    <h3>⚠️ Ponto de Atenção</h3>
+                    <div class="bullet-point">Enviar a tabela completa a cada 30s pode gerar tráfego desnecessário</div>
+                    <div class="bullet-point">Em redes muito grandes, isso pode sobrecarregar os links</div>
+                </div>
+
+                <div class="example-box">
+                    <h3>📊 Exemplo Prático</h3>
+                    <p style="font-size: 1.2em; line-height: 1.8;">
+                        Imagine que você tem uma agenda telefônica. A cada 30 segundos, você liga para todos os seus amigos e diz: "Olha, eu conheço fulano no número X, sicrano no número Y, etc.". É assim que o RIP funciona! Ele "fofoca" todas as rotas que conhece para seus vizinhos regularmente.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Versões do RIP -->
+        <div class="slide">
+            <div class="content">
+                <h2>🔢 Versões do RIP</h2>
+
+                <div class="version-box">
+                    <h4>📌 RIPv1 (Versão 1)</h4>
+                    <div class="bullet-point"><strong>Classful:</strong> NÃO suporta VLSM/CIDR</div>
+                    <div class="bullet-point"><strong>Broadcast:</strong> Envia atualizações por broadcast</div>
+                    <div class="bullet-point"><strong>Sem máscara:</strong> Não inclui máscara de sub-rede nas atualizações</div>
+                    <div class="bullet-point"><strong>Convergência lenta:</strong> Demora para se adaptar a mudanças</div>
+                </div>
+
+                <div class="version-box">
+                    <h4>📌 RIPv2 (Versão 2)</h4>
+                    <div class="bullet-point"><strong>Classless:</strong> Suporta VLSM/CIDR</div>
+                    <div class="bullet-point"><strong>Multicast:</strong> Usa endereço 224.0.0.9 para enviar atualizações</div>
+                    <div class="bullet-point"><strong>Com máscara:</strong> Inclui máscara de sub-rede nas atualizações</div>
+                    <div class="bullet-point"><strong>Mais eficiente:</strong> Suporta redes mais complexas</div>
+                </div>
+
+                <div class="version-box">
+                    <h4>📌 RIPng (Next Generation)</h4>
+                    <div class="bullet-point"><strong>Para IPv6:</strong> Adaptação do RIPv2 para IPv6</div>
+                    <div class="bullet-point">Mantém as mesmas características do RIPv2</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: Vantagens e Desvantagens -->
+        <div class="slide">
+            <div class="content">
+                <h2>⚖️ Vantagens e Desvantagens</h2>
+
+                <div class="two-column">
+                    <div>
+                        <div class="highlight-box">
+                            <h3>✅ Vantagens</h3>
+                            <div class="bullet-point">Simples de configurar</div>
+                            <div class="bullet-point">Amplamente compatível</div>
+                            <div class="bullet-point">Consome poucos recursos do roteador</div>
+                            <div class="bullet-point">Funciona bem em redes pequenas</div>
+                            <div class="bullet-point">Fácil de aprender e ensinar</div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="warning-box">
+                            <h3>❌ Desvantagens</h3>
+                            <div class="bullet-point">Limitado a 15 saltos</div>
+                            <div class="bullet-point">Gera tráfego de rede constante (atualizações a cada 30s)</div>
+                            <div class="bullet-point">Convergência lenta</div>
+                            <div class="bullet-point">Não é escalável para redes grandes</div>
+                            <div class="bullet-point">Métrica simples (só conta saltos)</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="example-box center-text">
+                    <h3>💡 Conclusão</h3>
+                    <p style="font-size: 1.3em;">
+                        O RIP é como uma bicicleta: perfeito para trajetos curtos e simples,<br>
+                        mas não é a melhor escolha para viagens longas e complexas!
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: Configurando RIPv1 -->
+        <div class="slide">
+            <div class="content">
+                <h2>🔧 Configurando RIPv1</h2>
+
+                <div class="highlight-box">
+                    <h3>📝 Passos para Configuração</h3>
+                    <div class="bullet-point"><strong>Passo 1:</strong> Entre no modo de configuração do roteador</div>
+                    <div class="bullet-point"><strong>Passo 2:</strong> Ative o protocolo RIP</div>
+                    <div class="bullet-point"><strong>Passo 3:</strong> Adicione as redes diretamente conectadas</div>
+                </div>
+
+                <div class="formula-box">
+                    <h3>💻 Comandos Básicos</h3>
+                    <div class="code-box">
+<span class="code-line">Router> enable</span>
+<span class="code-line">Router# configure terminal</span>
+<span class="code-line">Router(config)# <strong>router rip</strong></span>
+<span class="code-line">Router(config-router)# <strong>network 10.10.10.0</strong></span>
+<span class="code-line">Router(config-router)# <strong>network 192.168.1.0</strong></span>
+<span class="code-line">Router(config-router)# end</span>
+                    </div>
+                </div>
+
+                <div class="warning-box">
+                    <h3>⚠️ Importante</h3>
+                    <div class="bullet-point">NO comando <strong>network</strong>, você NÃO precisa incluir a máscara de sub-rede</div>
+                    <div class="bullet-point">Informe apenas o endereço da rede classful (classe A, B ou C)</div>
+                    <div class="bullet-point">Por padrão, o RIP usa a versão 1</div>
+                </div>
+
+                <div class="example-box">
+                    <h3>🎯 Exemplo Prático</h3>
+                    <p style="font-size: 1.2em;">
+                        Se seu roteador está conectado às redes 10.10.10.0 e 192.168.1.0,<br>
+                        você simplesmente adiciona essas duas redes com o comando <strong>network</strong>.<br>
+                        O RIP fará o resto automaticamente!
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7: Configurando RIPv2 -->
+        <div class="slide">
+            <div class="content">
+                <h2>🔧 Configurando RIPv2</h2>
+
+                <div class="highlight-box">
+                    <h3>🆙 Melhorias do RIPv2</h3>
+                    <div class="bullet-point">Suporte a sub-redes (VLSM/CIDR)</div>
+                    <div class="bullet-point">Inclui máscara de sub-rede nas atualizações</div>
+                    <div class="bullet-point">Usa multicast em vez de broadcast</div>
+                    <div class="bullet-point">Suporte a autenticação</div>
+                </div>
+
+                <div class="formula-box">
+                    <h3>💻 Comandos para RIPv2</h3>
+                    <div class="code-box">
+<span class="code-line">Router> enable</span>
+<span class="code-line">Router# configure terminal</span>
+<span class="code-line">Router(config)# <strong>router rip</strong></span>
+<span class="code-line">Router(config-router)# <strong>version 2</strong></span>
+<span class="code-line">Router(config-router)# <strong>network 10.10.10.0</strong></span>
+<span class="code-line">Router(config-router)# <strong>network 192.168.1.0</strong></span>
+<span class="code-line">Router(config-router)# <strong>no auto-summary</strong></span>
+<span class="code-line">Router(config-router)# end</span>
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>🎯 Comando Importante</h3>
+                    <div class="bullet-point"><strong>version 2:</strong> Ativa o RIPv2</div>
+                    <div class="bullet-point"><strong>no auto-summary:</strong> Desativa a sumarização automática de rotas</div>
+                </div>
+
+                <div class="warning-box center-text">
+                    <h3>💡 Dica</h3>
+                    <p style="font-size: 1.2em;">
+                        O comando <strong>no auto-summary</strong> é essencial para redes modernas!<br>
+                        Ele permite que você trabalhe com sub-redes de tamanhos diferentes.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: Diferenças RIPv1 vs RIPv2 -->
+        <div class="slide">
+            <div class="content">
+                <h2>🔄 RIPv1 vs RIPv2</h2>
+
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Característica</th>
+                            <th>RIPv1</th>
+                            <th>RIPv2</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Classificação</strong></td>
+                            <td>Classful</td>
+                            <td>Classless</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Máscara de Sub-rede</strong></td>
+                            <td>❌ Não envia</td>
+                            <td>✅ Envia</td>
+                        </tr>
+                        <tr>
+                            <td><strong>VLSM/CIDR</strong></td>
+                            <td>❌ Não suporta</td>
+                            <td>✅ Suporta</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Tipo de Envio</strong></td>
+                            <td>Broadcast (255.255.255.255)</td>
+                            <td>Multicast (224.0.0.9)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Autenticação</strong></td>
+                            <td>❌ Não suporta</td>
+                            <td>✅ Suporta</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Sumarização</strong></td>
+                            <td>Sempre automática</td>
+                            <td>Pode ser desativada</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Versão Padrão</strong></td>
+                            <td>✅ Sim</td>
+                            <td>Precisa ativar</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="highlight-box center-text">
+                    <h3>🎯 Qual usar?</h3>
+                    <p style="font-size: 1.3em;">
+                        <strong>Sempre prefira RIPv2!</strong><br>
+                        Ele é mais moderno, eficiente e compatível com redes atuais.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 9: Comandos de Verificação -->
+        <div class="slide">
+            <div class="content">
+                <h2>🔍 Verificando a Configuração</h2>
+
+                <div class="formula-box">
+                    <h3>💻 Comando Principal</h3>
+                    <div class="code-box">
+<span class="code-line">Router# <strong>show ip protocols</strong></span>
+                    </div>
+                </div>
+
+                <div class="highlight-box">
+                    <h3>📊 O que esse comando mostra?</h3>
+                    <div class="bullet-point">Qual protocolo de roteamento está ativo (RIP, OSPF, etc.)</div>
+                    <div class="bullet-point">Versão do RIP em uso (1 ou 2)</div>
+                    <div class="bullet-point">Redes anunciadas pelo protocolo</div>
+                    <div class="bullet-point">Temporizadores (30s para atualizações)</div>
+                    <div class="bullet-point">Se está recebendo atualizações dos vizinhos</div>
+                </div>
+
+                <div class="example-box">
+                    <h3>📝 Outros Comandos Úteis</h3>
+                    <div class="code-box">
+<span class="code-line"><strong>show ip route</strong> - Mostra a tabela de roteamento</span>
+<span class="code-line"><strong>show ip route rip</strong> - Mostra apenas rotas aprendidas por RIP</span>
+<span class="code-line"><strong>debug ip rip</strong> - Mostra atualizações RIP em tempo real</span>
+<span class="code-line"><strong>no debug ip rip</strong> - Desativa o debug</span>
+                    </div>
+                </div>
+
+                <div class="warning-box">
+                    <h3>⚠️ Cuidado</h3>
+                    <div class="bullet-point">O comando <strong>debug</strong> gera muito texto no terminal</div>
+                    <div class="bullet-point">Use apenas para testes e sempre desative depois!</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 10: Quiz -->
+        <div class="slide">
+            <div class="content">
+                <h2>🎯 Quiz - Teste seus Conhecimentos</h2>
+                
+                <div class="quiz-container">
+                    <!-- Questão 1 -->
+                    <div class="quiz-question" id="question1">
+                        <h3>Questão 1 de 5</h3>
+                        <p style="font-size: 1.3em; margin-bottom: 20px;">
+                            Qual é a métrica utilizada pelo protocolo RIP para escolher a melhor rota?
+                        </p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(1, 'a', false)">
+                                <span class="option-letter">A)</span> Largura de banda
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(1, 'b', true)">
+                                <span class="option-letter">B)</span> Contagem de saltos (hops)
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(1, 'c', false)">
+                                <span class="option-letter">C)</span> Latência
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(1, 'd', false)">
+                                <span class="option-letter">D)</span> Custo da rota
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback1"></div>
+                    </div>
+
+                    <!-- Questão 2 -->
+                    <div class="quiz-question" id="question2">
+                        <h3>Questão 2 de 5</h3>
+                        <p style="font-size: 1.3em; margin-bottom: 20px;">
+                            Qual é o limite máximo de saltos que o RIP suporta?
+                        </p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(2, 'a', false)">
+                                <span class="option-letter">A)</span> 10 saltos
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(2, 'b', true)">
+                                <span class="option-letter">B)</span> 15 saltos
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(2, 'c', false)">
+                                <span class="option-letter">C)</span> 20 saltos
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(2, 'd', false)">
+                                <span class="option-letter">D)</span> Sem limite
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback2"></div>
+                    </div>
+
+                    <!-- Questão 3 -->
+                    <div class="quiz-question" id="question3">
+                        <h3>Questão 3 de 5</h3>
+                        <p style="font-size: 1.3em; margin-bottom: 20px;">
+                            Com que frequência o RIP envia atualizações de roteamento?
+                        </p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(3, 'a', false)">
+                                <span class="option-letter">A)</span> A cada 10 segundos
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(3, 'b', true)">
+                                <span class="option-letter">B)</span> A cada 30 segundos
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(3, 'c', false)">
+                                <span class="option-letter">C)</span> A cada 60 segundos
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(3, 'd', false)">
+                                <span class="option-letter">D)</span> Apenas quando há mudanças
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback3"></div>
+                    </div>
+
+                    <!-- Questão 4 -->
+                    <div class="quiz-question" id="question4">
+                        <h3>Questão 4 de 5</h3>
+                        <p style="font-size: 1.3em; margin-bottom: 20px;">
+                            Qual a principal diferença entre RIPv1 e RIPv2?
+                        </p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(4, 'a', false)">
+                                <span class="option-letter">A)</span> RIPv2 suporta até 20 saltos
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(4, 'b', true)">
+                                <span class="option-letter">B)</span> RIPv2 suporta VLSM/CIDR e envia a máscara de sub-rede
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(4, 'c', false)">
+                                <span class="option-letter">C)</span> RIPv2 é mais lento que RIPv1
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(4, 'd', false)">
+                                <span class="option-letter">D)</span> RIPv2 não envia atualizações periódicas
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback4"></div>
+                    </div>
+
+                    <!-- Questão 5 -->
+                    <div class="quiz-question" id="question5">
+                        <h3>Questão 5 de 5</h3>
+                        <p style="font-size: 1.3em; margin-bottom: 20px;">
+                            Qual comando é usado para verificar se o RIP está funcionando corretamente?
+                        </p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(5, 'a', false)">
+                                <span class="option-letter">A)</span> show running-config
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(5, 'b', true)">
+                                <span class="option-letter">B)</span> show ip protocols
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(5, 'c', false)">
+                                <span class="option-letter">C)</span> show interfaces
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(5, 'd', false)">
+                                <span class="option-letter">D)</span> ping
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback5"></div>
+                    </div>
+
+                    <!-- Resultado Final -->
+                    <div class="quiz-result" id="quizResult" style="display: none;">
+                        <h3>🎉 Parabéns! Quiz Concluído!</h3>
+                        <div class="result-box">
+                            <p>Sua pontuação: <span id="finalScore">0</span>/5</p>
+                            <p id="resultMessage"></p>
+                        </div>
+                        <button class="nav-btn" onclick="restartQuiz()">🔄 Refazer Quiz</button>
+                    </div>
+                </div>
+
+                <div class="quiz-navigation">
+                    <button class="nav-btn" id="nextQuizBtn" onclick="nextQuestion()" style="display: none;">
+                        Próxima Questão ➡️
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 11: Resumo Final -->
+        <div class="slide">
+            <div class="content">
+                <h2>🎯 Resumo Final</h2>
+                
+                <div class="highlight-box large-text center-text">
+                    RIP = Protocolo simples e automático para redes pequenas
+                </div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>✅ Use RIP quando:</h3>
+                        <div class="bullet-point">Rede pequena (até 15 saltos)</div>
+                        <div class="bullet-point">Topologia simples</div>
+                        <div class="bullet-point">Facilidade de configuração é prioridade</div>
+                        <div class="bullet-point">Está aprendendo roteamento</div>
+                    </div>
+                    <div>
+                        <h3>❌ Evite RIP quando:</h3>
+                        <div class="bullet-point">Rede grande e complexa</div>
+                        <div class="bullet-point">Necessita convergência rápida</div>
+                        <div class="bullet-point">Largura de banda é limitada</div>
+                        <div class="bullet-point">Precisa de métricas avançadas</div>
+                    </div>
+                </div>
+
+                <div class="formula-box">
+                    <h3>📝 Comandos Essenciais</h3>
+                    <div class="code-box">
+<span class="code-line">router rip                  ← Ativa o RIP</span>
+<span class="code-line">version 2                   ← Usa RIPv2</span>
+<span class="code-line">network 192.168.1.0         ← Adiciona rede</span>
+<span class="code-line">no auto-summary             ← Desativa sumarização</span>
+<span class="code-line">show ip protocols           ← Verifica configuração</span>
+<span class="code-line">show ip route rip           ← Vê rotas RIP</span>
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>📚 Comparação com Roteamento Estático</h3>
+                    <div class="bullet-point"><strong>Estático:</strong> Você configura cada rota manualmente</div>
+                    <div class="bullet-point"><strong>RIP:</strong> Os roteadores aprendem e compartilham rotas automaticamente</div>
+                </div>
+
+                <div class="highlight-box center-text">
+                    <h3>💡 Mensagem Final</h3>
+                    <p style="font-size: 1.2em;">
+                        O RIP é o ponto de partida perfeito para aprender roteamento dinâmico!<br>
+                        É simples, eficaz e funciona muito bem em ambientes pequenos.<br><br>
+                        <strong>Pratique no Packet Tracer e veja a "mágica" acontecer!</strong>
+                    </p>
+                </div>
+
+                <div class="warning-box center-text">
+                    <h3>🎓 Continue Aprendendo</h3>
+                    <p>Próximos passos:<br>
+                    • OSPF (Open Shortest Path First)<br>
+                    • EIGRP (Enhanced Interior Gateway Routing Protocol)<br>
+                    • BGP (Border Gateway Protocol)</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="navigation">
+            <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">⬅️ Anterior</button>
+            <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">Próximo ➡️</button>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        document.getElementById('total-slides').textContent = totalSlides;
+
+        // Quiz variables
+        let currentQuestion = 1;
+        let score = 0;
+        let quizAnswered = [false, false, false, false, false];
+
+        function showSlide(index) {
+            slides.forEach((slide, i) => {
+                slide.classList.toggle('active', i === index);
+            });
+            
+            document.getElementById('current-slide').textContent = index + 1;
+            document.getElementById('prevBtn').disabled = index === 0;
+            document.getElementById('nextBtn').disabled = index === totalSlides - 1;
+        }
+
+        function changeSlide(direction) {
+            const newSlide = currentSlide + direction;
+            if (newSlide >= 0 && newSlide < totalSlides) {
+                currentSlide = newSlide;
+                showSlide(currentSlide);
+            }
+        }
+
+        // Quiz Functions
+        function selectOption(questionNum, option, isCorrect) {
+            if (quizAnswered[questionNum - 1]) return;
+            
+            const options = document.querySelectorAll(`#question${questionNum} .quiz-option`);
+            const feedback = document.getElementById(`feedback${questionNum}`);
+            
+            options.forEach(opt => {
+                opt.style.pointerEvents = 'none';
+                if (opt.onclick.toString().includes('true')) {
+                    opt.classList.add('correct');
+                } else if (opt === event.currentTarget) {
+                    opt.classList.add(isCorrect ? 'correct' : 'incorrect');
+                }
+            });
+            
+            if (isCorrect) {
+                feedback.innerHTML = '✅ Correto! Muito bem!';
+                feedback.className = 'quiz-feedback correct';
+                score++;
+            } else {
+                feedback.innerHTML = '❌ Incorreto. A resposta correta está destacada em verde.';
+                feedback.className = 'quiz-feedback incorrect';
+            }
+            
+            quizAnswered[questionNum - 1] = true;
+            
+            if (questionNum < 5) {
+                document.getElementById('nextQuizBtn').style.display = 'inline-block';
+            } else {
+                setTimeout(() => {
+                    showQuizResult();
+                }, 2000);
+            }
+        }
+
+        function nextQuestion() {
+            document.getElementById(`question${currentQuestion}`).style.display = 'none';
+            currentQuestion++;
+            document.getElementById(`question${currentQuestion}`).style.display = 'block';
+            document.getElementById('nextQuizBtn').style.display = 'none';
+        }
+
+        function showQuizResult() {
+            document.getElementById('question5').style.display = 'none';
+            document.getElementById('quizResult').style.display = 'block';
+            document.getElementById('finalScore').textContent = score;
+            
+            const resultMessage = document.getElementById('resultMessage');
+            if (score === 5) {
+                resultMessage.innerHTML = '🏆 Perfeito! Você domina o RIP!';
+            } else if (score === 4) {
+                resultMessage.innerHTML = '👍 Excelente! Quase perfeito!';
+            } else if (score === 3) {
+                resultMessage.innerHTML = '👏 Bom trabalho! Continue estudando!';
+            } else if (score === 2) {
+                resultMessage.innerHTML = '📚 Revise alguns conceitos!';
+            } else {
+                resultMessage.innerHTML = '📖 Recomendo revisar todo o conteúdo!';
+            }
+        }
+
+        function restartQuiz() {
+            currentQuestion = 1;
+            score = 0;
+            quizAnswered = [false, false, false, false, false];
+            
+            for (let i = 1; i <= 5; i++) {
+                const question = document.getElementById(`question${i}`);
+                const options = question.querySelectorAll('.quiz-option');
+                const feedback = document.getElementById(`feedback${i}`);
+                
+                options.forEach(opt => {
+                    opt.className = 'quiz-option';
+                    opt.style.pointerEvents = 'auto';
+                });
+                
+                feedback.style.display = 'none';
+                question.style.display = i === 1 ? 'block' : 'none';
+            }
+            
+            document.getElementById('quizResult').style.display = 'none';
+            document.getElementById('nextQuizBtn').style.display = 'none';
+        }
+
+        // Navegação por teclado
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') changeSlide(-1);
+            if (e.key === 'ArrowRight') changeSlide(1);
+            if (e.key === 'Home') {
+                currentSlide = 0;
+                showSlide(currentSlide);
+            }
+            if (e.key === 'End') {
+                currentSlide = totalSlides - 1;
+                showSlide(currentSlide);
+            }
+        });
+
+        // Inicializar
+        showSlide(0);
+        document.getElementById('question1').style.display = 'block';
+    </script>
+</body>
+</html>
