@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VLANs - Virtual Local Area Network</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        .presentation {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .slide {
+            min-height: 100vh;
+            padding: 60px 40px;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            background: white;
+            margin: 20px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        .slide.active {
+            display: flex;
+        }
+
+        .slide h1 {
+            font-size: 3.5em;
+            color: #4a5568;
+            text-align: center;
+            margin-bottom: 40px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .slide h2 {
+            font-size: 2.8em;
+            color: #2d3748;
+            margin-bottom: 30px;
+            border-bottom: 4px solid #667eea;
+            padding-bottom: 15px;
+        }
+
+        .slide h3 {
+            font-size: 2.2em;
+            color: #4a5568;
+            margin: 25px 0 15px 0;
+        }
+
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: start;
+        }
+
+        .bullet-point {
+            display: flex;
+            align-items: flex-start;
+            margin: 15px 0;
+            font-size: 1.3em;
+            line-height: 1.5;
+        }
+
+        .bullet-point::before {
+            content: "🔹";
+            margin-right: 15px;
+            font-size: 1.2em;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #667eea;
+        }
+
+        .example-box {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #20b2aa;
+        }
+
+        .warning-box {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #e17055;
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 1000;
+        }
+
+        .nav-btn {
+            padding: 15px 25px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .nav-btn:hover {
+            background: #5a67d8;
+            transform: translateY(-2px);
+            box-shadow: 0 7px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .nav-btn:disabled {
+            background: #a0a0a0;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .slide-counter {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: rgba(255,255,255,0.9);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            color: #4a5568;
+            z-index: 1000;
+        }
+
+        .center-text {
+            text-align: center;
+        }
+
+        .large-text {
+            font-size: 1.4em;
+            line-height: 1.6;
+        }
+
+        .diagram {
+            background: #f7fafc;
+            border: 2px dashed #667eea;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+            font-family: monospace;
+            font-size: 1.2em;
+        }
+
+        .code-box {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: monospace;
+            font-size: 1.1em;
+            margin: 20px 0;
+            overflow-x: auto;
+            line-height: 1.8;
+        }
+
+        .code-line {
+            margin: 5px 0;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 1.1em;
+        }
+
+        .comparison-table th {
+            background: #667eea;
+            color: white;
+            padding: 15px;
+            text-align: left;
+        }
+
+        .comparison-table td {
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .comparison-table tr:nth-child(even) {
+            background: #f7fafc;
+        }
+
+        .image-container {
+            display: flex;
+            justify-content: center;
+            margin: 30px 0;
+        }
+
+        .image-container img {
+            max-width: 90%;
+            height: auto;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .single-image img {
+            max-width: 100%;
+        }
+
+        .two-images {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .two-images img {
+            max-width: 100%;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        /* Quiz Styles */
+        .quiz-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .quiz-question {
+            display: none;
+            margin-bottom: 30px;
+        }
+
+        .quiz-question h3 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .quiz-option {
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #e2e8f0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.2em;
+        }
+
+        .quiz-option:hover {
+            background: #e6f2ff;
+            border-color: #667eea;
+            transform: translateX(5px);
+        }
+
+        .quiz-option.correct {
+            background: #c6f6d5;
+            border-color: #38a169;
+        }
+
+        .quiz-option.incorrect {
+            background: #fed7d7;
+            border-color: #e53e3e;
+        }
+
+        .option-letter {
+            font-weight: bold;
+            color: #667eea;
+            margin-right: 10px;
+        }
+
+        .quiz-feedback {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 1.2em;
+            display: none;
+        }
+
+        .quiz-feedback.correct {
+            background: #c6f6d5;
+            color: #22543d;
+            display: block;
+        }
+
+        .quiz-feedback.incorrect {
+            background: #fed7d7;
+            color: #742a2a;
+            display: block;
+        }
+
+        .quiz-result {
+            text-align: center;
+        }
+
+        .result-box {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px 0;
+            font-size: 1.5em;
+        }
+
+        .quiz-navigation {
+            text-align: center;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-counter">
+        <span id="current-slide">1</span> / <span id="total-slides">10</span>
+    </div>
+
+    <div class="presentation">
+        <!-- Slide 1: Título -->
+        <div class="slide active">
+            <div class="content center-text">
+                <h1>🌐 VLAN</h1>
+                <h2>Virtual Local Area Network</h2>
+                
+                <div class="highlight-box large-text">
+                    Rede Local Virtual - Segmentação Lógica
+                </div>
+
+                <div class="example-box">
+                    <h3>📚 Curso</h3>
+                    <p style="font-size: 1.3em; line-height: 1.8;">
+                        <strong>Técnico Integrado em Informática</strong><br>
+                        Arquitetura de Redes de Computadores<br>
+                        Tecnologias de Implementação de Redes<br>
+                        Modelo TCP/IP - Camada Física
+                    </p>
+                </div>
+
+                <div class="warning-box center-text">
+                    <p style="font-size: 1.4em;">
+                        💡 <strong>Dica:</strong> Use as setas ⬅️ ➡️ do teclado para navegar
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 2: O que é VLAN -->
+        <div class="slide">
+            <div class="content">
+                <h2>📡 O que é VLAN?</h2>
+                
+                <div class="highlight-box large-text center-text">
+                    VLAN = Virtual Local Area Network (Rede Local Virtual)
+                </div>
+
+                <div class="bullet-point">É um agrupamento <strong>lógico</strong> de dispositivos em um switch</div>
+                <div class="bullet-point">Os dispositivos não precisam estar fisicamente próximos</div>
+                <div class="bullet-point">Reduz colisões e melhora o desempenho da rede</div>
+
+                <div class="example-box">
+                    <h3>🎯 Características Principais</h3>
+                    <div class="bullet-point">Cada VLAN é um <strong>domínio de broadcast</strong> independente</div>
+                    <div class="bullet-point">Dispositivos em VLANs diferentes não se comunicam diretamente</div>
+                    <div class="bullet-point">Melhora segurança e organização da rede</div>
+                </div>
+
+                <div class="diagram">
+                    💡 Pense em VLANs como salas em um prédio:<br>
+                    Cada sala é independente, mas todas estão no mesmo switch!
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: LAN vs VLAN -->
+        <div class="slide">
+            <div class="content">
+                <h2>🔄 LAN Tradicional vs VLAN</h2>
+
+                <div class="image-container single-image">
+                    <img src="lan.png" alt="LAN Tradicional" style="max-width: 600px;">
+                </div>
+
+                <div class="two-column">
+                    <div>
+                        <div class="highlight-box">
+                            <h3>❌ LAN Tradicional</h3>
+                            <div class="bullet-point">Um único domínio de broadcast</div>
+                            <div class="bullet-point">Todos os dispositivos recebem broadcast</div>
+                            <div class="bullet-point">Mais colisões com tráfego aumentado</div>
+                            <div class="bullet-point">Difícil de gerenciar e segmentar</div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="example-box">
+                            <h3>✅ LAN com VLANs</h3>
+                            <div class="bullet-point">Múltiplos domínios de broadcast</div>
+                            <div class="bullet-point">Broadcasts isolados por VLAN</div>
+                            <div class="bullet-point">Menos colisões e melhor desempenho</div>
+                            <div class="bullet-point">Fácil de gerenciar e segmentar</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Tipos de VLAN -->
+        <div class="slide">
+            <div class="content">
+                <h2>🔢 Tipos de VLAN</h2>
+
+                <div class="highlight-box">
+                    <h3>📌 VLAN Estática</h3>
+                    <div class="bullet-point"><strong>Configuração manual</strong> pelo administrador</div>
+                    <div class="bullet-point">Cada porta do switch é <strong>atribuída</strong> a uma VLAN específica</div>
+                    <div class="bullet-point">Mais segura e previsível</div>
+                    <div class="bullet-point">Usado na maioria dos ambientes</div>
+                </div>
+
+                <div class="warning-box">
+                    <h3>📌 VLAN Dinâmica</h3>
+                    <div class="bullet-point"><strong>Configuração automática</strong> com software inteligente</div>
+                    <div class="bullet-point">Baseada em endereços <strong>MAC</strong> armazenados em banco de dados</div>
+                    <div class="bullet-point">Mais complexa de gerenciar</div>
+                    <div class="bullet-point">Flexível para ambientes muito grandes</div>
+                </div>
+
+                <div class="example-box center-text">
+                    <h3>💡 Exemplo Simples</h3>
+                    <p style="font-size: 1.2em;">
+                        <strong>Estática:</strong> "Porta 1 e 2 = VLAN Administrativo"<br>
+                        <strong>Dinâmica:</strong> "Computador com MAC XX:XX:XX → VLAN Financeiro"
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: Links em VLAN -->
+        <div class="slide">
+            <div class="content">
+                <h2>🔗 Tipos de Links em VLAN</h2>
+
+                <div class="image-container single-image">
+                    <img src="vlan.png" alt="Links VLAN" style="max-width: 700px;">
+                </div>
+
+                <div class="two-column">
+                    <div>
+                        <div class="highlight-box">
+                            <h3>🖇️ Link de Acesso</h3>
+                            <div class="bullet-point">Conecta <strong>dispositivos finais</strong> à VLAN</div>
+                            <div class="bullet-point">Um computador, impressora, etc.</div>
+                            <div class="bullet-point">Pertence a <strong>apenas uma VLAN</strong></div>
+                            <div class="bullet-point">Velocidade padrão (10/100 Mbps)</div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="example-box">
+                            <h3>🔀 Link Trunk</h3>
+                            <div class="bullet-point">Interliga <strong>VLANs diferentes</strong></div>
+                            <div class="bullet-point">Conecta switches, roteadores</div>
+                            <div class="bullet-point">Carrega tráfego de <strong>múltiplas VLANs</strong></div>
+                            <div class="bullet-point">Velocidade alta (Fast/Giga Ethernet)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: Estrutura de VLAN -->
+        <div class="slide">
+            <div class="content">
+                <h2>🏗️ Estrutura e Identificação de VLAN</h2>
+
+                <div class="image-container single-image">
+                    <img src="vlan2.png" alt="Múltiplas VLANs no Switch" style="max-width: 700px;">
+                </div>
+
+                <div class="highlight-box">
+                    <h3>🔢 Identificação de VLAN</h3>
+                    <div class="bullet-point"><strong>VLAN ID:</strong> Números de 1 a 4094</div>
+                    <div class="bullet-point"><strong>VLAN 1:</strong> Criada por padrão, usada para gerenciamento</div>
+                    <div class="bullet-point"><strong>VLAN 2 em diante:</strong> Usadas para dados dos usuários</div>
+                </div>
+
+                <div class="example-box">
+                    <h3>💼 Exemplo Prático de Estrutura</h3>
+                    <div class="code-box">
+VLAN 1 (Padrão)        → Gerenciamento do Switch<br>
+VLAN 10 (Administrativo) → Computadores da Diretoria<br>
+VLAN 20 (Financeiro)   → Computadores do Financeiro<br>
+VLAN 30 (Professores)  → Computadores dos Professores<br>
+VLAN 40 (Alunos)       → Computadores dos Alunos
+                    </div>
+                </div>
+
+                <div class="warning-box">
+                    <h3>⚠️ Importante</h3>
+                    <div class="bullet-point">Tag 802.1Q: Identifica a qual VLAN o quadro pertence nos links trunk</div>
+                    <div class="bullet-point">Links de acesso não usam tags (VLAN já definida na porta)</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7: Benefícios e Aplicações -->
+        <div class="slide">
+            <div class="content">
+                <h2>⚖️ Benefícios das VLANs</h2>
+
+                <div class="two-column">
+                    <div>
+                        <div class="highlight-box">
+                            <h3>✅ Segurança</h3>
+                            <div class="bullet-point">Isolamento entre departamentos</div>
+                            <div class="bullet-point">Evita comunicação indesejada</div>
+                            <div class="bullet-point">Facilita políticas de firewall</div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="example-box">
+                            <h3>⚡ Desempenho</h3>
+                            <div class="bullet-point">Reduz colisões na rede</div>
+                            <div class="bullet-point">Broadcasts limitados por VLAN</div>
+                            <div class="bullet-point">Melhor aproveitamento de banda</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="warning-box">
+                    <h3>📊 Gerenciamento</h3>
+                    <div class="bullet-point">Flexibilidade de movimento entre portas sem reconfiguração física</div>
+                    <div class="bullet-point">Agrupamento lógico por funções/departamentos</div>
+                    <div class="bullet-point">Facilita adição e remoção de usuários</div>
+                </div>
+
+                <div class="example-box center-text">
+                    <h3>🏢 Casos de Uso Comuns</h3>
+                    <p style="font-size: 1.2em;">
+                        🏫 Escolas: VLANs para alunos, professores, administrativo<br>
+                        🏪 Lojas: VLANs para caixa, backoffice, gerência<br>
+                        🏥 Hospitais: VLANs para pacientes, médicos, administrativo
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: Comunicação entre VLANs -->
+        <div class="slide">
+            <div class="content">
+                <h2>🔀 Comunicação entre VLANs</h2>
+
+                <div class="highlight-box">
+                    <h3>🚫 Por Padrão: VLANs Isoladas</h3>
+                    <div class="bullet-point">Dispositivos em <strong>VLAN 10 NÃO conseguem</strong> se comunicar com dispositivos em <strong>VLAN 20</strong></div>
+                    <div class="bullet-point">Cada VLAN é um domínio de broadcast separado</div>
+                    <div class="bullet-point">Como uma porta que separa dois cômodos</div>
+                </div>
+
+                <div class="example-box">
+                    <h3>🔑 Solução: Roteador Inter-VLAN</h3>
+                    <div class="bullet-point">Um <strong>roteador</strong> conectado ao switch pode facilitar comunicação entre VLANs</div>
+                    <div class="bullet-point">Usa links trunk para conectar múltiplas VLANs</div>
+                    <div class="bullet-point">Faz a tradução de endereços entre as redes</div>
+                </div>
+
+                <div class="warning-box center-text">
+                    <h3>💡 Analogia</h3>
+                    <p style="font-size: 1.2em;">
+                        É como ter apartamentos em prédios separados (VLANs).<br>
+                        Para visitar alguém no outro prédio, você precisa de um <strong>roteador-porteiro</strong>!
+                    </p>
+                </div>
+
+                <div class="diagram">
+                    VLAN 10 ←→ Switch ←→ Roteador ←→ Switch ←→ VLAN 20
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 9: Configuração Básica -->
+        <div class="slide">
+            <div class="content">
+                <h2>⚙️ Configuração Básica de VLAN</h2>
+
+                <div class="highlight-box">
+                    <h3>📝 Passos Fundamentais</h3>
+                    <div class="bullet-point"><strong>Passo 1:</strong> Criar a VLAN no switch</div>
+                    <div class="bullet-point"><strong>Passo 2:</strong> Nomear a VLAN (opcional)</div>
+                    <div class="bullet-point"><strong>Passo 3:</strong> Atribuir portas à VLAN</div>
+                    <div class="bullet-point"><strong>Passo 4:</strong> Configurar links trunk (se necessário)</div>
+                </div>
+
+                <div class="example-box">
+                    <h3>💻 Comandos no Switch Cisco</h3>
+                    <div class="code-box">
+Switch> enable<br>
+Switch# configure terminal<br>
+Switch(config)# <strong>vlan 10</strong><br>
+Switch(config-vlan)# <strong>name Administrativo</strong><br>
+Switch(config-vlan)# exit<br>
+<br>
+Switch(config)# <strong>interface fastEthernet 0/1</strong><br>
+Switch(config-if)# <strong>switchport mode access</strong><br>
+Switch(config-if)# <strong>switchport access vlan 10</strong><br>
+Switch(config-if)# end
+                    </div>
+                </div>
+
+                <div class="warning-box">
+                    <h3>🔍 Verificação</h3>
+                    <div class="bullet-point"><strong>show vlan brief</strong> - Lista todas as VLANs</div>
+                    <div class="bullet-point"><strong>show vlan id 10</strong> - Detalhes da VLAN 10</div>
+                    <div class="bullet-point"><strong>show interface fa0/1 switchport</strong> - Porta em VLAN</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 10: Quiz -->
+        <div class="slide">
+            <div class="content">
+                <h2>🎯 Quiz - Teste seus Conhecimentos</h2>
+                
+                <div class="quiz-container">
+                    <!-- Questão 1 -->
+                    <div class="quiz-question" id="question1">
+                        <h3>Questão 1 de 5</h3>
+                        <p style="font-size: 1.3em; margin-bottom: 20px;">
+                            O que significa VLAN?
+                        </p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(1, 'a', false)">
+                                <span class="option-letter">A)</span> Very Large Area Network
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(1, 'b', true)">
+                                <span class="option-letter">B)</span> Virtual Local Area Network
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(1, 'c', false)">
+                                <span class="option-letter">C)</span> Virtual Low Amplified Network
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(1, 'd', false)">
+                                <span class="option-letter">D)</span> Vital Linked Area Network
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback1"></div>
+                    </div>
+
+                    <!-- Questão 2 -->
+                    <div class="quiz-question" id="question2">
+                        <h3>Questão 2 de 5</h3>
+                        <p style="font-size: 1.3em; margin-bottom: 20px;">
+                            Qual é o principal benefício das VLANs?
+                        </p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(2, 'a', false)">
+                                <span class="option-letter">A)</span> Aumentar a velocidade da internet
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(2, 'b', true)">
+                                <span class="option-letter">B)</span> Segmentar a rede logicamente e melhorar o desempenho
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(2, 'c', false)">
+                                <span class="option-letter">C)</span> Substituir roteadores
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(2, 'd', false)">
+                                <span class="option-letter">D)</span> Conectar à internet mais facilmente
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback2"></div>
+                    </div>
+
+                    <!-- Questão 3 -->
+                    <div class="quiz-question" id="question3">
+                        <h3>Questão 3 de 5</h3>
+                        <p style="font-size: 1.3em; margin-bottom: 20px;">
+                            Qual VLAN é criada por padrão em qualquer switch?
+                        </p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(3, 'a', true)">
+                                <span class="option-letter">A)</span> VLAN 1
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(3, 'b', false)">
+                                <span class="option-letter">B)</span> VLAN 10
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(3, 'c', false)">
+                                <span class="option-letter">C)</span> VLAN 100
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(3, 'd', false)">
+                                <span class="option-letter">D)</span> VLAN 2
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback3"></div>
+                    </div>
+
+                    <!-- Questão 4 -->
+                    <div class="quiz-question" id="question4">
+                        <h3>Questão 4 de 5</h3>
+                        <p style="font-size: 1.3em; margin-bottom: 20px;">
+                            Qual é a diferença entre Link de Acesso e Link Trunk?
+                        </p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(4, 'a', true)">
+                                <span class="option-letter">A)</span> Acesso conecta dispositivos finais, Trunk interliga VLANs
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(4, 'b', false)">
+                                <span class="option-letter">B)</span> São a mesma coisa com nomes diferentes
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(4, 'c', false)">
+                                <span class="option-letter">C)</span> Trunk é mais lento que Acesso
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(4, 'd', false)">
+                                <span class="option-letter">D)</span> Não existem diferenças práticas
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback4"></div>
+                    </div>
+
+                    <!-- Questão 5 -->
+                    <div class="quiz-question" id="question5">
+                        <h3>Questão 5 de 5</h3>
+                        <p style="font-size: 1.3em; margin-bottom: 20px;">
+                            Dispositivos em VLANs diferentes conseguem se comunicar diretamente?
+                        </p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(5, 'a', false)">
+                                <span class="option-letter">A)</span> Sim, sempre
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(5, 'b', true)">
+                                <span class="option-letter">B)</span> Não, a menos que haja um roteador inter-VLAN
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(5, 'c', false)">
+                                <span class="option-letter">C)</span> Depende da velocidade da conexão
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(5, 'd', false)">
+                                <span class="option-letter">D)</span> Sempre sim, VLANs não isolam comunicação
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback5"></div>
+                    </div>
+
+                    <!-- Resultado Final -->
+                    <div class="quiz-result" id="quizResult" style="display: none;">
+                        <h3>🎉 Parabéns! Quiz Concluído!</h3>
+                        <div class="result-box">
+                            <p>Sua pontuação: <span id="finalScore">0</span>/5</p>
+                            <p id="resultMessage"></p>
+                        </div>
+                        <button class="nav-btn" onclick="restartQuiz()">🔄 Refazer Quiz</button>
+                    </div>
+                </div>
+
+                <div class="quiz-navigation">
+                    <button class="nav-btn" id="nextQuizBtn" onclick="nextQuestion()" style="display: none;">
+                        Próxima Questão ➡️
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="navigation">
+            <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">⬅️ Anterior</button>
+            <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">Próximo ➡️</button>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        document.getElementById('total-slides').textContent = totalSlides;
+
+        // Quiz variables
+        let currentQuestion = 1;
+        let score = 0;
+        let quizAnswered = [false, false, false, false, false];
+
+        function showSlide(index) {
+            slides.forEach((slide, i) => {
+                slide.classList.toggle('active', i === index);
+            });
+            
+            document.getElementById('current-slide').textContent = index + 1;
+            document.getElementById('prevBtn').disabled = index === 0;
+            document.getElementById('nextBtn').disabled = index === totalSlides - 1;
+        }
+
+        function changeSlide(direction) {
+            const newSlide = currentSlide + direction;
+            if (newSlide >= 0 && newSlide < totalSlides) {
+                currentSlide = newSlide;
+                showSlide(currentSlide);
+            }
+        }
+
+        // Quiz Functions
+        function selectOption(questionNum, option, isCorrect) {
+            if (quizAnswered[questionNum - 1]) return;
+            
+            const options = document.querySelectorAll(`#question${questionNum} .quiz-option`);
+            const feedback = document.getElementById(`feedback${questionNum}`);
+            
+            options.forEach(opt => {
+                opt.style.pointerEvents = 'none';
+                if (opt.onclick.toString().includes('true')) {
+                    opt.classList.add('correct');
+                } else if (opt === event.currentTarget) {
+                    opt.classList.add(isCorrect ? 'correct' : 'incorrect');
+                }
+            });
+            
+            if (isCorrect) {
+                feedback.innerHTML = '✅ Correto! Muito bem!';
+                feedback.className = 'quiz-feedback correct';
+                score++;
+            } else {
+                feedback.innerHTML = '❌ Incorreto. A resposta correta está destacada em verde.';
+                feedback.className = 'quiz-feedback incorrect';
+            }
+            
+            quizAnswered[questionNum - 1] = true;
+            
+            if (questionNum < 5) {
+                document.getElementById('nextQuizBtn').style.display = 'inline-block';
+            } else {
+                setTimeout(() => {
+                    showQuizResult();
+                }, 2000);
+            }
+        }
+
+        function nextQuestion() {
+            document.getElementById(`question${currentQuestion}`).style.display = 'none';
+            currentQuestion++;
+            document.getElementById(`question${currentQuestion}`).style.display = 'block';
+            document.getElementById('nextQuizBtn').style.display = 'none';
+        }
+
+        function showQuizResult() {
+            document.getElementById('question5').style.display = 'none';
+            document.getElementById('quizResult').style.display = 'block';
+            document.getElementById('finalScore').textContent = score;
+            
+            const resultMessage = document.getElementById('resultMessage');
+            if (score === 5) {
+                resultMessage.innerHTML = '🏆 Perfeito! Você domina VLANs!';
+            } else if (score === 4) {
+                resultMessage.innerHTML = '👍 Excelente! Quase perfeito!';
+            } else if (score === 3) {
+                resultMessage.innerHTML = '👏 Bom trabalho! Continue estudando!';
+            } else if (score === 2) {
+                resultMessage.innerHTML = '📚 Revise alguns conceitos!';
+            } else {
+                resultMessage.innerHTML = '📖 Recomendo revisar todo o conteúdo!';
+            }
+        }
+
+        function restartQuiz() {
+            currentQuestion = 1;
+            score = 0;
+            quizAnswered = [false, false, false, false, false];
+            
+            for (let i = 1; i <= 5; i++) {
+                const question = document.getElementById(`question${i}`);
+                const options = question.querySelectorAll('.quiz-option');
+                const feedback = document.getElementById(`feedback${i}`);
+                
+                options.forEach(opt => {
+                    opt.className = 'quiz-option';
+                    opt.style.pointerEvents = 'auto';
+                });
+                
+                feedback.style.display = 'none';
+                question.style.display = i === 1 ? 'block' : 'none';
+            }
+            
+            document.getElementById('quizResult').style.display = 'none';
+            document.getElementById('nextQuizBtn').style.display = 'none';
+        }
+
+        // Navegação por teclado
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') changeSlide(-1);
+            if (e.key === 'ArrowRight') changeSlide(1);
+            if (e.key === 'Home') {
+                currentSlide = 0;
+                showSlide(currentSlide);
+            }
+            if (e.key === 'End') {
+                currentSlide = totalSlides - 1;
+                showSlide(currentSlide);
+            }
+        });
+
+        // Inicializar
+        showSlide(0);
+        document.getElementById('question1').style.display = 'block';
+    </script>
+</body>
+</html>
