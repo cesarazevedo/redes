@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ACL - Access Control List</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        .presentation {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .slide {
+            min-height: 100vh;
+            padding: 60px 40px;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            background: white;
+            margin: 20px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        .slide.active {
+            display: flex;
+        }
+
+        .slide h1 {
+            font-size: 3.5em;
+            color: #4a5568;
+            text-align: center;
+            margin-bottom: 40px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .slide h2 {
+            font-size: 2.8em;
+            color: #2d3748;
+            margin-bottom: 30px;
+            border-bottom: 4px solid #667eea;
+            padding-bottom: 15px;
+        }
+
+        .slide h3 {
+            font-size: 2.2em;
+            color: #4a5568;
+            margin: 25px 0 15px 0;
+        }
+
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: start;
+        }
+
+        .bullet-point {
+            display: flex;
+            align-items: flex-start;
+            margin: 15px 0;
+            font-size: 1.3em;
+            line-height: 1.5;
+        }
+
+        .bullet-point::before {
+            content: "🔹";
+            margin-right: 15px;
+            font-size: 1.2em;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #667eea;
+        }
+
+        .example-box {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #20b2aa;
+        }
+
+        .warning-box {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #e17055;
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 1000;
+        }
+
+        .nav-btn {
+            padding: 15px 25px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .nav-btn:hover {
+            background: #5a67d8;
+            transform: translateY(-2px);
+            box-shadow: 0 7px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .nav-btn:disabled {
+            background: #a0a0a0;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .slide-counter {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: rgba(255,255,255,0.9);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            color: #4a5568;
+            z-index: 1000;
+        }
+
+        .center-text {
+            text-align: center;
+        }
+
+        .large-text {
+            font-size: 1.4em;
+            line-height: 1.6;
+        }
+
+        .diagram {
+            background: #f7fafc;
+            border: 2px dashed #667eea;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+            font-family: monospace;
+            font-size: 1.2em;
+        }
+
+        .code-box {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: monospace;
+            font-size: 1.1em;
+            margin: 20px 0;
+            overflow-x: auto;
+            line-height: 1.8;
+        }
+
+        .image-container {
+            display: flex;
+            justify-content: center;
+            margin: 30px 0;
+        }
+
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .explanation {
+            font-size: 1.15em;
+            color: #555;
+            font-style: italic;
+            margin-top: 8px;
+            padding: 8px 12px;
+            background: rgba(102, 126, 234, 0.1);
+            border-left: 3px solid #667eea;
+            border-radius: 4px;
+        }
+
+        .quiz-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .quiz-question {
+            display: none;
+            margin-bottom: 30px;
+        }
+
+        .quiz-question h3 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .quiz-option {
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #e2e8f0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.2em;
+        }
+
+        .quiz-option:hover {
+            background: #e6f2ff;
+            border-color: #667eea;
+            transform: translateX(5px);
+        }
+
+        .quiz-option.correct {
+            background: #c6f6d5;
+            border-color: #38a169;
+        }
+
+        .quiz-option.incorrect {
+            background: #fed7d7;
+            border-color: #e53e3e;
+        }
+
+        .option-letter {
+            font-weight: bold;
+            color: #667eea;
+            margin-right: 10px;
+        }
+
+        .quiz-feedback {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 1.2em;
+            display: none;
+        }
+
+        .quiz-feedback.correct {
+            background: #c6f6d5;
+            color: #22543d;
+            display: block;
+        }
+
+        .quiz-feedback.incorrect {
+            background: #fed7d7;
+            color: #742a2a;
+            display: block;
+        }
+
+        .quiz-result {
+            text-align: center;
+        }
+
+        .result-box {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px 0;
+            font-size: 1.5em;
+        }
+
+        .quiz-navigation {
+            text-align: center;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-counter">
+        <span id="current-slide">1</span> / <span id="total-slides">11</span>
+    </div>
+
+    <div class="presentation">
+        <!-- Slide 1: Título -->
+        <div class="slide active">
+            <div class="content center-text">
+                <h1>🔐 ACL</h1>
+                <h2>Access Control List (Lista de Acesso)</h2>
+                
+                <div class="highlight-box large-text">
+                    Filtragem de Pacotes IP em Roteadores
+                </div>
+
+                <div class="example-box">
+                    <h3>📚 Curso</h3>
+                    <p style="font-size: 1.3em; line-height: 1.8;">
+                        <strong>Técnico Integrado em Informática</strong><br>
+                        Arquitetura de Redes de Computadores<br>
+                        Tecnologias de Implementação de Redes<br>
+                        Professor: César Azevedo
+                    </p>
+                </div>
+
+                <div class="warning-box center-text">
+                    <p style="font-size: 1.4em;">
+                        💡 <strong>Dica:</strong> Use as setas ⬅️ ➡️ do teclado para navegar
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 2: O que é ACL -->
+        <div class="slide">
+            <div class="content">
+                <h2>📡 O que é ACL?</h2>
+                
+                <div class="highlight-box large-text center-text">
+                    ACL = Lista de Controle de Acesso (Access Control List)
+                </div>
+
+                <div class="bullet-point">São <strong>instruções</strong> configuradas manualmente no roteador</div>
+                <div class="bullet-point">Filtram pacotes IP de <strong>entrada e saída</strong> das interfaces</div>
+                <div class="bullet-point">Implementam <strong>controle de tráfego</strong> na rede</div>
+
+                <div class="example-box">
+                    <h3>🎯 Funções Principais</h3>
+                    <div class="bullet-point"><strong>Permitir (PERMIT)</strong> - deixa o pacote passar</div>
+                    <div class="bullet-point"><strong>Negar (DENY)</strong> - bloqueia o pacote</div>
+                    <div class="bullet-point">Regras são processadas <strong>de cima para baixo</strong></div>
+                    <div class="bullet-point">A <strong>primeira regra</strong> correspondente é aplicada</div>
+                </div>
+
+                <div class="diagram">
+                    🚦 Pacote entra → ACL verifica → PERMIT (passa) ou DENY (bloqueia)
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: Tipos de ACL -->
+        <div class="slide">
+            <div class="content">
+                <h2>🔢 Tipos de ACL</h2>
+
+                <div class="two-column">
+                    <div>
+                        <div class="highlight-box">
+                            <h3>📌 ACL Padrão</h3>
+                            <div class="bullet-point"><strong>ID:</strong> 1 a 99
+                                <div class="explanation">
+                                    (Range de números reservados para ACLs padrão)
+                                </div>
+                            </div>
+                            <div class="bullet-point">Inspeciona <strong>APENAS o IP de origem</strong></div>
+                            <div class="bullet-point">Mais simples e rápida</div>
+                            <div class="bullet-point">Menos controle fino</div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="example-box">
+                            <h3>📌 ACL Estendida</h3>
+                            <div class="bullet-point"><strong>ID:</strong> 100 a 199
+                                <div class="explanation">
+                                    (Range de números reservados para ACLs estendidas)
+                                </div>
+                            </div>
+                            <div class="bullet-point">Inspeciona <strong>múltiplos campos</strong></div>
+                            <div class="bullet-point">Mais complexa e poderosa</div>
+                            <div class="bullet-point">Melhor controle granular</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: ACL Padrão - Conceito -->
+        <div class="slide">
+            <div class="content">
+                <h2>🔍 ACL Padrão - Em Detalhes</h2>
+
+                <div class="highlight-box">
+                    <h3>📝 O que ela analisa?</h3>
+                    <div class="bullet-point">Apenas o <strong>endereço IP de origem</strong> do pacote</div>
+                    <div class="bullet-point">Não importa destino, protocolo ou porta</div>
+                    <div class="bullet-point">Ideal para bloqueios gerais por origem</div>
+                </div>
+
+                <div class="example-box">
+                    <h3>💻 Sintaxe</h3>
+                    <div class="code-box">
+access-list &lt;ID&gt; &lt;PERMIT | DENY&gt; &lt;IP_ORIGEM&gt; [máscara wildcard]<br>
+<br>
+Exemplos:<br>
+access-list 10 deny 192.168.0.1<br>
+access-list 10 deny 192.168.0.0 0.0.0.255<br>
+access-list 10 permit any
+                    </div>
+                </div>
+
+                <div class="warning-box">
+                    <h3>⚠️ Importante</h3>
+                    <div class="bullet-point">Sempre terminar com <strong>permit any</strong> (senão tudo é bloqueado)</div>
+                    <div class="bullet-point">Máscaras wildcard são o inverso das máscaras de sub-rede</div>
+                    <div class="bullet-point">Uma vez aplicada, não pode ser editada (remover e recriar)</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: Exemplo ACL Padrão com Imagem -->
+        <div class="slide">
+            <div class="content">
+                <h2>📊 Exemplo Prático - ACL Padrão</h2>
+
+                <div class="image-container">
+                    <img src="acl-padrao.png" alt="Exemplo de ACL Padrão" style="max-width: 800px;">
+                </div>
+
+                <div class="example-box">
+                    <h3>💡 Cenário</h3>
+                    <p style="font-size: 1.2em;">
+                        Bloquear o acesso de PC0 (192.168.0.2) às redes 20.10.10.0 e 30.0.0.0
+                    </p>
+                </div>
+
+                <div class="highlight-box">
+                    <h3>💻 Configuração</h3>
+                    <div class="code-box">
+Router(config)# <strong>access-list 10 deny 192.168.0.2</strong><br>
+Router(config)# <strong>access-list 10 permit any</strong><br>
+Router(config)# <strong>interface fastEthernet 0/0</strong><br>
+Router(config-if)# <strong>ip access-group 10 in</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: ACL Estendida - Conceito -->
+        <div class="slide">
+            <div class="content">
+                <h2>🔍 ACL Estendida - Em Detalhes</h2>
+
+                <div class="highlight-box">
+                    <h3>📝 O que ela analisa?</h3>
+                    <div class="bullet-point"><strong>IP de Origem</strong></div>
+                    <div class="bullet-point"><strong>IP de Destino</strong></div>
+                    <div class="bullet-point"><strong>Protocolo</strong> (TCP, UDP, ICMP, etc.)</div>
+                    <div class="bullet-point"><strong>Porta</strong> (com operadores de comparação)</div>
+                </div>
+
+                <div class="example-box">
+                    <h3>🔧 Operadores de Porta</h3>
+                    <div class="bullet-point"><strong>eq:</strong> igual a
+                        <div class="explanation">(Ex: eq 80 = porta 80 exatamente)</div>
+                    </div>
+                    <div class="bullet-point"><strong>gt:</strong> maior que
+                        <div class="explanation">(Ex: gt 1024 = portas acima de 1024)</div>
+                    </div>
+                    <div class="bullet-point"><strong>lt:</strong> menor que
+                        <div class="explanation">(Ex: lt 100 = portas abaixo de 100)</div>
+                    </div>
+                    <div class="bullet-point"><strong>neq:</strong> não igual a
+                        <div class="explanation">(Ex: neq 80 = qualquer porta menos a 80)</div>
+                    </div>
+                    <div class="bullet-point"><strong>range:</strong> entre intervalo
+                        <div class="explanation">(Ex: range 1 1023 = portas de 1 a 1023)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7: Sintaxe ACL Estendida -->
+        <div class="slide">
+            <div class="content">
+                <h2>⚙️ Sintaxe ACL Estendida</h2>
+
+                <div class="highlight-box">
+                    <h3>💻 Estrutura</h3>
+                    <div class="code-box">
+access-list &lt;ID&gt; &lt;PERMIT|DENY&gt; &lt;PROTOCOLO&gt; &lt;ORIGEM&gt; &lt;DESTINO&gt; [comparação porta]<br>
+<br>
+ID: 100 a 199<br>
+PROTOCOLO: tcp, udp, icmp, ip, etc.<br>
+ORIGEM/DESTINO: host IP, rede IP máscara, any
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>💡 Exemplos Práticos</h3>
+                    <div class="code-box">
+! Negar TCP de um host específico para porta 80<br>
+access-list 100 deny tcp host 192.168.0.2 any eq 80<br>
+<br>
+! Negar ICMP (PING) de uma rede para qualquer lugar<br>
+access-list 100 deny icmp 192.168.0.0 0.0.0.255 any<br>
+<br>
+! Negar qualquer coisa de um host<br>
+access-list 100 deny ip host 10.0.0.5 any<br>
+<br>
+! Permitir tudo o mais<br>
+access-list 100 permit ip any any
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: Exemplo ACL Estendida com Imagem -->
+        <div class="slide">
+            <div class="content">
+                <h2>📊 Exemplo Prático - ACL Estendida</h2>
+
+                <div class="image-container">
+                    <img src="acl-estendida.png" alt="Exemplo de ACL Estendida" style="max-width: 800px;">
+                </div>
+
+                <div class="example-box">
+                    <h3>💡 Cenário</h3>
+                    <p style="font-size: 1.2em;">
+                        Negar tráfego direto de PC0 para PC3, mas permitir outros protocolos
+                    </p>
+                </div>
+
+                <div class="highlight-box">
+                    <h3>💻 Configuração</h3>
+                    <div class="code-box">
+Router(config)# <strong>access-list 100 deny ip host 192.168.0.2 host 172.16.0.2</strong><br>
+Router(config)# <strong>access-list 100 permit ip any any</strong><br>
+Router(config)# <strong>interface fastEthernet 0/0</strong><br>
+Router(config-if)# <strong>ip access-group 100 in</strong>
+                    </div>
+                </div>
+
+                <div class="warning-box">
+                    <h3>🧪 Teste ICMP (PING)</h3>
+                    <div class="code-box">
+! Negar apenas ICMP<br>
+Router(config)# <strong>no access-list 100</strong><br>
+Router(config)# <strong>access-list 100 deny icmp host 192.168.0.2 any</strong><br>
+Router(config)# <strong>access-list 100 permit ip any any</strong><br>
+<br>
+Agora PING é bloqueado, mas HTTP passa!
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 9: Gerenciamento de ACLs -->
+        <div class="slide">
+            <div class="content">
+                <h2>🔧 Gerenciamento de ACLs</h2>
+
+                <div class="highlight-box">
+                    <h3>📋 Exibir ACLs</h3>
+                    <div class="code-box">
+! Ver todas as ACLs<br>
+Router# <strong>show access-lists</strong><br>
+<br>
+! Ver ACL específica<br>
+Router# <strong>show access-list 100</strong><br>
+<br>
+! Ver ACLs aplicadas às interfaces<br>
+Router# <strong>show ip access-list</strong>
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>🗑️ Remover ACLs</h3>
+                    <div class="code-box">
+! Remover ACL da interface<br>
+Router(config)# <strong>interface fastEthernet 0/0</strong><br>
+Router(config-if)# <strong>no ip access-group 100 in</strong><br>
+<br>
+! Deletar ACL completamente<br>
+Router(config)# <strong>no access-list 100</strong>
+                    </div>
+                </div>
+
+                <div class="warning-box">
+                    <h3>⚠️ Ordem Importa!</h3>
+                    <div class="bullet-point">ACLs são processadas de <strong>cima para baixo</strong></div>
+                    <div class="bullet-point">A <strong>primeira regra correspondente</strong> é aplicada</div>
+                    <div class="bullet-point">Depois disso, <strong>nenhuma outra regra é verificada</strong></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 10: Resumo -->
+        <div class="slide">
+            <div class="content">
+                <h2>📚 Resumo - ACL</h2>
+
+                <div class="two-column">
+                    <div>
+                        <div class="highlight-box">
+                            <h3>🔒 ACL Padrão (1-99)</h3>
+                            <div class="bullet-point">Analisa: IP origem</div>
+                            <div class="bullet-point">Mais simples</div>
+                            <div class="bullet-point">Menos controle</div>
+                            <div class="code-box" style="font-size: 0.9em; margin-top: 10px;">
+access-list 10 deny<br>
+192.168.0.1<br>
+access-list 10<br>
+permit any
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="example-box">
+                            <h3>🔒 ACL Estendida (100-199)</h3>
+                            <div class="bullet-point">Analisa: Origem, destino, protocolo, porta</div>
+                            <div class="bullet-point">Mais complexa</div>
+                            <div class="bullet-point">Máximo controle</div>
+                            <div class="code-box" style="font-size: 0.9em; margin-top: 10px;">
+access-list 100 deny<br>
+tcp host 192.168.0.2<br>
+any eq 80<br>
+access-list 100<br>
+permit ip any any
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="warning-box center-text" style="margin-top: 30px;">
+                    <h3>✨ Regra Dourada</h3>
+                    <p style="font-size: 1.2em;">
+                        Sempre termine suas ACLs com <strong>"permit any"</strong> ou <strong>"deny any"</strong><br>
+                        Caso contrário, o comportamento padrão é negar!
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 11: Quiz -->
+        <div class="slide">
+            <div class="content">
+                <h2>🎯 Quiz - Teste seus Conhecimentos</h2>
+                
+                <div class="quiz-container">
+                    <!-- Questão 1 -->
+                    <div class="quiz-question" id="question1">
+                        <h3>Questão 1 de 5</h3>
+                        <p style="font-size: 1.3em; margin-bottom: 20px;">
+                            O que é uma ACL?
+                        </p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(1, 'a', true)">
+                                <span class="option-letter">A)</span> Instruções para filtrar pacotes IP em roteadores
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(1, 'b', false)">
+                                <span class="option-letter">B)</span> Um tipo de firewall externo
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(1, 'c', false)">
+                                <span class="option-letter">C)</span> Uma interface de rede
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(1, 'd', false)">
+                                <span class="option-letter">D)</span> Um protocolo de roteamento
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback1"></div>
+                    </div>
+
+                    <!-- Questão 2 -->
+                    <div class="quiz-question" id="question2">
+                        <h3>Questão 2 de 5</h3>
+                        <p style="font-size: 1.3em; margin-bottom: 20px;">
+                            Qual é o range de ID para ACLs Padrão?
+                        </p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(2, 'a', true)">
+                                <span class="option-letter">A)</span> 1 a 99
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(2, 'b', false)">
+                                <span class="option-letter">B)</span> 100 a 199
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(2, 'c', false)">
+                                <span class="option-letter">C)</span> 200 a 299
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(2, 'd', false)">
+                                <span class="option-letter">D)</span> 0 a 50
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback2"></div>
+                    </div>
+
+                    <!-- Questão 3 -->
+                    <div class="quiz-question" id="question3">
+                        <h3>Questão 3 de 5</h3>
+                        <p style="font-size: 1.3em; margin-bottom: 20px;">
+                            O que uma ACL Padrão inspeciona?
+                        </p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(3, 'a', true)">
+                                <span class="option-letter">A)</span> Apenas o endereço IP de origem
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(3, 'b', false)">
+                                <span class="option-letter">B)</span> IP origem, destino e protocolo
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(3, 'c', false)">
+                                <span class="option-letter">C)</span> Apenas portas
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(3, 'd', false)">
+                                <span class="option-letter">D)</span> MAC address dos dispositivos
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback3"></div>
+                    </div>
+
+                    <!-- Questão 4 -->
+                    <div class="quiz-question" id="question4">
+                        <h3>Questão 4 de 5</h3>
+                        <p style="font-size: 1.3em; margin-bottom: 20px;">
+                            O que o operador "eq" significa em uma ACL Estendida?
+                        </p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(4, 'a', false)">
+                                <span class="option-letter">A)</span> Maior que
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(4, 'b', true)">
+                                <span class="option-letter">B)</span> Igual a
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(4, 'c', false)">
+                                <span class="option-letter">C)</span> Menor que
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(4, 'd', false)">
+                                <span class="option-letter">D)</span> Não igual a
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback4"></div>
+                    </div>
+
+                    <!-- Questão 5 -->
+                    <div class="quiz-question" id="question5">
+                        <h3>Questão 5 de 5</h3>
+                        <p style="font-size: 1.3em; margin-bottom: 20px;">
+                            Como é processada uma ACL?
+                        </p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(5, 'a', true)">
+                                <span class="option-letter">A)</span> De cima para baixo, aplicando a primeira regra correspondente
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(5, 'b', false)">
+                                <span class="option-letter">B)</span> De forma aleatória
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(5, 'c', false)">
+                                <span class="option-letter">C)</span> Todas as regras são aplicadas simultaneamente
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(5, 'd', false)">
+                                <span class="option-letter">D)</span> A ordem não importa
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback5"></div>
+                    </div>
+
+                    <!-- Resultado Final -->
+                    <div class="quiz-result" id="quizResult" style="display: none;">
+                        <h3>🎉 Parabéns! Quiz Concluído!</h3>
+                        <div class="result-box">
+                            <p>Sua pontuação: <span id="finalScore">0</span>/5</p>
+                            <p id="resultMessage"></p>
+                        </div>
+                        <button class="nav-btn" onclick="restartQuiz()">🔄 Refazer Quiz</button>
+                    </div>
+                </div>
+
+                <div class="quiz-navigation">
+                    <button class="nav-btn" id="nextQuizBtn" onclick="nextQuestion()" style="display: none;">
+                        Próxima Questão ➡️
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="navigation">
+            <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">⬅️ Anterior</button>
+            <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">Próximo ➡️</button>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        document.getElementById('total-slides').textContent = totalSlides;
+
+        // Quiz variables
+        let currentQuestion = 1;
+        let score = 0;
+        let quizAnswered = [false, false, false, false, false];
+
+        function showSlide(index) {
+            slides.forEach((slide, i) => {
+                slide.classList.toggle('active', i === index);
+            });
+            
+            document.getElementById('current-slide').textContent = index + 1;
+            document.getElementById('prevBtn').disabled = index === 0;
+            document.getElementById('nextBtn').disabled = index === totalSlides - 1;
+        }
+
+        function changeSlide(direction) {
+            const newSlide = currentSlide + direction;
+            if (newSlide >= 0 && newSlide < totalSlides) {
+                currentSlide = newSlide;
+                showSlide(currentSlide);
+                window.scrollTo(0, 0);
+            }
+        }
+
+        // Quiz Functions
+        function selectOption(questionNum, option, isCorrect) {
+            if (quizAnswered[questionNum - 1]) return;
+            
+            const options = document.querySelectorAll(`#question${questionNum} .quiz-option`);
+            const feedback = document.getElementById(`feedback${questionNum}`);
+            
+            options.forEach(opt => {
+                opt.style.pointerEvents = 'none';
+                if (opt.onclick.toString().includes('true')) {
+                    opt.classList.add('correct');
+                } else if (opt === event.currentTarget) {
+                    opt.classList.add(isCorrect ? 'correct' : 'incorrect');
+                }
+            });
+            
+            if (isCorrect) {
+                feedback.innerHTML = '✅ Correto! Muito bem!';
+                feedback.className = 'quiz-feedback correct';
+                score++;
+            } else {
+                feedback.innerHTML = '❌ Incorreto. A resposta correta está destacada em verde.';
+                feedback.className = 'quiz-feedback incorrect';
+            }
+            
+            quizAnswered[questionNum - 1] = true;
+            
+            if (questionNum < 5) {
+                document.getElementById('nextQuizBtn').style.display = 'inline-block';
+            } else {
+                setTimeout(() => {
+                    showQuizResult();
+                }, 2000);
+            }
+        }
+
+        function nextQuestion() {
+            document.getElementById(`question${currentQuestion}`).style.display = 'none';
+            currentQuestion++;
+            document.getElementById(`question${currentQuestion}`).style.display = 'block';
+            document.getElementById('nextQuizBtn').style.display = 'none';
+        }
+
+        function showQuizResult() {
+            document.getElementById('question5').style.display = 'none';
+            document.getElementById('quizResult').style.display = 'block';
+            document.getElementById('finalScore').textContent = score;
+            
+            const resultMessage = document.getElementById('resultMessage');
+            if (score === 5) {
+                resultMessage.innerHTML = '🏆 Perfeito! Você domina ACLs!';
+            } else if (score === 4) {
+                resultMessage.innerHTML = '👍 Excelente! Quase perfeito!';
+            } else if (score === 3) {
+                resultMessage.innerHTML = '👏 Bom trabalho! Continue estudando!';
+            } else if (score === 2) {
+                resultMessage.innerHTML = '📚 Revise alguns conceitos!';
+            } else {
+                resultMessage.innerHTML = '📖 Recomendo revisar todo o conteúdo!';
+            }
+        }
+
+        function restartQuiz() {
+            currentQuestion = 1;
+            score = 0;
+            quizAnswered = [false, false, false, false, false];
+            
+            for (let i = 1; i <= 5; i++) {
+                const question = document.getElementById(`question${i}`);
+                const options = question.querySelectorAll('.quiz-option');
+                const feedback = document.getElementById(`feedback${i}`);
+                
+                options.forEach(opt => {
+                    opt.className = 'quiz-option';
+                    opt.style.pointerEvents = 'auto';
+                });
+                
+                feedback.style.display = 'none';
+                question.style.display = i === 1 ? 'block' : 'none';
+            }
+            
+            document.getElementById('quizResult').style.display = 'none';
+            document.getElementById('nextQuizBtn').style.display = 'none';
+        }
+
+        // Navegação por teclado
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') changeSlide(-1);
+            if (e.key === 'ArrowRight') changeSlide(1);
+            if (e.key === 'Home') {
+                currentSlide = 0;
+                showSlide(currentSlide);
+            }
+            if (e.key === 'End') {
+                currentSlide = totalSlides - 1;
+                showSlide(currentSlide);
+            }
+        });
+
+        // Inicializar
+        showSlide(0);
+        document.getElementById('question1').style.display = 'block';
+    </script>
+</body>
+</html>
