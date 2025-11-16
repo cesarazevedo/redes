@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roteamento entre VLANs</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        .presentation {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .slide {
+            min-height: 100vh;
+            padding: 60px 40px;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            background: white;
+            margin: 20px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        .slide.active {
+            display: flex;
+        }
+
+        .slide h1 {
+            font-size: 3.5em;
+            color: #4a5568;
+            text-align: center;
+            margin-bottom: 40px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .slide h2 {
+            font-size: 2.8em;
+            color: #2d3748;
+            margin-bottom: 30px;
+            border-bottom: 4px solid #667eea;
+            padding-bottom: 15px;
+        }
+
+        .slide h3 {
+            font-size: 2.2em;
+            color: #4a5568;
+            margin: 25px 0 15px 0;
+        }
+
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: start;
+        }
+
+        .bullet-point {
+            display: flex;
+            align-items: flex-start;
+            margin: 15px 0;
+            font-size: 1.3em;
+            line-height: 1.5;
+        }
+
+        .bullet-point::before {
+            content: "🔹";
+            margin-right: 15px;
+            font-size: 1.2em;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #667eea;
+        }
+
+        .example-box {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #20b2aa;
+        }
+
+        .warning-box {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #e17055;
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 1000;
+        }
+
+        .nav-btn {
+            padding: 15px 25px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .nav-btn:hover {
+            background: #5a67d8;
+            transform: translateY(-2px);
+            box-shadow: 0 7px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .nav-btn:disabled {
+            background: #a0a0a0;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .slide-counter {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: rgba(255,255,255,0.9);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            color: #4a5568;
+            z-index: 1000;
+        }
+
+        .center-text {
+            text-align: center;
+        }
+
+        .large-text {
+            font-size: 1.4em;
+            line-height: 1.6;
+        }
+
+        .diagram {
+            background: #f7fafc;
+            border: 2px dashed #667eea;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+            font-family: monospace;
+            font-size: 1.2em;
+        }
+
+        .code-box {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: monospace;
+            font-size: 1.1em;
+            margin: 20px 0;
+            overflow-x: auto;
+            line-height: 1.8;
+        }
+
+        .image-container {
+            display: flex;
+            justify-content: center;
+            margin: 30px 0;
+        }
+
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .explanation {
+            font-size: 1.15em;
+            color: #555;
+            font-style: italic;
+            margin-top: 8px;
+            padding: 8px 12px;
+            background: rgba(102, 126, 234, 0.1);
+            border-left: 3px solid #667eea;
+            border-radius: 4px;
+        }
+
+        .quiz-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .quiz-question {
+            display: none;
+            margin-bottom: 30px;
+        }
+
+        .quiz-question h3 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .quiz-option {
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #e2e8f0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.2em;
+        }
+
+        .quiz-option:hover {
+            background: #e6f2ff;
+            border-color: #667eea;
+            transform: translateX(5px);
+        }
+
+        .quiz-option.correct {
+            background: #c6f6d5;
+            border-color: #38a169;
+        }
+
+        .quiz-option.incorrect {
+            background: #fed7d7;
+            border-color: #e53e3e;
+        }
+
+        .option-letter {
+            font-weight: bold;
+            color: #667eea;
+            margin-right: 10px;
+        }
+
+        .quiz-feedback {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 1.2em;
+            display: none;
+        }
+
+        .quiz-feedback.correct {
+            background: #c6f6d5;
+            color: #22543d;
+            display: block;
+        }
+
+        .quiz-feedback.incorrect {
+            background: #fed7d7;
+            color: #742a2a;
+            display: block;
+        }
+
+        .quiz-result {
+            text-align: center;
+        }
+
+        .result-box {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px 0;
+            font-size: 1.5em;
+        }
+
+        .quiz-navigation {
+            text-align: center;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-counter">
+        <span id="current-slide">1</span> / <span id="total-slides">9</span>
+    </div>
+
+    <div class="presentation">
+        <!-- Slide 1: Título -->
+        <div class="slide active">
+            <div class="content center-text">
+                <h1>🔀 Roteamento entre VLANs</h1>
+                <h2>Inter-VLAN Routing</h2>
+                
+                <div class="highlight-box large-text">
+                    Comunicação entre VLANs diferentes usando Roteador
+                </div>
+
+                <div class="example-box">
+                    <h3>📚 Curso</h3>
+                    <p style="font-size: 1.3em; line-height: 1.8;">
+                        <strong>Técnico Integrado em Informática</strong><br>
+                        Arquitetura de Redes de Computadores<br>
+                        Tecnologias de Implementação de Redes<br>
+                        Professor: César Azevedo
+                    </p>
+                </div>
+
+                <div class="warning-box center-text">
+                    <p style="font-size: 1.4em;">
+                        💡 <strong>Dica:</strong> Use as setas ⬅️ ➡️ do teclado para navegar
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 2: Por que precisamos de Roteamento entre VLANs -->
+        <div class="slide">
+            <div class="content">
+                <h2>❓ Por que Precisamos de Roteamento?</h2>
+                
+                <div class="highlight-box">
+                    <h3>🚫 O Problema</h3>
+                    <div class="bullet-point">VLANs isolam o tráfego logicamente</div>
+                    <div class="bullet-point">Dispositivos em VLANs diferentes <strong>NÃO conseguem se comunicar</strong></div>
+                    <div class="bullet-point">Switches trabalham com <strong>frames</strong> (Layer 2)
+                        <div class="explanation">
+                            (Frames = unidade de dados de camada 2, não contém informação de IP)
+                        </div>
+                    </div>
+                    <div class="bullet-point">Switches não conseguem redirecionar para outras VLANs</div>
+                </div>
+
+                <div class="example-box">
+                    <h3>✅ A Solução</h3>
+                    <div class="bullet-point">Usar um <strong>ROTEADOR</strong> para conectar as VLANs</div>
+                    <div class="bullet-point">Roteador trabalha com <strong>pacotes</strong> (Layer 3)
+                        <div class="explanation">
+                            (Pacotes = unidade de dados de camada 3, contém endereço IP)
+                        </div>
+                    </div>
+                    <div class="bullet-point">Roteador consegue rotear entre redes diferentes</div>
+                    <div class="bullet-point">Permite comunicação controlada entre VLANs</div>
+                </div>
+
+                <div class="diagram">
+                    VLAN 10 ↔️ Switch ↔️ Roteador ↔️ Switch ↔️ VLAN 20
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: Arquitetura da Solução -->
+        <div class="slide">
+            <div class="content">
+                <h2>🏗️ Arquitetura de Roteamento entre VLANs</h2>
+                
+                <div class="image-container">
+                    <img src="roteamento-vlans.png" alt="Arquitetura de Roteamento entre VLANs" style="max-width: 800px;">
+                </div>
+
+                <div class="example-box">
+                    <h3>📊 Componentes Principais</h3>
+                    <div class="bullet-point"><strong>Switch:</strong> Cria as VLANs e segmenta o tráfego</div>
+                    <div class="bullet-point"><strong>Roteador:</strong> Encaminha pacotes entre VLANs diferentes</div>
+                    <div class="bullet-point"><strong>Link Trunk:</strong> Conecta switch ao roteador (carrega múltiplas VLANs)</div>
+                    <div class="bullet-point"><strong>Subinterfaces:</strong> Interfaces virtuais no roteador (uma para cada VLAN)</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Configuração no Switch -->
+        <div class="slide">
+            <div class="content">
+                <h2>⚙️ Passo 1: Configuração no Switch</h2>
+
+                <div class="highlight-box">
+                    <h3>📝 Passos Necessários</h3>
+                    <div class="bullet-point"><strong>1.</strong> Criar as VLANs (10, 20, etc.)</div>
+                    <div class="bullet-point"><strong>2.</strong> Atribuir portas de acesso às respectivas VLANs</div>
+                    <div class="bullet-point"><strong>3.</strong> Configurar a porta conectada ao roteador em <strong>modo trunk</strong></div>
+                </div>
+
+                <div class="example-box">
+                    <h3>💻 Comandos no Switch</h3>
+                    <div class="code-box">
+! Criar VLANs<br>
+Switch(config)# <strong>vlan 10</strong><br>
+Switch(config-vlan)# <strong>name Administrativo</strong><br>
+Switch(config-vlan)# exit<br>
+<br>
+Switch(config)# <strong>vlan 20</strong><br>
+Switch(config-vlan)# <strong>name Financeiro</strong><br>
+Switch(config-vlan)# exit<br>
+<br>
+! Atribuir portas à VLAN 10<br>
+Switch(config)# <strong>interface range fa0/1-5</strong><br>
+Switch(config-if-range)# <strong>switchport mode access</strong><br>
+Switch(config-if-range)# <strong>switchport access vlan 10</strong><br>
+<br>
+! Configurar porta para roteador em TRUNK<br>
+Switch(config)# <strong>interface fastEthernet 0/24</strong><br>
+Switch(config-if)# <strong>switchport mode trunk</strong><br>
+Switch(config-if)# <strong>switchport trunk allowed vlan 1,10,20</strong>
+                    </div>
+                </div>
+
+                <div class="warning-box">
+                    <h3>⚠️ Importante</h3>
+                    <div class="bullet-point">A porta conectada ao roteador <strong>DEVE</strong> estar em modo trunk</div>
+                    <div class="bullet-point">VLANs permitidas no trunk devem existir no switch</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: Configuração no Roteador - Conceito -->
+        <div class="slide">
+            <div class="content">
+                <h2>🔌 Subinterfaces do Roteador</h2>
+
+                <div class="highlight-box">
+                    <h3>📌 O que são Subinterfaces?</h3>
+                    <div class="bullet-point">Interfaces <strong>virtuais</strong> dentro de uma interface física</div>
+                    <div class="bullet-point">Permitem que uma porta física do roteador se conecte a múltiplas VLANs</div>
+                    <div class="bullet-point">Cada subinterface representa uma VLAN diferente</div>
+                    <div class="bullet-point">Sintaxe: <strong>interface fastEthernet 0/0.X</strong> (X = número da VLAN)</div>
+                </div>
+
+                <div class="example-box">
+                    <h3>💡 Exemplo</h3>
+                    <p style="font-size: 1.2em;">
+                        <strong>fastEthernet 0/0.10</strong> → Subinterface para VLAN 10<br>
+                        <strong>fastEthernet 0/0.20</strong> → Subinterface para VLAN 20<br>
+                        <strong>fastEthernet 0/0.30</strong> → Subinterface para VLAN 30
+                    </p>
+                </div>
+
+                <div class="warning-box">
+                    <h3>⚠️ Cada Subinterface Precisa</h3>
+                    <div class="bullet-point">Um comando <strong>encapsulation dot1Q</strong> (identifica qual VLAN)</div>
+                    <div class="bullet-point">Um endereço IP (será o gateway da VLAN)</div>
+                    <div class="bullet-point">Uma máscara de rede</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: Configuração no Roteador - Prática -->
+        <div class="slide">
+            <div class="content">
+                <h2>⚙️ Passo 2: Configuração no Roteador</h2>
+
+                <div class="example-box">
+                    <h3>💻 Ativar Interface Física</h3>
+                    <div class="code-box">
+Router(config)# <strong>interface fastEthernet 0/0</strong><br>
+Router(config-if)# <strong>no shutdown</strong><br>
+Router(config-if)# exit
+                    </div>
+                </div>
+
+                <div class="highlight-box">
+                    <h3>💻 Criar Subinterface para VLAN 10</h3>
+                    <div class="code-box">
+Router(config)# <strong>interface fastEthernet 0/0.10</strong><br>
+Router(config-subif)# <strong>encapsulation dot1Q 10</strong><br>
+Router(config-subif)# <strong>ip address 192.168.10.1 255.255.255.0</strong><br>
+Router(config-subif)# exit
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>💻 Criar Subinterface para VLAN 20</h3>
+                    <div class="code-box">
+Router(config)# <strong>interface fastEthernet 0/0.20</strong><br>
+Router(config-subif)# <strong>encapsulation dot1Q 20</strong><br>
+Router(config-subif)# <strong>ip address 192.168.20.1 255.255.255.0</strong><br>
+Router(config-subif)# end
+                    </div>
+                </div>
+
+                <div class="warning-box">
+                    <h3>💡 Dica Importante</h3>
+                    <div class="bullet-point">O <strong>primeiro octeto do IP</strong> diferencia as VLANs</div>
+                    <div class="bullet-point">VLAN 10 → 192.168.<strong>10</strong>.1</div>
+                    <div class="bullet-point">VLAN 20 → 192.168.<strong>20</strong>.1</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7: Configuração dos Dispositivos Finais -->
+        <div class="slide">
+            <div class="content">
+                <h2>🖥️ Passo 3: Configuração dos Dispositivos Finais</h2>
+
+                <div class="highlight-box">
+                    <h3>🌐 Gateway Padrão</h3>
+                    <div class="bullet-point">Cada dispositivo deve usar o IP da <strong>subinterface</strong> como gateway</div>
+                    <div class="bullet-point">Dispositivos na VLAN 10 → Gateway: 192.168.10.1</div>
+                    <div class="bullet-point">Dispositivos na VLAN 20 → Gateway: 192.168.20.1</div>
+                    <div class="bullet-point">O gateway encaminha tráfego para outras VLANs</div>
+                </div>
+
+                <div class="example-box">
+                    <h3>💻 Exemplo de Configuração (Windows)</h3>
+                    <div class="code-box">
+Dispositivo na VLAN 10:<br>
+IP Address: 192.168.10.100<br>
+Subnet Mask: 255.255.255.0<br>
+Default Gateway: <strong>192.168.10.1</strong><br>
+<br>
+Dispositivo na VLAN 20:<br>
+IP Address: 192.168.20.50<br>
+Subnet Mask: 255.255.255.0<br>
+Default Gateway: <strong>192.168.20.1</strong>
+                    </div>
+                </div>
+
+                <div class="warning-box">
+                    <h3>✅ Resultado</h3>
+                    <div class="bullet-point">Agora dispositivos em VLANs diferentes conseguem se comunicar!</div>
+                    <div class="bullet-point">O roteador intermedia a comunicação</div>
+                    <div class="bullet-point">A segurança é mantida (controle via firewall é possível)</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: Testando a Conectividade -->
+        <div class="slide">
+            <div class="content">
+                <h2>✅ Passo 4: Testando a Conectividade</h2>
+
+                <div class="example-box">
+                    <h3>🔍 Usando PING para Testar</h3>
+                    <div class="code-box">
+! Do computador na VLAN 10 para VLAN 20<br>
+C:\> <strong>ping 192.168.20.50</strong><br>
+<br>
+Reply from 192.168.20.50: bytes=32 time=15ms TTL=63<br>
+Reply from 192.168.20.50: bytes=32 time=12ms TTL=63<br>
+...<br>
+<br>
+! Sucesso! A comunicação entre VLANs está funcionando!
+                    </div>
+                </div>
+
+                <div class="highlight-box">
+                    <h3>🔧 Comandos de Verificação no Roteador</h3>
+                    <div class="code-box">
+! Ver todas as interfaces<br>
+Router# <strong>show interfaces</strong><br>
+<br>
+! Ver detalhes de uma subinterface<br>
+Router# <strong>show interfaces fastEthernet 0/0.10</strong><br>
+<br>
+! Ver configuração de IP<br>
+Router# <strong>show ip route</strong>
+                    </div>
+                </div>
+
+                <div class="warning-box">
+                    <h3>❌ Se Não Funcionar</h3>
+                    <div class="bullet-point">Verifique se o trunk está configurado no switch</div>
+                    <div class="bullet-point">Verifique se as VLANs existem em ambos (switch e roteador)</div>
+                    <div class="bullet-point">Verifique se os gateways estão corretos nos dispositivos</div>
+                    <div class="bullet-point">Verifique se a interface FastEthernet está ativa (no shutdown)</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 9: Quiz -->
+        <div class="slide">
+            <div class="content">
+                <h2>🎯 Quiz - Teste seus Conhecimentos</h2>
+                
+                <div class="quiz-container">
+                    <!-- Questão 1 -->
+                    <div class="quiz-question" id="question1">
+                        <h3>Questão 1 de 5</h3>
+                        <p style="font-size: 1.3em; margin-bottom: 20px;">
+                            Por que é necessário um roteador para comunicação entre VLANs?
+                        </p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(1, 'a', true)">
+                                <span class="option-letter">A)</span> Switches trabalham com frames (Layer 2) e não conseguem rotear entre VLANs
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(1, 'b', false)">
+                                <span class="option-letter">B)</span> Roteadores são mais rápidos
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(1, 'c', false)">
+                                <span class="option-letter">C)</span> Switches não conseguem criar VLANs
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(1, 'd', false)">
+                                <span class="option-letter">D)</span> É apenas uma questão de segurança
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback1"></div>
+                    </div>
+
+                    <!-- Questão 2 -->
+                    <div class="quiz-question" id="question2">
+                        <h3>Questão 2 de 5</h3>
+                        <p style="font-size: 1.3em; margin-bottom: 20px;">
+                            O que é uma subinterface em um roteador?
+                        </p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(2, 'a', false)">
+                                <span class="option-letter">A)</span> Um tipo de porta física adicional
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(2, 'b', true)">
+                                <span class="option-letter">B)</span> Uma interface virtual que permite conectar múltiplas VLANs
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(2, 'c', false)">
+                                <span class="option-letter">C)</span> Um tipo de roteador secundário
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(2, 'd', false)">
+                                <span class="option-letter">D)</span> Um protocolo de roteamento
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback2"></div>
+                    </div>
+
+                    <!-- Questão 3 -->
+                    <div class="quiz-question" id="question3">
+                        <h3>Questão 3 de 5</h3>
+                        <p style="font-size: 1.3em; margin-bottom: 20px;">
+                            Qual comando encapsula uma VLAN em uma subinterface?
+                        </p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(3, 'a', false)">
+                                <span class="option-letter">A)</span> switchport encapsulation vlan
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(3, 'b', true)">
+                                <span class="option-letter">B)</span> encapsulation dot1Q
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(3, 'c', false)">
+                                <span class="option-letter">C)</span> vlan encapsulation
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(3, 'd', false)">
+                                <span class="option-letter">D)</span> dot1Q vlan
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback3"></div>
+                    </div>
+
+                    <!-- Questão 4 -->
+                    <div class="quiz-question" id="question4">
+                        <h3>Questão 4 de 5</h3>
+                        <p style="font-size: 1.3em; margin-bottom: 20px;">
+                            Qual deve ser a porta do switch conectada ao roteador?
+                        </p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(4, 'a', false)">
+                                <span class="option-letter">A)</span> Modo access
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(4, 'b', true)">
+                                <span class="option-letter">B)</span> Modo trunk
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(4, 'c', false)">
+                                <span class="option-letter">C)</span> Modo automático
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(4, 'd', false)">
+                                <span class="option-letter">D)</span> Não importa o modo
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback4"></div>
+                    </div>
+
+                    <!-- Questão 5 -->
+                    <div class="quiz-question" id="question5">
+                        <h3>Questão 5 de 5</h3>
+                        <p style="font-size: 1.3em; margin-bottom: 20px;">
+                            Qual seria o gateway padrão para um PC na VLAN 30 com subinterface 192.168.30.1?
+                        </p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(5, 'a', false)">
+                                <span class="option-letter">A)</span> 192.168.1.1
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(5, 'b', true)">
+                                <span class="option-letter">B)</span> 192.168.30.1
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(5, 'c', false)">
+                                <span class="option-letter">C)</span> 192.168.30.254
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(5, 'd', false)">
+                                <span class="option-letter">D)</span> 192.168.0.1
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback5"></div>
+                    </div>
+
+                    <!-- Resultado Final -->
+                    <div class="quiz-result" id="quizResult" style="display: none;">
+                        <h3>🎉 Parabéns! Quiz Concluído!</h3>
+                        <div class="result-box">
+                            <p>Sua pontuação: <span id="finalScore">0</span>/5</p>
+                            <p id="resultMessage"></p>
+                        </div>
+                        <button class="nav-btn" onclick="restartQuiz()">🔄 Refazer Quiz</button>
+                    </div>
+                </div>
+
+                <div class="quiz-navigation">
+                    <button class="nav-btn" id="nextQuizBtn" onclick="nextQuestion()" style="display: none;">
+                        Próxima Questão ➡️
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="navigation">
+            <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">⬅️ Anterior</button>
+            <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">Próximo ➡️</button>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        document.getElementById('total-slides').textContent = totalSlides;
+
+        // Quiz variables
+        let currentQuestion = 1;
+        let score = 0;
+        let quizAnswered = [false, false, false, false, false];
+
+        function showSlide(index) {
+            slides.forEach((slide, i) => {
+                slide.classList.toggle('active', i === index);
+            });
+            
+            document.getElementById('current-slide').textContent = index + 1;
+            document.getElementById('prevBtn').disabled = index === 0;
+            document.getElementById('nextBtn').disabled = index === totalSlides - 1;
+        }
+
+        function changeSlide(direction) {
+            const newSlide = currentSlide + direction;
+            if (newSlide >= 0 && newSlide < totalSlides) {
+                currentSlide = newSlide;
+                showSlide(currentSlide);
+                window.scrollTo(0, 0);
+            }
+        }
+
+        // Quiz Functions
+        function selectOption(questionNum, option, isCorrect) {
+            if (quizAnswered[questionNum - 1]) return;
+            
+            const options = document.querySelectorAll(`#question${questionNum} .quiz-option`);
+            const feedback = document.getElementById(`feedback${questionNum}`);
+            
+            options.forEach(opt => {
+                opt.style.pointerEvents = 'none';
+                if (opt.onclick.toString().includes('true')) {
+                    opt.classList.add('correct');
+                } else if (opt === event.currentTarget) {
+                    opt.classList.add(isCorrect ? 'correct' : 'incorrect');
+                }
+            });
+            
+            if (isCorrect) {
+                feedback.innerHTML = '✅ Correto! Muito bem!';
+                feedback.className = 'quiz-feedback correct';
+                score++;
+            } else {
+                feedback.innerHTML = '❌ Incorreto. A resposta correta está destacada em verde.';
+                feedback.className = 'quiz-feedback incorrect';
+            }
+            
+            quizAnswered[questionNum - 1] = true;
+            
+            if (questionNum < 5) {
+                document.getElementById('nextQuizBtn').style.display = 'inline-block';
+            } else {
+                setTimeout(() => {
+                    showQuizResult();
+                }, 2000);
+            }
+        }
+
+        function nextQuestion() {
+            document.getElementById(`question${currentQuestion}`).style.display = 'none';
+            currentQuestion++;
+            document.getElementById(`question${currentQuestion}`).style.display = 'block';
+            document.getElementById('nextQuizBtn').style.display = 'none';
+        }
+
+        function showQuizResult() {
+            document.getElementById('question5').style.display = 'none';
+            document.getElementById('quizResult').style.display = 'block';
+            document.getElementById('finalScore').textContent = score;
+            
+            const resultMessage = document.getElementById('resultMessage');
+            if (score === 5) {
+                resultMessage.innerHTML = '🏆 Perfeito! Você domina Roteamento entre VLANs!';
+            } else if (score === 4) {
+                resultMessage.innerHTML = '👍 Excelente! Quase perfeito!';
+            } else if (score === 3) {
+                resultMessage.innerHTML = '👏 Bom trabalho! Continue estudando!';
+            } else if (score === 2) {
+                resultMessage.innerHTML = '📚 Revise alguns conceitos!';
+            } else {
+                resultMessage.innerHTML = '📖 Recomendo revisar todo o conteúdo!';
+            }
+        }
+
+        function restartQuiz() {
+            currentQuestion = 1;
+            score = 0;
+            quizAnswered = [false, false, false, false, false];
+            
+            for (let i = 1; i <= 5; i++) {
+                const question = document.getElementById(`question${i}`);
+                const options = question.querySelectorAll('.quiz-option');
+                const feedback = document.getElementById(`feedback${i}`);
+                
+                options.forEach(opt => {
+                    opt.className = 'quiz-option';
+                    opt.style.pointerEvents = 'auto';
+                });
+                
+                feedback.style.display = 'none';
+                question.style.display = i === 1 ? 'block' : 'none';
+            }
+            
+            document.getElementById('quizResult').style.display = 'none';
+            document.getElementById('nextQuizBtn').style.display = 'none';
+        }
+
+        // Navegação por teclado
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') changeSlide(-1);
+            if (e.key === 'ArrowRight') changeSlide(1);
+            if (e.key === 'Home') {
+                currentSlide = 0;
+                showSlide(currentSlide);
+            }
+            if (e.key === 'End') {
+                currentSlide = totalSlides - 1;
+                showSlide(currentSlide);
+            }
+        });
+
+        // Inicializar
+        showSlide(0);
+        document.getElementById('question1').style.display = 'block';
+    </script>
+</body>
+</html>
