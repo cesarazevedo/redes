@@ -1,0 +1,1258 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elementos de Infraestrutura de Rede</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        .presentation {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .slide {
+            min-height: 100vh;
+            padding: 60px 40px;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            background: white;
+            margin: 20px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        .slide.active {
+            display: flex;
+        }
+
+        .slide h1 {
+            font-size: 3.5em;
+            color: #4a5568;
+            text-align: center;
+            margin-bottom: 40px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .slide h2 {
+            font-size: 2.8em;
+            color: #2d3748;
+            margin-bottom: 30px;
+            border-bottom: 4px solid #667eea;
+            padding-bottom: 15px;
+        }
+
+        .slide h3 {
+            font-size: 2.2em;
+            color: #4a5568;
+            margin: 25px 0 15px 0;
+        }
+
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: start;
+        }
+
+        .bullet-point {
+            display: flex;
+            align-items: flex-start;
+            margin: 15px 0;
+            font-size: 1.3em;
+            line-height: 1.5;
+        }
+
+        .bullet-point::before {
+            content: "🔹";
+            margin-right: 15px;
+            font-size: 1.2em;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #667eea;
+        }
+
+        .example-box {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #20b2aa;
+        }
+
+        .warning-box {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #e17055;
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 1000;
+        }
+
+        .nav-btn {
+            padding: 15px 25px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .nav-btn:hover {
+            background: #5a67d8;
+            transform: translateY(-2px);
+            box-shadow: 0 7px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .nav-btn:disabled {
+            background: #a0a0a0;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .slide-counter {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: rgba(255,255,255,0.9);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            color: #4a5568;
+            z-index: 1000;
+        }
+
+        .center-text {
+            text-align: center;
+        }
+
+        .large-text {
+            font-size: 1.4em;
+            line-height: 1.6;
+        }
+
+        .diagram {
+            background: #f7fafc;
+            border: 2px dashed #667eea;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+            font-family: monospace;
+            font-size: 1.2em;
+        }
+
+        .image-container {
+            display: flex;
+            justify-content: center;
+            margin: 30px 0;
+        }
+
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .element-card {
+            background: white;
+            border: 3px solid #667eea;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 15px 0;
+            display: flex;
+            align-items: flex-start;
+            gap: 20px;
+        }
+
+        .element-icon {
+            font-size: 3em;
+            flex-shrink: 0;
+        }
+
+        .element-info h4 {
+            font-size: 1.3em;
+            color: #667eea;
+            margin-bottom: 8px;
+        }
+
+        .element-info p {
+            font-size: 1.1em;
+            color: #555;
+            margin-bottom: 10px;
+        }
+
+        .explanation {
+            font-size: 1.15em;
+            color: #555;
+            font-style: italic;
+            margin-top: 8px;
+            padding: 8px 12px;
+            background: rgba(102, 126, 234, 0.1);
+            border-left: 3px solid #667eea;
+            border-radius: 4px;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 1.1em;
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .comparison-table th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: bold;
+        }
+
+        .comparison-table tr:nth-child(even) {
+            background: #f7fafc;
+        }
+
+        .comparison-table tr:hover {
+            background: #e6f2ff;
+        }
+
+        .quiz-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .quiz-question {
+            display: none;
+            margin-bottom: 30px;
+        }
+
+        .quiz-question h3 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .quiz-option {
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #e2e8f0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.2em;
+        }
+
+        .quiz-option:hover {
+            background: #e6f2ff;
+            border-color: #667eea;
+            transform: translateX(5px);
+        }
+
+        .quiz-option.correct {
+            background: #c6f6d5;
+            border-color: #38a169;
+        }
+
+        .quiz-option.incorrect {
+            background: #fed7d7;
+            border-color: #e53e3e;
+        }
+
+        .option-letter {
+            font-weight: bold;
+            color: #667eea;
+            margin-right: 10px;
+        }
+
+        .quiz-feedback {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 1.2em;
+            display: none;
+        }
+
+        .quiz-feedback.correct {
+            background: #c6f6d5;
+            color: #22543d;
+            display: block;
+        }
+
+        .quiz-feedback.incorrect {
+            background: #fed7d7;
+            color: #742a2a;
+            display: block;
+        }
+
+        .result-box {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px 0;
+            font-size: 1.5em;
+        }
+
+        .quiz-result {
+            text-align: center;
+        }
+
+        .quiz-navigation {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .image-placeholder {
+            background: #f0f0f0;
+            border: 2px dashed #999;
+            border-radius: 10px;
+            padding: 40px;
+            text-align: center;
+            font-size: 1.2em;
+            color: #666;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-counter">
+        <span id="current-slide">1</span> / <span id="total-slides">12</span>
+    </div>
+
+    <div class="presentation">
+        <!-- Slide 1: Título -->
+        <div class="slide active">
+            <div class="content center-text">
+                <h1>🏗️ Elementos de Infraestrutura de Rede</h1>
+                <h2>Componentes Essenciais da Rede</h2>
+                
+                <div class="highlight-box large-text">
+                    Conhecendo os equipamentos e estruturas que organizam e gerenciam cabos e conexões
+                </div>
+
+                <div class="example-box">
+                    <h3>📚 Curso</h3>
+                    <p style="font-size: 1.3em; line-height: 1.8;">
+                        <strong>Técnico Integrado em Informática</strong><br>
+                        Arquitetura de Redes de Computadores<br>
+                        Tecnologias de Implementação de Redes<br>
+                        Professor: César Azevedo
+                    </p>
+                </div>
+
+                <div class="warning-box center-text">
+                    <p style="font-size: 1.4em;">
+                        💡 <strong>Dica:</strong> Use as setas ⬅️ ➡️ do teclado para navegar
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 2: Visão Geral -->
+        <div class="slide">
+            <div class="content">
+                <h2>📊 O Que Vamos Aprender?</h2>
+                
+                <div class="highlight-box">
+                    <h3>🏢 Infraestrutura de Rede</h3>
+                    <div class="bullet-point">
+                        Vai muito além dos cabos! Existem muitos componentes importantes
+                    </div>
+                    <div class="bullet-point">
+                        Precisamos de organizadores, gerenciadores e estruturas
+                    </div>
+                    <div class="bullet-point">
+                        Tudo isso garante uma rede profissional, organizada e fácil de manter
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>🎯 Elementos que Vamos Ver</h3>
+                    <div class="bullet-point">
+                        <strong>Patch Panel:</strong> Organizador central de cabos
+                    </div>
+                    <div class="bullet-point">
+                        <strong>Rack:</strong> Estrutura que agrupa equipamentos
+                    </div>
+                    <div class="bullet-point">
+                        <strong>Switch/Hub:</strong> Conectam os cabos entre si
+                    </div>
+                    <div class="bullet-point">
+                        <strong>Patch Cord:</strong> Cabos curtos de conexão rápida
+                    </div>
+                    <div class="bullet-point">
+                        <strong>Tomadas de Rede:</strong> Pontos de acesso físicos
+                    </div>
+                    <div class="bullet-point">
+                        <strong>Canaletas e Dutos:</strong> Proteção e organização dos cabos
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: Patch Panel -->
+        <div class="slide">
+            <div class="content">
+                <h2>🎚️ Patch Panel (Painel de Conexão)</h2>
+                
+                <div class="image-container">
+                    <div class="image-placeholder">
+                        Insira aqui a imagem do Patch Panel<br>
+                        (patch-panel.png)
+                    </div>
+                </div>
+
+                <div class="highlight-box">
+                    <h3>❓ O que é?</h3>
+                    <div class="bullet-point">
+                        Um painel com múltiplas portas RJ45 (geralmente 24 ou 48)
+                    </div>
+                    <div class="bullet-point">
+                        É o "centro nervoso" da distribuição de cabos
+                        <div class="explanation">
+                            (Todos os cabos da rede convergem para um único lugar)
+                        </div>
+                    </div>
+                    <div class="bullet-point">
+                        Faz a conexão entre os cabos que vêm das tomadas e os switches
+                    </div>
+                    <div class="bullet-point">
+                        Permite organização limpa e sem emaranhados
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>📋 Características Principais</h3>
+                    <div class="bullet-point">
+                        <strong>Montado em Rack:</strong> Fica em um local centralizado
+                    </div>
+                    <div class="bullet-point">
+                        <strong>Portas Numeradas:</strong> Facilita identificação
+                    </div>
+                    <div class="bullet-point">
+                        <strong>Cat5e, Cat6 ou Cat6a:</strong> Diferentes categorias disponíveis
+                    </div>
+                    <div class="bullet-point">
+                        <strong>Rótulos:</strong> Identifica qual cabo vem de qual local
+                    </div>
+                </div>
+
+                <div class="warning-box">
+                    <h3>💡 Analogia</h3>
+                    <p style="font-size: 1.2em;">
+                        É como um <strong>quadro de distribuição de energia</strong> - um ponto central onde tudo conecta!
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Rack -->
+        <div class="slide">
+            <div class="content">
+                <h2>🗄️ Rack (Estrutura de Montagem)</h2>
+                
+                <div class="image-container">
+                    <div class="image-placeholder">
+                        Insira aqui a imagem do Rack<br>
+                        (rack.png)
+                    </div>
+                </div>
+
+                <div class="highlight-box">
+                    <h3>❓ O que é?</h3>
+                    <div class="bullet-point">
+                        Uma estrutura metálica vertical para organizar equipamentos de rede
+                    </div>
+                    <div class="bullet-point">
+                        Permite empilhar vários equipamentos verticalmente
+                    </div>
+                    <div class="bullet-point">
+                        Economiza espaço físico em sala de servidores ou armário de rede
+                    </div>
+                    <div class="bullet-point">
+                        Facilita circulação de ar para resfriamento dos equipamentos
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>📏 Medida Padrão</h3>
+                    <div class="bullet-point">
+                        <strong>19 polegadas (483mm) de largura:</strong> Padrão universal
+                    </div>
+                    <div class="bullet-point">
+                        <strong>U (Unit):</strong> Unidade de altura = 1.75 polegadas
+                    </div>
+                    <div class="bullet-point">
+                        <strong>Altura total:</strong> 42U, 44U ou até mais (bastante alto!)
+                    </div>
+                    <div class="bullet-point">
+                        <strong>Profundidade:</strong> Aproximadamente 60-100cm
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>📋 Equipamentos que Ficam no Rack</h3>
+                    <div class="bullet-point">
+                        Patch Panels (ocupam vários U)
+                    </div>
+                    <div class="bullet-point">
+                        Switches (geralmente 1-2U cada)
+                    </div>
+                    <div class="bullet-point">
+                        Roteadores
+                    </div>
+                    <div class="bullet-point">
+                        Servidores
+                    </div>
+                    <div class="bullet-point">
+                        PDU (Power Distribution Unit) - distribuidor de energia
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: Switch e Hub -->
+        <div class="slide">
+            <div class="content">
+                <h2>🔄 Switch e Hub (Concentradores)</h2>
+                
+                <div class="image-container">
+                    <div class="image-placeholder">
+                        Insira aqui a imagem do Switch/Hub<br>
+                        (switch.png)
+                    </div>
+                </div>
+
+                <div class="highlight-box">
+                    <h3>❓ O que é?</h3>
+                    <div class="bullet-point">
+                        Equipamentos que conectam múltiplos cabos entre si
+                    </div>
+                    <div class="bullet-point">
+                        <strong>Hub:</strong> Antigo, repassa tudo para todas as portas (menos eficiente)
+                    </div>
+                    <div class="bullet-point">
+                        <strong>Switch:</strong> Moderno, encaminha para a porta certa (mais inteligente)
+                        <div class="explanation">
+                            (Switches são praticamente o padrão hoje em dia)
+                        </div>
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>📋 Características</h3>
+                    <div class="bullet-point">
+                        <strong>Portas:</strong> 8, 16, 24, 48 portas RJ45 (ou mais)
+                    </div>
+                    <div class="bullet-point">
+                        <strong>Velocidade:</strong> Geralmente 1 Gbps por porta
+                    </div>
+                    <div class="bullet-point">
+                        <strong>Gerenciado vs Não-Gerenciado:</strong> Um pode ser configurado, outro não
+                    </div>
+                    <div class="bullet-point">
+                        <strong>PoE (Power over Ethernet):</strong> Alguns fornecem energia pelos cabos
+                    </div>
+                </div>
+
+                <div class="warning-box">
+                    <h3>💡 Diferença Prática</h3>
+                    <p style="font-size: 1.2em;">
+                        <strong>Hub:</strong> Quando você fala, todos ouvem (ineficiente)<br>
+                        <strong>Switch:</strong> A mensagem vai apenas para quem precisa dela (eficiente)
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: Patch Cord -->
+        <div class="slide">
+            <div class="content">
+                <h2>🔌 Patch Cord (Cabo de Interconexão)</h2>
+                
+                <div class="image-container">
+                    <div class="image-placeholder">
+                        Insira aqui a imagem do Patch Cord<br>
+                        (patch-cord.png)
+                    </div>
+                </div>
+
+                <div class="highlight-box">
+                    <h3>❓ O que é?</h3>
+                    <div class="bullet-point">
+                        Um cabo curto (0,5m até 5m) com conectores RJ45 nas duas extremidades
+                    </div>
+                    <div class="bullet-point">
+                        Já vem pronto, não precisa fazer!
+                    </div>
+                    <div class="bullet-point">
+                        Usado para conexões rápidas e temporárias
+                    </div>
+                    <div class="bullet-point">
+                        Conecta: Patch Panel → Switch, Switch → Computador, etc.
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>📋 Características</h3>
+                    <div class="bullet-point">
+                        <strong>Cores:</strong> Geralmente azul, vermelho, amarelo (para organização)
+                    </div>
+                    <div class="bullet-point">
+                        <strong>Blindagem:</strong> Pode ser U/UTP ou S/FTP (para melhor proteção)
+                    </div>
+                    <div class="bullet-point">
+                        <strong>Categorias:</strong> Cat5e, Cat6, Cat6a disponíveis
+                    </div>
+                    <div class="bullet-point">
+                        <strong>Comprimentos:</strong> 0,5m, 1m, 2m, 3m, 5m (oferecidos prontos)
+                    </div>
+                </div>
+
+                <div class="warning-box">
+                    <h3>💡 Quando Usar</h3>
+                    <div class="bullet-point">
+                        ✅ Conectar Switch ao Patch Panel
+                    </div>
+                    <div class="bullet-point">
+                        ✅ Conectar Computador à Tomada de Rede
+                    </div>
+                    <div class="bullet-point">
+                        ❌ Para cabos permanentes na parede (use cabos desencapados)
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7: Tomadas de Rede -->
+        <div class="slide">
+            <div class="content">
+                <h2>🔌 Tomata de Rede (Wall Jack)</h2>
+                
+                <div class="image-container">
+                    <div class="image-placeholder">
+                        Insira aqui a imagem da Tomada de Rede<br>
+                        (tomada-rede.png)
+                    </div>
+                </div>
+
+                <div class="highlight-box">
+                    <h3>❓ O que é?</h3>
+                    <div class="bullet-point">
+                        O ponto de acesso visível na parede ou mesa
+                    </div>
+                    <div class="bullet-point">
+                        Onde o usuário final conecta seu computador/impressora/etc
+                    </div>
+                    <div class="bullet-point">
+                        Recebe o cabo que vem do Patch Panel
+                    </div>
+                    <div class="bullet-point">
+                        É montada em caixas de passagem nas paredes
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>📋 Tipos de Tomadas</h3>
+                    <div class="bullet-point">
+                        <strong>Tomata Simples:</strong> Uma porta RJ45
+                    </div>
+                    <div class="bullet-point">
+                        <strong>Tomata Dupla:</strong> Duas portas RJ45
+                    </div>
+                    <div class="bullet-point">
+                        <strong>Modular:</strong> Permite adicionar outras portas (HDMI, USB, etc)
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>📏 Padrões de Cores</h3>
+                    <div class="bullet-point">
+                        Segue o mesmo padrão de cores do Patch Cord
+                    </div>
+                    <div class="bullet-point">
+                        Geralmente é <strong>568B</strong> (padrão comercial)
+                    </div>
+                    <div class="bullet-point">
+                        Deve estar bem marcada e identificada
+                    </div>
+                </div>
+
+                <div class="warning-box">
+                    <h3>💡 Importante</h3>
+                    <p style="font-size: 1.2em;">
+                        <strong>Número de Tomatas:</strong> Depende da necessidade. Salas de aula podem ter 1-2, servidores precisam de mais!
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: Canaletas e Dutos -->
+        <div class="slide">
+            <div class="content">
+                <h2>📦 Canaletas, Dutos e Gerenciadores</h2>
+                
+                <div class="image-container">
+                    <div class="image-placeholder">
+                        Insira aqui a imagem de Canaletas/Dutos<br>
+                        (canaletas.png)
+                    </div>
+                </div>
+
+                <div class="highlight-box">
+                    <h3>❓ O que são?</h3>
+                    <div class="bullet-point">
+                        Estruturas que organizam e protegem os cabos
+                    </div>
+                    <div class="bullet-point">
+                        Evitam que os cabos fiquem espalhados e desorganizados
+                    </div>
+                    <div class="bullet-point">
+                        Protegem de danos físicos, sujeira e danos elétricos
+                    </div>
+                    <div class="bullet-point">
+                        Facilitam manutenção e retirada/adição de cabos
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>🏗️ Tipos de Organização</h3>
+                    <div class="bullet-point">
+                        <strong>Canaleta Simples:</strong> Tubo plástico para cabos na parede
+                    </div>
+                    <div class="bullet-point">
+                        <strong>Duto de Piso:</strong> Passa cabos pelo chão de forma segura
+                    </div>
+                    <div class="bullet-point">
+                        <strong>Bandeja de Cabos:</strong> Fixa no rack para organizar fios
+                    </div>
+                    <div class="bullet-point">
+                        <strong>Velcro/Arame Reusável:</strong> Prende cabos sem danificar
+                    </div>
+                    <div class="bullet-point">
+                        <strong>Gerenciador Vertical:</strong> No rack, organiza centenas de cabos
+                    </div>
+                </div>
+
+                <div class="warning-box">
+                    <h3>💡 Benefícios da Organização</h3>
+                    <div class="bullet-point">
+                        ✅ Fácil identificação de problemas
+                    </div>
+                    <div class="bullet-point">
+                        ✅ Manutenção mais rápida
+                    </div>
+                    <div class="bullet-point">
+                        ✅ Melhor circulação de ar
+                    </div>
+                    <div class="bullet-point">
+                        ✅ Aparência profissional
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 9: Distribuição Física (Visão Geral) -->
+        <div class="slide">
+            <div class="content">
+                <h2>🔀 Como Tudo se Conecta</h2>
+                
+                <div class="highlight-box">
+                    <h3>📊 Fluxo da Conexão</h3>
+                </div>
+
+                <div class="diagram">
+                    <p style="margin: 10px 0;"><strong>Ponto de Entrada:</strong></p>
+                    <p style="margin: 10px 0;">Computador/Impressora → Tomata de Rede na Parede</p>
+                    <p style="margin: 10px 0;">⬇️</p>
+                    <p style="margin: 10px 0;"><strong>Cabo Permanente (passa pela canaleta):</strong></p>
+                    <p style="margin: 10px 0;">Tomata → Patch Panel (em um Rack centralizado)</p>
+                    <p style="margin: 10px 0;">⬇️</p>
+                    <p style="margin: 10px 0;"><strong>Patch Cord (conexão rápida):</strong></p>
+                    <p style="margin: 10px 0;">Patch Panel → Switch (também no Rack)</p>
+                    <p style="margin: 10px 0;">⬇️</p>
+                    <p style="margin: 10px 0;"><strong>Resultado:</strong></p>
+                    <p style="margin: 10px 0;">Todos os computadores conectados na rede! 🎉</p>
+                </div>
+
+                <div class="example-box">
+                    <h3>🎨 Vantagens desta Organização</h3>
+                    <div class="bullet-point">
+                        <strong>Centralizada:</strong> Tudo em um lugar (fácil de gerenciar)
+                    </div>
+                    <div class="bullet-point">
+                        <strong>Escalável:</strong> Fácil adicionar novos computadores
+                    </div>
+                    <div class="bullet-point">
+                        <strong>Profissional:</strong> Aparência limpa e organizada
+                    </div>
+                    <div class="bullet-point">
+                        <strong>Manutenível:</strong> Rápido fazer diagnósticos
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 10: Elementos em Diferentes Contextos -->
+        <div class="slide">
+            <div class="content">
+                <h2>🏢 Elementos em Diferentes Ambientes</h2>
+                
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Ambiente</th>
+                            <th>Elementos Necessários</th>
+                            <th>Complexidade</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Pequeno Escritório</strong></td>
+                            <td>Switch simples, Tomatas básicas, Canaletas simples</td>
+                            <td>⭐ Baixa</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Escola/Empresa Média</strong></td>
+                            <td>Rack, Patch Panel, Switch, Canaletas, Tomatas múltiplas</td>
+                            <td>⭐⭐⭐ Média</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Data Center</strong></td>
+                            <td>Racks múltiplos, Patch Panels especiais, Switches profissionais, Gerenciamento sofisticado</td>
+                            <td>⭐⭐⭐⭐⭐ Alta</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Rede Doméstica</strong></td>
+                            <td>Switch simples, Patch Cords curtos, sem Rack (na prateleira)</td>
+                            <td>⭐ Muito Baixa</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="warning-box center-text">
+                    <p style="font-size: 1.2em;">
+                        💡 <strong>Importante:</strong> A escolha dos elementos depende do tamanho e necessidade da rede!
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 11: Boas Práticas -->
+        <div class="slide">
+            <div class="content">
+                <h2>✅ Boas Práticas de Infraestrutura</h2>
+                
+                <div class="example-box">
+                    <h3>🎯 Organização</h3>
+                    <div class="bullet-point">
+                        <strong>Labeling:</strong> Marque cada cabo em ambas as extremidades
+                    </div>
+                    <div class="bullet-point">
+                        <strong>Cores:</strong> Use cores diferentes de Patch Cords para categorias
+                    </div>
+                    <div class="bullet-point">
+                        <strong>Documentação:</strong> Mantenha um mapa de conexões atualizado
+                    </div>
+                    <div class="bullet-point">
+                        <strong>Limpeza:</strong> Remova cabos não utilizados periodicamente
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>🔧 Manutenção</h3>
+                    <div class="bullet-point">
+                        <strong>Inspeções Regulares:</strong> Verifique conexões soltas
+                    </div>
+                    <div class="bullet-point">
+                        <strong>Testes:</strong> Use testador de cabos para verificar funcionamento
+                    </div>
+                    <div class="bullet-point">
+                        <strong>Reposição:</strong> Troque cabos danificados imediatamente
+                    </div>
+                </div>
+
+                <div class="highlight-box">
+                    <h3>⚡ Segurança</h3>
+                    <div class="bullet-point">
+                        <strong>Distância de Energia:</strong> Mantenha cabos de dados longe de cabos elétricos
+                    </div>
+                    <div class="bullet-point">
+                        <strong>Dutos Seguros:</strong> Use dutos que protejam contra acidentes
+                    </div>
+                    <div class="bullet-point">
+                        <strong>Peso Distribuído:</strong> Não sobrecarregue um único ponto de fixação
+                    </div>
+                </div>
+
+                <div class="warning-box">
+                    <h3>💡 Resumindo</h3>
+                    <p style="font-size: 1.2em;">
+                        <strong>Organização + Limpeza + Documentação = Rede Profissional! 🎯</strong>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 12: Quiz -->
+        <div class="slide">
+            <div class="content">
+                <h2>🎯 Quiz - Teste seus Conhecimentos</h2>
+                
+                <div class="quiz-container">
+                    <!-- Questão 1 -->
+                    <div class="quiz-question" id="question1">
+                        <h3>Questão 1 de 6</h3>
+                        <p style="font-size: 1.3em; margin-bottom: 20px;">
+                            Qual é a função principal do Patch Panel?
+                        </p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(1, 'a', false)">
+                                <span class="option-letter">A)</span> Conectar computadores à internet
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(1, 'b', false)">
+                                <span class="option-letter">B)</span> Proteger a rede contra ataques
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(1, 'c', true)">
+                                <span class="option-letter">C)</span> Organizar e centralizar todas as conexões de cabos
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(1, 'd', false)">
+                                <span class="option-letter">D)</span> Ampliar o sinal da rede
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback1"></div>
+                    </div>
+
+                    <!-- Questão 2 -->
+                    <div class="quiz-question" id="question2">
+                        <h3>Questão 2 de 6</h3>
+                        <p style="font-size: 1.3em; margin-bottom: 20px;">
+                            Qual é a largura padrão de um Rack?
+                        </p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(2, 'a', false)">
+                                <span class="option-letter">A)</span> 17 polegadas
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(2, 'b', true)">
+                                <span class="option-letter">B)</span> 19 polegadas
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(2, 'c', false)">
+                                <span class="option-letter">C)</span> 21 polegadas
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(2, 'd', false)">
+                                <span class="option-letter">D)</span> 23 polegadas
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback2"></div>
+                    </div>
+
+                    <!-- Questão 3 -->
+                    <div class="quiz-question" id="question3">
+                        <h3>Questão 3 de 6</h3>
+                        <p style="font-size: 1.3em; margin-bottom: 20px;">
+                            Qual é a diferença entre um Hub e um Switch?
+                        </p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(3, 'a', false)">
+                                <span class="option-letter">A)</span> Hub é mais rápido que o Switch
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(3, 'b', true)">
+                                <span class="option-letter">B)</span> Hub repassa para todas as portas, Switch encaminha para a porta certa
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(3, 'c', false)">
+                                <span class="option-letter">C)</span> Switch só funciona com cabos Cat6
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(3, 'd', false)">
+                                <span class="option-letter">D)</span> Não há diferença significativa
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback3"></div>
+                    </div>
+
+                    <!-- Questão 4 -->
+                    <div class="quiz-question" id="question4">
+                        <h3>Questão 4 de 6</h3>
+                        <p style="font-size: 1.3em; margin-bottom: 20px;">
+                            Para que serve um Patch Cord?
+                        </p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(4, 'a', false)">
+                                <span class="option-letter">A)</span> Proteger cabos de danos
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(4, 'b', true)">
+                                <span class="option-letter">B)</span> Fazer conexões rápidas entre equipamentos
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(4, 'c', false)">
+                                <span class="option-letter">C)</span> Medir a velocidade da rede
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(4, 'd', false)">
+                                <span class="option-letter">D)</span> Distribuir energia nos cabos
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback4"></div>
+                    </div>
+
+                    <!-- Questão 5 -->
+                    <div class="quiz-question" id="question5">
+                        <h3>Questão 5 de 6</h3>
+                        <p style="font-size: 1.3em; margin-bottom: 20px;">
+                            Qual é o ponto de acesso visível na parede onde o usuário conecta seu computador?
+                        </p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(5, 'a', true)">
+                                <span class="option-letter">A)</span> Tomata de Rede (Wall Jack)
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(5, 'b', false)">
+                                <span class="option-letter">B)</span> Patch Panel
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(5, 'c', false)">
+                                <span class="option-letter">C)</span> Switch
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(5, 'd', false)">
+                                <span class="option-letter">D)</span> Rack
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback5"></div>
+                    </div>
+
+                    <!-- Questão 6 -->
+                    <div class="quiz-question" id="question6">
+                        <h3>Questão 6 de 6</h3>
+                        <p style="font-size: 1.3em; margin-bottom: 20px;">
+                            Para que servem canaletas e dutos em uma rede?
+                        </p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(6, 'a', false)">
+                                <span class="option-letter">A)</span> Ampliar a velocidade dos cabos
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(6, 'b', false)">
+                                <span class="option-letter">B)</span> Conectar o roteador à internet
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(6, 'c', true)">
+                                <span class="option-letter">C)</span> Organizar, proteger e facilitar a manutenção dos cabos
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(6, 'd', false)">
+                                <span class="option-letter">D)</span> Aumentar o número de conexões disponíveis
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback6"></div>
+                    </div>
+
+                    <!-- Resultado Final -->
+                    <div class="quiz-result" id="quizResult" style="display: none;">
+                        <h3>🎉 Parabéns! Quiz Concluído!</h3>
+                        <div class="result-box">
+                            <p>Sua pontuação: <span id="finalScore">0</span>/6</p>
+                            <p id="resultMessage"></p>
+                        </div>
+                        <button class="nav-btn" onclick="restartQuiz()">🔄 Refazer Quiz</button>
+                    </div>
+                </div>
+
+                <div class="quiz-navigation">
+                    <button class="nav-btn" id="nextQuizBtn" onclick="nextQuestion()" style="display: none;">
+                        Próxima Questão ➡️
+                    </button>
+                </div>
+                
+                <p style="text-align: center; margin-top: 20px; font-size: 1.2em; color: #667eea;">
+                    <strong>Total de questões: 6</strong>
+                </p>
+            </div>
+        </div>
+
+        <div class="navigation">
+            <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">⬅️ Anterior</button>
+            <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">Próximo ➡️</button>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        document.getElementById('total-slides').textContent = totalSlides;
+
+        // Quiz variables
+        let currentQuestion = 1;
+        let score = 0;
+        let quizAnswered = [false, false, false, false, false, false];
+
+        function showSlide(index) {
+            slides.forEach((slide, i) => {
+                slide.classList.toggle('active', i === index);
+            });
+            
+            document.getElementById('current-slide').textContent = index + 1;
+            document.getElementById('prevBtn').disabled = index === 0;
+            document.getElementById('nextBtn').disabled = index === totalSlides - 1;
+        }
+
+        function changeSlide(direction) {
+            const newSlide = currentSlide + direction;
+            if (newSlide >= 0 && newSlide < totalSlides) {
+                currentSlide = newSlide;
+                showSlide(currentSlide);
+                window.scrollTo(0, 0);
+            }
+        }
+
+        // Quiz Functions
+        function selectOption(questionNum, option, isCorrect) {
+            if (quizAnswered[questionNum - 1]) return;
+            
+            const options = document.querySelectorAll(`#question${questionNum} .quiz-option`);
+            const feedback = document.getElementById(`feedback${questionNum}`);
+            
+            options.forEach(opt => {
+                opt.style.pointerEvents = 'none';
+                if (opt.onclick.toString().includes('true')) {
+                    opt.classList.add('correct');
+                } else if (opt === event.currentTarget) {
+                    opt.classList.add(isCorrect ? 'correct' : 'incorrect');
+                }
+            });
+            
+            if (isCorrect) {
+                feedback.innerHTML = '✅ Correto! Muito bem!';
+                feedback.className = 'quiz-feedback correct';
+                score++;
+            } else {
+                feedback.innerHTML = '❌ Incorreto. A resposta correta está destacada em verde.';
+                feedback.className = 'quiz-feedback incorrect';
+            }
+            
+            quizAnswered[questionNum - 1] = true;
+            
+            if (questionNum < 6) {
+                document.getElementById('nextQuizBtn').style.display = 'inline-block';
+            } else {
+                setTimeout(() => {
+                    showQuizResult();
+                }, 2000);
+            }
+        }
+
+        function nextQuestion() {
+            document.getElementById(`question${currentQuestion}`).style.display = 'none';
+            currentQuestion++;
+            document.getElementById(`question${currentQuestion}`).style.display = 'block';
+            document.getElementById('nextQuizBtn').style.display = 'none';
+        }
+
+        function showQuizResult() {
+            document.getElementById('question6').style.display = 'none';
+            document.getElementById('quizResult').style.display = 'block';
+            document.getElementById('finalScore').textContent = score;
+            
+            const resultMessage = document.getElementById('resultMessage');
+            if (score === 6) {
+                resultMessage.innerHTML = '🏆 PERFEITO! Você é um especialista em infraestrutura!';
+            } else if (score === 5) {
+                resultMessage.innerHTML = '🥇 Excelente! Você compreendeu bem os elementos!';
+            } else if (score === 4) {
+                resultMessage.innerHTML = '👍 Muito bom! Você entendeu os conceitos principais!';
+            } else if (score === 3) {
+                resultMessage.innerHTML = '👏 Bom trabalho! Continue estudando os componentes!';
+            } else if (score === 2) {
+                resultMessage.innerHTML = '📚 Revise os elementos antes de prosseguir!';
+            } else {
+                resultMessage.innerHTML = '📖 Estude mais o conteúdo desta aula!';
+            }
+        }
+
+        function restartQuiz() {
+            currentQuestion = 1;
+            score = 0;
+            quizAnswered = [false, false, false, false, false, false];
+            
+            for (let i = 1; i <= 6; i++) {
+                const question = document.getElementById(`question${i}`);
+                const options = question.querySelectorAll('.quiz-option');
+                const feedback = document.getElementById(`feedback${i}`);
+                
+                options.forEach(opt => {
+                    opt.className = 'quiz-option';
+                    opt.style.pointerEvents = 'auto';
+                });
+                
+                feedback.style.display = 'none';
+                question.style.display = i === 1 ? 'block' : 'none';
+            }
+            
+            document.getElementById('quizResult').style.display = 'none';
+            document.getElementById('nextQuizBtn').style.display = 'none';
+        }
+
+        // Navegação por teclado
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') changeSlide(-1);
+            if (e.key === 'ArrowRight') changeSlide(1);
+            if (e.key === 'Home') {
+                currentSlide = 0;
+                showSlide(currentSlide);
+            }
+            if (e.key === 'End') {
+                currentSlide = totalSlides - 1;
+                showSlide(currentSlide);
+            }
+        });
+
+        // Inicializar
+        showSlide(0);
+        document.getElementById('question1').style.display = 'block';
+    </script>
+</body>
+</html>
