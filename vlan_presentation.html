@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -342,11 +343,22 @@
             text-align: center;
             margin-top: 30px;
         }
+
+        .explanation {
+            font-size: 1.15em;
+            color: #555;
+            font-style: italic;
+            margin-top: 8px;
+            padding: 8px 12px;
+            background: rgba(102, 126, 234, 0.1);
+            border-left: 3px solid #667eea;
+            border-radius: 4px;
+        }
     </style>
 </head>
 <body>
     <div class="slide-counter">
-        <span id="current-slide">1</span> / <span id="total-slides">10</span>
+        <span id="current-slide">1</span> / <span id="total-slides">11</span>
     </div>
 
     <div class="presentation">
@@ -393,7 +405,16 @@
 
                 <div class="example-box">
                     <h3>🎯 Características Principais</h3>
-                    <div class="bullet-point">Cada VLAN é um <strong>domínio de broadcast</strong> independente</div>
+                    <div class="bullet-point">Cada VLAN é um <strong>domínio de broadcast</strong> independente
+                        <div class="explanation">
+                            (Domínio de broadcast = área da rede onde mensagens enviadas para TODOS os dispositivos chegam. É como um megafone que só fala dentro de uma VLAN específica)
+                        </div>
+                    </div>
+                    <div class="bullet-point">Reduz <strong>domínios de colisão</strong>
+                        <div class="explanation">
+                            (Domínio de colisão = segmento onde dois dispositivos podem enviar dados ao mesmo tempo causando conflito. VLANs reduzem isso porque isolam o tráfego)
+                        </div>
+                    </div>
                     <div class="bullet-point">Dispositivos em VLANs diferentes não se comunicam diretamente</div>
                     <div class="bullet-point">Melhora segurança e organização da rede</div>
                 </div>
@@ -410,15 +431,20 @@
             <div class="content">
                 <h2>🔄 LAN Tradicional vs VLAN</h2>
 
-                <div class="image-container single-image">
-                    <img src="lan.png" alt="LAN Tradicional" style="max-width: 600px;">
-                </div>
-
                 <div class="two-column">
                     <div>
                         <div class="highlight-box">
                             <h3>❌ LAN Tradicional</h3>
-                            <div class="bullet-point">Um único domínio de broadcast</div>
+                            <div class="bullet-point">Um único domínio de broadcast
+                                <div class="explanation">
+                                    (Um único espaço onde broadcasts chegam a TODOS os dispositivos)
+                                </div>
+                            </div>
+                            <div class="bullet-point">Um grande domínio de colisão
+                                <div class="explanation">
+                                    (Todos os dispositivos competem pelo mesmo meio - mais conflitos quando muitos enviam dados simultâneos)
+                                </div>
+                            </div>
                             <div class="bullet-point">Todos os dispositivos recebem broadcast</div>
                             <div class="bullet-point">Mais colisões com tráfego aumentado</div>
                             <div class="bullet-point">Difícil de gerenciar e segmentar</div>
@@ -427,7 +453,16 @@
                     <div>
                         <div class="example-box">
                             <h3>✅ LAN com VLANs</h3>
-                            <div class="bullet-point">Múltiplos domínios de broadcast</div>
+                            <div class="bullet-point">Múltiplos domínios de broadcast
+                                <div class="explanation">
+                                    (Vários espaços isolados, cada um com seu próprio broadcast)
+                                </div>
+                            </div>
+                            <div class="bullet-point">Múltiplos domínios de colisão menores
+                                <div class="explanation">
+                                    (Cada VLAN tem seu próprio domínio - menos conflitos porque menos dispositivos competem pelo meio)
+                                </div>
+                            </div>
                             <div class="bullet-point">Broadcasts isolados por VLAN</div>
                             <div class="bullet-point">Menos colisões e melhor desempenho</div>
                             <div class="bullet-point">Fácil de gerenciar e segmentar</div>
@@ -473,10 +508,6 @@
             <div class="content">
                 <h2>🔗 Tipos de Links em VLAN</h2>
 
-                <div class="image-container single-image">
-                    <img src="vlan.png" alt="Links VLAN" style="max-width: 700px;">
-                </div>
-
                 <div class="two-column">
                     <div>
                         <div class="highlight-box">
@@ -504,10 +535,6 @@
         <div class="slide">
             <div class="content">
                 <h2>🏗️ Estrutura e Identificação de VLAN</h2>
-
-                <div class="image-container single-image">
-                    <img src="vlan2.png" alt="Múltiplas VLANs no Switch" style="max-width: 700px;">
-                </div>
 
                 <div class="highlight-box">
                     <h3>🔢 Identificação de VLAN</h3>
@@ -585,7 +612,11 @@ VLAN 40 (Alunos)       → Computadores dos Alunos
                 <div class="highlight-box">
                     <h3>🚫 Por Padrão: VLANs Isoladas</h3>
                     <div class="bullet-point">Dispositivos em <strong>VLAN 10 NÃO conseguem</strong> se comunicar com dispositivos em <strong>VLAN 20</strong></div>
-                    <div class="bullet-point">Cada VLAN é um domínio de broadcast separado</div>
+                    <div class="bullet-point">Cada VLAN é um domínio de broadcast separado
+                        <div class="explanation">
+                            (Cada VLAN tem seu próprio espaço de broadcast - o megafone de uma VLAN não alcança a outra)
+                        </div>
+                    </div>
                     <div class="bullet-point">Como uma porta que separa dois cômodos</div>
                 </div>
 
@@ -648,7 +679,50 @@ Switch(config-if)# end
             </div>
         </div>
 
-        <!-- Slide 10: Quiz -->
+        <!-- Slide 10: Configuração de Porta Trunk -->
+        <div class="slide">
+            <div class="content">
+                <h2>🔗 Configuração de Porta Trunk</h2>
+
+                <div class="highlight-box">
+                    <h3>📝 Passos para Configurar Trunk</h3>
+                    <div class="bullet-point"><strong>Passo 1:</strong> Acessar a porta do switch</div>
+                    <div class="bullet-point"><strong>Passo 2:</strong> Definir modo trunk</div>
+                    <div class="bullet-point"><strong>Passo 3:</strong> Permitir VLANs desejadas</div>
+                    <div class="bullet-point"><strong>Passo 4:</strong> Configurar VLAN nativa</div>
+                </div>
+
+                <div class="example-box">
+                    <h3>💻 Comandos para Link Trunk</h3>
+                    <div class="code-box">
+Switch> enable<br>
+Switch# configure terminal<br>
+Switch(config)# <strong>interface fastEthernet 0/24</strong><br>
+Switch(config-if)# <strong>switchport mode trunk</strong><br>
+Switch(config-if)# <strong>switchport trunk allowed vlan 1,10,20,30</strong><br>
+Switch(config-if)# <strong>switchport trunk native vlan 1</strong><br>
+Switch(config-if)# end
+                    </div>
+                </div>
+
+                <div class="warning-box">
+                    <h3>🔍 Verificação de Trunk</h3>
+                    <div class="bullet-point"><strong>show interface fa0/24 switchport</strong> - Detalhes da porta trunk</div>
+                    <div class="bullet-point"><strong>show interface trunk</strong> - Resume todos os trunks do switch</div>
+                    <div class="bullet-point"><strong>show trunk</strong> - Status dos links trunk</div>
+                </div>
+
+                <div class="example-box center-text">
+                    <h3>💡 Importante!</h3>
+                    <p style="font-size: 1.2em;">
+                        ⚠️ AMBOS os lados (Switch A e Switch B) devem ter a porta em modo trunk!<br>
+                        As mesmas VLANs devem existir nos dois switches!
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 11: Quiz -->
         <div class="slide">
             <div class="content">
                 <h2>🎯 Quiz - Teste seus Conhecimentos</h2>
@@ -750,20 +824,20 @@ Switch(config-if)# end
                     <div class="quiz-question" id="question5">
                         <h3>Questão 5 de 5</h3>
                         <p style="font-size: 1.3em; margin-bottom: 20px;">
-                            Dispositivos em VLANs diferentes conseguem se comunicar diretamente?
+                            O que é um domínio de colisão?
                         </p>
                         <div class="quiz-options">
-                            <div class="quiz-option" onclick="selectOption(5, 'a', false)">
-                                <span class="option-letter">A)</span> Sim, sempre
+                            <div class="quiz-option" onclick="selectOption(5, 'a', true)">
+                                <span class="option-letter">A)</span> Segmento onde dois dispositivos podem enviar dados simultaneamente causando conflito
                             </div>
-                            <div class="quiz-option" onclick="selectOption(5, 'b', true)">
-                                <span class="option-letter">B)</span> Não, a menos que haja um roteador inter-VLAN
+                            <div class="quiz-option" onclick="selectOption(5, 'b', false)">
+                                <span class="option-letter">B)</span> Um tipo de roteador avançado
                             </div>
                             <div class="quiz-option" onclick="selectOption(5, 'c', false)">
-                                <span class="option-letter">C)</span> Depende da velocidade da conexão
+                                <span class="option-letter">C)</span> Uma conexão de Internet rápida
                             </div>
                             <div class="quiz-option" onclick="selectOption(5, 'd', false)">
-                                <span class="option-letter">D)</span> Sempre sim, VLANs não isolam comunicação
+                                <span class="option-letter">D)</span> Um cabo especial para switches
                             </div>
                         </div>
                         <div class="quiz-feedback" id="feedback5"></div>
@@ -821,6 +895,7 @@ Switch(config-if)# end
             if (newSlide >= 0 && newSlide < totalSlides) {
                 currentSlide = newSlide;
                 showSlide(currentSlide);
+                window.scrollTo(0, 0);
             }
         }
 
