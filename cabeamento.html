@@ -1,0 +1,1206 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tipos de Cabeamento de Rede</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        .presentation {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .slide {
+            min-height: 100vh;
+            padding: 60px 40px;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            background: white;
+            margin: 20px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        .slide.active {
+            display: flex;
+        }
+
+        .slide h1 {
+            font-size: 3.5em;
+            color: #4a5568;
+            text-align: center;
+            margin-bottom: 40px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .slide h2 {
+            font-size: 2.8em;
+            color: #2d3748;
+            margin-bottom: 30px;
+            border-bottom: 4px solid #667eea;
+            padding-bottom: 15px;
+        }
+
+        .slide h3 {
+            font-size: 2.2em;
+            color: #4a5568;
+            margin: 25px 0 15px 0;
+        }
+
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: start;
+        }
+
+        .bullet-point {
+            display: flex;
+            align-items: flex-start;
+            margin: 15px 0;
+            font-size: 1.3em;
+            line-height: 1.5;
+        }
+
+        .bullet-point::before {
+            content: "🔹";
+            margin-right: 15px;
+            font-size: 1.2em;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #667eea;
+        }
+
+        .example-box {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #20b2aa;
+        }
+
+        .warning-box {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #e17055;
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 1000;
+        }
+
+        .nav-btn {
+            padding: 15px 25px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .nav-btn:hover {
+            background: #5a67d8;
+            transform: translateY(-2px);
+            box-shadow: 0 7px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .nav-btn:disabled {
+            background: #a0a0a0;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .slide-counter {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: rgba(255,255,255,0.9);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            color: #4a5568;
+            z-index: 1000;
+        }
+
+        .center-text {
+            text-align: center;
+        }
+
+        .large-text {
+            font-size: 1.4em;
+            line-height: 1.6;
+        }
+
+        .diagram {
+            background: #f7fafc;
+            border: 2px dashed #667eea;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+            font-family: monospace;
+            font-size: 1.2em;
+        }
+
+        .code-box {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: monospace;
+            font-size: 1.1em;
+            margin: 20px 0;
+            overflow-x: auto;
+            line-height: 1.8;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 1.1em;
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .comparison-table th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: bold;
+        }
+
+        .comparison-table tr:nth-child(even) {
+            background: #f7fafc;
+        }
+
+        .comparison-table tr:hover {
+            background: #e6f2ff;
+        }
+
+        .cable-card {
+            background: white;
+            border: 3px solid #667eea;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 15px 0;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .cable-icon {
+            font-size: 3em;
+            flex-shrink: 0;
+        }
+
+        .cable-info h4 {
+            font-size: 1.3em;
+            color: #667eea;
+            margin-bottom: 8px;
+        }
+
+        .cable-info p {
+            font-size: 1.1em;
+            color: #555;
+        }
+
+        .explanation {
+            font-size: 1.15em;
+            color: #555;
+            font-style: italic;
+            margin-top: 8px;
+            padding: 8px 12px;
+            background: rgba(102, 126, 234, 0.1);
+            border-left: 3px solid #667eea;
+            border-radius: 4px;
+        }
+
+        .color-sequence {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .color-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8em;
+            font-weight: bold;
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+
+        .image-container {
+            display: flex;
+            justify-content: center;
+            margin: 30px 0;
+        }
+
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .quiz-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .quiz-question {
+            display: none;
+            margin-bottom: 30px;
+        }
+
+        .quiz-question h3 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .quiz-option {
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #e2e8f0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.2em;
+        }
+
+        .quiz-option:hover {
+            background: #e6f2ff;
+            border-color: #667eea;
+            transform: translateX(5px);
+        }
+
+        .quiz-option.correct {
+            background: #c6f6d5;
+            border-color: #38a169;
+        }
+
+        .quiz-option.incorrect {
+            background: #fed7d7;
+            border-color: #e53e3e;
+        }
+
+        .option-letter {
+            font-weight: bold;
+            color: #667eea;
+            margin-right: 10px;
+        }
+
+        .quiz-feedback {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 1.2em;
+            display: none;
+        }
+
+        .quiz-feedback.correct {
+            background: #c6f6d5;
+            color: #22543d;
+            display: block;
+        }
+
+        .quiz-feedback.incorrect {
+            background: #fed7d7;
+            color: #742a2a;
+            display: block;
+        }
+
+        .result-box {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px 0;
+            font-size: 1.5em;
+        }
+
+        .quiz-result {
+            text-align: center;
+        }
+
+        .quiz-navigation {
+            text-align: center;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-counter">
+        <span id="current-slide">1</span> / <span id="total-slides">12</span>
+    </div>
+
+    <div class="presentation">
+        <!-- Slide 1: Título -->
+        <div class="slide active">
+            <div class="content center-text">
+                <h1>🔌 Tipos de Cabeamento de Rede</h1>
+                <h2>Meios de Transmissão para Redes</h2>
+                
+                <div class="highlight-box large-text">
+                    Entendendo os diferentes tipos de cabos usados em redes de computadores
+                </div>
+
+                <div class="example-box">
+                    <h3>📚 Curso</h3>
+                    <p style="font-size: 1.3em; line-height: 1.8;">
+                        <strong>Técnico Integrado em Informática</strong><br>
+                        Arquitetura de Redes de Computadores<br>
+                        Tecnologias de Implementação de Redes<br>
+                        Professor: César Azevedo
+                    </p>
+                </div>
+
+                <div class="warning-box center-text">
+                    <p style="font-size: 1.4em;">
+                        💡 <strong>Dica:</strong> Use as setas ⬅️ ➡️ do teclado para navegar
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 2: Visão Geral dos Tipos de Cabeamento -->
+        <div class="slide">
+            <div class="content">
+                <h2>📊 Principais Tipos de Cabeamento</h2>
+                
+                <div class="example-box">
+                    <h3>🌐 Cabeamento por Categoria</h3>
+                    <p style="font-size: 1.2em; margin-bottom: 15px;">
+                        Existem diferentes tipos de cabos de cobre e fibra óptica. Os mais comuns em redes locais são:
+                    </p>
+                </div>
+
+                <div class="cable-card">
+                    <div class="cable-icon">🧵</div>
+                    <div class="cable-info">
+                        <h4>1. Par Trançado (UTP/STP)</h4>
+                        <p><strong>Mais comum:</strong> Fácil de instalar, barato, ideal para distâncias até 100m</p>
+                    </div>
+                </div>
+
+                <div class="cable-card">
+                    <div class="cable-icon">🔶</div>
+                    <div class="cable-info">
+                        <h4>2. Cabo Coaxial</h4>
+                        <p><strong>Mais antigo:</strong> Usado em TV a cabo, menos comum em redes modernas</p>
+                    </div>
+                </div>
+
+                <div class="cable-card">
+                    <div class="cable-icon">✨</div>
+                    <div class="cable-info">
+                        <h4>3. Fibra Óptica</h4>
+                        <p><strong>Mais avançado:</strong> Imune a interferências, maior velocidade, maiores distâncias</p>
+                    </div>
+                </div>
+
+                <div class="warning-box center-text" style="margin-top: 30px;">
+                    <p style="font-size: 1.2em;">
+                        💡 <strong>Foco desta aula:</strong> Par Trançado Categoria 5e (Cat5e)
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: Cabo de Par Trançado - Introdução -->
+        <div class="slide">
+            <div class="content">
+                <h2>🧵 Cabo de Par Trançado (Twisted Pair)</h2>
+                
+                <div class="highlight-box">
+                    <h3>❓ O que é?</h3>
+                    <div class="bullet-point">
+                        Possui 8 fios de cobre envolvidos em pares (4 pares)
+                    </div>
+                    <div class="bullet-point">
+                        Os fios são trançados para reduzir interferência eletromagnética
+                        <div class="explanation">
+                            (Imagine uma corda feita de dois fios torcidos juntos)
+                        </div>
+                    </div>
+                    <div class="bullet-point">
+                        É o tipo de cabo mais usado em redes locais (LANs)
+                    </div>
+                    <div class="bullet-point">
+                        Conecta computadores, impressoras, switches, roteadores, etc.
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>🆃 Dois Tipos de Par Trançado</h3>
+                    <div class="bullet-point">
+                        <strong>UTP (Unshielded):</strong> Sem blindagem adicional - mais comum, mais barato
+                    </div>
+                    <div class="bullet-point">
+                        <strong>STP (Shielded):</strong> Com blindagem contra interferência - mais caro, melhor proteção
+                    </div>
+                    <div class="bullet-point">
+                        Nesta aula trabalharemos com UTP (padrão em redes locais)
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Categorias de Par Trançado -->
+        <div class="slide">
+            <div class="content">
+                <h2>📈 Categorias de Par Trançado</h2>
+                
+                <p style="font-size: 1.2em; margin-bottom: 20px; text-align: center;">
+                    Cada categoria tem uma velocidade diferente. Quanto maior o número, mais rápida a transmissão:
+                </p>
+
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Categoria</th>
+                            <th>Velocidade Máxima</th>
+                            <th>Frequência</th>
+                            <th>Uso Típico</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Cat5</strong></td>
+                            <td>100 Mbps</td>
+                            <td>100 MHz</td>
+                            <td>❌ Obsoleto</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Cat5e ⭐</strong></td>
+                            <td>1 Gbps (1000 Mbps)</td>
+                            <td>100 MHz</td>
+                            <td>✅ Padrão atual</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Cat6</strong></td>
+                            <td>10 Gbps (limitado a 55m)</td>
+                            <td>250 MHz</td>
+                            <td>Redes modernas</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Cat6a</strong></td>
+                            <td>10 Gbps (até 100m)</td>
+                            <td>500 MHz</td>
+                            <td>Instalações novas</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Cat7/Cat8</strong></td>
+                            <td>40-100 Gbps</td>
+                            <td>600-2000 MHz</td>
+                            <td>Centros de dados</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="warning-box center-text">
+                    <p style="font-size: 1.2em;">
+                        ⭐ <strong>Cat5e</strong> é o padrão mais usado nas escolas e empresas atualmente
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: Estrutura do Cabo Cat5e -->
+        <div class="slide">
+            <div class="content">
+                <h2>🔍 Dentro de um Cabo Cat5e</h2>
+                
+                <div class="highlight-box">
+                    <h3>📦 Componentes Internos</h3>
+                    <div class="bullet-point">
+                        <strong>4 Pares de Fios:</strong> 8 fios de cobre em total (trançados dois a dois)
+                    </div>
+                    <div class="bullet-point">
+                        <strong>Cores Padrão:</strong> Branco/Laranja, Laranja, Branco/Verde, Azul, Branco/Azul, Verde, Branco/Marrom, Marrom
+                        <div class="explanation">
+                            (Esses pares têm cores diferentes para facilitar a identificação na montagem)
+                        </div>
+                    </div>
+                    <div class="bullet-point">
+                        <strong>Isolamento de PVC:</strong> Plástico que envolve cada fio
+                    </div>
+                    <div class="bullet-point">
+                        <strong>Capa Externa:</strong> Proteção adicional que envolve todos os pares
+                    </div>
+                    <div class="bullet-point">
+                        <strong>Diâmetro:</strong> Aproximadamente 5-6mm (bem fino!)
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>🎨 Sequência de Cores (Ordem de Montagem)</h3>
+                    <p style="font-size: 1.1em; margin-bottom: 15px;">
+                        Existem duas normas padrão (ambas funcionam):
+                    </p>
+                    
+                    <div class="image-container">
+                        <img src="padroes-568a-568b.png" alt="Padrões 568A e 568B - Sequência de Cores" style="max-width: 800px;">
+                    </div>
+                    
+                    <div class="diagram" style="margin-top: 20px;">
+                        <p style="font-size: 1.1em; margin-bottom: 10px;"><strong>568A:</strong> Branco/Verde - Verde - Branco/Azul - Azul - Branco/Laranja - Laranja - Branco/Marrom - Marrom</p>
+                        <p style="font-size: 1.1em;"><strong>568B:</strong> Branco/Laranja - Laranja - Branco/Verde - Azul - Branco/Azul - Verde - Branco/Marrom - Marrom</p>
+                    </div>
+                </div>
+
+                <div class="warning-box center-text">
+                    <p style="font-size: 1.2em;">
+                        💡 <strong>Na prática:</strong> Use o padrão 568B (é mais comum nas redes)
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: Conectores RJ45 -->
+        <div class="slide">
+            <div class="content">
+                <h2>🔌 Conector RJ45</h2>
+                
+                <div class="highlight-box">
+                    <h3>❓ O que é?</h3>
+                    <div class="bullet-point">
+                        RJ45 significa "Registered Jack 45"
+                    </div>
+                    <div class="bullet-point">
+                        É o conector que liga o cabo Cat5e aos equipamentos
+                    </div>
+                    <div class="bullet-point">
+                        Tem 8 contatos de cobre para os 8 fios do cabo
+                        <div class="explanation">
+                            (Cada fio toca em um contato diferente)
+                        </div>
+                    </div>
+                    <div class="bullet-point">
+                        É o mesmo conector usado em telefones (RJ11), mas maior
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>📝 Partes do RJ45</h3>
+                    <div class="bullet-point">
+                        <strong>8 Contatos Dourados:</strong> Onde cada fio toca
+                    </div>
+                    <div class="bullet-point">
+                        <strong>Abas de Retenção:</strong> Pressionam o conector na porta
+                    </div>
+                    <div class="bullet-point">
+                        <strong>Corpo de Plástico Transparente:</strong> Deixa ver as cores dos fios (ajuda na verificação)
+                    </div>
+                    <div class="bullet-point">
+                        <strong>Furo para Ferramenta:</strong> Encaixa perfeitamente no crimper
+                    </div>
+                </div>
+
+                <div class="warning-box">
+                    <h3>💡 Importante</h3>
+                    <div class="bullet-point">
+                        Os fios devem estar na ordem correta (568A ou 568B) dentro do conector
+                    </div>
+                    <div class="bullet-point">
+                        A ordem dos fios <strong>NÃO pode estar errada</strong>, senão o cabo não funciona
+                    </div>
+                    <div class="bullet-point">
+                        O conector é fixado ao cabo com um "crimper" (ferramenta de prensagem)
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7: Tipos de Cabos Montados -->
+        <div class="slide">
+            <div class="content">
+                <h2>🔗 Cabo Direto vs Cabo Cruzado</h2>
+                
+                <div class="example-box">
+                    <h3>1️⃣ Cabo Direto (Straight-Through)</h3>
+                    <div class="bullet-point">
+                        Ambas as extremidades usam a <strong>MESMA ordem</strong> (568B em ambas)
+                    </div>
+                    <div class="bullet-point">
+                        <strong>Uso:</strong> Conectar computador ao switch, switch ao roteador
+                    </div>
+                    <div class="bullet-point">
+                        <strong>Mais comum!</strong> Praticamente todos os cabos são assim
+                    </div>
+                </div>
+
+                <div class="diagram">
+                    Uma extremidade (568B) → Computador / Switch<br>
+                    Outra extremidade (568B) → Switch / Roteador<br>
+                    ✅ Mesma ordem em ambas = Funcionando!
+                </div>
+
+                <div class="example-box">
+                    <h3>2️⃣ Cabo Cruzado (Crossover)</h3>
+                    <div class="bullet-point">
+                        Uma extremidade usa 568A, a outra 568B
+                    </div>
+                    <div class="bullet-point">
+                        <strong>Uso raro:</strong> Conectar dois computadores diretamente (sem switch)
+                    </div>
+                    <div class="bullet-point">
+                        <strong>Quase não usa mais!</strong> Switches modernos fazem isso automaticamente
+                    </div>
+                </div>
+
+                <div class="diagram">
+                    Uma extremidade (568A) → Computador<br>
+                    Outra extremidade (568B) → Computador<br>
+                    ✅ Ordens diferentes = Comunicação entre PCs direta
+                </div>
+
+                <div class="warning-box center-text">
+                    <p style="font-size: 1.2em;">
+                        💡 <strong>Na prática:</strong> Trabalharemos com cabos DIRETOS (568B em ambas as pontas)
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: Processo de Montagem do Cabo -->
+        <div class="slide">
+            <div class="content">
+                <h2>🛠️ Como Montar um Cabo Cat5e</h2>
+                
+                <div class="highlight-box">
+                    <h3>📋 Passos para Montagem</h3>
+                    <div class="bullet-point">
+                        <strong>1. Preparar o cabo:</strong> Descascar ~2cm da capa externa com cuidado
+                    </div>
+                    <div class="bullet-point">
+                        <strong>2. Desembaraçar os fios:</strong> Separe os 4 pares com cuidado (não danifique o isolamento)
+                    </div>
+                    <div class="bullet-point">
+                        <strong>3. Ordenar os fios:</strong> Coloque na sequência correta (568B recomendado)
+                    </div>
+                    <div class="bullet-point">
+                        <strong>4. Cortar reto:</strong> Corte os fios deixando ~1cm saindo da capa, bem alinhados
+                    </div>
+                    <div class="bullet-point">
+                        <strong>5. Inserir no conector:</strong> Empurre todos os 8 fios até o fundo do RJ45
+                    </div>
+                    <div class="bullet-point">
+                        <strong>6. Prensar:</strong> Use o crimper para pressionar o conector e fixar os contatos
+                    </div>
+                    <div class="bullet-point">
+                        <strong>7. Testar:</strong> Verifique se todos os fios estão bem conectados
+                    </div>
+                </div>
+
+                <div class="warning-box">
+                    <h3>⚠️ Erros Comuns que Prejudicam</h3>
+                    <div class="bullet-point">
+                        ❌ Fios soltos ou não chegando até o fundo do conector
+                    </div>
+                    <div class="bullet-point">
+                        ❌ Ordem errada dos fios (o cabo não comunica)
+                    </div>
+                    <div class="bullet-point">
+                        ❌ Danificar o isolamento dos fios durante a preparação
+                    </div>
+                    <div class="bullet-point">
+                        ❌ Prensar fraco (conexão instável)
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 9: Ferramentas Necessárias -->
+        <div class="slide">
+            <div class="content">
+                <h2>🔧 Ferramentas Necessárias para a Prática</h2>
+                
+                <div class="cable-card">
+                    <div class="cable-icon">✂️</div>
+                    <div class="cable-info">
+                        <h4>1. Descascador de Cabo (Stripper)</h4>
+                        <p>Remove a capa externa do cabo sem danificar os fios. Tem diferentes medidas.</p>
+                    </div>
+                </div>
+
+                <div class="cable-card">
+                    <div class="cable-icon">🔗</div>
+                    <div class="cable-info">
+                        <h4>2. Alicate Crimper</h4>
+                        <p>Prensa o conector RJ45 ao cabo com força exata. Fundamental para fixação!</p>
+                    </div>
+                </div>
+
+                <div class="cable-card">
+                    <div class="cable-icon">📏</div>
+                    <div class="cable-info">
+                        <h4>3. Tesoura ou Cortador</h4>
+                        <p>Corta o cabo e os fios. Facilita o alinhamento antes de inserir no conector.</p>
+                    </div>
+                </div>
+
+                <div class="cable-card">
+                    <div class="cable-icon">🔍</div>
+                    <div class="cable-info">
+                        <h4>4. Testador de Cabo (Opcional, mas Recomendado)</h4>
+                        <p>Verifica se todos os 8 contatos estão fazendo conexão corretamente.</p>
+                    </div>
+                </div>
+
+                <div class="warning-box center-text">
+                    <p style="font-size: 1.2em;">
+                        💡 <strong>Na nossa prática:</strong> Forneceremos todos esses equipamentos!
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 10: Características do Cat5e (Resumo) -->
+        <div class="slide">
+            <div class="content">
+                <h2>⭐ Resumo - Por que Usar Cat5e?</h2>
+                
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Característica</th>
+                            <th>Valor</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Velocidade</strong></td>
+                            <td>Até 1 Gbps (1000 Mbps) ✅</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Distância Máxima</strong></td>
+                            <td>100 metros</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Custo</strong></td>
+                            <td>Baixo (mais barato que Cat6) 💰</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Instalação</strong></td>
+                            <td>Fácil (usa RJ45 padrão)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Flexibilidade</strong></td>
+                            <td>Muito flexível (fácil de passar em canos)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Interferência</strong></td>
+                            <td>Moderada (para ambientes normais é ok)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Uso Comum</strong></td>
+                            <td>Padrão em redes de empresas e escolas ✅</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="highlight-box center-text" style="margin-top: 30px;">
+                    <h3>🎯 Conclusão</h3>
+                    <p style="font-size: 1.2em;">
+                        Cat5e oferece um excelente equilíbrio entre velocidade, custo e facilidade de instalação. 
+                        Por isso é o padrão em quase todas as redes locais!
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 11: Quiz -->
+        <div class="slide">
+            <div class="content">
+                <h2>🎯 Quiz - Teste seus Conhecimentos</h2>
+                
+                <div class="quiz-container">
+                    <!-- Questão 1 -->
+                    <div class="quiz-question" id="question1">
+                        <h3>Questão 1 de 7</h3>
+                        <p style="font-size: 1.3em; margin-bottom: 20px;">
+                            Quantos fios tem um cabo de par trançado?
+                        </p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(1, 'a', false)">
+                                <span class="option-letter">A)</span> 6 fios
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(1, 'b', false)">
+                                <span class="option-letter">B)</span> 10 fios
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(1, 'c', false)">
+                                <span class="option-letter">C)</span> 4 fios
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(1, 'd', true)">
+                                <span class="option-letter">D)</span> 8 fios
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback1"></div>
+                    </div>
+
+                    <!-- Questão 2 -->
+                    <div class="quiz-question" id="question2">
+                        <h3>Questão 2 de 7</h3>
+                        <p style="font-size: 1.3em; margin-bottom: 20px;">
+                            Qual é a velocidade máxima de um cabo Cat5e?
+                        </p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(2, 'a', false)">
+                                <span class="option-letter">A)</span> 10 Gbps
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(2, 'b', false)">
+                                <span class="option-letter">B)</span> 100 Gbps
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(2, 'c', true)">
+                                <span class="option-letter">C)</span> 1 Gbps (1000 Mbps)
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(2, 'd', false)">
+                                <span class="option-letter">D)</span> 100 Mbps
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback2"></div>
+                    </div>
+
+                    <!-- Questão 3 -->
+                    <div class="quiz-question" id="question3">
+                        <h3>Questão 3 de 7</h3>
+                        <p style="font-size: 1.3em; margin-bottom: 20px;">
+                            Qual é a sequência correta do padrão 568A?
+                        </p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(3, 'a', false)">
+                                <span class="option-letter">A)</span> Branco/Laranja - Laranja - Branco/Verde - Azul - Branco/Azul - Verde - Branco/Marrom - Marrom
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(3, 'b', true)">
+                                <span class="option-letter">B)</span> Branco/Verde - Verde - Branco/Azul - Azul - Branco/Laranja - Laranja - Branco/Marrom - Marrom
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(3, 'c', false)">
+                                <span class="option-letter">C)</span> Verde - Branco/Verde - Laranja - Branco/Laranja - Azul - Branco/Azul - Marrom - Branco/Marrom
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(3, 'd', false)">
+                                <span class="option-letter">D)</span> Marrom - Branco/Marrom - Azul - Branco/Azul - Laranja - Branco/Laranja - Verde - Branco/Verde
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback3"></div>
+                    </div>
+
+                    <!-- Questão 4 -->
+                    <div class="quiz-question" id="question4">
+                        <h3>Questão 4 de 7</h3>
+                        <p style="font-size: 1.3em; margin-bottom: 20px;">
+                            Qual é a sequência correta do padrão 568B?
+                        </p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(4, 'a', false)">
+                                <span class="option-letter">A)</span> Branco/Verde - Verde - Branco/Azul - Azul - Branco/Laranja - Laranja - Branco/Marrom - Marrom
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(4, 'b', false)">
+                                <span class="option-letter">B)</span> Verde - Branco/Verde - Azul - Branco/Azul - Laranja - Branco/Laranja - Marrom - Branco/Marrom
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(4, 'c', true)">
+                                <span class="option-letter">C)</span> Branco/Laranja - Laranja - Branco/Verde - Azul - Branco/Azul - Verde - Branco/Marrom - Marrom
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(4, 'd', false)">
+                                <span class="option-letter">D)</span> Laranja - Branco/Laranja - Verde - Branco/Verde - Azul - Branco/Azul - Marrom - Branco/Marrom
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback4"></div>
+                    </div>
+
+                    <!-- Questão 5 -->
+                    <div class="quiz-question" id="question5">
+                        <h3>Questão 5 de 7</h3>
+                        <p style="font-size: 1.3em; margin-bottom: 20px;">
+                            Qual é a diferença entre UTP e STP?
+                        </p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(5, 'a', false)">
+                                <span class="option-letter">A)</span> UTP é mais rápido que STP
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(5, 'b', true)">
+                                <span class="option-letter">B)</span> UTP não tem blindagem, STP tem blindagem adicional
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(5, 'c', false)">
+                                <span class="option-letter">C)</span> STP tem menos pares de fios
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(5, 'd', false)">
+                                <span class="option-letter">D)</span> Não há diferença significativa entre eles
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback5"></div>
+                    </div>
+
+                    <!-- Questão 6 -->
+                    <div class="quiz-question" id="question6">
+                        <h3>Questão 6 de 7</h3>
+                        <p style="font-size: 1.3em; margin-bottom: 20px;">
+                            Para que serve a ferramenta "crimper"?
+                        </p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(6, 'a', false)">
+                                <span class="option-letter">A)</span> Descascar o cabo
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(6, 'b', false)">
+                                <span class="option-letter">B)</span> Testar se o cabo funciona
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(6, 'c', false)">
+                                <span class="option-letter">C)</span> Cortar os fios do cabo
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(6, 'd', true)">
+                                <span class="option-letter">D)</span> Prensar o conector RJ45 ao cabo
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback6"></div>
+                    </div>
+
+                    <!-- Questão 7 -->
+                    <div class="quiz-question" id="question7">
+                        <h3>Questão 7 de 7</h3>
+                        <p style="font-size: 1.3em; margin-bottom: 20px;">
+                            Qual é a distância máxima permitida para um cabo Cat5e?
+                        </p>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectOption(7, 'a', false)">
+                                <span class="option-letter">A)</span> 50 metros
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(7, 'b', true)">
+                                <span class="option-letter">B)</span> 100 metros
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(7, 'c', false)">
+                                <span class="option-letter">C)</span> 200 metros
+                            </div>
+                            <div class="quiz-option" onclick="selectOption(7, 'd', false)">
+                                <span class="option-letter">D)</span> 150 metros
+                            </div>
+                        </div>
+                        <div class="quiz-feedback" id="feedback7"></div>
+                    </div>
+
+                    <!-- Resultado Final -->
+                    <div class="quiz-result" id="quizResult" style="display: none;">
+                        <h3>🎉 Parabéns! Quiz Concluído!</h3>
+                        <div class="result-box">
+                            <p>Sua pontuação: <span id="finalScore">0</span>/7</p>
+                            <p id="resultMessage"></p>
+                        </div>
+                        <button class="nav-btn" onclick="restartQuiz()">🔄 Refazer Quiz</button>
+                    </div>
+                </div>
+
+                <div class="quiz-navigation">
+                    <button class="nav-btn" id="nextQuizBtn" onclick="nextQuestion()" style="display: none;">
+                        Próxima Questão ➡️
+                    </button>
+                </div>
+                
+                <p style="text-align: center; margin-top: 20px; font-size: 1.2em; color: #667eea;">
+                    <strong>Total de questões: 7</strong>
+                </p>
+            </div>
+        </div>
+
+        <div class="navigation">
+            <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">⬅️ Anterior</button>
+            <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">Próximo ➡️</button>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        document.getElementById('total-slides').textContent = totalSlides;
+
+        // Quiz variables
+        let currentQuestion = 1;
+        let score = 0;
+        let quizAnswered = [false, false, false, false, false, false, false];
+
+        function showSlide(index) {
+            slides.forEach((slide, i) => {
+                slide.classList.toggle('active', i === index);
+            });
+            
+            document.getElementById('current-slide').textContent = index + 1;
+            document.getElementById('prevBtn').disabled = index === 0;
+            document.getElementById('nextBtn').disabled = index === totalSlides - 1;
+        }
+
+        function changeSlide(direction) {
+            const newSlide = currentSlide + direction;
+            if (newSlide >= 0 && newSlide < totalSlides) {
+                currentSlide = newSlide;
+                showSlide(currentSlide);
+                window.scrollTo(0, 0);
+            }
+        }
+
+        // Quiz Functions
+        function selectOption(questionNum, option, isCorrect) {
+            if (quizAnswered[questionNum - 1]) return;
+            
+            const options = document.querySelectorAll(`#question${questionNum} .quiz-option`);
+            const feedback = document.getElementById(`feedback${questionNum}`);
+            
+            options.forEach(opt => {
+                opt.style.pointerEvents = 'none';
+                if (opt.onclick.toString().includes('true')) {
+                    opt.classList.add('correct');
+                } else if (opt === event.currentTarget) {
+                    opt.classList.add(isCorrect ? 'correct' : 'incorrect');
+                }
+            });
+            
+            if (isCorrect) {
+                feedback.innerHTML = '✅ Correto! Muito bem!';
+                feedback.className = 'quiz-feedback correct';
+                score++;
+            } else {
+                feedback.innerHTML = '❌ Incorreto. A resposta correta está destacada em verde.';
+                feedback.className = 'quiz-feedback incorrect';
+            }
+            
+            quizAnswered[questionNum - 1] = true;
+            
+            if (questionNum < 7) {
+                document.getElementById('nextQuizBtn').style.display = 'inline-block';
+            } else {
+                setTimeout(() => {
+                    showQuizResult();
+                }, 2000);
+            }
+        }
+
+        function nextQuestion() {
+            document.getElementById(`question${currentQuestion}`).style.display = 'none';
+            currentQuestion++;
+            document.getElementById(`question${currentQuestion}`).style.display = 'block';
+            document.getElementById('nextQuizBtn').style.display = 'none';
+        }
+
+        function showQuizResult() {
+            document.getElementById('question7').style.display = 'none';
+            document.getElementById('quizResult').style.display = 'block';
+            document.getElementById('finalScore').textContent = score;
+            
+            const resultMessage = document.getElementById('resultMessage');
+            if (score === 7) {
+                resultMessage.innerHTML = '🏆 PERFEITO! Você é um especialista em cabeamento!';
+            } else if (score === 6) {
+                resultMessage.innerHTML = '🥇 Excelente! Você está pronto para a prática!';
+            } else if (score === 5) {
+                resultMessage.innerHTML = '👍 Muito bom! Você entendeu bem os padrões 568A e 568B!';
+            } else if (score === 4) {
+                resultMessage.innerHTML = '👏 Bom trabalho! Estude um pouco mais os padrões de cores!';
+            } else if (score === 3) {
+                resultMessage.innerHTML = '📚 Revise os padrões 568A e 568B antes da prática!';
+            } else if (score === 2) {
+                resultMessage.innerHTML = '📖 Estude mais o conteúdo do slide 5!';
+            } else {
+                resultMessage.innerHTML = '🔍 Recomendo revisar toda a apresentação!';
+            }
+        }
+
+        function restartQuiz() {
+            currentQuestion = 1;
+            score = 0;
+            quizAnswered = [false, false, false, false, false, false, false];
+            
+            for (let i = 1; i <= 7; i++) {
+                const question = document.getElementById(`question${i}`);
+                const options = question.querySelectorAll('.quiz-option');
+                const feedback = document.getElementById(`feedback${i}`);
+                
+                options.forEach(opt => {
+                    opt.className = 'quiz-option';
+                    opt.style.pointerEvents = 'auto';
+                });
+                
+                feedback.style.display = 'none';
+                question.style.display = i === 1 ? 'block' : 'none';
+            }
+            
+            document.getElementById('quizResult').style.display = 'none';
+            document.getElementById('nextQuizBtn').style.display = 'none';
+        }
+
+        // Navegação por teclado
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') changeSlide(-1);
+            if (e.key === 'ArrowRight') changeSlide(1);
+            if (e.key === 'Home') {
+                currentSlide = 0;
+                showSlide(currentSlide);
+            }
+            if (e.key === 'End') {
+                currentSlide = totalSlides - 1;
+                showSlide(currentSlide);
+            }
+        });
+
+        // Inicializar
+        showSlide(0);
+        document.getElementById('question1').style.display = 'block';
+    </script>
+</body>
+</html>
