@@ -1,0 +1,1251 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auditoria de Infraestrutura de Rede</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        .presentation {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .slide {
+            min-height: 100vh;
+            padding: 60px 40px;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            background: white;
+            margin: 20px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        .slide.active {
+            display: flex;
+        }
+
+        .slide h1 {
+            font-size: 3.5em;
+            color: #4a5568;
+            text-align: center;
+            margin-bottom: 40px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .slide h2 {
+            font-size: 2.8em;
+            color: #2d3748;
+            margin-bottom: 30px;
+            border-bottom: 4px solid #667eea;
+            padding-bottom: 15px;
+        }
+
+        .slide h3 {
+            font-size: 2.2em;
+            color: #4a5568;
+            margin: 25px 0 15px 0;
+        }
+
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .bullet-point {
+            display: flex;
+            align-items: flex-start;
+            margin: 15px 0;
+            font-size: 1.3em;
+            line-height: 1.5;
+        }
+
+        .bullet-point::before {
+            content: "🔹";
+            margin-right: 15px;
+            font-size: 1.2em;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #667eea;
+        }
+
+        .example-box {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #20b2aa;
+        }
+
+        .warning-box {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #e17055;
+        }
+
+        .success-box {
+            background: linear-gradient(135deg, #c6f6d5 0%, #9ae6b4 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #38a169;
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 1000;
+        }
+
+        .nav-btn {
+            padding: 15px 25px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .nav-btn:hover {
+            background: #5a67d8;
+            transform: translateY(-2px);
+            box-shadow: 0 7px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .nav-btn:disabled {
+            background: #a0a0a0;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .slide-counter {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: rgba(255,255,255,0.9);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            color: #4a5568;
+            z-index: 1000;
+        }
+
+        .center-text {
+            text-align: center;
+        }
+
+        .large-text {
+            font-size: 1.4em;
+            line-height: 1.6;
+        }
+
+        .diagram {
+            background: #f7fafc;
+            border: 2px dashed #667eea;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+            font-family: monospace;
+            font-size: 1.2em;
+        }
+
+        .checklist-item {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 12px 0;
+            font-size: 1.15em;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .checklist-icon {
+            font-size: 1.8em;
+            flex-shrink: 0;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #667eea;
+            color: white;
+            border-radius: 50%;
+        }
+
+        .checklist-text {
+            flex: 1;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 1.1em;
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .comparison-table th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: bold;
+        }
+
+        .comparison-table tr:nth-child(even) {
+            background: #f7fafc;
+        }
+
+        .comparison-table tr:hover {
+            background: #e6f2ff;
+        }
+
+        .explanation {
+            font-size: 1.15em;
+            color: #555;
+            font-style: italic;
+            margin-top: 8px;
+            padding: 8px 12px;
+            background: rgba(102, 126, 234, 0.1);
+            border-left: 3px solid #667eea;
+            border-radius: 4px;
+        }
+
+        .step-card {
+            background: white;
+            border: 3px solid #667eea;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 15px 0;
+            font-size: 1.1em;
+        }
+
+        .step-number {
+            background: #667eea;
+            color: white;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .quiz-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .quiz-question {
+            display: none;
+            margin-bottom: 30px;
+        }
+
+        .quiz-question h3 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .quiz-option {
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #e2e8f0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.2em;
+        }
+
+        .quiz-option:hover {
+            background: #e6f2ff;
+            border-color: #667eea;
+            transform: translateX(5px);
+        }
+
+        .quiz-option.correct {
+            background: #c6f6d5;
+            border-color: #38a169;
+        }
+
+        .quiz-option.incorrect {
+            background: #fed7d7;
+            border-color: #e53e3e;
+        }
+
+        .option-letter {
+            font-weight: bold;
+            color: #667eea;
+            margin-right: 10px;
+        }
+
+        .quiz-feedback {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 1.2em;
+            display: none;
+        }
+
+        .quiz-feedback.correct {
+            background: #c6f6d5;
+            color: #22543d;
+            display: block;
+        }
+
+        .quiz-feedback.incorrect {
+            background: #fed7d7;
+            color: #742a2a;
+            display: block;
+        }
+
+        .result-box {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px 0;
+            font-size: 1.5em;
+        }
+
+        .quiz-result {
+            text-align: center;
+        }
+
+        .quiz-navigation {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .team-box {
+            background: #f0f4ff;
+            border: 2px solid #667eea;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 15px 0;
+            font-size: 1.1em;
+        }
+
+        .deliverable-box {
+            background: #fff5e6;
+            border: 2px solid #f6ad55;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 15px 0;
+            font-size: 1.1em;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-counter">
+        <span id="current-slide">1</span> / <span id="total-slides">15</span>
+    </div>
+
+    <div class="presentation">
+        <!-- Slide 1: Título -->
+        <div class="slide active">
+            <div class="content center-text">
+                <h1>🔍 Auditoria de Infraestrutura de Rede</h1>
+                <h2>Projeto Final em Grupo</h2>
+                
+                <div class="highlight-box large-text">
+                    Avaliando e documentando a infraestrutura de rede existente
+                </div>
+
+                <div class="example-box">
+                    <h3>📚 Curso</h3>
+                    <p style="font-size: 1.3em; line-height: 1.8;">
+                        <strong>Técnico Integrado em Informática</strong><br>
+                        Arquitetura de Redes de Computadores<br>
+                        Tecnologias de Implementação de Redes<br>
+                        Professor: César Azevedo
+                    </p>
+                </div>
+
+                <div class="warning-box center-text">
+                    <p style="font-size: 1.4em;">
+                        💡 <strong>Dica:</strong> Use as setas ⬅️ ➡️ do teclado para navegar
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 2: Introdução -->
+        <div class="slide">
+            <div class="content">
+                <h2>❓ O que é Auditoria de Rede?</h2>
+                
+                <div class="highlight-box">
+                    <h3>📊 Conceito</h3>
+                    <div class="bullet-point">
+                        É uma avaliação sistemática e documentada da infraestrutura de rede
+                    </div>
+                    <div class="bullet-point">
+                        Verifica se segue boas práticas de organização e segurança
+                    </div>
+                    <div class="bullet-point">
+                        Identifica problemas, riscos e oportunidades de melhoria
+                    </div>
+                    <div class="bullet-point">
+                        Gera relatório com recomendações
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>🎯 Por que Fazer Auditoria?</h3>
+                    <div class="bullet-point">
+                        <strong>Diagnóstico:</strong> Entender o estado atual da rede
+                    </div>
+                    <div class="bullet-point">
+                        <strong>Segurança:</strong> Identificar vulnerabilidades
+                    </div>
+                    <div class="bullet-point">
+                        <strong>Eficiência:</strong> Encontrar gargalos e ineficiências
+                    </div>
+                    <div class="bullet-point">
+                        <strong>Planejamento:</strong> Base para futuras melhorias
+                    </div>
+                    <div class="bullet-point">
+                        <strong>Conformidade:</strong> Validar se segue normas
+                    </div>
+                </div>
+
+                <div class="success-box center-text">
+                    <p style="font-size: 1.2em;">
+                        ✅ <strong>Objetivo Final:</strong> Gerar um relatório profissional com diagnóstico completo
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: Formação dos Grupos -->
+        <div class="slide">
+            <div class="content">
+                <h2>👥 Formação dos Grupos</h2>
+                
+                <div class="team-box">
+                    <h3>📋 Estrutura Recomendada</h3>
+                    <div class="bullet-point">
+                        <strong>Grupos de 3-4 alunos:</strong> Ideal para divisão de tarefas
+                    </div>
+                    <div class="bullet-point">
+                        <strong>Cada grupo recebe uma ÁREA:</strong> Sala de aula, laboratório, corredor, etc
+                    </div>
+                    <div class="bullet-point">
+                        <strong>Papéis definidos:</strong>
+                        <div class="explanation">
+                            1️⃣ Líder: coordena grupo<br>
+                            2️⃣ Fotografo: registra evidências<br>
+                            3️⃣ Anotador: documenta achados<br>
+                            4️⃣ Pesquisador: verifica especificações
+                        </div>
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>🏢 Exemplos de Áreas</h3>
+                    <div class="bullet-point">
+                        Sala de Aula A (com 20 computadores)
+                    </div>
+                    <div class="bullet-point">
+                        Laboratório de Redes
+                    </div>
+                    <div class="bullet-point">
+                        Sala de Servidores/Data Room
+                    </div>
+                    <div class="bullet-point">
+                        Secretaria/Administração
+                    </div>
+                    <div class="bullet-point">
+                        Corredor e caminhos de cabos
+                    </div>
+                    <div class="bullet-point">
+                        Biblioteca/Área comum
+                    </div>
+                </div>
+
+                <div class="warning-box">
+                    <h3>⚠️ Importante</h3>
+                    <p style="font-size: 1.2em;">
+                        <strong>Não mexer em equipamentos!</strong> Apenas documentar e observar. Peça permissão do professor antes de qualquer coisa.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Checklist de Auditoria - Parte 1 -->
+        <div class="slide">
+            <div class="content">
+                <h2>✅ Checklist de Auditoria (Parte 1)</h2>
+                
+                <div class="highlight-box">
+                    <h3>🔌 Tomadas de Rede</h3>
+                </div>
+
+                <div class="checklist-item">
+                    <div class="checklist-icon">1️⃣</div>
+                    <div class="checklist-text">
+                        <strong>Quantidade de Tomatas:</strong> Quantas há nesta área? Suficientes?
+                    </div>
+                </div>
+
+                <div class="checklist-item">
+                    <div class="checklist-icon">2️⃣</div>
+                    <div class="checklist-text">
+                        <strong>Localização:</strong> Estão bem distribuídas? Fácil acesso?
+                    </div>
+                </div>
+
+                <div class="checklist-item">
+                    <div class="checklist-icon">3️⃣</div>
+                    <div class="checklist-text">
+                        <strong>Rótulos/Identificação:</strong> Têm números/identificação?
+                    </div>
+                </div>
+
+                <div class="checklist-item">
+                    <div class="checklist-icon">4️⃣</div>
+                    <div class="checklist-text">
+                        <strong>Condições:</strong> Limpas? Danificadas? Com poeira?
+                    </div>
+                </div>
+
+                <div class="checklist-item">
+                    <div class="checklist-icon">5️⃣</div>
+                    <div class="checklist-text">
+                        <strong>Tipo de Conector:</strong> RJ45? Único ou duplo?
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>📝 Exemplo de Anotação</h3>
+                    <p style="font-size: 1.1em; background: #f7fafc; padding: 10px; border-radius: 5px;">
+                        <strong>Sala 302:</strong> 5 tomatas (1 perto da porta, 2 na parede frontal, 2 no fundo). Todas com rótulos (porta-1, porta-2, etc). Limpas. Tipo RJ45 simples. Porta-2 com leve soltura.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: Checklist de Auditoria - Parte 2 -->
+        <div class="slide">
+            <div class="content">
+                <h2>✅ Checklist de Auditoria (Parte 2)</h2>
+                
+                <div class="highlight-box">
+                    <h3>🧵 Cabos</h3>
+                </div>
+
+                <div class="checklist-item">
+                    <div class="checklist-icon">6️⃣</div>
+                    <div class="checklist-text">
+                        <strong>Categoria:</strong> Cat5e? Cat6? Consegue identificar?
+                    </div>
+                </div>
+
+                <div class="checklist-item">
+                    <div class="checklist-icon">7️⃣</div>
+                    <div class="checklist-text">
+                        <strong>Condições:</strong> Íntegros? Capas danificadas? Fios soltos?
+                    </div>
+                </div>
+
+                <div class="checklist-item">
+                    <div class="checklist-icon">8️⃣</div>
+                    <div class="checklist-text">
+                        <strong>Organização:</strong> Em canaletas? Soltos? Emaranhados?
+                    </div>
+                </div>
+
+                <div class="checklist-item">
+                    <div class="checklist-icon">9️⃣</div>
+                    <div class="checklist-text">
+                        <strong>Comprimento Aproximado:</strong> Você consegue estimar o comprimento?
+                    </div>
+                </div>
+
+                <div class="checklist-item">
+                    <div class="checklist-icon">🔟</div>
+                    <div class="checklist-text">
+                        <strong>Rótulos:</strong> Os cabos têm identificação em ambas as extremidades?
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>📝 Exemplo de Anotação</h3>
+                    <p style="font-size: 1.1em; background: #f7fafc; padding: 10px; border-radius: 5px;">
+                        <strong>Cabos da Sala 302:</strong> 5 cabos Cat5e. Todos em bom estado. Em canaleta branca no rodapé (bem organizado). ~3-5 metros cada. Cabo 1 com rótulo em uma extremidade apenas (RISCO!). Demais sem identificação.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: Checklist de Auditoria - Parte 3 -->
+        <div class="slide">
+            <div class="content">
+                <h2>✅ Checklist de Auditoria (Parte 3)</h2>
+                
+                <div class="highlight-box">
+                    <h3>📦 Infraestrutura Geral</h3>
+                </div>
+
+                <div class="checklist-item">
+                    <div class="checklist-icon">⭐</div>
+                    <div class="checklist-text">
+                        <strong>Canaletas/Dutos:</strong> Presentes? Bem fixadas? Quebradas?
+                    </div>
+                </div>
+
+                <div class="checklist-item">
+                    <div class="checklist-icon">⭐</div>
+                    <div class="checklist-text">
+                        <strong>Equipamentos Visíveis:</strong> Switches? Hubs? Onde ficam?
+                    </div>
+                </div>
+
+                <div class="checklist-item">
+                    <div class="checklist-icon">⭐</div>
+                    <div class="checklist-text">
+                        <strong>Patch Panels:</strong> Estão visíveis? Onde ficam? Como estão organizados?
+                    </div>
+                </div>
+
+                <div class="checklist-item">
+                    <div class="checklist-icon">⭐</div>
+                    <div class="checklist-text">
+                        <strong>Sala de Servidores:</strong> Existe? Como é organizada? Temperatura?
+                    </div>
+                </div>
+
+                <div class="checklist-item">
+                    <div class="checklist-icon">⭐</div>
+                    <div class="checklist-text">
+                        <strong>Documentação:</strong> Há mapas? Diagramas? Registros de manutenção?
+                    </div>
+                </div>
+
+                <div class="warning-box">
+                    <h3>💡 O que Procurar</h3>
+                    <div class="bullet-point">
+                        🔴 Cabos soltos ou emaranhados
+                    </div>
+                    <div class="bullet-point">
+                        🔴 Tomatas danificadas
+                    </div>
+                    <div class="bullet-point">
+                        🔴 Sem identificação
+                    </div>
+                    <div class="bullet-point">
+                        🔴 Cabos em contato com energia elétrica
+                    </div>
+                    <div class="bullet-point">
+                        🔴 Falta de organização
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7: Ferramentas Necessárias -->
+        <div class="slide">
+            <div class="content">
+                <h2>🛠️ Ferramentas para a Auditoria</h2>
+                
+                <div class="highlight-box">
+                    <h3>📱 O que Levar</h3>
+                    <div class="bullet-point">
+                        <strong>Smartphone/Câmera:</strong> Fotografar tudo (essencial!)
+                    </div>
+                    <div class="bullet-point">
+                        <strong>Fita Métrica:</strong> Medir comprimentos aproximados
+                    </div>
+                    <div class="bullet-point">
+                        <strong>Bloco de Anotações:</strong> Anotar observações
+                    </div>
+                    <div class="bullet-point">
+                        <strong>Caneta:</strong> Escrever observações rápidas
+                    </div>
+                    <div class="bullet-point">
+                        <strong>Tablet/Notebook:</strong> Preencher formulário digital (opcional)
+                    </div>
+                    <div class="bullet-point">
+                        <strong>Flashlight/Lanterna:</strong> Ver em locais escuros (rodapés, atrás de móveis)
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>📋 Formulário de Coleta</h3>
+                    <div class="bullet-point">
+                        Data e hora da auditoria
+                    </div>
+                    <div class="bullet-point">
+                        Área auditada
+                    </div>
+                    <div class="bullet-point">
+                        Nomes dos auditores
+                    </div>
+                    <div class="bullet-point">
+                        Respostas para cada item do checklist
+                    </div>
+                    <div class="bullet-point">
+                        Observações adicionais
+                    </div>
+                    <div class="bullet-point">
+                        Problemas identificados
+                    </div>
+                    <div class="bullet-point">
+                        Fotos numeradas e identificadas
+                    </div>
+                </div>
+
+                <div class="success-box">
+                    <h3>✅ Dica Importante</h3>
+                    <p style="font-size: 1.2em;">
+                        <strong>Fotografe TUDO!</strong> Tomatas, cabos, equipamentos, problemas. As fotos são as melhores evidências para o relatório.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: Processo de Auditoria -->
+        <div class="slide">
+            <div class="content">
+                <h2>📊 Processo Passo a Passo</h2>
+                
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <h3>Planejamento</h3>
+                    <p style="font-size: 1.1em; color: #555;">
+                        Seu grupo recebe a área a ser auditada. Discuta a melhor forma de abordar. Divida as tarefas.
+                    </p>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <h3>Coleta de Dados</h3>
+                    <p style="font-size: 1.1em; color: #555;">
+                        Visite a área. Use o checklist. Fotografe. Anote tudo. Fale com pessoas que trabalham lá.
+                    </p>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <h3>Análise</h3>
+                    <p style="font-size: 1.1em; color: #555;">
+                        Compile dados. Identifique padrões. Categorize problemas (crítico, alto, médio, baixo).
+                    </p>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-number">4</div>
+                    <h3>Recomendações</h3>
+                    <p style="font-size: 1.1em; color: #555;">
+                        Proponha soluções. Priorize melhorias. Estime custos/esforços.
+                    </p>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-number">5</div>
+                    <h3>Relatório</h3>
+                    <p style="font-size: 1.1em; color: #555;">
+                        Organize tudo em documento profissional. Inclua fotos, tabelas, gráficos.
+                    </p>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-number">6</div>
+                    <h3>Apresentação</h3>
+                    <p style="font-size: 1.1em; color: #555;">
+                        Seu grupo apresenta os achados para a turma e professor.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 9: Categorização de Problemas -->
+        <div class="slide">
+            <div class="content">
+                <h2>🚨 Severidade dos Problemas</h2>
+                
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Nível</th>
+                            <th>Descrição</th>
+                            <th>Exemplos</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>🔴 CRÍTICO</strong></td>
+                            <td>Risco imediato à rede</td>
+                            <td>Cabo danificado, tomata não funciona, sem backup</td>
+                        </tr>
+                        <tr>
+                            <td><strong>🟠 ALTO</strong></td>
+                            <td>Risco significativo</td>
+                            <td>Sem identificação, organizacional ruim, sem documentação</td>
+                        </tr>
+                        <tr>
+                            <td><strong>🟡 MÉDIO</strong></td>
+                            <td>Pode melhorar</td>
+                            <td>Canaleta quebrada, tomata suja, falta sinalização</td>
+                        </tr>
+                        <tr>
+                            <td><strong>🟢 BAIXO</strong></td>
+                            <td>Ajuste fino</td>
+                            <td>Organização visual, estética, otimizações menores</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="example-box">
+                    <h3>📝 Exemplo de Categorização</h3>
+                    <p style="font-size: 1.1em;">
+                        <strong>🔴 CRÍTICO:</strong> Tomata 5 não funciona (sem conexão à rede)<br>
+                        <strong>🟠 ALTO:</strong> Cables sem rótulos em 80% da área<br>
+                        <strong>🟡 MÉDIO:</strong> Canaleta com um parafuso solto<br>
+                        <strong>🟢 BAIXO:</strong> Tomatas têm poeira (limpeza)
+                    </p>
+                </div>
+
+                <div class="warning-box">
+                    <h3>⚠️ Regra de Ouro</h3>
+                    <p style="font-size: 1.2em;">
+                        <strong>Faltar tomatas = CRÍTICO</strong><br>
+                        <strong>Cabos sem identificação = ALTO</strong><br>
+                        <strong>Falta de organização = MÉDIO</strong>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 10: Estrutura do Relatório -->
+        <div class="slide">
+            <div class="content">
+                <h2>📄 Estrutura do Relatório Final</h2>
+                
+                <div class="deliverable-box">
+                    <h3>📋 Seções Obrigatórias</h3>
+                    <div class="bullet-point">
+                        <strong>1. Capa:</strong> Título, data, grupo, professor
+                    </div>
+                    <div class="bullet-point">
+                        <strong>2. Sumário:</strong> Índice do documento
+                    </div>
+                    <div class="bullet-point">
+                        <strong>3. Introdução:</strong> O que foi auditado, por quê, data
+                    </div>
+                    <div class="bullet-point">
+                        <strong>4. Metodologia:</strong> Como foi feita a auditoria, ferramentas usadas
+                    </div>
+                    <div class="bullet-point">
+                        <strong>5. Achados (Principal!):</strong> Detalhes, problemas, fotos
+                    </div>
+                    <div class="bullet-point">
+                        <strong>6. Análise:</strong> Categorização, severidade, impacto
+                    </div>
+                    <div class="bullet-point">
+                        <strong>7. Recomendações:</strong> Sugestões de melhoria, priorização
+                    </div>
+                    <div class="bullet-point">
+                        <strong>8. Conclusão:</strong> Resumo, próximos passos
+                    </div>
+                    <div class="bullet-point">
+                        <strong>9. Anexos:</strong> Fotos, checklist preenchido, formulários
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>💡 Tamanho Esperado</h3>
+                    <p style="font-size: 1.1em;">
+                        <strong>Mínimo 5 páginas</strong> (sem contar anexos)<br>
+                        Com fotos e detalhes, espera-se <strong>8-12 páginas</strong><br>
+                        Bem formatado, profissional, fácil de ler
+                    </p>
+                </div>
+
+                <div class="success-box">
+                    <h3>✅ Qualidade do Relatório</h3>
+                    <p style="font-size: 1.1em;">
+                        Será avaliado por:<br>
+                        ✓ Completude (tudo foi documentado?)<br>
+                        ✓ Precisão (informações corretas?)<br>
+                        ✓ Profissionalismo (bem apresentado?)<br>
+                        ✓ Recomendações (viáveis e úteis?)
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 11: Apresentação em Grupo -->
+        <div class="slide">
+            <div class="content">
+                <h2>🎤 Apresentação em Grupo</h2>
+                
+                <div class="highlight-box">
+                    <h3>📊 Formato da Apresentação</h3>
+                    <div class="bullet-point">
+                        <strong>Duração:</strong> 10-15 minutos por grupo
+                    </div>
+                    <div class="bullet-point">
+                        <strong>Local:</strong> Sala de aula com projetor
+                    </div>
+                    <div class="bullet-point">
+                        <strong>Formato:</strong> Slides + Relatório impresso
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>🗣️ O que Apresentar</h3>
+                    <div class="bullet-point">
+                        1️⃣ Area auditada (fotos, contexto)
+                    </div>
+                    <div class="bullet-point">
+                        2️⃣ Metodologia (como foi feito)
+                    </div>
+                    <div class="bullet-point">
+                        3️⃣ Achados principais (fotos + dados)
+                    </div>
+                    <div class="bullet-point">
+                        4️⃣ Problemas identificados (com severidade)
+                    </div>
+                    <div class="bullet-point">
+                        5️⃣ Recomendações (top 3 prioritárias)
+                    </div>
+                    <div class="bullet-point">
+                        6️⃣ Conclusões
+                    </div>
+                </div>
+
+                <div class="warning-box">
+                    <h3>💡 Dicas de Apresentação</h3>
+                    <div class="bullet-point">
+                        ✅ Use muitas fotos (visuais engajam!)
+                    </div>
+                    <div class="bullet-point">
+                        ✅ Fale com clareza e confiança
+                    </div>
+                    <div class="bullet-point">
+                        ✅ Divide a fala entre os integrantes
+                    </div>
+                    <div class="bullet-point">
+                        ✅ Prepare respostas para perguntas
+                    </div>
+                    <div class="bullet-point">
+                        ✅ Leve o relatório impresso
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 12: Critérios de Avaliação -->
+        <div class="slide">
+            <div class="content">
+                <h2>📊 Critérios de Avaliação</h2>
+                
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Critério</th>
+                            <th>Excelente (10)</th>
+                            <th>Bom (8)</th>
+                            <th>Aceitável (6)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Completude</strong></td>
+                            <td>Checklist 100% preenchido</td>
+                            <td>95% preenchido</td>
+                            <td>80% preenchido</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Fotos</strong></td>
+                            <td>20+ fotos organizadas</td>
+                            <td>15-20 fotos</td>
+                            <td>10-15 fotos</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Precisão</strong></td>
+                            <td>Todos dados corretos</td>
+                            <td>95% correto</td>
+                            <td>85% correto</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Relatório</strong></td>
+                            <td>Profissional, bem formatado</td>
+                            <td>Bem formatado</td>
+                            <td>Formatação básica</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Recomendações</strong></td>
+                            <td>Viáveis e prorizadas</td>
+                            <td>Viáveis</td>
+                            <td>Genéricas</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Apresentação</strong></td>
+                            <td>Clara, confiante, 10-15min</td>
+                            <td>Clara, 10-15min</td>
+                            <td>Básica, menos de 10min</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Trabalho em Grupo</strong></td>
+                            <td>Todos participaram igualmente</td>
+                            <td>Maioria participou</td>
+                            <td>Alguns menos participativos</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="success-box center-text">
+                    <p style="font-size: 1.3em; font-weight: bold;">
+                        ✅ Nota Final = Média dos critérios
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 13: Timeline e Prazos -->
+        <div class="slide">
+            <div class="content">
+                <h2>📅 Timeline do Projeto</h2>
+                
+                <div class="diagram">
+                    <p style="margin: 15px 0;"><strong>Aula 1:</strong> Apresentação do Projeto</p>
+                    <p style="margin: 10px 0;">↓ (leia esta apresentação)</p>
+                    <p style="margin: 15px 0;"><strong>Aula 2-3:</strong> Execução - Auditoria em Campo</p>
+                    <p style="margin: 10px 0;">↓ (visite a área, colete dados)</p>
+                    <p style="margin: 15px 0;"><strong>Aula 4-5:</strong> Elaboração do Relatório</p>
+                    <p style="margin: 10px 0;">↓ (organize, escreva, formate)</p>
+                    <p style="margin: 15px 0;"><strong>Aula 6:</strong> Apresentações em Grupo</p>
+                    <p style="margin: 10px 0;">↓ (cada grupo apresenta 10-15 min)</p>
+                    <p style="margin: 15px 0;"><strong>Aula 7:</strong> Feedback e Fechamento</p>
+                </div>
+
+                <div class="warning-box">
+                    <h3>⏰ Datas Importantes</h3>
+                    <p style="font-size: 1.1em;">
+                        <strong>Entrega do Relatório:</strong> [data definida pelo professor]<br>
+                        <strong>Apresentações:</strong> [data definida pelo professor]<br>
+                        <strong>Nenhuma extensão sem aviso prévio!</strong>
+                    </p>
+                </div>
+
+                <div class="example-box">
+                    <h3>💡 Sugestão de Divisão de Tempo</h3>
+                    <p style="font-size: 1.1em;">
+                        <strong>Coleta (2 aulas):</strong> 60% do tempo<br>
+                        <strong>Análise (1 aula):</strong> 20% do tempo<br>
+                        <strong>Relatório (2 aulas):</strong> 20% do tempo<br>
+                        Dica: Comece o relatório DURANTE a auditoria!
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 14: Boas Práticas e Dicas -->
+        <div class="slide">
+            <div class="content">
+                <h2>💡 Dicas e Boas Práticas</h2>
+                
+                <div class="success-box">
+                    <h3>✅ Faça Isso</h3>
+                    <div class="bullet-point">
+                        ✓ Fotografe com boa iluminação e ângulo
+                    </div>
+                    <div class="bullet-point">
+                        ✓ Nomeie as fotos (photo-sala302-01.jpg)
+                    </div>
+                    <div class="bullet-point">
+                        ✓ Converse com os responsáveis da área
+                    </div>
+                    <div class="bullet-point">
+                        ✓ Anote dúvidas para pesquisar depois
+                    </div>
+                    <div class="bullet-point">
+                        ✓ Organize dados enquanto coleta
+                    </div>
+                    <div class="bullet-point">
+                        ✓ Começe a escrever o relatório cedo
+                    </div>
+                </div>
+
+                <div class="warning-box">
+                    <h3>❌ Não Faça Isso</h3>
+                    <div class="bullet-point">
+                        ✗ Mexer em equipamentos sem autorização
+                    </div>
+                    <div class="bullet-point">
+                        ✗ Fotos com flash direto (cabos ficam invisíveis)
+                    </div>
+                    <div class="bullet-point">
+                        ✗ Confiar apenas na memória (sempre anote!)
+                    </div>
+                    <div class="bullet-point">
+                        ✗ Deixar para o último dia para fazer relatório
+                    </div>
+                    <div class="bullet-point">
+                        ✗ Copiar dados de outro grupo
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>📸 Foto Profissional vs Amadora</h3>
+                    <p style="font-size: 1.1em;">
+                        <strong>❌ Amadora:</strong> Tomada borrada, pouca luz, ângulo estranho<br>
+                        <strong>✅ Profissional:</strong> Foto clara, bem iluminada, identifica bem a tomata
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 15: Resumo Final -->
+        <div class="slide">
+            <div class="content">
+                <h2>🎯 Resumo - O Que Você Precisa Fazer</h2>
+                
+                <div class="highlight-box">
+                    <h3>📋 Checklist Final</h3>
+                    <div class="bullet-point">
+                        ☐ Receber sua área atribuída
+                    </div>
+                    <div class="bullet-point">
+                        ☐ Reunir equipamentos (câmera, fita, anotações)
+                    </div>
+                    <div class="bullet-point">
+                        ☐ Visitar a área e preencher checklist completo
+                    </div>
+                    <div class="bullet-point">
+                        ☐ Fotografar tudo (20+ fotos)
+                    </div>
+                    <div class="bullet-point">
+                        ☐ Organizar dados coletados
+                    </div>
+                    <div class="bullet-point">
+                        ☐ Analisar e categorizar problemas
+                    </div>
+                    <div class="bullet-point">
+                        ☐ Escrever relatório profissional (8-12 páginas)
+                    </div>
+                    <div class="bullet-point">
+                        ☐ Preparar apresentação de 10-15 minutos
+                    </div>
+                    <div class="bullet-point">
+                        ☐ Apresentar para a turma
+                    </div>
+                </div>
+
+                <div class="success-box center-text">
+                    <h3>🏆 Resultado Esperado</h3>
+                    <p style="font-size: 1.2em;">
+                        Um <strong>documento profissional</strong> que poderia ser enviado para a administração da escola com recomendações viáveis de melhoria na infraestrutura de rede!
+                    </p>
+                </div>
+
+                <div class="example-box center-text">
+                    <p style="font-size: 1.3em; font-weight: bold;">
+                        💪 Você consegue! Boa sorte! 🍀
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="navigation">
+            <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">⬅️ Anterior</button>
+            <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">Próximo ➡️</button>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        document.getElementById('total-slides').textContent = totalSlides;
+
+        function showSlide(index) {
+            slides.forEach((slide, i) => {
+                slide.classList.toggle('active', i === index);
+            });
+            
+            document.getElementById('current-slide').textContent = index + 1;
+            document.getElementById('prevBtn').disabled = index === 0;
+            document.getElementById('nextBtn').disabled = index === totalSlides - 1;
+        }
+
+        function changeSlide(direction) {
+            const newSlide = currentSlide + direction;
+            if (newSlide >= 0 && newSlide < totalSlides) {
+                currentSlide = newSlide;
+                showSlide(currentSlide);
+                window.scrollTo(0, 0);
+            }
+        }
+
+        // Navegação por teclado
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') changeSlide(-1);
+            if (e.key === 'ArrowRight') changeSlide(1);
+            if (e.key === 'Home') {
+                currentSlide = 0;
+                showSlide(currentSlide);
+            }
+            if (e.key === 'End') {
+                currentSlide = totalSlides - 1;
+                showSlide(currentSlide);
+            }
+        });
+
+        // Inicializar
+        showSlide(0);
+    </script>
+</body>
+</html>
